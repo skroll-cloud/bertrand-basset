@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Bertrand Basset Portfolio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a1a;
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: #111;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h1 {
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #007AFF;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+
+        .btn-secondary {
+            background: #333;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #444;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .container {
+            display: flex;
+            height: calc(100vh - 60px);
+        }
+
+        .sidebar {
+            width: 250px;
+            background: #111;
+            border-right: 1px solid #333;
+            overflow-y: auto;
+            padding: 1rem 0;
+        }
+
+        .sidebar-item {
+            padding: 0.7rem 1.5rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .sidebar-item:hover {
+            background: #222;
+        }
+
+        .sidebar-item.active {
+            background: #007AFF;
+        }
+
+        .sidebar-section {
+            padding: 0.5rem 1.5rem;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: #666;
+            margin-top: 1rem;
+        }
+
+        .main {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        .gallery-header {
+            margin-bottom: 2rem;
+        }
+
+        .gallery-header h2 {
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .gallery-meta {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .form-group label {
+            font-size: 0.75rem;
+            color: #888;
+            text-transform: uppercase;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            padding: 0.6rem;
+            background: #222;
+            border: 1px solid #333;
+            border-radius: 4px;
+            color: #fff;
+            font-size: 0.9rem;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #007AFF;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .images-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .image-card {
+            background: #222;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: grab;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .image-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .image-card.dragging {
+            opacity: 0.5;
+            cursor: grabbing;
+        }
+
+        .image-card.drag-over {
+            border: 2px dashed #007AFF;
+        }
+
+        .image-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .image-card-body {
+            padding: 0.8rem;
+        }
+
+        .image-card-title {
+            font-size: 0.75rem;
+            color: #888;
+            margin-bottom: 0.5rem;
+            word-break: break-all;
+        }
+
+        .image-card-caption {
+            width: 100%;
+            padding: 0.5rem;
+            background: #333;
+            border: 1px solid #444;
+            border-radius: 4px;
+            color: #fff;
+            font-size: 0.8rem;
+            resize: none;
+            height: 60px;
+        }
+
+        .image-card-caption:focus {
+            outline: none;
+            border-color: #007AFF;
+        }
+
+        .image-card-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .image-card-actions button {
+            flex: 1;
+            padding: 0.4rem;
+            font-size: 0.7rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .btn-audio {
+            background: #6c5ce7;
+            color: white;
+        }
+
+        .btn-audio.has-audio {
+            background: #00b894;
+        }
+
+        .btn-remove {
+            background: #d63031;
+            color: white;
+        }
+
+        .order-indicator {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+        }
+
+        .image-card {
+            position: relative;
+        }
+
+        .drop-zone {
+            border: 2px dashed #444;
+            border-radius: 8px;
+            padding: 3rem;
+            text-align: center;
+            color: #666;
+            margin-top: 1rem;
+            transition: all 0.2s;
+        }
+
+        .drop-zone.drag-over {
+            border-color: #007AFF;
+            background: rgba(0, 122, 255, 0.1);
+            color: #007AFF;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #222;
+            border-radius: 8px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h3 {
+            font-size: 1.2rem;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .export-preview {
+            background: #111;
+            border-radius: 4px;
+            padding: 1rem;
+            font-family: monospace;
+            font-size: 0.75rem;
+            max-height: 300px;
+            overflow: auto;
+            white-space: pre-wrap;
+            color: #0f0;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #28a745;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 4px;
+            display: none;
+            z-index: 1001;
+        }
+
+        .toast.active {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .instructions {
+            background: #222;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .instructions h3 {
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        .instructions ul {
+            list-style: none;
+            font-size: 0.85rem;
+            color: #aaa;
+        }
+
+        .instructions li {
+            padding: 0.3rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .instructions li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #007AFF;
+        }
+
+        .page-editor {
+            margin-top: 2rem;
+        }
+
+        .page-editor h3 {
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        .page-editor textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 1rem;
+            background: #222;
+            border: 1px solid #333;
+            border-radius: 4px;
+            color: #fff;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>📷 Admin Portfolio - Bertrand Basset</h1>
+        <div class="header-actions">
+            <button class="btn btn-secondary" onclick="loadFromFolder()">📁 Charger dossier images</button>
+            <button class="btn btn-secondary" onclick="importConfig()">📥 Importer config</button>
+            <button class="btn btn-success" onclick="exportConfig()">💾 Exporter gallery.js</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-section">Galeries</div>
+            <div id="galleriesList"></div>
+            
+            <div class="sidebar-section">Pages</div>
+            <div class="sidebar-item" onclick="editPage('about')">À propos</div>
+            <div class="sidebar-item" onclick="editPage('contact')">Contact</div>
+        </aside>
+
+        <main class="main" id="mainContent">
+            <div class="instructions">
+                <h3>Bienvenue dans l'admin</h3>
+                <ul>
+                    <li>Sélectionne une galerie dans le menu à gauche</li>
+                    <li>Glisse-dépose les images pour changer l'ordre</li>
+                    <li>Ajoute des légendes sous chaque image</li>
+                    <li>Clique sur "Exporter gallery.js" quand tu as fini</li>
+                    <li>Remplace le fichier js/gallery.js et fais git push</li>
+                </ul>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal Export -->
+    <div class="modal" id="exportModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Exporter gallery.js</h3>
+                <button class="modal-close" onclick="closeModal('exportModal')">&times;</button>
+            </div>
+            <p style="margin-bottom: 1rem; color: #888; font-size: 0.85rem;">
+                Copie ce code et remplace le contenu de <code>js/gallery.js</code>
+            </p>
+            <pre class="export-preview" id="exportPreview"></pre>
+            <div style="margin-top: 1rem; display: flex; gap: 1rem;">
+                <button class="btn btn-primary" onclick="copyToClipboard()">📋 Copier</button>
+                <button class="btn btn-success" onclick="downloadFile()">⬇️ Télécharger</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">Sauvegardé !</div>
+
+    <script>
+        // ================================
+        // CONFIGURATION DATA
+        // ================================
+        let galleriesConfig = {
+            "accueil": {
+                title: "Accueil",
+                path: "images/accueil",
+                description: "",
+                images: []
+            },
+            "portrait": {
+                title: "Portrait",
+                path: "images/photography/portrait",
+                description: "",
+                images: []
+            },
+            "gem": {
+                title: "Le GEM s'endimanche",
+                path: "images/photography/serie-portrait/gem",
+                description: "Série de portraits réalisée au GEM de Morlaix. Chaque portrait est accompagné d'un témoignage audio.",
+                projectTitle: "Le GEM s'endimanche",
+                projectLink: "projects/le-gem.html",
+                images: []
+            },
+            "carre-das": {
+                title: "Carré d'As",
+                path: "images/photography/serie-portrait/Carré D'as",
+                description: "",
+                images: []
+            },
+            "burning-man": {
+                title: "Burning Man",
+                path: "images/photography/immersion/Burning Man",
+                description: "",
+                images: []
+            },
+            "st-melar": {
+                title: "St Mélar",
+                path: "images/photography/immersion/St Mélar",
+                description: "",
+                images: []
+            },
+            "cinema": {
+                title: "Cinéma",
+                path: "images/filmmaker/cinema",
+                description: "",
+                images: []
+            },
+            "television": {
+                title: "Télévision",
+                path: "images/filmmaker/Television",
+                description: "",
+                images: []
+            }
+        };
+
+        let pagesContent = {
+            about: {
+                title: "À propos",
+                content: "Bertrand Basset, photographe et réalisateur basé en Bretagne.\n\n20 ans d'images et d'histoires. Court métrage primé, documentaires France 2.\n\nPortrait — Immersion — Mémoire"
+            },
+            contact: {
+                title: "Contact",
+                content: "Email: contact@bertrandbasset.com\n\nBasé à Carantec, Finistère Nord\nDisponible pour des projets en Bretagne et ailleurs."
+            }
+        };
+
+        let currentGallery = null;
+
+        // ================================
+        // INITIALIZATION
+        // ================================
+        document.addEventListener('DOMContentLoaded', () => {
+            renderGalleriesList();
+            loadSavedConfig();
+        });
+
+        function loadSavedConfig() {
+            const saved = localStorage.getItem('portfolioConfig');
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    galleriesConfig = data.galleries || galleriesConfig;
+                    pagesContent = data.pages || pagesContent;
+                } catch(e) {
+                    console.error('Error loading saved config:', e);
+                }
+            }
+        }
+
+        function saveConfig() {
+            localStorage.setItem('portfolioConfig', JSON.stringify({
+                galleries: galleriesConfig,
+                pages: pagesContent
+            }));
+            showToast('Sauvegardé !');
+        }
+
+        // ================================
+        // GALLERIES LIST
+        // ================================
+        function renderGalleriesList() {
+            const list = document.getElementById('galleriesList');
+            list.innerHTML = '';
+            
+            for (const [id, gallery] of Object.entries(galleriesConfig)) {
+                const item = document.createElement('div');
+                item.className = 'sidebar-item' + (currentGallery === id ? ' active' : '');
+                item.textContent = gallery.title + ` (${gallery.images.length})`;
+                item.onclick = () => selectGallery(id);
+                list.appendChild(item);
+            }
+        }
+
+        function selectGallery(id) {
+            currentGallery = id;
+            renderGalleriesList();
+            renderGalleryEditor(id);
+        }
+
+        // ================================
+        // GALLERY EDITOR
+        // ================================
+        function renderGalleryEditor(id) {
+            const gallery = galleriesConfig[id];
+            const main = document.getElementById('mainContent');
+            
+            main.innerHTML = `
+                <div class="gallery-header">
+                    <h2>${gallery.title}</h2>
+                    
+                    <div class="gallery-meta">
+                        <div class="form-group">
+                            <label>Titre affiché</label>
+                            <input type="text" value="${gallery.title}" onchange="updateGalleryMeta('${id}', 'title', this.value)">
+                        </div>
+                        <div class="form-group">
+                            <label>Chemin des images</label>
+                            <input type="text" value="${gallery.path}" onchange="updateGalleryMeta('${id}', 'path', this.value)">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Description / Texte d'introduction</label>
+                        <textarea onchange="updateGalleryMeta('${id}', 'description', this.value)">${gallery.description || ''}</textarea>
+                    </div>
+                </div>
+                
+                <h3 style="margin-bottom: 1rem;">Images (${gallery.images.length}) — Glisse pour réordonner</h3>
+                
+                <div class="images-grid" id="imagesGrid">
+                    ${renderImages(gallery.images, id)}
+                </div>
+                
+                <div class="drop-zone" id="dropZone" 
+                     ondragover="handleDragOver(event)" 
+                     ondragleave="handleDragLeave(event)"
+                     ondrop="handleFileDrop(event, '${id}')">
+                    📁 Glisse des images ici pour les ajouter
+                </div>
+            `;
+            
+            initDragAndDrop(id);
+        }
+
+        function renderImages(images, galleryId) {
+            return images.map((img, index) => {
+                const filename = typeof img === 'string' ? img : img.filename;
+                const caption = typeof img === 'object' ? (img.caption || '') : '';
+                const hasAudio = typeof img === 'object' && img.audio;
+                const gallery = galleriesConfig[galleryId];
+                const imgPath = `${gallery.path}/${filename}`;
+                
+                return `
+                    <div class="image-card" draggable="true" data-index="${index}">
+                        <span class="order-indicator">${index + 1}</span>
+                        <img src="${imgPath}" alt="${filename}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%23333%22 width=%22100%22 height=%22100%22/><text x=%2250%22 y=%2255%22 text-anchor=%22middle%22 fill=%22%23666%22 font-size=%2210%22>Image</text></svg>'">
+                        <div class="image-card-body">
+                            <div class="image-card-title">${filename}</div>
+                            <textarea class="image-card-caption" 
+                                      placeholder="Légende..."
+                                      onchange="updateImageCaption('${galleryId}', ${index}, this.value)">${caption}</textarea>
+                            <div class="image-card-actions">
+                                <button class="btn-audio ${hasAudio ? 'has-audio' : ''}" 
+                                        onclick="toggleAudio('${galleryId}', ${index})">
+                                    🔊 ${hasAudio ? 'Audio OK' : 'Audio'}
+                                </button>
+                                <button class="btn-remove" onclick="removeImage('${galleryId}', ${index})">🗑️</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ================================
+        // IMAGE MANAGEMENT
+        // ================================
+        function updateGalleryMeta(id, field, value) {
+            galleriesConfig[id][field] = value;
+            saveConfig();
+            renderGalleriesList();
+        }
+
+        function updateImageCaption(galleryId, index, caption) {
+            const img = galleriesConfig[galleryId].images[index];
+            if (typeof img === 'string') {
+                galleriesConfig[galleryId].images[index] = {
+                    filename: img,
+                    caption: caption
+                };
+            } else {
+                img.caption = caption;
+            }
+            saveConfig();
+        }
+
+        function toggleAudio(galleryId, index) {
+            const img = galleriesConfig[galleryId].images[index];
+            const filename = typeof img === 'string' ? img : img.filename;
+            const audioFile = filename.replace(/\.[^.]+$/, '.mp3');
+            
+            if (typeof img === 'string') {
+                galleriesConfig[galleryId].images[index] = {
+                    filename: img,
+                    caption: '',
+                    audio: audioFile
+                };
+            } else {
+                img.audio = img.audio ? null : audioFile;
+            }
+            saveConfig();
+            renderGalleryEditor(galleryId);
+        }
+
+        function removeImage(galleryId, index) {
+            if (confirm('Supprimer cette image de la galerie ?')) {
+                galleriesConfig[galleryId].images.splice(index, 1);
+                saveConfig();
+                renderGalleryEditor(galleryId);
+                renderGalleriesList();
+            }
+        }
+
+        function addImage(galleryId, filename) {
+            galleriesConfig[galleryId].images.push({
+                filename: filename,
+                caption: ''
+            });
+            saveConfig();
+            renderGalleryEditor(galleryId);
+            renderGalleriesList();
+        }
+
+        // ================================
+        // DRAG AND DROP - REORDER
+        // ================================
+        function initDragAndDrop(galleryId) {
+            const grid = document.getElementById('imagesGrid');
+            if (!grid) return;
+            
+            const cards = grid.querySelectorAll('.image-card');
+            
+            cards.forEach(card => {
+                card.addEventListener('dragstart', (e) => {
+                    card.classList.add('dragging');
+                    e.dataTransfer.setData('text/plain', card.dataset.index);
+                    e.dataTransfer.effectAllowed = 'move';
+                });
+                
+                card.addEventListener('dragend', () => {
+                    card.classList.remove('dragging');
+                    document.querySelectorAll('.image-card').forEach(c => c.classList.remove('drag-over'));
+                });
+                
+                card.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    e.dataTransfer.dropEffect = 'move';
+                    card.classList.add('drag-over');
+                });
+                
+                card.addEventListener('dragleave', () => {
+                    card.classList.remove('drag-over');
+                });
+                
+                card.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    const fromIndex = parseInt(e.dataTransfer.getData('text/plain'));
+                    const toIndex = parseInt(card.dataset.index);
+                    
+                    if (fromIndex !== toIndex) {
+                        const images = galleriesConfig[galleryId].images;
+                        const [moved] = images.splice(fromIndex, 1);
+                        images.splice(toIndex, 0, moved);
+                        saveConfig();
+                        renderGalleryEditor(galleryId);
+                    }
+                });
+            });
+        }
+
+        // ================================
+        // DRAG AND DROP - ADD FILES
+        // ================================
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.currentTarget.classList.add('drag-over');
+        }
+
+        function handleDragLeave(e) {
+            e.currentTarget.classList.remove('drag-over');
+        }
+
+        function handleFileDrop(e, galleryId) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('drag-over');
+            
+            const files = Array.from(e.dataTransfer.files);
+            files.forEach(file => {
+                if (file.type.startsWith('image/')) {
+                    addImage(galleryId, file.name);
+                }
+            });
+        }
+
+        // ================================
+        // PAGE EDITOR
+        // ================================
+        function editPage(pageId) {
+            currentGallery = null;
+            renderGalleriesList();
+            
+            const page = pagesContent[pageId];
+            const main = document.getElementById('mainContent');
+            
+            main.innerHTML = `
+                <div class="gallery-header">
+                    <h2>${page.title}</h2>
+                </div>
+                
+                <div class="page-editor">
+                    <h3>Contenu de la page</h3>
+                    <textarea onchange="updatePageContent('${pageId}', this.value)">${page.content}</textarea>
+                </div>
+            `;
+        }
+
+        function updatePageContent(pageId, content) {
+            pagesContent[pageId].content = content;
+            saveConfig();
+        }
+
+        // ================================
+        // IMPORT / EXPORT
+        // ================================
+        function loadFromFolder() {
+            alert('Pour charger les images depuis un dossier :\n\n1. Ouvre le Terminal\n2. Lance : ls ~/bertrand-basset/images/[dossier]/\n3. Copie la liste des fichiers\n4. Ajoute-les manuellement ou glisse-les dans l\'interface');
+        }
+
+        function importConfig() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.js,.json';
+            input.onchange = async (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const text = await file.text();
+                    // Parse the gallery.js file
+                    try {
+                        // Extract GALLERIES_CONFIG
+                        const match = text.match(/const GALLERIES_CONFIG = ({[\s\S]*?});/);
+                        if (match) {
+                            const config = eval('(' + match[1] + ')');
+                            for (const [id, gallery] of Object.entries(config)) {
+                                if (galleriesConfig[id]) {
+                                    galleriesConfig[id].images = gallery.images.map(img => ({
+                                        filename: img,
+                                        caption: ''
+                                    }));
+                                }
+                            }
+                            saveConfig();
+                            renderGalleriesList();
+                            showToast('Configuration importée !');
+                        }
+                    } catch(err) {
+                        alert('Erreur lors de l\'import: ' + err.message);
+                    }
+                }
+            };
+            input.click();
+        }
+
+        function exportConfig() {
+            const code = generateGalleryJS();
+            document.getElementById('exportPreview').textContent = code;
+            document.getElementById('exportModal').classList.add('active');
+        }
+
+        function generateGalleryJS() {
+            let configStr = 'const GALLERIES_CONFIG = {\n';
+            
+            for (const [id, gallery] of Object.entries(galleriesConfig)) {
+                configStr += `    "${id}": {\n`;
+                configStr += `        title: "${gallery.title}",\n`;
+                configStr += `        path: "${gallery.path}",\n`;
+                
+                if (gallery.description) {
+                    configStr += `        description: "${gallery.description.replace(/"/g, '\\"').replace(/\n/g, '\\n')}",\n`;
+                }
+                if (gallery.projectTitle) {
+                    configStr += `        projectTitle: "${gallery.projectTitle}",\n`;
+                    configStr += `        projectLink: "${gallery.projectLink || ''}",\n`;
+                }
+                
+                configStr += `        images: [\n`;
+                
+                gallery.images.forEach((img, i) => {
+                    const filename = typeof img === 'string' ? img : img.filename;
+                    const caption = typeof img === 'object' ? img.caption : '';
+                    const audio = typeof img === 'object' ? img.audio : null;
+                    
+                    if (caption || audio) {
+                        configStr += `            { filename: "${filename}"`;
+                        if (caption) configStr += `, caption: "${caption.replace(/"/g, '\\"')}"`;
+                        if (audio) configStr += `, audio: "${audio}"`;
+                        configStr += ` }`;
+                    } else {
+                        configStr += `            "${filename}"`;
+                    }
+                    
+                    if (i < gallery.images.length - 1) configStr += ',';
+                    configStr += '\n';
+                });
+                
+                configStr += `        ]\n`;
+                configStr += `    },\n`;
+            }
+            
+            configStr += '};\n';
+            
+            // Add the rest of the gallery.js code
+            configStr += getGalleryJSTemplate();
+            
+            return configStr;
+        }
+
+        function getGalleryJSTemplate() {
+            return `
+// ================================
+// TRANSLATIONS
+// ================================
+const TRANSLATIONS = {
+    en: {
+        "photography": "Photography",
+        "portrait": "Portrait",
+        "serie-portrait": "Serie Portrait",
+        "immersion": "Immersion",
+        "filmmaker": "Filmmaker",
+        "cinema": "Cinema",
+        "television": "Television",
+        "about": "About",
+        "contact": "Contact",
+        "learn-more": "learn more",
+        "prev": "prev",
+        "next": "next",
+        "show-thumbnails": "show thumbnails",
+        "hide-thumbnails": "hide thumbnails"
+    },
+    fr: {
+        "photography": "Photographie",
+        "portrait": "Portrait",
+        "serie-portrait": "Série Portrait",
+        "immersion": "Immersion",
+        "filmmaker": "Réalisateur",
+        "cinema": "Cinéma",
+        "television": "Télévision",
+        "about": "À propos",
+        "contact": "Contact",
+        "learn-more": "en savoir plus",
+        "prev": "préc",
+        "next": "suiv",
+        "show-thumbnails": "voir vignettes",
+        "hide-thumbnails": "masquer vignettes"
+    }
+};
+
+// ================================
+// PORTFOLIO CLASS
+// ================================
+class Portfolio {
+    constructor() {
+        this.galleries = this.buildGalleries();
+        this.currentGallery = null;
+        this.currentIndex = 0;
+        this.isTransitioning = false;
+        this.currentAudio = null;
+        this.isPlaying = false;
+        this.currentLang = 'fr';
+        this.isMobile = window.innerWidth <= 768;
+        this.init();
+    }
+
+    buildGalleries() {
+        const galleries = {};
+        for (const [id, config] of Object.entries(GALLERIES_CONFIG)) {
+            galleries[id] = {
+                title: config.title,
+                description: config.description || '',
+                projectTitle: config.projectTitle || null,
+                projectLink: config.projectLink || null,
+                images: config.images.map(img => {
+                    if (typeof img === 'string') {
+                        return { src: \`\${config.path}/\${img}\`, caption: '' };
+                    }
+                    return {
+                        src: \`\${config.path}/\${img.filename}\`,
+                        caption: img.caption || '',
+                        audio: img.audio ? \`\${config.path}/\${img.audio}\` : null
+                    };
+                })
+            };
+        }
+        return galleries;
+    }
+
+    init() {
+        this.cacheElements();
+        this.bindEvents();
+        this.openGallery('accueil');
+        this.handleResize();
+    }
+
+    cacheElements() {
+        this.landing = document.getElementById('landing');
+        this.site = document.getElementById('site');
+        this.enterBtn = document.getElementById('enterBtn');
+        this.menuToggle = document.getElementById('menuToggle');
+        this.mainNav = document.getElementById('mainNav');
+        this.galleryContainer = document.getElementById('galleryContainer');
+        this.prevBtn = document.getElementById('prevBtn');
+        this.nextBtn = document.getElementById('nextBtn');
+        this.thumbnailsToggle = document.getElementById('thumbnailsToggle');
+        this.thumbnailsPanel = document.getElementById('thumbnailsPanel');
+        this.thumbnailsGrid = document.getElementById('thumbnailsGrid');
+        this.thumbnailsClose = document.getElementById('thumbnailsClose');
+        this.galleryCounter = document.querySelector('.gallery-counter');
+        this.imageCaption = document.querySelector('.image-caption');
+        this.navItems = document.querySelectorAll('.nav-item[data-expandable]');
+        this.dropdownLinks = document.querySelectorAll('.dropdown-link:not(.has-submenu)');
+        this.submenuLinks = document.querySelectorAll('.dropdown-link.has-submenu');
+        this.dropdownSublinks = document.querySelectorAll('.dropdown-sublink');
+        this.projectInfo = document.querySelector('.project-info');
+        this.projectTitle = document.querySelector('.project-title');
+        this.projectLink = document.querySelector('.project-link');
+        this.homeLink = document.getElementById('homeLink');
+        this.langLinks = document.querySelectorAll('[data-lang]');
+        this.cursor = document.getElementById('customCursor');
+    }
+
+    bindEvents() {
+        if (this.enterBtn) {
+            this.enterBtn.addEventListener('click', () => this.enterSite());
+        }
+        if (this.homeLink) {
+            this.homeLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.openGallery('accueil');
+                this.closeMenu();
+            });
+        }
+        if (this.menuToggle) {
+            this.menuToggle.addEventListener('click', () => this.toggleMenu());
+        }
+        this.navItems.forEach(item => {
+            const link = item.querySelector('.nav-link');
+            if (link) {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    item.classList.toggle('open');
+                });
+            }
+        });
+        this.dropdownLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const galleryId = link.dataset.gallery;
+                if (galleryId) {
+                    this.openGallery(galleryId);
+                    this.closeMenu();
+                }
+            });
+        });
+        this.submenuLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                link.classList.toggle('open');
+            });
+        });
+        this.dropdownSublinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const galleryId = link.dataset.gallery;
+                if (galleryId) {
+                    this.openGallery(galleryId);
+                    this.closeMenu();
+                }
+            });
+        });
+        if (this.prevBtn) this.prevBtn.addEventListener('click', (e) => { e.preventDefault(); this.prevImage(); });
+        if (this.nextBtn) this.nextBtn.addEventListener('click', (e) => { e.preventDefault(); this.nextImage(); });
+        if (this.galleryContainer) {
+            this.galleryContainer.addEventListener('click', (e) => {
+                const rect = this.galleryContainer.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                if (x < rect.width / 2) this.prevImage();
+                else this.nextImage();
+            });
+        }
+        if (this.thumbnailsToggle) {
+            this.thumbnailsToggle.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.toggleThumbnails();
+            });
+        }
+        if (this.thumbnailsClose) {
+            this.thumbnailsClose.addEventListener('click', () => this.hideThumbnails());
+        }
+        document.addEventListener('keydown', (e) => this.handleKeyboard(e));
+        this.initSwipe();
+        this.langLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.setLanguage(link.dataset.lang);
+            });
+        });
+        window.addEventListener('resize', () => this.handleResize());
+    }
+
+    toggleMenu() {
+        if (this.menuToggle) this.menuToggle.classList.toggle('open');
+        if (this.mainNav) this.mainNav.classList.toggle('open');
+    }
+
+    closeMenu() {
+        if (this.menuToggle) this.menuToggle.classList.remove('open');
+        if (this.mainNav) this.mainNav.classList.remove('open');
+    }
+
+    handleResize() {
+        this.isMobile = window.innerWidth <= 768;
+        if (!this.isMobile) this.closeMenu();
+    }
+
+    enterSite() {
+        if (this.landing) this.landing.classList.add('hidden');
+        if (this.site) this.site.classList.add('active');
+    }
+
+    openGallery(galleryId) {
+        const gallery = this.galleries[galleryId];
+        if (!gallery || !gallery.images.length) return;
+        this.currentGallery = gallery;
+        this.currentGalleryId = galleryId;
+        this.currentIndex = 0;
+        this.showImage(0);
+        this.generateThumbnails();
+        this.updateProjectInfo();
+    }
+
+    showImage(index) {
+        if (!this.currentGallery || this.isTransitioning) return;
+        const images = this.currentGallery.images;
+        if (index < 0 || index >= images.length) return;
+        
+        this.stopAudio();
+        this.isTransitioning = true;
+        this.currentIndex = index;
+        const imageData = images[index];
+        
+        const currentImgs = this.galleryContainer.querySelectorAll('.gallery-image');
+        currentImgs.forEach(img => img.classList.add('transitioning'));
+        
+        setTimeout(() => {
+            this.galleryContainer.innerHTML = '';
+            const img = document.createElement('img');
+            img.className = 'gallery-image';
+            img.alt = imageData.caption || '';
+            img.onload = () => {
+                img.classList.add('loaded');
+                this.isTransitioning = false;
+            };
+            img.onerror = () => this.isTransitioning = false;
+            this.galleryContainer.appendChild(img);
+            img.src = encodeURI(imageData.src);
+            
+            if (this.imageCaption) this.imageCaption.textContent = imageData.caption || '';
+            this.updateCounter();
+            this.updateActiveThumbnail(index);
+            
+            if (imageData.audio) this.playAudio(imageData.audio);
+        }, 300);
+    }
+
+    prevImage() {
+        if (!this.currentGallery) return;
+        const newIndex = this.currentIndex > 0 ? this.currentIndex - 1 : this.currentGallery.images.length - 1;
+        this.showImage(newIndex);
+    }
+
+    nextImage() {
+        if (!this.currentGallery) return;
+        const newIndex = this.currentIndex < this.currentGallery.images.length - 1 ? this.currentIndex + 1 : 0;
+        this.showImage(newIndex);
+    }
+
+    updateCounter() {
+        if (this.galleryCounter && this.currentGallery) {
+            this.galleryCounter.textContent = \`\${this.currentIndex + 1} / \${this.currentGallery.images.length}\`;
+        }
+    }
+
+    handleKeyboard(e) {
+        if (!this.site || !this.site.classList.contains('active')) return;
+        if (e.key === 'ArrowLeft') { e.preventDefault(); this.prevImage(); }
+        if (e.key === 'ArrowRight') { e.preventDefault(); this.nextImage(); }
+        if (e.key === 'Escape') { this.hideThumbnails(); this.closeMenu(); }
+    }
+
+    initSwipe() {
+        if (!this.galleryContainer) return;
+        let startX = 0, startY = 0;
+        this.galleryContainer.addEventListener('touchstart', (e) => {
+            startX = e.changedTouches[0].screenX;
+            startY = e.changedTouches[0].screenY;
+        }, { passive: true });
+        this.galleryContainer.addEventListener('touchend', (e) => {
+            const diffX = startX - e.changedTouches[0].screenX;
+            const diffY = Math.abs(startY - e.changedTouches[0].screenY);
+            if (Math.abs(diffX) > 50 && diffY < 100) {
+                if (diffX > 0) this.nextImage();
+                else this.prevImage();
+            }
+        }, { passive: true });
+    }
+
+    toggleThumbnails() {
+        if (this.thumbnailsPanel) {
+            this.thumbnailsPanel.classList.toggle('active');
+            if (this.thumbnailsToggle) {
+                const isActive = this.thumbnailsPanel.classList.contains('active');
+                this.thumbnailsToggle.textContent = isActive ? TRANSLATIONS[this.currentLang]['hide-thumbnails'] : TRANSLATIONS[this.currentLang]['show-thumbnails'];
+            }
+        }
+    }
+
+    hideThumbnails() {
+        if (this.thumbnailsPanel) {
+            this.thumbnailsPanel.classList.remove('active');
+            if (this.thumbnailsToggle) this.thumbnailsToggle.textContent = TRANSLATIONS[this.currentLang]['show-thumbnails'];
+        }
+    }
+
+    generateThumbnails() {
+        if (!this.thumbnailsGrid || !this.currentGallery) return;
+        this.thumbnailsGrid.innerHTML = '';
+        this.currentGallery.images.forEach((img, index) => {
+            const thumb = document.createElement('img');
+            thumb.src = encodeURI(img.src);
+            thumb.alt = \`Thumbnail \${index + 1}\`;
+            if (index === this.currentIndex) thumb.classList.add('active');
+            thumb.addEventListener('click', () => this.showImage(index));
+            this.thumbnailsGrid.appendChild(thumb);
+        });
+    }
+
+    updateActiveThumbnail(index) {
+        if (!this.thumbnailsGrid) return;
+        this.thumbnailsGrid.querySelectorAll('img').forEach((t, i) => t.classList.toggle('active', i === index));
+    }
+
+    updateProjectInfo() {
+        if (!this.projectInfo || !this.currentGallery) return;
+        if (this.currentGallery.projectTitle) {
+            if (this.projectTitle) this.projectTitle.textContent = this.currentGallery.projectTitle;
+            if (this.projectLink) this.projectLink.href = this.currentGallery.projectLink || '#';
+            this.projectInfo.classList.add('visible');
+        } else {
+            this.projectInfo.classList.remove('visible');
+        }
+    }
+
+    playAudio(audioSrc) {
+        this.currentAudio = new Audio(encodeURI(audioSrc));
+        this.currentAudio.play().catch(() => {});
+        this.isPlaying = true;
+        this.currentAudio.addEventListener('ended', () => this.isPlaying = false);
+    }
+
+    stopAudio() {
+        if (this.currentAudio) {
+            this.currentAudio.pause();
+            this.currentAudio = null;
+            this.isPlaying = false;
+        }
+    }
+
+    setLanguage(lang) {
+        if (!TRANSLATIONS[lang]) return;
+        this.currentLang = lang;
+        this.langLinks.forEach(link => link.classList.toggle('active', link.dataset.lang === lang));
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.dataset.i18n;
+            if (TRANSLATIONS[lang][key]) el.textContent = TRANSLATIONS[lang][key];
+        });
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    window.portfolio = new Portfolio();
+});
+`;
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        function copyToClipboard() {
+            const text = document.getElementById('exportPreview').textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('Copié dans le presse-papier !');
+            });
+        }
+
+        function downloadFile() {
+            const text = document.getElementById('exportPreview').textContent;
+            const blob = new Blob([text], { type: 'text/javascript' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'gallery.js';
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('Fichier téléchargé !');
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('active');
+            setTimeout(() => toast.classList.remove('active'), 2000);
+        }
+
+        // Close modal on click outside
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.classList.remove('active');
+            });
+        });
+    </script>
+</body>
+</html>

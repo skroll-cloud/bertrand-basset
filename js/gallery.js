@@ -453,15 +453,9 @@ class Portfolio {
             });
         }
 
-        // Click on gallery
+        // Click on gallery - gauche = prev, droite = next (desktop ET mobile)
         if (this.galleryContainer) {
             this.galleryContainer.addEventListener('click', (e) => {
-                if (this.isMobile) {
-                    // Sur mobile, clic = next
-                    this.nextImage();
-                    return;
-                }
-                
                 const rect = this.galleryContainer.getBoundingClientRect();
                 const x = e.clientX - rect.left;
                 const midpoint = rect.width / 2;
