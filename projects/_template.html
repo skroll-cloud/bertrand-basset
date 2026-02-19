@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projet — Bertrand Basset</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .project-page {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 220px 1fr;
+        }
+        .project-content {
+            padding: 4rem;
+            max-width: 800px;
+            overflow-y: auto;
+            height: 100vh;
+        }
+        .project-header {
+            margin-bottom: 3rem;
+        }
+        .project-header h1 {
+            font-size: 1.5rem;
+            font-weight: 400;
+            margin-bottom: 0.5rem;
+        }
+        .project-meta {
+            font-size: 0.75rem;
+            color: var(--gray);
+            margin-bottom: 2rem;
+        }
+        .project-meta span {
+            margin-right: 1.5rem;
+        }
+        .project-body {
+            font-size: 0.9rem;
+            line-height: 1.8;
+            font-weight: 300;
+        }
+        .project-body p {
+            margin-bottom: 1.5rem;
+        }
+        .project-body h2 {
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 3rem;
+            margin-bottom: 1rem;
+            color: var(--gray);
+        }
+        .project-credits {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--light-gray);
+            font-size: 0.75rem;
+            color: var(--gray);
+        }
+        .project-credits p {
+            margin-bottom: 0.3rem;
+        }
+        .project-press {
+            margin-top: 2rem;
+        }
+        .project-press a {
+            color: var(--gray);
+            text-decoration: none;
+            border-bottom: 1px solid var(--light-gray);
+            transition: all 0.2s ease;
+        }
+        .project-press a:hover {
+            color: var(--black);
+            border-color: var(--black);
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 3rem;
+            font-size: 0.75rem;
+            color: var(--gray);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        .back-link:hover {
+            color: var(--black);
+        }
+        .loading {
+            color: var(--gray);
+            font-style: italic;
+        }
+        @media (max-width: 900px) {
+            .project-page {
+                grid-template-columns: 1fr;
+            }
+            .project-page .sidebar {
+                display: none;
+            }
+            .project-content {
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="project-page">
+        <aside class="sidebar">
+            <header class="sidebar-header">
+                <a href="../index.html" class="sidebar-brand">
+                    <img src="../assets/logo-b.svg" alt="B" style="width: 24px; height: 24px;">
+                    <span class="sidebar-brand-name">Bertrand Basset</span>
+                </a>
+            </header>
+
+            <nav class="main-nav">
+                <div class="nav-item">
+                    <a href="../index.html" class="nav-link">Retour au portfolio</a>
+                </div>
+            </nav>
+
+            <footer class="sidebar-footer">
+                <div class="sidebar-lang">
+                    <a href="#" class="active">FR</a>
+                    <span>/</span>
+                    <a href="#">EN</a>
+                </div>
+            </footer>
+        </aside>
+
+        <main class="project-content">
+            <div id="project-container" class="loading">
+                Chargement...
+            </div>
+        </main>
+    </div>
+
+    <script>
+    // ============================================================
+    // CONFIGURATION - MODIFIER CETTE LIGNE UNIQUEMENT
+    // ============================================================
+    const PROJET_FILE = '../images/[CHEMIN]/[DOSSIER]/projet.txt';
+    // Exemple : '../images/photography/serie-portrait/Ma Serie/projet.txt'
+    // ============================================================
+
+    function parseProjetTxt(text) {
+        const data = { meta: {}, sections: {} };
+        const lines = text.split('\n');
+        let currentSection = null;
+        let currentContent = [];
+
+        for (const line of lines) {
+            const sectionMatch = line.match(/^---(\w+)---$/);
+            if (sectionMatch) {
+                if (currentSection) {
+                    data.sections[currentSection] = currentContent.join('\n').trim();
+                }
+                currentSection = sectionMatch[1].toLowerCase();
+                currentContent = [];
+                continue;
+            }
+            if (currentSection) {
+                currentContent.push(line);
+            } else {
+                const metaMatch = line.match(/^(\w+):\s*(.+)$/);
+                if (metaMatch) {
+                    data.meta[metaMatch[1].toLowerCase()] = metaMatch[2].trim();
+                }
+            }
+        }
+        if (currentSection) {
+            data.sections[currentSection] = currentContent.join('\n').trim();
+        }
+        return data;
+    }
+
+    function textToHtml(text) {
+        if (!text) return '';
+        return text.split('\n\n').filter(p => p.trim()).map(p => `<p>${p.trim()}</p>`).join('\n');
+    }
+
+    function parseCredits(text) {
+        if (!text) return '';
+        return text.split('\n').filter(l => l.trim()).map(line => {
+            const [key, ...v] = line.split(':');
+            return `<p><strong>${key.trim()}:</strong> ${v.join(':').trim()}</p>`;
+        }).join('\n');
+    }
+
+    function parsePresse(text) {
+        if (!text) return '';
+        return text.split('\n').filter(l => l.trim()).map(line => {
+            const [name, url] = line.split(': ');
+            if (url && url.startsWith('http')) {
+                return `<p><a href="${url.trim()}" target="_blank">${name.trim()}</a></p>`;
+            }
+            return `<p>${line}</p>`;
+        }).join('\n');
+    }
+
+    function renderProject(data) {
+        const { meta, sections } = data;
+        document.title = `${meta.titre || 'Projet'} — Bertrand Basset`;
+
+        return `
+            <header class="project-header">
+                <h1>${meta.titre || ''}</h1>
+                <div class="project-meta">
+                    ${meta.date ? `<span>${meta.date}</span>` : ''}
+                    ${meta.lieu ? `<span>${meta.lieu}</span>` : ''}
+                    ${meta.type ? `<span>${meta.type}</span>` : ''}
+                </div>
+            </header>
+            <div class="project-body">
+                ${sections.resume ? textToHtml(sections.resume) : ''}
+                ${sections.intention ? `<h2>Intention artistique</h2>${textToHtml(sections.intention)}` : ''}
+                ${sections.projet ? `<h2>Le projet</h2>${textToHtml(sections.projet)}` : ''}
+                ${sections.credits ? `<div class="project-credits">${parseCredits(sections.credits)}</div>` : ''}
+                ${sections.presse ? `<div class="project-press"><h2>Presse</h2>${parsePresse(sections.presse)}</div>` : ''}
+                <a href="../index.html" class="back-link">← Retour à la galerie</a>
+            </div>
+        `;
+    }
+
+    async function loadProject() {
+        const container = document.getElementById('project-container');
+        try {
+            const response = await fetch(PROJET_FILE);
+            if (!response.ok) throw new Error('Fichier non trouvé');
+            const text = await response.text();
+            const data = parseProjetTxt(text);
+            container.innerHTML = renderProject(data);
+            container.classList.remove('loading');
+        } catch (error) {
+            container.innerHTML = `
+                <p>Erreur de chargement du projet.</p>
+                <p><small>${error.message}</small></p>
+                <a href="../index.html" class="back-link">← Retour</a>
+            `;
+            container.classList.remove('loading');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadProject);
+    </script>
+</body>
+</html>

@@ -1,0 +1,158 @@
+{
+  "accueil": {
+    "title": "Gallery",
+    "category": "home",
+    "images": [
+      {
+        "src": "images/accueil/prise de vue sans titre-1220770Man&Pia.jpg",
+        "caption": ""
+      },
+      {
+        "src": [
+          "images/accueil/prise de vue sans titre-1220771Man&Pia.jpg",
+          "images/accueil/prise de vue sans titre-1220773Man&Pia.jpg"
+        ],
+        "caption": ""
+      },
+      {
+        "src": "images/accueil/L1000872Man&Pia.jpg",
+        "caption": ""
+      },
+      {
+        "src": [
+          "images/accueil/prise de vue sans titre-1220776Man&Pia.jpg",
+          "images/accueil/prise de vue sans titre-1220777Man&Pia.jpg"
+        ],
+        "caption": ""
+      },
+      {
+        "src": "images/accueil/prise de vue sans titre-1010526Man&Pia.jpg",
+        "caption": ""
+      },
+      {
+        "src": "images/accueil/prise de vue sans titre-1220830Man&Pia.jpg",
+        "caption": ""
+      },
+      {
+        "src": [
+          "images/accueil/prise de vue sans titre-1220778Man&Pia.jpg",
+          "images/accueil/prise de vue sans titre-1220779Man&Pia.jpg"
+        ],
+        "caption": ""
+      },
+      {
+        "src": "images/accueil/prise de vue sans titre-1220838Man&Pia.jpg",
+        "caption": ""
+      },
+      {
+        "src": "images/accueil/prise de vue sans titre-1220884Man&Pia.jpg",
+        "caption": ""
+      },
+      {
+        "src": [
+          "images/accueil/prise de vue sans titre-1220780Man&Pia.jpg",
+          "images/accueil/prise de vue sans titre-1220781Man&Pia.jpg"
+        ],
+        "caption": ""
+      },
+      {
+        "src": "images/accueil/prise de vue sans titre-1220952Man&Pia.jpg",
+        "caption": ""
+      },
+      {
+        "src": "images/accueil/Halloween.jpg",
+        "caption": ""
+      }
+    ]
+  },
+  "portrait": {
+    "title": "Portrait",
+    "category": "photography",
+    "images": [
+      {
+        "src": "images/photography/portrait/01.jpg",
+        "caption": ""
+      }
+    ]
+  },
+  "serie-portrait": {
+    "title": "Série Portrait",
+    "category": "photography",
+    "images": [
+      {
+        "src": "images/photography/serie-portrait/01.jpg",
+        "caption": ""
+      }
+    ]
+  },
+  "immersion": {
+    "title": "Immersion",
+    "category": "photography",
+    "images": [
+      {
+        "src": "images/photography/immersion/01.jpg",
+        "caption": ""
+      }
+    ]
+  },
+  "cinema": {
+    "title": "Cinema",
+    "category": "filmmaker",
+    "images": [
+      {
+        "src": "images/filmmaker/cinema/01.jpg",
+        "caption": ""
+      }
+    ]
+  },
+  "filmmaker-portrait": {
+    "title": "Portrait",
+    "category": "filmmaker",
+    "images": [
+      {
+        "src": "images/filmmaker/portrait/01.jpg",
+        "caption": ""
+      }
+    ]
+  },
+  "post-producer": {
+    "title": "Post Producer",
+    "category": "filmmaker",
+    "images": [
+      {
+        "src": "images/filmmaker/post-producer/01.jpg",
+        "caption": ""
+      }
+    ]
+  },
+  "portrait-session": {
+    "title": "Portrait Session",
+    "category": "services",
+    "images": [
+      {
+        "src": "images/services/portrait-session/01.jpg",
+        "caption": ""
+      }
+    ]
+  },
+  "work-immersion": {
+    "title": "Work Immersion",
+    "category": "services",
+    "images": [
+      {
+        "src": "images/services/work-immersion/01.jpg",
+        "caption": ""
+      }
+    ]
+  },
+  "empreinte": {
+    "title": "Empreinte",
+    "category": "services",
+    "images": [
+      {
+        "src": "images/services/empreinte/01.jpg",
+        "caption": ""
+      }
+    ]
+  }
+}

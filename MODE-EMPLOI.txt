@@ -1,0 +1,163 @@
+MODE D'EMPLOI - SITE BERTRAND BASSET
+=====================================
+
+1. LANCER LE SITE EN LOCAL
+--------------------------
+Ouvrir Terminal, puis :
+
+cd /Users/mbpbb/bertrand-basset
+python3 -m http.server 8000
+
+Ouvrir dans le navigateur : http://localhost:8000
+
+
+2. STRUCTURE DES FICHIERS
+-------------------------
+bertrand-basset/
+├── index.html              Page principale
+├── css/style.css           Styles
+├── js/gallery.js           Données galeries + logique
+├── projects/               Pages "en savoir plus"
+│   ├── le-gem.html
+│   └── _template.html      À dupliquer
+└── images/
+    └── photography/
+        └── serie-portrait/
+            └── Le GEM s'endimanche/
+                ├── projet.txt      Contenu de la page projet
+                ├── gem-01.jpg
+                ├── gem-01.mp3
+                └── ...
+
+
+3. MODIFIER LE CONTENU D'UNE SÉRIE
+----------------------------------
+Fichier : images/.../[serie]/projet.txt
+
+Format :
+```
+TITRE: Nom de la série
+DATE: 2024
+LIEU: Ville
+TYPE: Portraits / Reportage
+
+---RESUME---
+Texte introduction
+
+---INTENTION---
+Démarche artistique
+
+---PROJET---
+Contexte, expos
+
+---CREDITS---
+Photographies: Bertrand Basset
+Lieu: Nom du lieu
+
+---PRESSE---
+Nom journal: https://url...
+```
+
+Sauvegarder → Rafraîchir la page
+
+
+4. AJOUTER UNE PHOTO
+--------------------
+1. Placer l'image dans le dossier : images/.../[serie]/nom-XX.jpg
+2. Ouvrir js/gallery.js
+3. Trouver la galerie concernée
+4. Ajouter : { "src": "images/.../nom-XX.jpg" }
+5. Sauvegarder → Rafraîchir
+
+
+5. AJOUTER UN AUDIO
+-------------------
+1. Placer le MP3 dans le dossier (même nom que l'image)
+2. Dans gallery.js, ajouter "audio" :
+   { "src": "images/.../nom-XX.jpg", "audio": "images/.../nom-XX.mp3" }
+
+
+6. CHANGER L'ORDRE DES IMAGES
+-----------------------------
+Dans gallery.js, réorganiser l'ordre des lignes dans le tableau "images"
+
+
+7. CRÉER UNE NOUVELLE SÉRIE
+---------------------------
+1. Créer le dossier : images/photography/[categorie]/[nom-serie]/
+2. Y placer les images
+3. Créer projet.txt dans ce dossier
+4. Dupliquer projects/_template.html → projects/[nom-serie].html
+5. Dans le nouveau HTML, modifier la ligne :
+   const PROJET_FILE = '../images/.../[nom-serie]/projet.txt';
+6. Dans gallery.js, ajouter la galerie :
+
+"ma-serie": {
+    "title": "Ma Série",
+    "category": "photography",
+    "projectTitle": "Ma Série",
+    "projectLink": "projects/ma-serie.html",
+    "images": [
+        { "src": "images/.../photo-01.jpg" },
+        { "src": "images/.../photo-02.jpg", "audio": "images/.../photo-02.mp3" }
+    ]
+}
+
+7. Dans index.html, ajouter le lien menu si nécessaire
+
+
+8. AJOUTER UN SOUS-MENU
+-----------------------
+Dans index.html, structure :
+
+<a href="#" class="dropdown-link has-submenu" data-expandable>Nom parent</a>
+<div class="nav-sub-dropdown">
+    <a href="#" class="dropdown-sublink" data-gallery="id-galerie">Nom série</a>
+</div>
+
+
+9. MODIFIER LA TAILLE DES IMAGES
+--------------------------------
+Dans css/style.css :
+
+Image simple :
+.gallery-container.single .gallery-image {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+Paire d'images :
+.gallery-container.pair .gallery-image {
+    max-width: 45%;
+    max-height: 92%;
+}
+
+
+10. TRADUCTIONS FR/EN
+---------------------
+Dans js/gallery.js, modifier l'objet TRANSLATIONS :
+
+TRANSLATIONS = {
+    en: {
+        "photography": "Photography",
+        "about": "About",
+        ...
+    },
+    fr: {
+        "photography": "Photographie",
+        "about": "À propos",
+        ...
+    }
+}
+
+Dans le HTML, ajouter data-i18n="clé" aux éléments à traduire :
+<a data-i18n="about">About</a>
+
+
+11. FICHIERS À MODIFIER
+-----------------------
+Contenu texte    → images/.../projet.txt
+Données galeries → js/gallery.js
+Menu navigation  → index.html
+Styles visuels   → css/style.css
+Traductions      → js/gallery.js (objet TRANSLATIONS)
