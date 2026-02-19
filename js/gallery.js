@@ -1,9 +1,184 @@
 /**
- * Bertrand Basset Portfolio - V6
- * Gallery Navigation System with Mobile Support
+ * Bertrand Basset Portfolio - V7
+ * Gallery Navigation System
+ * Auto-detection des images dans les dossiers
  */
 
-// Traductions
+// ================================
+// CONFIGURATION DES GALERIES
+// ================================
+// Pour changer l'ordre : renomme les fichiers avec des numéros (01.jpg, 02.jpg...)
+// Les images sont triées par ordre alphabétique
+
+const GALLERIES_CONFIG = {
+    "accueil": {
+        title: "Gallery",
+        path: "images/accueil",
+        images: [
+            "26062022- ORIANE-RESIDENCE-PARVIS PISCINE-3Man&Pia.jpg",
+            "L1000872Man&Pia.jpg",
+            "prise de vue sans titre-1000099Man&Pia.jpg",
+            "prise de vue sans titre-1000100Man&Pia.jpg",
+            "prise de vue sans titre-1010526Man&Pia.jpg",
+            "prise de vue sans titre-1220770Man&Pia.jpg",
+            "prise de vue sans titre-1220771Man&Pia.jpg",
+            "prise de vue sans titre-1220773Man&Pia.jpg",
+            "prise de vue sans titre-1220776Man&Pia.jpg",
+            "prise de vue sans titre-1220777Man&Pia.jpg",
+            "prise de vue sans titre-1220778Man&Pia.jpg",
+            "prise de vue sans titre-1220779Man&Pia.jpg",
+            "prise de vue sans titre-1220780Man&Pia.jpg",
+            "prise de vue sans titre-1220781Man&Pia.jpg",
+            "prise de vue sans titre-1220782Man&Pia.jpg",
+            "prise de vue sans titre-1220784Man&Pia.jpg",
+            "prise de vue sans titre-1220830Man&Pia.jpg",
+            "prise de vue sans titre-1220838Man&Pia.jpg",
+            "prise de vue sans titre-1220884Man&Pia.jpg",
+            "prise de vue sans titre-1220952Man&Pia.jpg",
+            "prise de vue sans titre-1220958Man&Pia.jpg",
+            "prise de vue sans titre-3610BB@SS.jpg",
+            "prise de vue sans titre-3616BB@SS.jpg",
+            "prise de vue sans titre-3629BB@SS.jpg",
+            "prise de vue sans titre-3650BB@SS.jpg",
+            "prise de vue sans titre-3653BB@SS.jpg",
+            "prise de vue sans titre-5583BB@SS.jpg"
+        ]
+    },
+    "portrait": {
+        title: "Portrait",
+        path: "images/photography/portrait",
+        images: [
+            "02.jpg",
+            "AngeMarine01@bertrandbasset 1.jpg",
+            "AngeMarine13@bertrandbasset 13.jpg",
+            "AngeMarine18@bertrandbasset 18.jpg",
+            "AngeMarine20@bertrandbasset 20.jpg",
+            "AngeMarine22@bertrandbasset 22.jpg",
+            "Imane02@bertrandbasset 2.jpg",
+            "JF.jpg",
+            "L1020630.jpg",
+            "L1020631.jpg",
+            "L1020635.jpg",
+            "L1020643.jpg",
+            "Mathilde&Louise04@bertrandbasset 4.jpg",
+            "Stephanie02@bertrandbasset 2.jpg",
+            "Stephanie05@bertrandbasset 5.jpg",
+            "Stephanie06@bertrandbasset 6.jpg",
+            "Timoté01@bertrandbasset 1.jpg",
+            "prise_de_vue_sans_titre-1000589-ModifierMan_Pia.jpg",
+            "prise_de_vue_sans_titre-2-385Man_Pia.jpg",
+            "prise_de_vue_sans_titre-7208Man_Pia.jpg",
+            "prise_de_vue_sans_titre-8640Man_Pia.jpg"
+        ]
+    },
+    "gem": {
+        title: "Le GEM s'endimanche",
+        path: "images/photography/serie-portrait/gem",
+        projectTitle: "Le GEM s'endimanche",
+        projectLink: "projects/le-gem.html",
+        images: [
+            "ALain.jpg",
+            "Beatrice.jpg",
+            "Bernard.jpg",
+            "Bruno.jpg",
+            "GUY.jpg",
+            "Helene.jpg",
+            "Jean-Pierre.jpg",
+            "JeanFrancois.jpg",
+            "Laurence.jpg",
+            "Patricia.jpg",
+            "Theo.jpg",
+            "VALERIE .jpg",
+            "Veronique.jpg"
+        ]
+    },
+    "burning-man": {
+        title: "Burning Man",
+        path: "images/photography/immersion/Burning Man",
+        images: [
+            "prise de vue sans titre-1890BB@SS.jpg",
+            "prise de vue sans titre-2453BB@SS.jpg",
+            "prise de vue sans titre-2510BB@SS.jpg",
+            "prise de vue sans titre-2663BB@SS.jpg",
+            "prise de vue sans titre-2850BB@SS.jpg",
+            "prise de vue sans titre-2884-ModifierBB@SS.jpg",
+            "prise de vue sans titre-2980BB@SS.jpg",
+            "prise de vue sans titre-3187BB@SS.jpg",
+            "prise de vue sans titre-3229BB@SS.jpg",
+            "prise de vue sans titre-3421BB@SS.jpg",
+            "prise de vue sans titre-3423BB@SS.jpg",
+            "prise de vue sans titre-3578BB@SS.jpg",
+            "prise de vue sans titre-3593BB@SS.jpg",
+            "prise de vue sans titre-3600BB@SS.jpg",
+            "prise de vue sans titre-3610BB@SS.jpg",
+            "prise de vue sans titre-3614BB@SS.jpg",
+            "prise de vue sans titre-3616BB@SS.jpg",
+            "prise de vue sans titre-3629BB@SS.jpg",
+            "prise de vue sans titre-3637-ModifierBB@SS.jpg",
+            "prise de vue sans titre-3650BB@SS.jpg",
+            "prise de vue sans titre-3653BB@SS.jpg",
+            "prise de vue sans titre-4480BB@SS.jpg",
+            "prise de vue sans titre-4531BB@SS.jpg",
+            "prise de vue sans titre-4539BB@SS.jpg",
+            "prise de vue sans titre-5378BB@SS.jpg",
+            "prise de vue sans titre-5380BB@SS.jpg",
+            "prise de vue sans titre-5543BB@SS.jpg",
+            "prise de vue sans titre-5583BB@SS.jpg",
+            "prise de vue sans titre-5606BB@SS.jpg",
+            "prise de vue sans titre-5986BB@SS.jpg",
+            "prise de vue sans titre-6273BB@SS.jpg",
+            "prise de vue sans titre-6280BB@SS.jpg",
+            "prise de vue sans titre-6290BB@SS.jpg",
+            "prise de vue sans titre-6292BB@SS.jpg",
+            "prise de vue sans titre-6294BB@SS.jpg"
+        ]
+    },
+    "cinema": {
+        title: "Cinema",
+        path: "images/filmmaker/cinema",
+        images: [
+            "1.jpg",
+            "2.jpg",
+            "3.jpg",
+            "4.jpg",
+            "5.jpg",
+            "6.jpg",
+            "7.jpg",
+            "8.jpg",
+            "9.jpg"
+        ]
+    },
+    "television": {
+        title: "Television",
+        path: "images/filmmaker/Television",
+        images: [
+            "01.jpg",
+            "02.jpg",
+            "03.jpg",
+            "04.jpg",
+            "05.jpg",
+            "06.jpg",
+            "07.jpg",
+            "08.jpg",
+            "09.jpg",
+            "10.jpg"
+        ]
+    },
+    "carre-das": {
+        title: "Carré d'As",
+        path: "images/photography/serie-portrait/Carré D'as",
+        images: []
+    },
+    "st-melar": {
+        title: "St Mélar",
+        path: "images/photography/immersion/St Mélar",
+        images: []
+    }
+};
+
+// ================================
+// TRANSLATIONS
+// ================================
 const TRANSLATIONS = {
     en: {
         "photography": "Photography",
@@ -12,10 +187,12 @@ const TRANSLATIONS = {
         "immersion": "Immersion",
         "filmmaker": "Filmmaker",
         "cinema": "Cinema",
-        "post-producer": "Post-producer",
+        "television": "Television",
+        "studio": "Studio",
         "portrait-session": "Portrait Session",
         "work-immersion": "Work Immersion",
         "about": "About",
+        "contact": "Contact",
         "learn-more": "learn more",
         "listen": "listen",
         "pause": "pause",
@@ -31,10 +208,12 @@ const TRANSLATIONS = {
         "immersion": "Immersion",
         "filmmaker": "Réalisateur",
         "cinema": "Cinéma",
-        "post-producer": "Post-production",
+        "television": "Télévision",
+        "studio": "Studio",
         "portrait-session": "Séance Portrait",
         "work-immersion": "Immersion Travail",
         "about": "À propos",
+        "contact": "Contact",
         "learn-more": "en savoir plus",
         "listen": "écouter",
         "pause": "pause",
@@ -45,116 +224,39 @@ const TRANSLATIONS = {
     }
 };
 
-// Données des galeries
-const GALLERIES_DATA = {
-  "accueil": {
-    "title": "Gallery",
-    "category": "home",
-    "images": [
-      { "src": "images/accueil/accueil-01.jpg", "caption": "" },
-      { "src": ["images/accueil/accueil-02A.jpg", "images/accueil/accueil-02B.jpg"], "caption": "" },
-      { "src": "images/accueil/accueil-03.jpg", "caption": "" },
-      { "src": ["images/accueil/accueil-04A.jpg", "images/accueil/accueil-04B.jpg"], "caption": "" },
-      { "src": "images/accueil/accueil-05.jpg", "caption": "" },
-      { "src": "images/accueil/accueil-06.jpg", "caption": "" },
-      { "src": ["images/accueil/accueil-07A.jpg", "images/accueil/accueil-07B.jpg"], "caption": "" },
-      { "src": "images/accueil/accueil-08.jpg", "caption": "" },
-      { "src": "images/accueil/accueil-09.jpg", "caption": "" },
-      { "src": ["images/accueil/accueil-10A.jpg", "images/accueil/accueil-10B.jpg"], "caption": "" },
-      { "src": "images/accueil/accueil-11.jpg", "caption": "" },
-      { "src": "images/accueil/accueil-12.jpg", "caption": "" }
-    ]
-  },
-  "portrait": {
-    "title": "Portrait",
-    "category": "photography",
-    "images": [
-      { "src": "images/photography/portrait/portrait-01.jpg", "caption": "" },
-      { "src": "images/photography/portrait/portrait-02.jpg", "caption": "" },
-      { "src": "images/photography/portrait/portrait-03.jpg", "caption": "" },
-      { "src": "images/photography/portrait/portrait-04.jpg", "caption": "" },
-      { "src": "images/photography/portrait/portrait-05.jpg", "caption": "" },
-      { "src": "images/photography/portrait/portrait-06.jpg", "caption": "" },
-      { "src": "images/photography/portrait/portrait-07.jpg", "caption": "" },
-      { "src": "images/photography/portrait/portrait-08.jpg", "caption": "" },
-      { "src": "images/photography/portrait/portrait-09.jpg", "caption": "" },
-      { "src": "images/photography/portrait/portrait-10.jpg", "caption": "" }
-    ]
-  },
-  "le-gem": {
-    "title": "Le GEM s'endimanche",
-    "category": "photography",
-    "projectTitle": "Le GEM s'endimanche",
-    "projectLink": "projects/le-gem.html",
-    "images": [
-      { "src": "images/photography/serie-portrait/gem/gem-01.jpg", "audio": "images/photography/serie-portrait/gem/gem-01.mp3", "caption": "" },
-      { "src": "images/photography/serie-portrait/gem/gem-02.jpg", "audio": "images/photography/serie-portrait/gem/gem-02.mp3", "caption": "" },
-      { "src": "images/photography/serie-portrait/gem/gem-03.jpg", "audio": "images/photography/serie-portrait/gem/gem-03.mp3", "caption": "" },
-      { "src": "images/photography/serie-portrait/gem/gem-04.jpg", "audio": "images/photography/serie-portrait/gem/gem-04.mp3", "caption": "" },
-      { "src": "images/photography/serie-portrait/gem/gem-05.jpg", "audio": "images/photography/serie-portrait/gem/gem-05.mp3", "caption": "" },
-      { "src": "images/photography/serie-portrait/gem/gem-06.jpg", "audio": "images/photography/serie-portrait/gem/gem-06.mp3", "caption": "" }
-    ]
-  },
-  "immersion": {
-    "title": "Immersion",
-    "category": "photography",
-    "images": [
-      { "src": "images/photography/immersion/immersion-01.jpg", "caption": "" },
-      { "src": "images/photography/immersion/immersion-02.jpg", "caption": "" },
-      { "src": "images/photography/immersion/immersion-03.jpg", "caption": "" },
-      { "src": "images/photography/immersion/immersion-04.jpg", "caption": "" },
-      { "src": "images/photography/immersion/immersion-05.jpg", "caption": "" }
-    ]
-  },
-  "cinema": {
-    "title": "Cinema",
-    "category": "filmmaker",
-    "images": [
-      { "src": "images/filmmaker/cinema/cinema-01.jpg", "caption": "" },
-      { "src": "images/filmmaker/cinema/cinema-02.jpg", "caption": "" },
-      { "src": "images/filmmaker/cinema/cinema-03.jpg", "caption": "" }
-    ]
-  },
-  "filmmaker-portrait": {
-    "title": "Portrait",
-    "category": "filmmaker",
-    "images": []
-  },
-  "post-producer": {
-    "title": "Post Producer",
-    "category": "filmmaker",
-    "images": []
-  },
-  "portrait-session": {
-    "title": "Portrait Session",
-    "category": "studio",
-    "images": []
-  },
-  "work-immersion": {
-    "title": "Work Immersion",
-    "category": "studio",
-    "images": []
-  },
-  "empreinte": {
-    "title": "Empreinte",
-    "category": "studio",
-    "images": []
-  }
-};
-
+// ================================
+// PORTFOLIO CLASS
+// ================================
 class Portfolio {
     constructor() {
-        this.galleries = GALLERIES_DATA;
+        this.galleries = this.buildGalleries();
         this.currentGallery = null;
         this.currentIndex = 0;
         this.isTransitioning = false;
         this.cursorDirection = 'next';
         this.currentAudio = null;
         this.isPlaying = false;
-        this.currentLang = 'en';
-        this.isMobile = window.innerWidth <= 900;
+        this.currentLang = 'fr';
+        this.isMobile = window.innerWidth <= 768;
 
         this.init();
+    }
+
+    buildGalleries() {
+        const galleries = {};
+        for (const [id, config] of Object.entries(GALLERIES_CONFIG)) {
+            galleries[id] = {
+                title: config.title,
+                category: config.category || '',
+                projectTitle: config.projectTitle || null,
+                projectLink: config.projectLink || null,
+                images: config.images.map(img => ({
+                    src: `${config.path}/${img}`,
+                    caption: config.captions ? config.captions[img] || '' : ''
+                }))
+            };
+        }
+        return galleries;
     }
 
     init() {
@@ -162,27 +264,31 @@ class Portfolio {
         this.createCustomCursor();
         this.bindEvents();
         this.openGallery('accueil');
-        
-        // Check for mobile on resize
-        window.addEventListener('resize', () => {
-            this.isMobile = window.innerWidth <= 900;
-        });
+        this.handleResize();
     }
 
+    // ================================
+    // CACHE DOM ELEMENTS
+    // ================================
     cacheElements() {
         // Landing
         this.landing = document.getElementById('landing');
         this.site = document.getElementById('site');
         this.enterBtn = document.getElementById('enterBtn');
 
-        // Gallery elements
-        this.galleryContainer = document.querySelector('.gallery-container');
+        // Mobile menu
+        this.menuToggle = document.getElementById('menuToggle');
+        this.mainNav = document.getElementById('mainNav');
+
+        // Gallery
+        this.galleryContainer = document.getElementById('galleryContainer');
         this.prevBtn = document.getElementById('prevBtn');
         this.nextBtn = document.getElementById('nextBtn');
-        this.thumbnailsToggle = document.querySelector('.show-thumbnails');
-        this.thumbnailsPanel = document.querySelector('.thumbnails-panel');
-        this.thumbnailsGrid = document.querySelector('.thumbnails-grid');
-        this.galleryCounter = document.querySelector('.sidebar-footer .gallery-counter');
+        this.thumbnailsToggle = document.getElementById('thumbnailsToggle');
+        this.thumbnailsPanel = document.getElementById('thumbnailsPanel');
+        this.thumbnailsGrid = document.getElementById('thumbnailsGrid');
+        this.thumbnailsClose = document.getElementById('thumbnailsClose');
+        this.galleryCounter = document.querySelector('.gallery-counter');
         this.imageCaption = document.querySelector('.image-caption');
 
         // Navigation
@@ -196,44 +302,39 @@ class Portfolio {
         this.projectTitle = document.querySelector('.project-title');
         this.projectLink = document.querySelector('.project-link');
 
-        // Audio controls
+        // Audio
         this.audioControls = document.querySelector('.audio-controls');
         this.audioBtn = document.getElementById('audioBtn');
         this.audioIcon = document.querySelector('.audio-icon');
         this.audioLabel = document.querySelector('.audio-label');
         this.autoplayToggle = document.getElementById('autoplayToggle');
 
-        // Home links
+        // Other
         this.homeLink = document.getElementById('homeLink');
-        this.mobileBrandLink = document.getElementById('mobileBrandLink');
-
-        // Language links
         this.langLinks = document.querySelectorAll('[data-lang]');
-
-        // Translatable elements
         this.i18nElements = document.querySelectorAll('[data-i18n]');
-        
-        // Mobile elements
-        this.hamburgerBtn = document.getElementById('hamburgerBtn');
-        this.mobileNavOverlay = document.getElementById('mobileNavOverlay');
-        this.mobileCounter = document.getElementById('mobileCounter');
-        this.mobilePrevBtn = document.getElementById('mobilePrevBtn');
-        this.mobileNextBtn = document.getElementById('mobileNextBtn');
+        this.cursor = document.getElementById('customCursor');
     }
 
+    // ================================
+    // CUSTOM CURSOR
+    // ================================
     createCustomCursor() {
-        this.cursor = document.createElement('div');
-        this.cursor.className = 'custom-cursor';
-        this.cursor.innerHTML = `
-            <svg viewBox="0 0 24 24" class="cursor-next">
-                <polyline points="9,6 15,12 9,18"></polyline>
-            </svg>
-        `;
-        document.body.appendChild(this.cursor);
+        if (!this.cursor) {
+            this.cursor = document.createElement('div');
+            this.cursor.className = 'custom-cursor';
+            this.cursor.id = 'customCursor';
+            this.cursor.innerHTML = `
+                <svg viewBox="0 0 24 24">
+                    <polyline points="9,6 15,12 9,18"></polyline>
+                </svg>
+            `;
+            document.body.appendChild(this.cursor);
+        }
     }
 
     updateCursorDirection(direction) {
-        if (this.cursorDirection === direction) return;
+        if (this.cursorDirection === direction || this.isMobile) return;
         this.cursorDirection = direction;
 
         if (direction === 'prev') {
@@ -251,33 +352,45 @@ class Portfolio {
         }
     }
 
+    updateCursor(e) {
+        if (this.isMobile) return;
+        
+        const rect = this.galleryContainer.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const midpoint = rect.width / 2;
+
+        this.cursor.style.left = e.clientX + 'px';
+        this.cursor.style.top = e.clientY + 'px';
+
+        if (x < midpoint) {
+            this.updateCursorDirection('prev');
+        } else {
+            this.updateCursorDirection('next');
+        }
+    }
+
+    // ================================
+    // BIND EVENTS
+    // ================================
     bindEvents() {
         // Enter button
         if (this.enterBtn) {
             this.enterBtn.addEventListener('click', () => this.enterSite());
         }
 
-        // Home links
+        // Home link
         if (this.homeLink) {
             this.homeLink.addEventListener('click', (e) => {
                 e.preventDefault();
                 this.openGallery('accueil');
                 this.clearActiveLinks();
-            });
-        }
-        
-        if (this.mobileBrandLink) {
-            this.mobileBrandLink.addEventListener('click', (e) => {
-                e.preventDefault();
-                this.openGallery('accueil');
-                this.clearActiveLinks();
-                this.closeMobileNav();
+                this.closeMenu();
             });
         }
 
-        // Hamburger menu
-        if (this.hamburgerBtn) {
-            this.hamburgerBtn.addEventListener('click', () => this.toggleMobileNav());
+        // Mobile menu toggle
+        if (this.menuToggle) {
+            this.menuToggle.addEventListener('click', () => this.toggleMenu());
         }
 
         // Expandable nav items
@@ -299,7 +412,7 @@ class Portfolio {
                 if (galleryId) {
                     this.openGallery(galleryId);
                     this.setActiveDropdownLink(link);
-                    this.closeMobileNav();
+                    this.closeMenu();
                 }
             });
         });
@@ -320,12 +433,12 @@ class Portfolio {
                 if (galleryId) {
                     this.openGallery(galleryId);
                     this.setActiveDropdownLink(link);
-                    this.closeMobileNav();
+                    this.closeMenu();
                 }
             });
         });
 
-        // Gallery navigation - Desktop
+        // Gallery navigation
         if (this.prevBtn) {
             this.prevBtn.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -339,27 +452,15 @@ class Portfolio {
                 this.nextImage();
             });
         }
-        
-        // Gallery navigation - Mobile
-        if (this.mobilePrevBtn) {
-            this.mobilePrevBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                this.prevImage();
-            });
-        }
 
-        if (this.mobileNextBtn) {
-            this.mobileNextBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                this.nextImage();
-            });
-        }
-
-        // Click on gallery to navigate
+        // Click on gallery
         if (this.galleryContainer) {
             this.galleryContainer.addEventListener('click', (e) => {
-                // Don't navigate if clicking on mobile (use buttons instead for clarity)
-                if (this.isMobile) return;
+                if (this.isMobile) {
+                    // Sur mobile, clic = next
+                    this.nextImage();
+                    return;
+                }
                 
                 const rect = this.galleryContainer.getBoundingClientRect();
                 const x = e.clientX - rect.left;
@@ -372,16 +473,13 @@ class Portfolio {
                 }
             });
 
-            // Custom cursor - desktop only
+            // Cursor movement (desktop only)
             this.galleryContainer.addEventListener('mousemove', (e) => {
-                if (this.isMobile) return;
-                this.updateCursor(e);
+                if (!this.isMobile) this.updateCursor(e);
             });
 
             this.galleryContainer.addEventListener('mouseenter', () => {
-                if (!this.isMobile) {
-                    this.cursor.classList.add('visible');
-                }
+                if (!this.isMobile) this.cursor.classList.add('visible');
             });
 
             this.galleryContainer.addEventListener('mouseleave', () => {
@@ -389,7 +487,7 @@ class Portfolio {
             });
         }
 
-        // Thumbnails toggle
+        // Thumbnails
         if (this.thumbnailsToggle) {
             this.thumbnailsToggle.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -397,13 +495,19 @@ class Portfolio {
             });
         }
 
-        // Keyboard navigation
+        if (this.thumbnailsClose) {
+            this.thumbnailsClose.addEventListener('click', () => {
+                this.hideThumbnails();
+            });
+        }
+
+        // Keyboard
         document.addEventListener('keydown', (e) => this.handleKeyboard(e));
 
-        // Touch/swipe support
+        // Touch/swipe
         this.initSwipe();
 
-        // Audio button
+        // Audio
         if (this.audioBtn) {
             this.audioBtn.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -411,7 +515,7 @@ class Portfolio {
             });
         }
 
-        // Language switching
+        // Language
         this.langLinks.forEach(link => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -419,38 +523,36 @@ class Portfolio {
                 this.setLanguage(lang);
             });
         });
+
+        // Resize
+        window.addEventListener('resize', () => this.handleResize());
     }
 
-    // Mobile navigation
-    toggleMobileNav() {
-        if (this.hamburgerBtn && this.mobileNavOverlay) {
-            this.hamburgerBtn.classList.toggle('active');
-            this.mobileNavOverlay.classList.toggle('active');
-        }
-    }
-    
-    closeMobileNav() {
-        if (this.hamburgerBtn && this.mobileNavOverlay) {
-            this.hamburgerBtn.classList.remove('active');
-            this.mobileNavOverlay.classList.remove('active');
-        }
+    // ================================
+    // MOBILE MENU
+    // ================================
+    toggleMenu() {
+        this.menuToggle.classList.toggle('open');
+        this.mainNav.classList.toggle('open');
     }
 
-    updateCursor(e) {
-        const rect = this.galleryContainer.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const midpoint = rect.width / 2;
-
-        this.cursor.style.left = e.clientX + 'px';
-        this.cursor.style.top = e.clientY + 'px';
-
-        if (x < midpoint) {
-            this.updateCursorDirection('prev');
-        } else {
-            this.updateCursorDirection('next');
+    closeMenu() {
+        if (this.menuToggle) {
+            this.menuToggle.classList.remove('open');
+            this.mainNav.classList.remove('open');
         }
     }
 
+    handleResize() {
+        this.isMobile = window.innerWidth <= 768;
+        if (!this.isMobile) {
+            this.closeMenu();
+        }
+    }
+
+    // ================================
+    // NAVIGATION
+    // ================================
     enterSite() {
         if (this.landing && this.site) {
             this.landing.classList.add('hidden');
@@ -470,16 +572,19 @@ class Portfolio {
         item.classList.toggle('open', !wasOpen);
     }
 
-    clearActiveLinks() {
-        this.dropdownLinks.forEach(link => link.classList.remove('active'));
-        this.dropdownSublinks.forEach(link => link.classList.remove('active'));
-    }
-
     setActiveDropdownLink(activeLink) {
         this.clearActiveLinks();
         activeLink.classList.add('active');
     }
 
+    clearActiveLinks() {
+        this.dropdownLinks.forEach(link => link.classList.remove('active'));
+        this.dropdownSublinks.forEach(link => link.classList.remove('active'));
+    }
+
+    // ================================
+    // GALLERY
+    // ================================
     openGallery(galleryId) {
         const gallery = this.galleries[galleryId];
         if (!gallery || !gallery.images || gallery.images.length === 0) {
@@ -508,8 +613,8 @@ class Portfolio {
         this.currentIndex = index;
 
         const imageData = images[index];
-        const isPair = Array.isArray(imageData.src);
 
+        // Fade out
         const currentImages = this.galleryContainer.querySelectorAll('.gallery-image');
         currentImages.forEach(img => {
             img.classList.add('transitioning');
@@ -519,25 +624,16 @@ class Portfolio {
         setTimeout(() => {
             this.galleryContainer.innerHTML = '';
             this.galleryContainer.classList.remove('single', 'pair');
-            this.galleryContainer.classList.add(isPair ? 'pair' : 'single');
+            this.galleryContainer.classList.add('single');
 
-            if (isPair) {
-                this.loadImagePair(imageData.src, imageData.caption);
-            } else {
-                const imgSrc = typeof imageData === 'string' ? imageData : imageData.src;
-                const caption = typeof imageData === 'object' ? imageData.caption : '';
-                this.loadSingleImage(imgSrc, caption);
-            }
+            const imgSrc = typeof imageData === 'string' ? imageData : imageData.src;
+            const caption = typeof imageData === 'object' ? imageData.caption : '';
+            this.loadSingleImage(imgSrc, caption);
 
             this.updateCounter();
             this.updateActiveThumbnail(index);
-            this.updateAudioPlayer();
 
         }, 300);
-    }
-
-    encodeImagePath(path) {
-        return path.split('/').map(part => encodeURIComponent(part)).join('/');
     }
 
     loadSingleImage(src, caption) {
@@ -556,41 +652,7 @@ class Portfolio {
         };
 
         this.galleryContainer.appendChild(img);
-        img.src = this.encodeImagePath(src);
-
-        if (this.imageCaption) {
-            this.imageCaption.textContent = caption || '';
-        }
-    }
-
-    loadImagePair(sources, caption) {
-        let loadedCount = 0;
-        const totalImages = sources.length;
-
-        sources.forEach((src, i) => {
-            const img = document.createElement('img');
-            img.className = 'gallery-image';
-            img.alt = `${caption || this.currentGallery.title || ''} - ${i + 1}`;
-
-            img.onload = () => {
-                loadedCount++;
-                img.classList.add('loaded');
-                if (loadedCount === totalImages) {
-                    this.isTransitioning = false;
-                }
-            };
-
-            img.onerror = () => {
-                console.error('Error loading image:', src);
-                loadedCount++;
-                if (loadedCount === totalImages) {
-                    this.isTransitioning = false;
-                }
-            };
-
-            this.galleryContainer.appendChild(img);
-            img.src = this.encodeImagePath(src);
-        });
+        img.src = encodeURI(src);
 
         if (this.imageCaption) {
             this.imageCaption.textContent = caption || '';
@@ -614,20 +676,16 @@ class Portfolio {
     }
 
     updateCounter() {
-        if (this.currentGallery) {
+        if (this.galleryCounter && this.currentGallery) {
             const current = this.currentIndex + 1;
             const total = this.currentGallery.images.length;
-            const text = `${current} / ${total}`;
-            
-            if (this.galleryCounter) {
-                this.galleryCounter.textContent = text;
-            }
-            if (this.mobileCounter) {
-                this.mobileCounter.textContent = text;
-            }
+            this.galleryCounter.textContent = `${current} / ${total}`;
         }
     }
 
+    // ================================
+    // KEYBOARD & SWIPE
+    // ================================
     handleKeyboard(e) {
         if (!this.site || !this.site.classList.contains('active')) return;
 
@@ -642,7 +700,7 @@ class Portfolio {
                 break;
             case 'Escape':
                 this.hideThumbnails();
-                this.closeMobileNav();
+                this.closeMenu();
                 break;
         }
     }
@@ -651,38 +709,39 @@ class Portfolio {
         if (!this.galleryContainer) return;
 
         let touchStartX = 0;
-        let touchEndX = 0;
+        let touchStartY = 0;
 
         this.galleryContainer.addEventListener('touchstart', (e) => {
             touchStartX = e.changedTouches[0].screenX;
-            this.cursor.classList.remove('visible');
+            touchStartY = e.changedTouches[0].screenY;
         }, { passive: true });
 
         this.galleryContainer.addEventListener('touchend', (e) => {
-            touchEndX = e.changedTouches[0].screenX;
-            this.handleSwipe(touchStartX, touchEndX);
+            const touchEndX = e.changedTouches[0].screenX;
+            const touchEndY = e.changedTouches[0].screenY;
+            
+            const diffX = touchStartX - touchEndX;
+            const diffY = Math.abs(touchStartY - touchEndY);
+            
+            // Only handle horizontal swipes
+            if (Math.abs(diffX) > 50 && diffY < 100) {
+                if (diffX > 0) {
+                    this.nextImage();
+                } else {
+                    this.prevImage();
+                }
+            }
         }, { passive: true });
     }
 
-    handleSwipe(startX, endX) {
-        const threshold = 50;
-        const diff = startX - endX;
-
-        if (Math.abs(diff) > threshold) {
-            if (diff > 0) {
-                this.nextImage();
-            } else {
-                this.prevImage();
-            }
-        }
-    }
-
+    // ================================
+    // THUMBNAILS
+    // ================================
     toggleThumbnails() {
         if (this.thumbnailsPanel) {
             this.thumbnailsPanel.classList.toggle('active');
-
+            const isActive = this.thumbnailsPanel.classList.contains('active');
             if (this.thumbnailsToggle) {
-                const isActive = this.thumbnailsPanel.classList.contains('active');
                 this.thumbnailsToggle.textContent = isActive ? this.t('hide-thumbnails') : this.t('show-thumbnails');
             }
         }
@@ -703,15 +762,10 @@ class Portfolio {
         this.thumbnailsGrid.innerHTML = '';
 
         this.currentGallery.images.forEach((imageData, index) => {
-            let imgSrc;
-            if (Array.isArray(imageData.src)) {
-                imgSrc = imageData.src[0];
-            } else {
-                imgSrc = typeof imageData === 'string' ? imageData : imageData.src;
-            }
+            const imgSrc = typeof imageData === 'string' ? imageData : imageData.src;
 
             const thumb = document.createElement('img');
-            thumb.src = this.encodeImagePath(imgSrc);
+            thumb.src = encodeURI(imgSrc);
             thumb.alt = `Thumbnail ${index + 1}`;
             thumb.dataset.index = index;
 
@@ -729,13 +783,15 @@ class Portfolio {
 
     updateActiveThumbnail(index) {
         if (!this.thumbnailsGrid) return;
-
         const thumbs = this.thumbnailsGrid.querySelectorAll('img');
         thumbs.forEach((thumb, i) => {
             thumb.classList.toggle('active', i === index);
         });
     }
 
+    // ================================
+    // PROJECT INFO
+    // ================================
     updateProjectInfo() {
         if (!this.projectInfo || !this.currentGallery) return;
 
@@ -748,68 +804,24 @@ class Portfolio {
         }
     }
 
-    updateAudioPlayer() {
-        if (!this.audioControls || !this.currentGallery) return;
-
-        const images = this.currentGallery.images;
-        const imageData = images[this.currentIndex];
-        const hasAudio = imageData && imageData.audio;
-
-        if (hasAudio) {
-            this.audioControls.classList.add('visible');
-            if (this.autoplayToggle && this.autoplayToggle.checked) {
-                this.playAudio(imageData.audio);
-            }
-        } else {
-            this.audioControls.classList.remove('visible');
-        }
-    }
-
-    playAudio(audioSrc) {
-        this.currentAudio = new Audio(this.encodeImagePath(audioSrc));
-        this.currentAudio.play().catch(e => {
-            console.log('Autoplay blocked, waiting for user interaction');
-        });
-        this.isPlaying = true;
-
-        if (this.audioIcon) this.audioIcon.innerHTML = '&#9724;';
-        if (this.audioLabel) this.audioLabel.textContent = this.t('pause');
-        if (this.audioBtn) this.audioBtn.classList.add('playing');
-
-        this.currentAudio.addEventListener('ended', () => {
-            this.isPlaying = false;
-            if (this.audioIcon) this.audioIcon.innerHTML = '&#9654;';
-            if (this.audioLabel) this.audioLabel.textContent = this.t('listen');
-            if (this.audioBtn) this.audioBtn.classList.remove('playing');
-        });
-    }
-
+    // ================================
+    // AUDIO (for future use)
+    // ================================
     stopAudio() {
         if (this.currentAudio) {
             this.currentAudio.pause();
             this.currentAudio = null;
             this.isPlaying = false;
-            if (this.audioIcon) this.audioIcon.innerHTML = '&#9654;';
-            if (this.audioLabel) this.audioLabel.textContent = this.t('listen');
-            if (this.audioBtn) this.audioBtn.classList.remove('playing');
         }
     }
 
     toggleAudio() {
-        if (!this.currentGallery) return;
-
-        const images = this.currentGallery.images;
-        const imageData = images[this.currentIndex];
-
-        if (!imageData || !imageData.audio) return;
-
-        if (this.isPlaying && this.currentAudio) {
-            this.stopAudio();
-        } else {
-            this.playAudio(imageData.audio);
-        }
+        // Placeholder for audio functionality
     }
 
+    // ================================
+    // LANGUAGE
+    // ================================
     setLanguage(lang) {
         if (!TRANSLATIONS[lang]) return;
 
@@ -832,7 +844,9 @@ class Portfolio {
     }
 }
 
-// Initialize
+// ================================
+// INITIALIZE
+// ================================
 document.addEventListener('DOMContentLoaded', () => {
     window.portfolio = new Portfolio();
 });

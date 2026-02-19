@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Bertrand Basset — Photographer & Filmmaker</title>
+    <title>Bertrand Basset — Photographe & Réalisateur</title>
     
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="assets/logo-b.svg">
@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="css/style.css">
     
     <!-- Open Graph -->
-    <meta property="og:title" content="Bertrand Basset — Photographer & Filmmaker">
+    <meta property="og:title" content="Bertrand Basset — Photographe & Réalisateur">
     <meta property="og:description" content="Portrait — Immersion — Mémoire. Photographe et réalisateur basé en Bretagne.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://bertrandbasset.com">
@@ -30,9 +30,9 @@
         </div>
         <div class="landing-content">
             <div class="lang-toggle">
-                <a href="#" data-lang="fr">FR</a>
+                <a href="#" data-lang="fr" class="active">FR</a>
                 <span>/</span>
-                <a href="#" data-lang="en" class="active">EN</a>
+                <a href="#" data-lang="en">EN</a>
             </div>
 
             <div class="brand-wrapper">
@@ -42,196 +42,118 @@
                     </div>
                     <div class="brand-text">
                         <span class="brand-name">Bertrand Basset</span>
-                        <span class="brand-subtitle">Photographer & Filmmaker</span>
+                        <span class="brand-subtitle">Photographe & Réalisateur</span>
                     </div>
                 </div>
-                <button class="enter-btn" id="enterBtn">Enter</button>
+                <button class="enter-btn" id="enterBtn">Entrer</button>
             </div>
         </div>
     </div>
 
     <!-- MAIN SITE -->
     <div class="site" id="site">
-        
-        <!-- MOBILE HEADER -->
-        <header class="mobile-header">
-            <a href="#" class="mobile-brand" id="mobileBrandLink">
-                <img src="assets/logo-b.svg" alt="B">
-                <span class="mobile-brand-name">Bertrand Basset</span>
-            </a>
-            <button class="hamburger" id="hamburgerBtn">
+        <aside class="sidebar">
+            <header class="sidebar-header">
+                <a href="#" class="sidebar-brand" id="homeLink">
+                    <img src="assets/logo-b.svg" alt="B" class="sidebar-logo">
+                    <span class="sidebar-brand-name">Bertrand Basset</span>
+                </a>
+                <div class="sidebar-lang">
+                    <a href="#" data-lang="fr" class="active">FR</a>
+                    <span>/</span>
+                    <a href="#" data-lang="en">EN</a>
+                </div>
+            </header>
+
+            <!-- Mobile menu toggle -->
+            <button class="menu-toggle" id="menuToggle" aria-label="Menu">
                 <span></span>
                 <span></span>
                 <span></span>
             </button>
-        </header>
-        
-        <!-- MOBILE NAV OVERLAY -->
-        <div class="mobile-nav-overlay" id="mobileNavOverlay">
-            <nav class="main-nav">
+
+            <nav class="main-nav" id="mainNav">
                 <!-- PHOTOGRAPHY -->
                 <div class="nav-item" data-expandable>
-                    <a href="#" class="nav-link" data-i18n="photography">Photography</a>
+                    <a href="#" class="nav-link" data-i18n="photography">Photographie</a>
                     <div class="nav-dropdown">
                         <a href="#" class="dropdown-link" data-gallery="portrait" data-i18n="portrait">Portrait</a>
-                        <a href="#" class="dropdown-link has-submenu" data-expandable data-i18n="serie-portrait">Serie Portrait</a>
+                        
+                        <a href="#" class="dropdown-link has-submenu" data-expandable data-i18n="serie-portrait">Série Portrait</a>
                         <div class="nav-sub-dropdown">
-                            <a href="#" class="dropdown-sublink" data-gallery="le-gem">Le GEM s'endimanche</a>
+                            <a href="#" class="dropdown-sublink" data-gallery="gem">Le GEM s'endimanche</a>
+                            <a href="#" class="dropdown-sublink" data-gallery="carre-das">Carré d'As</a>
                         </div>
-                        <a href="#" class="dropdown-link" data-gallery="immersion" data-i18n="immersion">Immersion</a>
+                        
+                        <a href="#" class="dropdown-link has-submenu" data-expandable data-i18n="immersion">Immersion</a>
+                        <div class="nav-sub-dropdown">
+                            <a href="#" class="dropdown-sublink" data-gallery="burning-man">Burning Man</a>
+                            <a href="#" class="dropdown-sublink" data-gallery="st-melar">St Mélar</a>
+                        </div>
                     </div>
                 </div>
 
                 <!-- FILMMAKER -->
                 <div class="nav-item" data-expandable>
-                    <a href="#" class="nav-link" data-i18n="filmmaker">Filmmaker</a>
+                    <a href="#" class="nav-link" data-i18n="filmmaker">Réalisateur</a>
                     <div class="nav-dropdown">
-                        <a href="#" class="dropdown-link" data-gallery="cinema" data-i18n="cinema">Cinema</a>
-                        <a href="#" class="dropdown-link" data-gallery="filmmaker-portrait" data-i18n="portrait">Portrait</a>
-                        <a href="#" class="dropdown-link" data-gallery="post-producer" data-i18n="post-producer">Post-producer</a>
-                    </div>
-                </div>
-
-                <!-- STUDIO -->
-                <div class="nav-item" data-expandable>
-                    <a href="#" class="nav-link">Studio</a>
-                    <div class="nav-dropdown">
-                        <a href="#" class="dropdown-link" data-gallery="portrait-session" data-i18n="portrait-session">Portrait Session</a>
-                        <a href="#" class="dropdown-link" data-gallery="work-immersion" data-i18n="work-immersion">Work Immersion</a>
-                        <a href="#" class="dropdown-link" data-gallery="empreinte">Empreinte</a>
+                        <a href="#" class="dropdown-link" data-gallery="cinema" data-i18n="cinema">Cinéma</a>
+                        <a href="#" class="dropdown-link" data-gallery="television" data-i18n="television">Télévision</a>
                     </div>
                 </div>
 
                 <!-- ABOUT -->
                 <div class="nav-item">
-                    <a href="#" class="nav-link" data-page="about" data-i18n="about">About</a>
+                    <a href="#" class="nav-link" data-page="about" data-i18n="about">À propos</a>
                 </div>
 
                 <!-- CONTACT -->
                 <div class="nav-item">
-                    <a href="#" class="nav-link" data-page="contact">Contact</a>
-                </div>
-            </nav>
-            
-            <div class="sidebar-lang">
-                <a href="#" data-lang="fr">FR</a>
-                <span>/</span>
-                <a href="#" data-lang="en" class="active">EN</a>
-            </div>
-        </div>
-
-        <!-- DESKTOP SIDEBAR -->
-        <aside class="sidebar">
-            <header class="sidebar-header">
-                <a href="#" class="sidebar-brand" id="homeLink">
-                    <img src="assets/logo-b.svg" alt="B">
-                    <span class="sidebar-brand-name">Bertrand Basset</span>
-                </a>
-                <div class="sidebar-lang">
-                    <a href="#" data-lang="fr">FR</a>
-                    <span>/</span>
-                    <a href="#" data-lang="en" class="active">EN</a>
-                </div>
-            </header>
-
-            <nav class="main-nav">
-                <!-- PHOTOGRAPHY -->
-                <div class="nav-item" data-expandable>
-                    <a href="#" class="nav-link" data-i18n="photography">Photography</a>
-                    <div class="nav-dropdown">
-                        <a href="#" class="dropdown-link" data-gallery="portrait" data-i18n="portrait">Portrait</a>
-                        <a href="#" class="dropdown-link has-submenu" data-expandable data-i18n="serie-portrait">Serie Portrait</a>
-                        <div class="nav-sub-dropdown">
-                            <a href="#" class="dropdown-sublink" data-gallery="le-gem">Le GEM s'endimanche</a>
-                        </div>
-                        <a href="#" class="dropdown-link" data-gallery="immersion" data-i18n="immersion">Immersion</a>
-                    </div>
-                </div>
-
-                <!-- FILMMAKER -->
-                <div class="nav-item" data-expandable>
-                    <a href="#" class="nav-link" data-i18n="filmmaker">Filmmaker</a>
-                    <div class="nav-dropdown">
-                        <a href="#" class="dropdown-link" data-gallery="cinema" data-i18n="cinema">Cinema</a>
-                        <a href="#" class="dropdown-link" data-gallery="filmmaker-portrait" data-i18n="portrait">Portrait</a>
-                        <a href="#" class="dropdown-link" data-gallery="post-producer" data-i18n="post-producer">Post-producer</a>
-                    </div>
-                </div>
-
-                <!-- STUDIO -->
-                <div class="nav-item" data-expandable>
-                    <a href="#" class="nav-link">Studio</a>
-                    <div class="nav-dropdown">
-                        <a href="#" class="dropdown-link" data-gallery="portrait-session" data-i18n="portrait-session">Portrait Session</a>
-                        <a href="#" class="dropdown-link" data-gallery="work-immersion" data-i18n="work-immersion">Work Immersion</a>
-                        <a href="#" class="dropdown-link" data-gallery="empreinte">Empreinte</a>
-                    </div>
-                </div>
-
-                <!-- ABOUT -->
-                <div class="nav-item">
-                    <a href="#" class="nav-link" data-page="about" data-i18n="about">About</a>
-                </div>
-
-                <!-- CONTACT -->
-                <div class="nav-item">
-                    <a href="#" class="nav-link" data-page="contact">Contact</a>
+                    <a href="#" class="nav-link" data-page="contact" data-i18n="contact">Contact</a>
                 </div>
             </nav>
 
-            <footer class="sidebar-footer">
+            <footer class="sidebar-footer" id="sidebarFooter">
                 <!-- Project info -->
                 <div class="project-info">
                     <span class="project-title"></span>
                     <a href="#" class="project-link" data-i18n="learn-more">en savoir plus</a>
                 </div>
 
-                <!-- Audio controls -->
-                <div class="audio-controls">
-                    <button class="audio-btn" id="audioBtn">
-                        <span class="audio-icon">&#9654;</span>
-                        <span class="audio-label" data-i18n="listen">écouter</span>
-                    </button>
-                    <label class="autoplay-toggle">
-                        <input type="checkbox" id="autoplayToggle" checked>
-                        <span>auto</span>
-                    </label>
-                </div>
-
                 <!-- Image caption -->
                 <div class="image-caption"></div>
 
                 <!-- Navigation -->
-                <div class="gallery-counter"></div>
-                <div class="gallery-nav">
-                    <a href="#" id="prevBtn" data-i18n="prev">prev</a>
-                    <span>/</span>
-                    <a href="#" id="nextBtn" data-i18n="next">next</a>
+                <div class="gallery-footer-nav">
+                    <div class="gallery-counter"></div>
+                    <div class="gallery-nav">
+                        <a href="#" id="prevBtn" data-i18n="prev">préc</a>
+                        <span>/</span>
+                        <a href="#" id="nextBtn" data-i18n="next">suiv</a>
+                    </div>
+                    <a href="#" class="show-thumbnails" id="thumbnailsToggle" data-i18n="show-thumbnails">voir vignettes</a>
                 </div>
-                <a href="#" class="show-thumbnails" data-i18n="show-thumbnails">show thumbnails</a>
             </footer>
         </aside>
 
-        <!-- MAIN GALLERY -->
         <main class="site-main">
-            <div class="gallery-container">
+            <div class="gallery-container" id="galleryContainer">
                 <img src="images/landing/landing-01.jpg" alt="Portfolio" class="gallery-image">
             </div>
         </main>
-        
-        <!-- MOBILE GALLERY CONTROLS -->
-        <div class="mobile-gallery-controls">
-            <span class="gallery-counter" id="mobileCounter"></span>
-            <div class="gallery-nav">
-                <a href="#" id="mobilePrevBtn">←</a>
-                <a href="#" id="mobileNextBtn">→</a>
-            </div>
-        </div>
 
         <!-- Thumbnails Panel -->
-        <div class="thumbnails-panel">
-            <div class="thumbnails-grid"></div>
+        <div class="thumbnails-panel" id="thumbnailsPanel">
+            <button class="thumbnails-close" id="thumbnailsClose">&times;</button>
+            <div class="thumbnails-grid" id="thumbnailsGrid"></div>
         </div>
+    </div>
+
+    <!-- Custom cursor -->
+    <div class="custom-cursor" id="customCursor">
+        <svg viewBox="0 0 24 24">
+            <polyline points="9,6 15,12 9,18"></polyline>
+        </svg>
     </div>
 
     <script src="js/gallery.js"></script>
