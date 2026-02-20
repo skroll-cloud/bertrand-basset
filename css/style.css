@@ -1,5 +1,5 @@
 /* ================================== */
-/* BERTRAND BASSET - Portfolio V7     */
+/* BERTRAND BASSET - Portfolio V8     */
 /* Mobile-first responsive            */
 /* ================================== */
 
@@ -399,6 +399,49 @@ body {
     color: var(--black);
 }
 
+/* Audio controls */
+.audio-controls {
+    display: none;
+    margin-bottom: 1rem;
+}
+
+.audio-controls.visible {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.audio-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.8rem;
+    background: var(--black);
+    color: var(--white);
+    border: none;
+    border-radius: 4px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 0.7rem;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.audio-btn:hover {
+    background: var(--gray);
+}
+
+.audio-btn.playing {
+    background: var(--red);
+}
+
+.audio-icon {
+    font-size: 0.8rem;
+}
+
+.audio-label {
+    text-transform: lowercase;
+}
+
 /* Image caption */
 .image-caption {
     font-size: 0.72rem;
@@ -479,12 +522,16 @@ body {
     cursor: none;
 }
 
+.gallery-container.page-mode {
+    cursor: default;
+}
+
 .gallery-image {
     max-height: 100%;
     max-width: 100%;
     object-fit: contain;
     opacity: 0;
-    transition: opacity 0.5s ease;
+    transition: opacity 0.4s ease;
 }
 
 .gallery-image.loaded {
@@ -493,6 +540,97 @@ body {
 
 .gallery-image.transitioning {
     opacity: 0;
+}
+
+/* ================================== */
+/* DESCRIPTION SLIDE                  */
+/* ================================== */
+.description-slide {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.description-slide.loaded {
+    opacity: 1;
+}
+
+.description-content {
+    max-width: 500px;
+    padding: 3rem;
+    background: var(--white);
+    border: 1px solid var(--light-gray);
+    text-align: center;
+}
+
+.description-title {
+    font-size: 1.4rem;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    color: var(--black);
+}
+
+.description-text {
+    font-size: 0.9rem;
+    font-weight: 300;
+    line-height: 1.7;
+    color: var(--gray);
+}
+
+/* ================================== */
+/* VIDEO SLIDE                        */
+/* ================================== */
+.video-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.video-container.loaded {
+    opacity: 1;
+}
+
+.video-container iframe {
+    width: 100%;
+    max-width: 900px;
+    aspect-ratio: 16 / 9;
+    border: none;
+}
+
+/* ================================== */
+/* PAGE CONTENT (About, Contact)      */
+/* ================================== */
+.page-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.page-text {
+    max-width: 500px;
+    font-size: 0.9rem;
+    font-weight: 300;
+    line-height: 1.8;
+    color: var(--black);
+    text-align: center;
+}
+
+.page-text br + br {
+    display: block;
+    content: "";
+    margin-top: 1em;
 }
 
 /* ================================== */
@@ -562,18 +700,39 @@ body {
     padding-bottom: 0.5rem;
 }
 
-.thumbnails-grid img {
+.thumbnail-item {
     height: 60px;
-    width: auto;
+    min-width: 60px;
     opacity: 0.5;
     cursor: pointer;
     transition: opacity 0.2s ease;
     flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.thumbnails-grid img:hover,
-.thumbnails-grid img.active {
+.thumbnail-item:hover,
+.thumbnail-item.active {
     opacity: 1;
+}
+
+.thumbnail-item img {
+    height: 100%;
+    width: auto;
+    object-fit: cover;
+}
+
+.thumbnail-item.thumb-description,
+.thumbnail-item.thumb-video-item {
+    background: var(--light-gray);
+    width: 60px;
+}
+
+.thumb-text,
+.thumb-video {
+    font-size: 1.2rem;
+    color: var(--gray);
 }
 
 /* ================================== */
@@ -741,6 +900,10 @@ body {
         display: none !important;
     }
     
+    .audio-controls.visible {
+        display: flex;
+    }
+    
     .gallery-footer-nav {
         flex-direction: row;
         align-items: center;
@@ -770,6 +933,26 @@ body {
         cursor: pointer;
     }
 
+    /* Description slide mobile */
+    .description-content {
+        padding: 2rem;
+        margin: 1rem;
+    }
+    
+    .description-title {
+        font-size: 1.1rem;
+    }
+    
+    .description-text {
+        font-size: 0.85rem;
+    }
+
+    /* Page content mobile */
+    .page-text {
+        padding: 1rem;
+        font-size: 0.85rem;
+    }
+
     /* Thumbnails panel */
     .thumbnails-panel {
         left: 0;
@@ -777,8 +960,9 @@ body {
         padding: 0.8rem 1rem;
     }
     
-    .thumbnails-grid img {
+    .thumbnail-item {
         height: 50px;
+        min-width: 50px;
     }
 
     /* Hide custom cursor on touch */
