@@ -8,11 +8,11 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #1a1a1a; color: #fff; min-height: 100vh; }
         
-        .header { background: #111; padding: 1rem 2rem; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
-        .header h1 { font-size: 1.2rem; font-weight: 500; }
-        .header-actions { display: flex; gap: 1rem; }
+        .header { background: #111; padding: 0.8rem 1.5rem; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+        .header h1 { font-size: 1rem; font-weight: 500; }
+        .header-actions { display: flex; gap: 0.6rem; }
         
-        .btn { padding: 0.6rem 1.2rem; border: none; border-radius: 4px; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; }
+        .btn { padding: 0.45rem 0.9rem; border: none; border-radius: 4px; font-size: 0.75rem; cursor: pointer; transition: all 0.2s; }
         .btn-primary { background: #007AFF; color: white; }
         .btn-primary:hover { background: #0056b3; }
         .btn-secondary { background: #333; color: white; }
@@ -21,344 +21,783 @@
         .btn-success:hover { background: #218838; }
         .btn-danger { background: #d63031; color: white; }
         .btn-danger:hover { background: #b52828; }
+        .btn-small { padding: 0.25rem 0.5rem; font-size: 0.65rem; }
+        .btn-icon { width: 24px; height: 24px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; }
         
-        .container { display: flex; height: calc(100vh - 60px); }
+        .container { display: flex; height: calc(100vh - 52px); }
         
-        .sidebar { width: 250px; background: #111; border-right: 1px solid #333; overflow-y: auto; padding: 1rem 0; }
-        .sidebar-item { padding: 0.7rem 1.5rem; cursor: pointer; transition: background 0.2s; font-size: 0.9rem; }
-        .sidebar-item:hover { background: #222; }
-        .sidebar-item.active { background: #007AFF; }
-        .sidebar-section { padding: 0.5rem 1.5rem; font-size: 0.7rem; text-transform: uppercase; color: #666; margin-top: 1rem; display: flex; justify-content: space-between; align-items: center; }
-        .btn-add { background: #007AFF; color: white; border: none; border-radius: 4px; width: 22px; height: 22px; font-size: 1rem; cursor: pointer; }
-        .btn-add:hover { background: #0056b3; }
+        /* SIDEBAR */
+        .sidebar { width: 280px; background: #111; border-right: 1px solid #333; display: flex; flex-direction: column; flex-shrink: 0; }
         
-        .main { flex: 1; overflow-y: auto; padding: 2rem; }
+        .sidebar-tabs { display: flex; border-bottom: 1px solid #333; }
+        .sidebar-tab { flex: 1; padding: 0.7rem; text-align: center; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: #666; cursor: pointer; border-bottom: 2px solid transparent; }
+        .sidebar-tab:hover { color: #aaa; }
+        .sidebar-tab.active { color: #fff; border-bottom-color: #007AFF; }
         
-        .gallery-header { margin-bottom: 2rem; }
-        .gallery-header h2 { font-size: 1.5rem; font-weight: 500; margin-bottom: 1rem; }
-        .gallery-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+        .sidebar-content { flex: 1; overflow-y: auto; padding: 0.8rem; }
         
-        .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
-        .form-group label { font-size: 0.75rem; color: #888; text-transform: uppercase; display: flex; justify-content: space-between; }
-        .form-group input, .form-group textarea, .form-group select { padding: 0.6rem; background: #222; border: 1px solid #333; border-radius: 4px; color: #fff; font-size: 0.9rem; font-family: inherit; }
+        /* Menu Editor */
+        .menu-section { margin-bottom: 1rem; }
+        .menu-section-header { display: flex; justify-content: space-between; align-items: center; padding: 0.4rem 0; margin-bottom: 0.5rem; border-bottom: 1px solid #333; }
+        .menu-section-title { font-size: 0.65rem; text-transform: uppercase; color: #666; letter-spacing: 0.05em; }
+        
+        .menu-tree { }
+        
+        .menu-item { background: #222; border-radius: 4px; margin-bottom: 0.4rem; overflow: hidden; }
+        .menu-item.dragging { opacity: 0.5; }
+        .menu-item.drag-over { border: 1px dashed #007AFF; }
+        
+        .menu-item-header { display: flex; align-items: center; padding: 0.5rem; gap: 0.5rem; cursor: grab; }
+        .menu-item-header:active { cursor: grabbing; }
+        
+        .drag-handle { color: #555; font-size: 0.8rem; cursor: grab; }
+        .menu-item-name { flex: 1; font-size: 0.8rem; }
+        .menu-item-name input { background: transparent; border: none; color: #fff; font-size: 0.8rem; width: 100%; padding: 0.2rem; }
+        .menu-item-name input:focus { outline: none; background: #333; border-radius: 2px; }
+        
+        .menu-item-actions { display: flex; gap: 0.2rem; }
+        .menu-item-actions button { background: transparent; border: none; color: #666; cursor: pointer; padding: 0.2rem; font-size: 0.7rem; }
+        .menu-item-actions button:hover { color: #fff; }
+        
+        .menu-item-toggle { background: none; border: none; color: #666; cursor: pointer; font-size: 0.6rem; padding: 0.2rem; transition: transform 0.2s; }
+        .menu-item.open .menu-item-toggle { transform: rotate(90deg); }
+        
+        .menu-item-children { padding-left: 1rem; display: none; padding-bottom: 0.5rem; }
+        .menu-item.open .menu-item-children { display: block; }
+        
+        .menu-item-link { font-size: 0.65rem; color: #007AFF; padding: 0.2rem 0.5rem; }
+        
+        .add-menu-item { display: flex; gap: 0.3rem; margin-top: 0.5rem; }
+        .add-menu-item input { flex: 1; padding: 0.4rem; background: #222; border: 1px solid #333; border-radius: 4px; color: #fff; font-size: 0.75rem; }
+        .add-menu-item input:focus { outline: none; border-color: #007AFF; }
+        
+        /* Galleries list */
+        .gallery-list-item { display: flex; align-items: center; padding: 0.5rem 0.6rem; background: #222; border-radius: 4px; margin-bottom: 0.3rem; cursor: pointer; transition: background 0.2s; }
+        .gallery-list-item:hover { background: #2a2a2a; }
+        .gallery-list-item.active { background: #007AFF; }
+        .gallery-list-item .name { flex: 1; font-size: 0.8rem; }
+        .gallery-list-item .count { font-size: 0.65rem; color: #666; }
+        .gallery-list-item.active .count { color: rgba(255,255,255,0.7); }
+        
+        /* Pages list */
+        .page-list-item { padding: 0.5rem 0.6rem; background: #222; border-radius: 4px; margin-bottom: 0.3rem; cursor: pointer; font-size: 0.8rem; }
+        .page-list-item:hover { background: #2a2a2a; }
+        .page-list-item.active { background: #007AFF; }
+        
+        /* MAIN */
+        .main { flex: 1; overflow-y: auto; padding: 1.5rem; background: #1a1a1a; }
+        
+        .editor-section { background: #222; border-radius: 6px; padding: 1.2rem; margin-bottom: 1rem; }
+        .editor-section-title { font-size: 0.9rem; font-weight: 500; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; }
+        
+        .form-row { display: flex; gap: 1rem; margin-bottom: 0.8rem; }
+        .form-group { display: flex; flex-direction: column; gap: 0.3rem; flex: 1; }
+        .form-group.full { flex: 100%; }
+        .form-group label { font-size: 0.65rem; color: #888; text-transform: uppercase; letter-spacing: 0.03em; }
+        .form-group input, .form-group textarea, .form-group select { padding: 0.5rem; background: #333; border: 1px solid #444; border-radius: 4px; color: #fff; font-size: 0.8rem; font-family: inherit; }
         .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #007AFF; }
         .form-group textarea { resize: vertical; min-height: 80px; }
-        .char-count { font-size: 0.7rem; color: #666; }
+        
+        .checkbox-group { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0; }
+        .checkbox-group input { width: 16px; height: 16px; cursor: pointer; }
+        .checkbox-group label { font-size: 0.8rem; color: #aaa; cursor: pointer; }
+        
+        .char-count { font-size: 0.6rem; color: #666; margin-left: auto; }
         .char-count.over { color: #d63031; }
         
-        .section-title { font-size: 1rem; font-weight: 500; margin: 2rem 0 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; }
-        
-        /* Videos section */
-        .videos-list { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem; }
-        .video-item { display: flex; align-items: center; gap: 1rem; padding: 0.8rem; background: #222; border-radius: 4px; }
-        .video-item select { width: 100px; }
-        .video-item input { flex: 1; }
-        .video-item .btn-remove { padding: 0.4rem 0.8rem; }
-        
         /* Images grid */
-        .images-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
-        .image-card { background: #222; border-radius: 8px; overflow: hidden; cursor: grab; transition: transform 0.2s, box-shadow 0.2s; position: relative; }
-        .image-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+        .images-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 0.8rem; }
+        
+        .image-card { background: #2a2a2a; border-radius: 6px; overflow: hidden; cursor: grab; position: relative; }
+        .image-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
         .image-card.dragging { opacity: 0.5; }
-        .image-card.drag-over { border: 2px dashed #007AFF; }
-        .image-card img { width: 100%; height: 150px; object-fit: cover; display: block; }
-        .image-card-body { padding: 0.8rem; }
-        .image-card-title { font-size: 0.7rem; color: #888; margin-bottom: 0.5rem; word-break: break-all; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .image-card-caption { width: 100%; padding: 0.5rem; background: #333; border: 1px solid #444; border-radius: 4px; color: #fff; font-size: 0.75rem; resize: none; height: 50px; font-family: inherit; }
-        .image-card-caption:focus { outline: none; border-color: #007AFF; }
+        .image-card.drag-over { outline: 2px dashed #007AFF; }
         
-        .image-card-audio { margin-top: 0.5rem; }
-        .image-card-audio select { width: 100%; padding: 0.4rem; background: #333; border: 1px solid #444; border-radius: 4px; color: #fff; font-size: 0.75rem; }
-        .image-card-audio.has-audio select { border-color: #00b894; }
+        .image-card img { width: 100%; height: 100px; object-fit: cover; display: block; }
+        .image-card-body { padding: 0.5rem; }
+        .image-card-title { font-size: 0.6rem; color: #666; margin-bottom: 0.3rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         
-        .image-card-actions { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
-        .image-card-actions button { flex: 1; padding: 0.4rem; font-size: 0.7rem; border: none; border-radius: 4px; cursor: pointer; }
+        .image-card textarea { width: 100%; padding: 0.3rem; background: #333; border: 1px solid #444; border-radius: 3px; color: #fff; font-size: 0.65rem; resize: none; height: 36px; font-family: inherit; }
+        .image-card textarea:focus { outline: none; border-color: #007AFF; }
+        
+        .image-card-row { display: flex; gap: 0.3rem; margin-top: 0.3rem; }
+        .image-card-row select { flex: 1; padding: 0.25rem; background: #333; border: 1px solid #444; border-radius: 3px; color: #fff; font-size: 0.6rem; }
+        
+        .image-option { display: flex; align-items: center; gap: 0.3rem; margin-top: 0.3rem; padding: 0.3rem; background: #333; border-radius: 3px; }
+        .image-option input[type="checkbox"] { width: 12px; height: 12px; }
+        .image-option label { font-size: 0.6rem; color: #888; }
+        .image-option.active { background: #1a3a1a; }
+        .image-option.active label { color: #4ade80; }
+        
+        .image-option input[type="text"] { flex: 1; padding: 0.2rem; background: #444; border: 1px solid #555; border-radius: 2px; color: #fff; font-size: 0.6rem; margin-left: 0.3rem; }
+        
+        .image-card-actions { display: flex; gap: 0.2rem; margin-top: 0.3rem; }
+        .image-card-actions button { flex: 1; padding: 0.25rem; font-size: 0.6rem; border: none; border-radius: 3px; cursor: pointer; }
+        .btn-copy { background: #6c5ce7; color: white; }
         .btn-remove { background: #d63031; color: white; }
         
-        .order-indicator { position: absolute; top: 8px; left: 8px; background: rgba(0,0,0,0.7); color: white; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.75rem; }
+        .order-badge { position: absolute; top: 4px; left: 4px; background: rgba(0,0,0,0.7); color: white; padding: 0.1rem 0.35rem; border-radius: 3px; font-size: 0.6rem; }
         
-        .drop-zone { border: 2px dashed #444; border-radius: 8px; padding: 2rem; text-align: center; color: #666; margin-top: 1rem; transition: all 0.2s; }
+        .drop-zone { border: 2px dashed #444; border-radius: 6px; padding: 1.5rem; text-align: center; color: #666; margin-top: 0.8rem; transition: all 0.2s; font-size: 0.8rem; }
         .drop-zone.drag-over { border-color: #007AFF; background: rgba(0, 122, 255, 0.1); color: #007AFF; }
         
-        .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; }
+        /* Videos */
+        .video-item { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; background: #333; border-radius: 4px; margin-bottom: 0.4rem; }
+        .video-item select { width: 80px; padding: 0.3rem; font-size: 0.75rem; }
+        .video-item input { flex: 1; padding: 0.3rem; font-size: 0.75rem; }
+        
+        /* Modal */
+        .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); z-index: 1000; align-items: center; justify-content: center; }
         .modal.active { display: flex; }
-        .modal-content { background: #222; border-radius: 8px; padding: 2rem; max-width: 700px; width: 90%; max-height: 80vh; overflow-y: auto; }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
-        .modal-header h3 { font-size: 1.2rem; }
-        .modal-close { background: none; border: none; color: #888; font-size: 1.5rem; cursor: pointer; }
+        .modal-content { background: #222; border-radius: 8px; padding: 1.5rem; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .modal-header h3 { font-size: 1rem; }
+        .modal-close { background: none; border: none; color: #888; font-size: 1.3rem; cursor: pointer; }
         
-        .export-preview { background: #111; border-radius: 4px; padding: 1rem; font-family: monospace; font-size: 0.7rem; max-height: 300px; overflow: auto; white-space: pre-wrap; color: #0f0; }
+        .export-preview { background: #111; border-radius: 4px; padding: 0.8rem; font-family: monospace; font-size: 0.6rem; max-height: 250px; overflow: auto; white-space: pre-wrap; color: #0f0; }
         
-        .toast { position: fixed; bottom: 2rem; right: 2rem; background: #28a745; color: white; padding: 1rem 1.5rem; border-radius: 4px; display: none; z-index: 1001; }
+        .copy-list { display: flex; flex-direction: column; gap: 0.4rem; }
+        .copy-item { padding: 0.7rem; background: #333; border-radius: 4px; cursor: pointer; font-size: 0.85rem; }
+        .copy-item:hover { background: #007AFF; }
+        
+        .toast { position: fixed; bottom: 1.5rem; right: 1.5rem; background: #28a745; color: white; padding: 0.7rem 1rem; border-radius: 4px; display: none; z-index: 1001; font-size: 0.8rem; }
         .toast.active { display: block; animation: slideIn 0.3s ease; }
         @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         
-        .instructions { background: #222; border-radius: 8px; padding: 1.5rem; margin-bottom: 2rem; }
-        .instructions h3 { margin-bottom: 1rem; font-size: 1rem; }
-        .instructions ul { list-style: none; font-size: 0.85rem; color: #aaa; }
-        .instructions li { padding: 0.3rem 0; padding-left: 1.5rem; position: relative; }
-        .instructions li:before { content: "→"; position: absolute; left: 0; color: #007AFF; }
-        
-        .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .empty-state { text-align: center; padding: 3rem; color: #666; }
+        .empty-state h3 { margin-bottom: 0.5rem; font-weight: 400; }
     </style>
 </head>
 <body>
     <header class="header">
-        <h1>📷 Admin Portfolio - Bertrand Basset</h1>
+        <h1>📷 Admin Portfolio</h1>
         <div class="header-actions">
-            <button class="btn btn-secondary" onclick="importConfig()">📥 Importer config</button>
-            <button class="btn btn-success" onclick="exportConfig()">💾 Exporter gallery.js</button>
+            <button class="btn btn-secondary" onclick="importConfig()">📥 Importer</button>
+            <button class="btn btn-success" onclick="exportConfig()">💾 Exporter</button>
         </div>
     </header>
 
     <div class="container">
         <aside class="sidebar">
-            <div class="sidebar-section">Galeries <button class="btn-add" onclick="addNewGallery()">+</button></div>
-            <div id="galleriesList"></div>
-            
-            <div class="sidebar-section">Pages</div>
-            <div class="sidebar-item" onclick="editPage('about')">À propos</div>
-            <div class="sidebar-item" onclick="editPage('contact')">Contact</div>
+            <div class="sidebar-tabs">
+                <div class="sidebar-tab active" data-tab="menu" onclick="switchTab('menu')">Menu</div>
+                <div class="sidebar-tab" data-tab="galleries" onclick="switchTab('galleries')">Galeries</div>
+                <div class="sidebar-tab" data-tab="pages" onclick="switchTab('pages')">Pages</div>
+            </div>
+            <div class="sidebar-content" id="sidebarContent"></div>
         </aside>
-
+        
         <main class="main" id="mainContent">
-            <div class="instructions">
-                <h3>Bienvenue dans l'admin</h3>
-                <ul>
-                    <li>Sélectionne une galerie dans le menu à gauche</li>
-                    <li>La description s'affiche en première slide</li>
-                    <li>Ajoute des vidéos YouTube/Vimeo</li>
-                    <li>Glisse-dépose les images pour changer l'ordre</li>
-                    <li>Sélectionne un fichier audio pour chaque image</li>
-                    <li>Clique sur "Exporter gallery.js" quand tu as fini</li>
-                </ul>
+            <div class="empty-state">
+                <h3>Bienvenue</h3>
+                <p>Sélectionne un élément à éditer</p>
             </div>
         </main>
     </div>
 
+    <!-- Modal Export -->
     <div class="modal" id="exportModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>Exporter gallery.js</h3>
+                <h3>Exporter</h3>
                 <button class="modal-close" onclick="closeModal('exportModal')">&times;</button>
             </div>
-            <p style="margin-bottom: 1rem; color: #888; font-size: 0.85rem;">
-                Copie ce code et remplace le contenu de <code>js/gallery.js</code>
-            </p>
             <pre class="export-preview" id="exportPreview"></pre>
-            <div style="margin-top: 1rem; display: flex; gap: 1rem;">
+            <div style="margin-top: 1rem; display: flex; gap: 0.6rem;">
                 <button class="btn btn-primary" onclick="copyToClipboard()">📋 Copier</button>
                 <button class="btn btn-success" onclick="downloadFile()">⬇️ Télécharger</button>
             </div>
         </div>
     </div>
 
+    <!-- Modal Copy -->
+    <div class="modal" id="copyModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Copier vers...</h3>
+                <button class="modal-close" onclick="closeModal('copyModal')">&times;</button>
+            </div>
+            <div class="copy-list" id="copyList"></div>
+        </div>
+    </div>
+
+    <!-- Modal Link Gallery -->
+    <div class="modal" id="linkModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Lier à une galerie</h3>
+                <button class="modal-close" onclick="closeModal('linkModal')">&times;</button>
+            </div>
+            <div class="copy-list" id="linkList"></div>
+        </div>
+    </div>
+
     <div class="toast" id="toast">Sauvegardé !</div>
 
     <script>
-        const MAX_DESCRIPTION_CHARS = 200;
-        const MAX_CAPTION_CHARS = 100;
+        const MAX_DESC = 200;
+        const PHOTODECK_BASE = "https://bertrandbasset.photodeck.com";
         
+        // État
+        let currentTab = 'menu';
+        let currentGallery = null;
+        let currentPage = null;
+        let copyingImage = null;
+        let linkingMenuItem = null;
+        
+        // Configuration du menu (structure arborescente)
+        let menuConfig = [
+            {
+                id: 'photographe',
+                name: 'Photographe',
+                type: 'category',
+                children: [
+                    { id: 'portrait', name: 'Portrait', type: 'gallery', galleryId: 'portrait' },
+                    {
+                        id: 'serie-portrait',
+                        name: 'Série Portrait',
+                        type: 'subcategory',
+                        children: [
+                            { id: 'gem-menu', name: 'Le GEM s\'endimanche', type: 'gallery', galleryId: 'gem' },
+                            { id: 'carre-das-menu', name: 'Carré d\'As', type: 'gallery', galleryId: 'carre-das' }
+                        ]
+                    },
+                    {
+                        id: 'immersion',
+                        name: 'Immersion',
+                        type: 'subcategory',
+                        children: [
+                            { id: 'burning-man-menu', name: 'Burning Man', type: 'gallery', galleryId: 'burning-man' },
+                            { id: 'st-melar-menu', name: 'St Mélar', type: 'gallery', galleryId: 'st-melar' }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'realisateur',
+                name: 'Réalisateur',
+                type: 'category',
+                children: [
+                    { id: 'cinema-menu', name: 'Cinéma', type: 'gallery', galleryId: 'cinema' },
+                    { id: 'television-menu', name: 'Télévision', type: 'gallery', galleryId: 'television' }
+                ]
+            },
+            {
+                id: 'galerie-link',
+                name: 'Galerie',
+                type: 'external',
+                url: 'https://bertrandbasset.photodeck.com'
+            },
+            {
+                id: 'prestations',
+                name: 'Prestations',
+                type: 'category',
+                children: [
+                    { id: 'presta-portrait', name: 'Portrait', type: 'page', pageId: 'presta-portrait' },
+                    { id: 'presta-headshot', name: 'Headshot Corporate', type: 'page', pageId: 'presta-headshot' },
+                    { id: 'presta-immersion', name: 'Immersion Métier', type: 'page', pageId: 'presta-immersion' },
+                    { id: 'presta-empreinte', name: 'Empreinte', type: 'page', pageId: 'presta-empreinte' }
+                ]
+            },
+            { id: 'about-menu', name: 'À propos', type: 'page', pageId: 'about' },
+            { id: 'contact-menu', name: 'Contact', type: 'page', pageId: 'contact' }
+        ];
+        
+        // Galeries
         let galleriesConfig = {
-            "accueil": { title: "Accueil", path: "images/accueil", description: "", videos: [], images: [] },
+            "accueil": { title: "Accueil", path: "images/accueil", description: "", autoplayAudio: false, videos: [], images: [] },
             "portrait": { title: "Portrait", path: "images/photography/portrait", description: "", videos: [], images: [] },
-            "gem": { title: "Le GEM s'endimanche", path: "images/photography/serie-portrait/gem", description: "Série de portraits réalisée au GEM de Morlaix.", projectTitle: "Le GEM s'endimanche", projectLink: "projects/le-gem.html", videos: [], images: [] },
+            "gem": { title: "Le GEM s'endimanche", path: "images/photography/serie-portrait/gem", description: "", projectTitle: "Le GEM s'endimanche", autoplayAudio: true, videos: [], images: [] },
             "carre-das": { title: "Carré d'As", path: "images/photography/serie-portrait/Carré D'as", description: "", videos: [], images: [] },
             "burning-man": { title: "Burning Man", path: "images/photography/immersion/Burning Man", description: "", videos: [], images: [] },
             "st-melar": { title: "St Mélar", path: "images/photography/immersion/St Mélar", description: "", videos: [], images: [] },
             "cinema": { title: "Cinéma", path: "images/filmmaker/cinema", description: "", videos: [], images: [] },
             "television": { title: "Télévision", path: "images/filmmaker/Television", description: "", videos: [], images: [] }
         };
-
-        let pagesContent = {
-            about: { title: "À propos", content: "Bertrand Basset\nPhotographe & Réalisateur\n\nBasé en Bretagne..." },
-            contact: { title: "Contact", content: "contact@bertrandbasset.com\nCarantec, Finistère" }
+        
+        // Pages
+        let pagesConfig = {
+            "about": { title: "À propos", content: "Bertrand Basset\nPhotographe & Réalisateur\n\nBasé en Bretagne..." },
+            "contact": { title: "Contact", content: "contact@bertrandbasset.com\nCarantec, Finistère" },
+            "presta-portrait": { title: "Portrait", content: "Séance portrait en studio ou en extérieur.", price: "", link: "" },
+            "presta-headshot": { title: "Headshot Corporate", content: "Portraits professionnels pour LinkedIn, CV, sites web.", price: "", link: "" },
+            "presta-immersion": { title: "Immersion Métier", content: "Reportage photo au cœur de votre activité.", price: "", link: "" },
+            "presta-empreinte": { title: "Empreinte", content: "Entretien filmé pour conserver la mémoire de vos proches.", price: "", link: "" }
         };
-
-        let currentGallery = null;
+        
+        // Project pages
+        let projectPagesConfig = {};
+        
+        // Audio files
         let audioFiles = {};
 
+        // Init
         document.addEventListener('DOMContentLoaded', () => {
             loadSavedConfig();
-            renderGalleriesList();
+            renderSidebar();
         });
 
         function loadSavedConfig() {
-            const saved = localStorage.getItem('portfolioConfigV2');
+            const saved = localStorage.getItem('portfolioConfigV4');
             if (saved) {
                 try {
                     const data = JSON.parse(saved);
-                    galleriesConfig = data.galleries || galleriesConfig;
-                    pagesContent = data.pages || pagesContent;
-                    audioFiles = data.audioFiles || {};
-                } catch(e) { console.error('Error loading config:', e); }
+                    if (data.menu) menuConfig = data.menu;
+                    if (data.galleries) galleriesConfig = { ...galleriesConfig, ...data.galleries };
+                    if (data.pages) pagesConfig = { ...pagesConfig, ...data.pages };
+                    if (data.projectPages) projectPagesConfig = data.projectPages;
+                    if (data.audioFiles) audioFiles = data.audioFiles;
+                } catch(e) { console.error('Load error:', e); }
             }
         }
 
         function saveConfig() {
-            localStorage.setItem('portfolioConfigV2', JSON.stringify({
+            localStorage.setItem('portfolioConfigV4', JSON.stringify({
+                menu: menuConfig,
                 galleries: galleriesConfig,
-                pages: pagesContent,
+                pages: pagesConfig,
+                projectPages: projectPagesConfig,
                 audioFiles: audioFiles
             }));
             showToast('Sauvegardé !');
         }
 
-        function renderGalleriesList() {
-            const list = document.getElementById('galleriesList');
-            list.innerHTML = '';
-            for (const [id, gallery] of Object.entries(galleriesConfig)) {
-                const item = document.createElement('div');
-                item.className = 'sidebar-item' + (currentGallery === id ? ' active' : '');
-                const count = gallery.images.length + (gallery.videos?.length || 0);
-                item.textContent = gallery.title + ` (${count})`;
-                item.onclick = () => selectGallery(id);
-                list.appendChild(item);
-            }
+        // Tabs
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.sidebar-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+            renderSidebar();
         }
 
-        function selectGallery(id) {
+        function renderSidebar() {
+            const content = document.getElementById('sidebarContent');
+            if (currentTab === 'menu') renderMenuTab(content);
+            else if (currentTab === 'galleries') renderGalleriesTab(content);
+            else if (currentTab === 'pages') renderPagesTab(content);
+        }
+
+        // Menu Tab
+        function renderMenuTab(container) {
+            let html = `
+                <div class="menu-section">
+                    <div class="menu-section-header">
+                        <span class="menu-section-title">Structure du menu</span>
+                    </div>
+                    <div class="menu-tree" id="menuTree">
+                        ${renderMenuItems(menuConfig, 0)}
+                    </div>
+                    <div class="add-menu-item">
+                        <input type="text" id="newMenuItemName" placeholder="Nouvel élément...">
+                        <button class="btn btn-primary btn-small" onclick="addMenuItem()">+</button>
+                    </div>
+                </div>
+            `;
+            container.innerHTML = html;
+            initMenuDragDrop();
+        }
+
+        function renderMenuItems(items, level) {
+            return items.map((item, index) => {
+                const hasChildren = item.children && item.children.length > 0;
+                const typeIcon = item.type === 'external' ? '🔗' : item.type === 'gallery' ? '🖼️' : item.type === 'page' ? '📄' : '📁';
+                
+                return `
+                    <div class="menu-item ${hasChildren ? '' : ''}" data-id="${item.id}" data-index="${index}" data-level="${level}" draggable="true">
+                        <div class="menu-item-header">
+                            <span class="drag-handle">⋮⋮</span>
+                            ${hasChildren ? `<button class="menu-item-toggle" onclick="toggleMenuItem('${item.id}')">▶</button>` : `<span style="width:18px"></span>`}
+                            <span class="menu-item-name">
+                                <input value="${item.name}" onchange="renameMenuItem('${item.id}', this.value)" onclick="event.stopPropagation()">
+                            </span>
+                            <span style="font-size:0.7rem">${typeIcon}</span>
+                            <div class="menu-item-actions">
+                                ${item.type === 'category' || item.type === 'subcategory' ? `<button onclick="addChildMenuItem('${item.id}')" title="Ajouter enfant">+</button>` : ''}
+                                ${item.type === 'gallery' ? `<button onclick="openLinkModal('${item.id}')" title="Lier galerie">🔗</button>` : ''}
+                                <button onclick="deleteMenuItem('${item.id}')" title="Supprimer">×</button>
+                            </div>
+                        </div>
+                        ${hasChildren ? `
+                            <div class="menu-item-children">
+                                ${renderMenuItems(item.children, level + 1)}
+                            </div>
+                        ` : ''}
+                        ${item.galleryId ? `<div class="menu-item-link">→ ${galleriesConfig[item.galleryId]?.title || item.galleryId}</div>` : ''}
+                        ${item.url ? `<div class="menu-item-link">→ ${item.url}</div>` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function toggleMenuItem(id) {
+            const el = document.querySelector(`.menu-item[data-id="${id}"]`);
+            if (el) el.classList.toggle('open');
+        }
+
+        function renameMenuItem(id, newName) {
+            function findAndRename(items) {
+                for (let item of items) {
+                    if (item.id === id) { item.name = newName; return true; }
+                    if (item.children && findAndRename(item.children)) return true;
+                }
+                return false;
+            }
+            findAndRename(menuConfig);
+            saveConfig();
+        }
+
+        function addMenuItem() {
+            const input = document.getElementById('newMenuItemName');
+            const name = input.value.trim();
+            if (!name) return;
+            
+            const id = 'menu-' + Date.now();
+            menuConfig.push({ id, name, type: 'category', children: [] });
+            input.value = '';
+            saveConfig();
+            renderSidebar();
+        }
+
+        function addChildMenuItem(parentId) {
+            const name = prompt('Nom du sous-élément:');
+            if (!name) return;
+            
+            function findAndAdd(items) {
+                for (let item of items) {
+                    if (item.id === parentId) {
+                        if (!item.children) item.children = [];
+                        const id = 'menu-' + Date.now();
+                        item.children.push({ id, name, type: 'gallery', galleryId: null });
+                        return true;
+                    }
+                    if (item.children && findAndAdd(item.children)) return true;
+                }
+                return false;
+            }
+            findAndAdd(menuConfig);
+            saveConfig();
+            renderSidebar();
+            
+            // Open parent
+            setTimeout(() => {
+                document.querySelector(`.menu-item[data-id="${parentId}"]`)?.classList.add('open');
+            }, 50);
+        }
+
+        function deleteMenuItem(id) {
+            if (!confirm('Supprimer cet élément ?')) return;
+            
+            function findAndDelete(items) {
+                const index = items.findIndex(item => item.id === id);
+                if (index !== -1) { items.splice(index, 1); return true; }
+                for (let item of items) {
+                    if (item.children && findAndDelete(item.children)) return true;
+                }
+                return false;
+            }
+            findAndDelete(menuConfig);
+            saveConfig();
+            renderSidebar();
+        }
+
+        function openLinkModal(menuItemId) {
+            linkingMenuItem = menuItemId;
+            const list = document.getElementById('linkList');
+            list.innerHTML = Object.entries(galleriesConfig)
+                .map(([id, g]) => `<div class="copy-item" onclick="linkMenuToGallery('${id}')">${g.title}</div>`)
+                .join('');
+            list.innerHTML += `<div class="copy-item" style="background:#444" onclick="linkMenuToExternal()">🔗 Lien externe...</div>`;
+            list.innerHTML += `<div class="copy-item" style="background:#444" onclick="linkMenuToPage()">📄 Page...</div>`;
+            document.getElementById('linkModal').classList.add('active');
+        }
+
+        function linkMenuToGallery(galleryId) {
+            function findAndLink(items) {
+                for (let item of items) {
+                    if (item.id === linkingMenuItem) {
+                        item.type = 'gallery';
+                        item.galleryId = galleryId;
+                        delete item.url;
+                        delete item.pageId;
+                        return true;
+                    }
+                    if (item.children && findAndLink(item.children)) return true;
+                }
+                return false;
+            }
+            findAndLink(menuConfig);
+            closeModal('linkModal');
+            saveConfig();
+            renderSidebar();
+        }
+
+        function linkMenuToExternal() {
+            const url = prompt('URL externe:', 'https://');
+            if (!url) return;
+            
+            function findAndLink(items) {
+                for (let item of items) {
+                    if (item.id === linkingMenuItem) {
+                        item.type = 'external';
+                        item.url = url;
+                        delete item.galleryId;
+                        delete item.pageId;
+                        return true;
+                    }
+                    if (item.children && findAndLink(item.children)) return true;
+                }
+                return false;
+            }
+            findAndLink(menuConfig);
+            closeModal('linkModal');
+            saveConfig();
+            renderSidebar();
+        }
+
+        function linkMenuToPage() {
+            const pageId = prompt('ID de la page:', 'nouvelle-page');
+            if (!pageId) return;
+            
+            if (!pagesConfig[pageId]) {
+                pagesConfig[pageId] = { title: pageId, content: '' };
+            }
+            
+            function findAndLink(items) {
+                for (let item of items) {
+                    if (item.id === linkingMenuItem) {
+                        item.type = 'page';
+                        item.pageId = pageId;
+                        delete item.galleryId;
+                        delete item.url;
+                        return true;
+                    }
+                    if (item.children && findAndLink(item.children)) return true;
+                }
+                return false;
+            }
+            findAndLink(menuConfig);
+            closeModal('linkModal');
+            saveConfig();
+            renderSidebar();
+        }
+
+        function initMenuDragDrop() {
+            const items = document.querySelectorAll('.menu-item[data-level="0"]');
+            items.forEach(item => {
+                item.addEventListener('dragstart', e => {
+                    e.dataTransfer.setData('text/plain', item.dataset.id);
+                    item.classList.add('dragging');
+                });
+                item.addEventListener('dragend', () => item.classList.remove('dragging'));
+                item.addEventListener('dragover', e => { e.preventDefault(); item.classList.add('drag-over'); });
+                item.addEventListener('dragleave', () => item.classList.remove('drag-over'));
+                item.addEventListener('drop', e => {
+                    e.preventDefault();
+                    item.classList.remove('drag-over');
+                    const fromId = e.dataTransfer.getData('text/plain');
+                    const toId = item.dataset.id;
+                    if (fromId !== toId) reorderMenuItems(fromId, toId);
+                });
+            });
+        }
+
+        function reorderMenuItems(fromId, toId) {
+            const fromIndex = menuConfig.findIndex(m => m.id === fromId);
+            const toIndex = menuConfig.findIndex(m => m.id === toId);
+            if (fromIndex === -1 || toIndex === -1) return;
+            
+            const [moved] = menuConfig.splice(fromIndex, 1);
+            menuConfig.splice(toIndex, 0, moved);
+            saveConfig();
+            renderSidebar();
+        }
+
+        // Galleries Tab
+        function renderGalleriesTab(container) {
+            let html = `
+                <div class="menu-section">
+                    <div class="menu-section-header">
+                        <span class="menu-section-title">Galeries</span>
+                        <button class="btn btn-primary btn-small" onclick="addGallery()">+</button>
+                    </div>
+                    ${Object.entries(galleriesConfig).map(([id, g]) => `
+                        <div class="gallery-list-item ${currentGallery === id ? 'active' : ''}" onclick="editGallery('${id}')">
+                            <span class="name">${g.title}</span>
+                            <span class="count">${g.images.length}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            container.innerHTML = html;
+        }
+
+        function addGallery() {
+            const name = prompt('Nom de la galerie:');
+            if (!name) return;
+            const id = name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-');
+            if (galleriesConfig[id]) { alert('Existe déjà !'); return; }
+            galleriesConfig[id] = { title: name, path: 'images/', description: '', videos: [], images: [] };
+            saveConfig();
+            renderSidebar();
+            editGallery(id);
+        }
+
+        function editGallery(id) {
             currentGallery = id;
-            renderGalleriesList();
+            currentPage = null;
+            renderSidebar();
             renderGalleryEditor(id);
         }
 
-        function addNewGallery() {
-            const name = prompt('Nom de la galerie:');
-            if (!name) return;
-            const id = name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-            if (galleriesConfig[id]) { alert('Cette galerie existe déjà !'); return; }
-            const path = prompt('Chemin du dossier images:', 'images/');
-            if (!path) return;
-            galleriesConfig[id] = { title: name, path: path, description: '', videos: [], images: [] };
-            saveConfig();
-            renderGalleriesList();
-            selectGallery(id);
-        }
-
-        function deleteGallery(id) {
-            if (!confirm(`Supprimer la galerie "${galleriesConfig[id].title}" ?`)) return;
-            delete galleriesConfig[id];
-            saveConfig();
-            renderGalleriesList();
-            currentGallery = null;
-            document.getElementById('mainContent').innerHTML = '<div class="instructions"><h3>Galerie supprimée</h3></div>';
-        }
-
         function renderGalleryEditor(id) {
-            const gallery = galleriesConfig[id];
-            const descLength = (gallery.description || '').length;
-            const main = document.getElementById('mainContent');
+            const g = galleriesConfig[id];
+            const descLen = (g.description || '').length;
+            const audios = audioFiles[id] || [];
+            const hasAudioImages = g.images.some(img => typeof img === 'object' && img.audio);
             
-            main.innerHTML = `
-                <div class="gallery-header">
-                    <div class="header-row">
-                        <h2>${gallery.title}</h2>
-                        <button class="btn btn-danger" onclick="deleteGallery('${id}')">🗑️ Supprimer</button>
+            document.getElementById('mainContent').innerHTML = `
+                <div class="editor-section">
+                    <div class="editor-section-title">
+                        ${g.title}
+                        <button class="btn btn-danger btn-small" onclick="deleteGallery('${id}')">Supprimer</button>
                     </div>
                     
-                    <div class="gallery-meta">
+                    <div class="form-row">
                         <div class="form-group">
                             <label>Titre</label>
-                            <input type="text" value="${gallery.title}" onchange="updateMeta('${id}', 'title', this.value)">
+                            <input value="${g.title}" onchange="updateGallery('${id}', 'title', this.value)">
                         </div>
                         <div class="form-group">
                             <label>Chemin images</label>
-                            <input type="text" value="${gallery.path}" onchange="updateMeta('${id}', 'path', this.value)">
+                            <input value="${g.path}" onchange="updateGallery('${id}', 'path', this.value)">
                         </div>
                     </div>
                     
                     <div class="form-group">
-                        <label>
-                            Description (1ère slide)
-                            <span class="char-count ${descLength > MAX_DESCRIPTION_CHARS ? 'over' : ''}">${descLength}/${MAX_DESCRIPTION_CHARS}</span>
-                        </label>
-                        <textarea 
-                            id="descriptionField"
-                            maxlength="${MAX_DESCRIPTION_CHARS}"
-                            onkeyup="updateCharCount(this, ${MAX_DESCRIPTION_CHARS})"
-                            onchange="updateMeta('${id}', 'description', this.value)">${gallery.description || ''}</textarea>
+                        <label>Description (1ère slide) <span class="char-count ${descLen > MAX_DESC ? 'over' : ''}">${descLen}/${MAX_DESC}</span></label>
+                        <textarea maxlength="${MAX_DESC}" onchange="updateGallery('${id}', 'description', this.value)">${g.description || ''}</textarea>
                     </div>
+                    
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="hasProject" ${g.projectTitle ? 'checked' : ''} onchange="toggleProject('${id}', this.checked)">
+                        <label for="hasProject">Page "En savoir plus"</label>
+                    </div>
+                    
+                    ${g.projectTitle ? `
+                        <div class="form-group" style="margin-top:0.5rem;padding:0.8rem;background:#1a3a1a;border-radius:4px;">
+                            <label>Contenu de la page projet</label>
+                            <textarea style="min-height:120px;" onchange="projectPagesConfig['${id}']=this.value;saveConfig();">${projectPagesConfig[id] || ''}</textarea>
+                        </div>
+                    ` : ''}
+                    
+                    ${hasAudioImages ? `
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="autoplay" ${g.autoplayAudio ? 'checked' : ''} onchange="updateGallery('${id}', 'autoplayAudio', this.checked)">
+                            <label for="autoplay">🔊 Autoplay audio</label>
+                        </div>
+                    ` : ''}
                 </div>
                 
-                <div class="section-title">
-                    Vidéos
-                    <button class="btn btn-primary" onclick="addVideo('${id}')">+ Ajouter vidéo</button>
+                <div class="editor-section">
+                    <div class="editor-section-title">
+                        Vidéos
+                        <button class="btn btn-primary btn-small" onclick="addVideo('${id}')">+ Vidéo</button>
+                    </div>
+                    <div id="videosList">${renderVideos(id)}</div>
                 </div>
-                <div class="videos-list" id="videosList">${renderVideos(id)}</div>
                 
-                <div class="section-title">Images (${gallery.images.length})</div>
-                <div class="images-grid" id="imagesGrid">${renderImages(id)}</div>
-                
-                <div class="drop-zone" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleFileDrop(event, '${id}')">
-                    📁 Glisse des images ici pour les ajouter
+                <div class="editor-section">
+                    <div class="editor-section-title">Images (${g.images.length})</div>
+                    <div class="images-grid" id="imagesGrid">${renderImages(id, audios)}</div>
+                    <div class="drop-zone" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleFileDrop(event, '${id}')">
+                        📁 Glisse images ou MP3
+                    </div>
                 </div>
             `;
             
-            initDragAndDrop(id);
+            initImagesDragDrop(id);
         }
 
-        function renderVideos(galleryId) {
-            const gallery = galleriesConfig[galleryId];
-            if (!gallery.videos || gallery.videos.length === 0) {
-                return '<p style="color: #666; font-size: 0.85rem;">Aucune vidéo. Clique sur "+ Ajouter vidéo" pour en ajouter.</p>';
+        function updateGallery(id, field, value) {
+            galleriesConfig[id][field] = value;
+            saveConfig();
+            if (field === 'title') renderSidebar();
+        }
+
+        function toggleProject(id, enabled) {
+            if (enabled) {
+                galleriesConfig[id].projectTitle = galleriesConfig[id].title;
+            } else {
+                delete galleriesConfig[id].projectTitle;
             }
-            return gallery.videos.map((video, i) => `
+            saveConfig();
+            renderGalleryEditor(id);
+        }
+
+        function deleteGallery(id) {
+            if (!confirm('Supprimer cette galerie ?')) return;
+            delete galleriesConfig[id];
+            saveConfig();
+            currentGallery = null;
+            renderSidebar();
+            document.getElementById('mainContent').innerHTML = '<div class="empty-state"><h3>Galerie supprimée</h3></div>';
+        }
+
+        function renderVideos(id) {
+            const g = galleriesConfig[id];
+            if (!g.videos || !g.videos.length) return '<p style="color:#666;font-size:0.75rem;">Aucune vidéo</p>';
+            return g.videos.map((v, i) => `
                 <div class="video-item">
-                    <select onchange="updateVideo('${galleryId}', ${i}, 'type', this.value)">
-                        <option value="youtube" ${video.type === 'youtube' ? 'selected' : ''}>YouTube</option>
-                        <option value="vimeo" ${video.type === 'vimeo' ? 'selected' : ''}>Vimeo</option>
+                    <select onchange="galleriesConfig['${id}'].videos[${i}].type=this.value;saveConfig();">
+                        <option value="vimeo" ${v.type === 'vimeo' ? 'selected' : ''}>Vimeo</option>
+                        <option value="youtube" ${v.type === 'youtube' ? 'selected' : ''}>YouTube</option>
                     </select>
-                    <input type="text" placeholder="ID de la vidéo" value="${video.id || ''}" onchange="updateVideo('${galleryId}', ${i}, 'id', this.value)">
-                    <input type="text" placeholder="Titre (optionnel)" value="${video.title || ''}" onchange="updateVideo('${galleryId}', ${i}, 'title', this.value)">
-                    <button class="btn btn-remove" onclick="removeVideo('${galleryId}', ${i})">🗑️</button>
+                    <input placeholder="ID" value="${v.id || ''}" onchange="galleriesConfig['${id}'].videos[${i}].id=this.value;saveConfig();">
+                    <input placeholder="Titre" value="${v.title || ''}" onchange="galleriesConfig['${id}'].videos[${i}].title=this.value;saveConfig();">
+                    <button class="btn btn-danger btn-small" onclick="galleriesConfig['${id}'].videos.splice(${i},1);saveConfig();renderGalleryEditor('${id}');">×</button>
                 </div>
             `).join('');
         }
 
-        function addVideo(galleryId) {
-            if (!galleriesConfig[galleryId].videos) galleriesConfig[galleryId].videos = [];
-            galleriesConfig[galleryId].videos.push({ type: 'vimeo', id: '', title: '' });
+        function addVideo(id) {
+            if (!galleriesConfig[id].videos) galleriesConfig[id].videos = [];
+            galleriesConfig[id].videos.push({ type: 'vimeo', id: '', title: '' });
             saveConfig();
-            renderGalleryEditor(galleryId);
+            renderGalleryEditor(id);
         }
 
-        function updateVideo(galleryId, index, field, value) {
-            galleriesConfig[galleryId].videos[index][field] = value;
-            saveConfig();
-        }
-
-        function removeVideo(galleryId, index) {
-            galleriesConfig[galleryId].videos.splice(index, 1);
-            saveConfig();
-            renderGalleryEditor(galleryId);
-        }
-
-        function renderImages(galleryId) {
-            const gallery = galleriesConfig[galleryId];
-            const audioList = audioFiles[galleryId] || [];
-            
-            return gallery.images.map((img, index) => {
-                const filename = typeof img === 'string' ? img : img.filename;
+        function renderImages(galleryId, audios) {
+            const g = galleriesConfig[galleryId];
+            return g.images.map((img, i) => {
+                const fn = typeof img === 'string' ? img : img.filename;
                 const caption = typeof img === 'object' ? (img.caption || '') : '';
                 const audio = typeof img === 'object' ? (img.audio || '') : '';
-                const imgPath = `${gallery.path}/${filename}`;
+                const tirage = typeof img === 'object' && img.tirage;
+                const tirageUrl = typeof img === 'object' ? (img.tirageUrl || '') : '';
                 
                 return `
-                    <div class="image-card" draggable="true" data-index="${index}">
-                        <span class="order-indicator">${index + 1}</span>
-                        <img src="${imgPath}" alt="${filename}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%23333%22 width=%22100%22 height=%22100%22/><text x=%2250%22 y=%2255%22 text-anchor=%22middle%22 fill=%22%23666%22 font-size=%228%22>Image</text></svg>'">
+                    <div class="image-card" draggable="true" data-index="${i}">
+                        <span class="order-badge">${i + 1}</span>
+                        <img src="${g.path}/${fn}" onerror="this.style.background='#333'">
                         <div class="image-card-body">
-                            <div class="image-card-title" title="${filename}">${filename}</div>
-                            <textarea class="image-card-caption" placeholder="Légende..." maxlength="${MAX_CAPTION_CHARS}" onchange="updateCaption('${galleryId}', ${index}, this.value)">${caption}</textarea>
-                            <div class="image-card-audio ${audio ? 'has-audio' : ''}">
-                                <select onchange="updateAudio('${galleryId}', ${index}, this.value)">
-                                    <option value="">-- Pas d'audio --</option>
-                                    ${getAudioOptions(galleryId, audio)}
+                            <div class="image-card-title">${fn}</div>
+                            <textarea placeholder="Légende..." onchange="updateImage('${galleryId}',${i},'caption',this.value)">${caption}</textarea>
+                            
+                            <div class="image-card-row">
+                                <select onchange="updateImage('${galleryId}',${i},'audio',this.value)">
+                                    <option value="">Audio</option>
+                                    ${audios.map(a => `<option value="${a}" ${a===audio?'selected':''}>${a}</option>`).join('')}
                                 </select>
                             </div>
+                            
+                            <div class="image-option ${tirage ? 'active' : ''}">
+                                <input type="checkbox" id="tir-${i}" ${tirage ? 'checked' : ''} onchange="updateImage('${galleryId}',${i},'tirage',this.checked)">
+                                <label for="tir-${i}">🛒</label>
+                                ${tirage ? `<input type="text" placeholder="URL Photodeck" value="${tirageUrl}" onchange="updateImage('${galleryId}',${i},'tirageUrl',this.value)">` : ''}
+                            </div>
+                            
                             <div class="image-card-actions">
-                                <button class="btn-remove" onclick="removeImage('${galleryId}', ${index})">🗑️</button>
+                                <button class="btn-copy" onclick="openCopyModal('${galleryId}',${i})">📋</button>
+                                <button class="btn-remove" onclick="removeImage('${galleryId}',${i})">×</button>
                             </div>
                         </div>
                     </div>
@@ -366,82 +805,63 @@
             }).join('');
         }
 
-        function getAudioOptions(galleryId, selectedAudio) {
-            const audioList = audioFiles[galleryId] || [];
-            return audioList.map(file => 
-                `<option value="${file}" ${file === selectedAudio ? 'selected' : ''}>${file}</option>`
-            ).join('');
-        }
-
-        function updateCharCount(el, max) {
-            const label = el.parentElement.querySelector('.char-count');
-            const len = el.value.length;
-            label.textContent = `${len}/${max}`;
-            label.classList.toggle('over', len > max);
-        }
-
-        function updateMeta(id, field, value) {
-            galleriesConfig[id][field] = value;
-            saveConfig();
-            renderGalleriesList();
-        }
-
-        function updateCaption(galleryId, index, caption) {
-            const img = galleriesConfig[galleryId].images[index];
+        function updateImage(galleryId, index, field, value) {
+            let img = galleriesConfig[galleryId].images[index];
             if (typeof img === 'string') {
-                galleriesConfig[galleryId].images[index] = { filename: img, caption: caption };
-            } else {
-                img.caption = caption;
+                img = { filename: img };
+                galleriesConfig[galleryId].images[index] = img;
             }
+            img[field] = value;
             saveConfig();
-        }
-
-        function updateAudio(galleryId, index, audioFile) {
-            const img = galleriesConfig[galleryId].images[index];
-            if (typeof img === 'string') {
-                galleriesConfig[galleryId].images[index] = { filename: img, audio: audioFile || null };
-            } else {
-                img.audio = audioFile || null;
-            }
-            saveConfig();
-            renderGalleryEditor(galleryId);
+            if (field === 'tirage') renderGalleryEditor(galleryId);
         }
 
         function removeImage(galleryId, index) {
             galleriesConfig[galleryId].images.splice(index, 1);
             saveConfig();
             renderGalleryEditor(galleryId);
-            renderGalleriesList();
+            renderSidebar();
         }
 
-        function addImage(galleryId, filename) {
-            galleriesConfig[galleryId].images.push({ filename: filename, caption: '' });
+        function openCopyModal(galleryId, index) {
+            copyingImage = { galleryId, index };
+            document.getElementById('copyList').innerHTML = Object.entries(galleriesConfig)
+                .filter(([id]) => id !== galleryId)
+                .map(([id, g]) => `<div class="copy-item" onclick="copyImageTo('${id}')">${g.title}</div>`)
+                .join('');
+            document.getElementById('copyModal').classList.add('active');
+        }
+
+        function copyImageTo(targetId) {
+            if (!copyingImage) return;
+            const img = galleriesConfig[copyingImage.galleryId].images[copyingImage.index];
+            galleriesConfig[targetId].images.push(typeof img === 'string' ? img : { ...img });
             saveConfig();
-            renderGalleryEditor(galleryId);
-            renderGalleriesList();
+            closeModal('copyModal');
+            showToast('Copié !');
+            renderSidebar();
         }
 
-        // Drag and drop
-        function initDragAndDrop(galleryId) {
+        function initImagesDragDrop(galleryId) {
             const grid = document.getElementById('imagesGrid');
             if (!grid) return;
             grid.querySelectorAll('.image-card').forEach(card => {
-                card.addEventListener('dragstart', (e) => {
-                    card.classList.add('dragging');
+                card.addEventListener('dragstart', e => {
                     e.dataTransfer.setData('text/plain', card.dataset.index);
+                    card.classList.add('dragging');
                 });
                 card.addEventListener('dragend', () => card.classList.remove('dragging'));
-                card.addEventListener('dragover', (e) => { e.preventDefault(); card.classList.add('drag-over'); });
+                card.addEventListener('dragover', e => { e.preventDefault(); card.classList.add('drag-over'); });
                 card.addEventListener('dragleave', () => card.classList.remove('drag-over'));
-                card.addEventListener('drop', (e) => {
+                card.addEventListener('drop', e => {
                     e.preventDefault();
                     card.classList.remove('drag-over');
                     const from = parseInt(e.dataTransfer.getData('text/plain'));
                     const to = parseInt(card.dataset.index);
                     if (from !== to) {
-                        const images = galleriesConfig[galleryId].images;
-                        const [moved] = images.splice(from, 1);
-                        images.splice(to, 0, moved);
+                        const imgs = galleriesConfig[galleryId].images;
+                        const [moved] = imgs.splice(from, 1);
+                        imgs.splice(to, 0, moved);
                         saveConfig();
                         renderGalleryEditor(galleryId);
                     }
@@ -455,83 +875,153 @@
             e.preventDefault();
             e.currentTarget.classList.remove('drag-over');
             Array.from(e.dataTransfer.files).forEach(file => {
-                if (file.type.startsWith('image/')) addImage(galleryId, file.name);
-                if (file.type.startsWith('audio/') || file.name.endsWith('.mp3')) {
+                if (file.type.startsWith('image/')) {
+                    galleriesConfig[galleryId].images.push({ filename: file.name });
+                }
+                if (file.name.endsWith('.mp3')) {
                     if (!audioFiles[galleryId]) audioFiles[galleryId] = [];
-                    if (!audioFiles[galleryId].includes(file.name)) {
-                        audioFiles[galleryId].push(file.name);
-                        saveConfig();
-                    }
+                    if (!audioFiles[galleryId].includes(file.name)) audioFiles[galleryId].push(file.name);
                 }
             });
+            saveConfig();
             renderGalleryEditor(galleryId);
+            renderSidebar();
         }
 
-        // Pages
-        function editPage(pageId) {
-            currentGallery = null;
-            renderGalleriesList();
-            const page = pagesContent[pageId];
-            document.getElementById('mainContent').innerHTML = `
-                <div class="gallery-header"><h2>${page.title}</h2></div>
-                <div class="form-group">
-                    <label>Contenu de la page</label>
-                    <textarea style="min-height: 300px;" onchange="pagesContent['${pageId}'].content = this.value; saveConfig();">${page.content}</textarea>
+        // Pages Tab
+        function renderPagesTab(container) {
+            container.innerHTML = `
+                <div class="menu-section">
+                    <div class="menu-section-header">
+                        <span class="menu-section-title">Pages</span>
+                        <button class="btn btn-primary btn-small" onclick="addPage()">+</button>
+                    </div>
+                    ${Object.entries(pagesConfig).map(([id, p]) => `
+                        <div class="page-list-item ${currentPage === id ? 'active' : ''}" onclick="editPage('${id}')">
+                            ${p.title}
+                        </div>
+                    `).join('')}
                 </div>
             `;
         }
 
-        // Import/Export
+        function addPage() {
+            const name = prompt('Nom de la page:');
+            if (!name) return;
+            const id = name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-');
+            pagesConfig[id] = { title: name, content: '' };
+            saveConfig();
+            renderSidebar();
+            editPage(id);
+        }
+
+        function editPage(id) {
+            currentPage = id;
+            currentGallery = null;
+            renderSidebar();
+            
+            const p = pagesConfig[id];
+            const isPresta = id.startsWith('presta-');
+            
+            document.getElementById('mainContent').innerHTML = `
+                <div class="editor-section">
+                    <div class="editor-section-title">
+                        ${p.title}
+                        <button class="btn btn-danger btn-small" onclick="deletePage('${id}')">Supprimer</button>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Titre</label>
+                        <input value="${p.title}" onchange="pagesConfig['${id}'].title=this.value;saveConfig();renderSidebar();">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Contenu</label>
+                        <textarea style="min-height:200px;" onchange="pagesConfig['${id}'].content=this.value;saveConfig();">${p.content || ''}</textarea>
+                    </div>
+                    
+                    ${isPresta ? `
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Prix indicatif</label>
+                                <input value="${p.price || ''}" placeholder="ex: à partir de 150€" onchange="pagesConfig['${id}'].price=this.value;saveConfig();">
+                            </div>
+                            <div class="form-group">
+                                <label>Lien réservation</label>
+                                <input value="${p.link || ''}" placeholder="URL Photodeck" onchange="pagesConfig['${id}'].link=this.value;saveConfig();">
+                            </div>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        function deletePage(id) {
+            if (!confirm('Supprimer cette page ?')) return;
+            delete pagesConfig[id];
+            saveConfig();
+            currentPage = null;
+            renderSidebar();
+            document.getElementById('mainContent').innerHTML = '<div class="empty-state"><h3>Page supprimée</h3></div>';
+        }
+
+        // Import / Export
         function importConfig() {
             const input = document.createElement('input');
             input.type = 'file';
             input.accept = '.js';
-            input.onchange = async (e) => {
+            input.onchange = async e => {
                 const file = e.target.files[0];
                 if (!file) return;
                 const text = await file.text();
                 try {
-                    const match = text.match(/const GALLERIES_CONFIG = ({[\s\S]*?});/);
-                    if (match) {
-                        const config = eval('(' + match[1] + ')');
-                        for (const [id, gallery] of Object.entries(config)) {
+                    // Import galleries
+                    const galMatch = text.match(/const GALLERIES_CONFIG = ({[\s\S]*?});/);
+                    if (galMatch) {
+                        const config = eval('(' + galMatch[1] + ')');
+                        for (const [id, g] of Object.entries(config)) {
                             galleriesConfig[id] = {
-                                title: gallery.title,
-                                path: gallery.path,
-                                description: gallery.description || '',
-                                projectTitle: gallery.projectTitle,
-                                projectLink: gallery.projectLink,
-                                videos: gallery.videos || [],
-                                images: gallery.images.map(img => typeof img === 'string' ? { filename: img } : img)
+                                title: g.title,
+                                path: g.path,
+                                description: g.description || '',
+                                projectTitle: g.projectTitle,
+                                autoplayAudio: g.autoplayAudio || false,
+                                videos: g.videos || [],
+                                images: g.images.map(img => typeof img === 'string' ? { filename: img } : img)
                             };
-                            // Extract audio files
                             audioFiles[id] = [];
-                            gallery.images.forEach(img => {
+                            g.images.forEach(img => {
                                 if (typeof img === 'object' && img.audio) {
-                                    const audioName = img.audio.split('/').pop();
-                                    if (!audioFiles[id].includes(audioName)) audioFiles[id].push(audioName);
+                                    const name = img.audio.split('/').pop();
+                                    if (!audioFiles[id].includes(name)) audioFiles[id].push(name);
                                 }
                             });
                         }
-                        saveConfig();
-                        renderGalleriesList();
-                        showToast('Configuration importée !');
                     }
+                    saveConfig();
+                    renderSidebar();
+                    showToast('Importé !');
                 } catch(err) { alert('Erreur: ' + err.message); }
             };
             input.click();
         }
 
         function exportConfig() {
-            document.getElementById('exportPreview').textContent = generateGalleryJS();
+            document.getElementById('exportPreview').textContent = generateJS();
             document.getElementById('exportModal').classList.add('active');
         }
 
-        function generateGalleryJS() {
+        function generateJS() {
+            // Generate menu structure for HTML
+            let menuHTML = generateMenuHTML(menuConfig);
+            
+            // Generate JS config
             let js = `/**
- * Bertrand Basset Portfolio - V8
- * Generated by Admin
+ * Bertrand Basset Portfolio
+ * Auto-generated
  */
+
+const MENU_CONFIG = ${JSON.stringify(menuConfig, null, 2)};
 
 const GALLERIES_CONFIG = {\n`;
 
@@ -540,48 +1030,46 @@ const GALLERIES_CONFIG = {\n`;
                 js += `        title: "${g.title}",\n`;
                 js += `        path: "${g.path}",\n`;
                 if (g.description) js += `        description: "${g.description.replace(/"/g, '\\"').replace(/\n/g, '\\n')}",\n`;
-                if (g.projectTitle) {
-                    js += `        projectTitle: "${g.projectTitle}",\n`;
-                    js += `        projectLink: "${g.projectLink || ''}",\n`;
-                }
-                if (g.videos && g.videos.length > 0) {
-                    js += `        videos: [\n`;
-                    g.videos.forEach((v, i) => {
-                        js += `            { type: "${v.type}", id: "${v.id}", title: "${v.title || ''}" }${i < g.videos.length - 1 ? ',' : ''}\n`;
-                    });
-                    js += `        ],\n`;
+                if (g.projectTitle) js += `        projectTitle: "${g.projectTitle}",\n`;
+                if (g.autoplayAudio) js += `        autoplayAudio: true,\n`;
+                if (g.videos && g.videos.length) {
+                    js += `        videos: [${g.videos.map(v => `{ type: "${v.type}", id: "${v.id}", title: "${v.title || ''}" }`).join(', ')}],\n`;
                 }
                 js += `        images: [\n`;
                 g.images.forEach((img, i) => {
-                    const filename = typeof img === 'string' ? img : img.filename;
-                    const caption = typeof img === 'object' ? img.caption : '';
-                    const audio = typeof img === 'object' ? img.audio : null;
-                    if (caption || audio) {
-                        js += `            { filename: "${filename}"`;
-                        if (caption) js += `, caption: "${caption.replace(/"/g, '\\"')}"`;
-                        if (audio) js += `, audio: "${audio}"`;
-                        js += ` }`;
-                    } else {
-                        js += `            "${filename}"`;
-                    }
-                    js += i < g.images.length - 1 ? ',\n' : '\n';
+                    const fn = typeof img === 'string' ? img : img.filename;
+                    const parts = [`filename: "${fn}"`];
+                    if (img.caption) parts.push(`caption: "${img.caption.replace(/"/g, '\\"')}"`);
+                    if (img.audio) parts.push(`audio: "${img.audio}"`);
+                    if (img.tirage) parts.push(`tirage: true`);
+                    if (img.tirageUrl) parts.push(`tirageUrl: "${img.tirageUrl}"`);
+                    js += `            { ${parts.join(', ')} }${i < g.images.length - 1 ? ',' : ''}\n`;
                 });
                 js += `        ]\n    },\n`;
             }
             js += `};\n\n`;
-            js += getPortfolioClassCode();
-            return js;
+            
+            js += `const PAGES_CONFIG = ${JSON.stringify(pagesConfig, null, 2)};\n\n`;
+            js += `const PROJECT_PAGES = ${JSON.stringify(projectPagesConfig, null, 2)};\n\n`;
+            
+            return js + getPortfolioClassCode();
+        }
+
+        function generateMenuHTML(items, level = 0) {
+            // This would generate the HTML for index.html
+            return items.map(item => {
+                if (item.type === 'category' || item.type === 'subcategory') {
+                    return `<nav-item>${item.name}...children</nav-item>`;
+                }
+                return `<link>${item.name}</link>`;
+            }).join('\n');
         }
 
         function getPortfolioClassCode() {
-            return `const PAGES_CONTENT = {
-    about: { title: "À propos", content: ${JSON.stringify(pagesContent.about.content)} },
-    contact: { title: "Contact", content: ${JSON.stringify(pagesContent.contact.content)} }
-};
-
+            return `
 const TRANSLATIONS = {
-    en: { "photography": "Photography", "portrait": "Portrait", "serie-portrait": "Serie Portrait", "immersion": "Immersion", "filmmaker": "Filmmaker", "cinema": "Cinema", "television": "Television", "about": "About", "contact": "Contact", "learn-more": "learn more", "prev": "prev", "next": "next", "show-thumbnails": "show thumbnails", "hide-thumbnails": "hide thumbnails", "play": "play", "pause": "pause" },
-    fr: { "photography": "Photographie", "portrait": "Portrait", "serie-portrait": "Série Portrait", "immersion": "Immersion", "filmmaker": "Réalisateur", "cinema": "Cinéma", "television": "Télévision", "about": "À propos", "contact": "Contact", "learn-more": "en savoir plus", "prev": "préc", "next": "suiv", "show-thumbnails": "voir vignettes", "hide-thumbnails": "masquer vignettes", "play": "écouter", "pause": "pause" }
+    en: { "prev": "prev", "next": "next", "show-thumbnails": "thumbnails", "hide-thumbnails": "hide", "play": "play", "pause": "pause", "buy-print": "Buy print" },
+    fr: { "prev": "préc", "next": "suiv", "show-thumbnails": "vignettes", "hide-thumbnails": "masquer", "play": "écouter", "pause": "pause", "buy-print": "Acheter" }
 };
 
 class Portfolio {
@@ -594,7 +1082,7 @@ class Portfolio {
         this.isPlaying = false;
         this.currentLang = 'fr';
         this.isMobile = window.innerWidth <= 768;
-        this.currentPage = null;
+        this.autoplayAudio = false;
         this.init();
     }
 
@@ -603,17 +1091,27 @@ class Portfolio {
         for (const [id, config] of Object.entries(GALLERIES_CONFIG)) {
             const items = [];
             if (config.description) items.push({ type: 'description', title: config.title, text: config.description });
-            if (config.videos) config.videos.forEach(v => items.push({ type: 'video', platform: v.type, videoId: v.id, title: v.title || '' }));
+            if (config.videos) config.videos.forEach(v => items.push({ type: 'video', platform: v.type, videoId: v.id, title: v.title }));
             config.images.forEach(img => {
-                if (typeof img === 'string') items.push({ type: 'image', src: \`\${config.path}/\${img}\`, caption: '' });
-                else items.push({ type: 'image', src: \`\${config.path}/\${img.filename}\`, caption: img.caption || '', audio: img.audio ? \`\${config.path}/\${img.audio}\` : null });
+                items.push({
+                    type: 'image',
+                    src: \`\${config.path}/\${img.filename}\`,
+                    caption: img.caption || '',
+                    audio: img.audio ? \`\${config.path}/\${img.audio}\` : null,
+                    tirage: img.tirage,
+                    tirageUrl: img.tirageUrl
+                });
             });
-            galleries[id] = { title: config.title, description: config.description || '', projectTitle: config.projectTitle || null, projectLink: config.projectLink || null, items };
+            galleries[id] = { ...config, items };
         }
         return galleries;
     }
 
-    init() { this.cacheElements(); this.bindEvents(); this.openGallery('accueil'); this.handleResize(); }
+    init() {
+        this.cacheElements();
+        this.bindEvents();
+        this.openGallery('accueil');
+    }
 
     cacheElements() {
         this.landing = document.getElementById('landing');
@@ -622,183 +1120,184 @@ class Portfolio {
         this.menuToggle = document.getElementById('menuToggle');
         this.mainNav = document.getElementById('mainNav');
         this.galleryContainer = document.getElementById('galleryContainer');
-        this.prevBtn = document.getElementById('prevBtn');
-        this.nextBtn = document.getElementById('nextBtn');
-        this.thumbnailsToggle = document.getElementById('thumbnailsToggle');
-        this.thumbnailsPanel = document.getElementById('thumbnailsPanel');
-        this.thumbnailsGrid = document.getElementById('thumbnailsGrid');
-        this.thumbnailsClose = document.getElementById('thumbnailsClose');
         this.galleryCounter = document.querySelector('.gallery-counter');
         this.imageCaption = document.querySelector('.image-caption');
-        this.navItems = document.querySelectorAll('.nav-item[data-expandable]');
-        this.dropdownLinks = document.querySelectorAll('.dropdown-link:not(.has-submenu)');
-        this.submenuLinks = document.querySelectorAll('.dropdown-link.has-submenu');
-        this.dropdownSublinks = document.querySelectorAll('.dropdown-sublink');
-        this.projectInfo = document.querySelector('.project-info');
-        this.projectTitle = document.querySelector('.project-title');
-        this.projectLink = document.querySelector('.project-link');
         this.audioControls = document.querySelector('.audio-controls');
         this.audioBtn = document.getElementById('audioBtn');
+        this.autoplayToggle = document.getElementById('autoplayToggle');
         this.homeLink = document.getElementById('homeLink');
-        this.langLinks = document.querySelectorAll('[data-lang]');
         this.cursor = document.getElementById('customCursor');
+        this.navItems = document.querySelectorAll('.nav-item[data-expandable]');
+        this.dropdownLinks = document.querySelectorAll('[data-gallery]');
+        this.pageLinks = document.querySelectorAll('[data-page]');
     }
 
     bindEvents() {
-        if (this.enterBtn) this.enterBtn.addEventListener('click', () => this.enterSite());
-        if (this.homeLink) this.homeLink.addEventListener('click', (e) => { e.preventDefault(); this.currentPage = null; this.openGallery('accueil'); this.closeMenu(); });
-        if (this.menuToggle) this.menuToggle.addEventListener('click', () => this.toggleMenu());
-        this.navItems.forEach(item => { const link = item.querySelector('.nav-link'); if (link) link.addEventListener('click', (e) => { e.preventDefault(); this.toggleNavItem(item); }); });
-        this.dropdownLinks.forEach(link => { link.addEventListener('click', (e) => { e.preventDefault(); const gid = link.dataset.gallery; if (gid) { this.currentPage = null; this.openGallery(gid); this.closeMenu(); } }); });
-        this.submenuLinks.forEach(link => { link.addEventListener('click', (e) => { e.preventDefault(); link.classList.toggle('open'); }); });
-        this.dropdownSublinks.forEach(link => { link.addEventListener('click', (e) => { e.preventDefault(); const gid = link.dataset.gallery; if (gid) { this.currentPage = null; this.openGallery(gid); this.closeMenu(); } }); });
-        document.querySelectorAll('[data-page]').forEach(link => { link.addEventListener('click', (e) => { e.preventDefault(); this.showPage(link.dataset.page); this.closeMenu(); }); });
-        if (this.prevBtn) this.prevBtn.addEventListener('click', (e) => { e.preventDefault(); this.prevItem(); });
-        if (this.nextBtn) this.nextBtn.addEventListener('click', (e) => { e.preventDefault(); this.nextItem(); });
+        if (this.enterBtn) this.enterBtn.onclick = () => this.enterSite();
+        if (this.homeLink) this.homeLink.onclick = e => { e.preventDefault(); this.openGallery('accueil'); };
+        if (this.menuToggle) this.menuToggle.onclick = () => this.toggleMenu();
+        
+        this.navItems.forEach(item => {
+            const link = item.querySelector('.nav-link');
+            if (link) link.onclick = e => { e.preventDefault(); item.classList.toggle('open'); };
+        });
+        
+        this.dropdownLinks.forEach(link => {
+            link.onclick = e => { e.preventDefault(); this.openGallery(link.dataset.gallery); this.closeMenu(); };
+        });
+        
+        this.pageLinks.forEach(link => {
+            link.onclick = e => { e.preventDefault(); this.showPage(link.dataset.page); this.closeMenu(); };
+        });
+        
         if (this.galleryContainer) {
-            this.galleryContainer.addEventListener('click', (e) => {
-                if (e.target.closest('.video-container') || this.currentPage) return;
+            this.galleryContainer.onclick = e => {
+                if (e.target.closest('.video-container, .buy-button')) return;
                 const rect = this.galleryContainer.getBoundingClientRect();
-                if ((e.clientX - rect.left) < rect.width / 2) this.prevItem(); else this.nextItem();
-            });
-            this.galleryContainer.addEventListener('mousemove', (e) => {
-                if (!this.isMobile && this.cursor) {
-                    this.cursor.style.left = e.clientX + 'px';
-                    this.cursor.style.top = e.clientY + 'px';
-                    const rect = this.galleryContainer.getBoundingClientRect();
-                    this.cursor.innerHTML = (e.clientX - rect.left) < rect.width / 2 ? '<svg viewBox="0 0 24 24"><polyline points="15,6 9,12 15,18"></polyline></svg>' : '<svg viewBox="0 0 24 24"><polyline points="9,6 15,12 9,18"></polyline></svg>';
-                }
-            });
-            this.galleryContainer.addEventListener('mouseenter', () => { if (!this.isMobile && this.cursor) this.cursor.classList.add('visible'); });
-            this.galleryContainer.addEventListener('mouseleave', () => { if (this.cursor) this.cursor.classList.remove('visible'); });
+                (e.clientX - rect.left) < rect.width / 2 ? this.prev() : this.next();
+            };
         }
-        if (this.thumbnailsToggle) this.thumbnailsToggle.addEventListener('click', (e) => { e.preventDefault(); this.toggleThumbnails(); });
-        if (this.thumbnailsClose) this.thumbnailsClose.addEventListener('click', () => this.hideThumbnails());
-        if (this.audioBtn) this.audioBtn.addEventListener('click', (e) => { e.preventDefault(); this.toggleAudio(); });
-        document.addEventListener('keydown', (e) => this.handleKeyboard(e));
+        
+        if (this.audioBtn) this.audioBtn.onclick = () => this.toggleAudio();
+        if (this.autoplayToggle) this.autoplayToggle.onchange = () => { this.autoplayAudio = this.autoplayToggle.checked; };
+        
+        document.onkeydown = e => {
+            if (e.key === 'ArrowLeft') this.prev();
+            if (e.key === 'ArrowRight') this.next();
+            if (e.key === ' ') { e.preventDefault(); this.toggleAudio(); }
+        };
+        
         this.initSwipe();
-        this.langLinks.forEach(link => { link.addEventListener('click', (e) => { e.preventDefault(); this.setLanguage(link.dataset.lang); }); });
-        window.addEventListener('resize', () => this.handleResize());
     }
 
-    toggleMenu() { if (this.menuToggle) this.menuToggle.classList.toggle('open'); if (this.mainNav) this.mainNav.classList.toggle('open'); }
-    closeMenu() { if (this.menuToggle) this.menuToggle.classList.remove('open'); if (this.mainNav) this.mainNav.classList.remove('open'); }
-    handleResize() { this.isMobile = window.innerWidth <= 768; if (!this.isMobile) this.closeMenu(); }
-    enterSite() { if (this.landing) this.landing.classList.add('hidden'); if (this.site) this.site.classList.add('active'); }
-    toggleNavItem(item) { const wasOpen = item.classList.contains('open'); this.navItems.forEach(n => { if (n !== item) n.classList.remove('open'); }); item.classList.toggle('open', !wasOpen); }
+    enterSite() { this.landing?.classList.add('hidden'); this.site?.classList.add('active'); }
+    toggleMenu() { this.menuToggle?.classList.toggle('open'); this.mainNav?.classList.toggle('open'); }
+    closeMenu() { this.menuToggle?.classList.remove('open'); this.mainNav?.classList.remove('open'); }
 
-    showPage(pageId) {
-        const page = PAGES_CONTENT[pageId];
-        if (!page) return;
-        this.currentPage = pageId;
-        this.currentGallery = null;
-        this.stopAudio();
-        if (this.galleryCounter) this.galleryCounter.style.display = 'none';
-        if (this.thumbnailsToggle) this.thumbnailsToggle.style.display = 'none';
-        if (this.audioControls) this.audioControls.classList.remove('visible');
-        if (this.projectInfo) this.projectInfo.classList.remove('visible');
-        this.galleryContainer.innerHTML = \`<div class="page-content"><div class="page-text">\${page.content.replace(/\\n/g, '<br>')}</div></div>\`;
-        this.galleryContainer.classList.add('page-mode');
-    }
-
-    openGallery(galleryId) {
-        const gallery = this.galleries[galleryId];
-        if (!gallery || !gallery.items.length) return;
-        this.currentGallery = gallery;
-        this.currentGalleryId = galleryId;
+    openGallery(id) {
+        const g = this.galleries[id];
+        if (!g?.items.length) return;
+        this.currentGallery = g;
         this.currentIndex = 0;
-        this.currentPage = null;
-        if (this.galleryCounter) this.galleryCounter.style.display = '';
-        if (this.thumbnailsToggle) this.thumbnailsToggle.style.display = '';
-        this.galleryContainer.classList.remove('page-mode');
+        this.autoplayAudio = g.autoplayAudio || false;
+        if (this.autoplayToggle) this.autoplayToggle.checked = this.autoplayAudio;
         this.showItem(0);
-        this.generateThumbnails();
-        this.updateProjectInfo();
     }
 
     showItem(index) {
         if (!this.currentGallery || this.isTransitioning) return;
         const items = this.currentGallery.items;
         if (index < 0 || index >= items.length) return;
+        
         this.stopAudio();
         this.isTransitioning = true;
         this.currentIndex = index;
         const item = items[index];
-        const current = this.galleryContainer.querySelector('.gallery-image, .description-slide, .video-container');
-        if (current) current.classList.add('transitioning');
+        
         setTimeout(() => {
             this.galleryContainer.innerHTML = '';
-            if (item.type === 'description') this.showDescriptionSlide(item);
-            else if (item.type === 'video') this.showVideoSlide(item);
-            else this.showImageSlide(item);
-            this.updateCounter();
-            this.updateActiveThumbnail(index);
-            this.updateAudioControls(item);
-        }, 250);
+            
+            if (item.type === 'description') {
+                this.galleryContainer.innerHTML = \`<div class="description-slide loaded"><div class="description-content"><h2>\${item.title}</h2><p>\${item.text}</p></div></div>\`;
+            } else if (item.type === 'video') {
+                const url = item.platform === 'vimeo' ? \`https://player.vimeo.com/video/\${item.videoId}\` : \`https://www.youtube.com/embed/\${item.videoId}\`;
+                this.galleryContainer.innerHTML = \`<div class="video-container loaded"><iframe src="\${url}" frameborder="0" allowfullscreen></iframe></div>\`;
+            } else {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'image-wrapper';
+                const img = document.createElement('img');
+                img.className = 'gallery-image';
+                img.onload = () => { img.classList.add('loaded'); this.isTransitioning = false; };
+                img.src = encodeURI(item.src);
+                wrapper.appendChild(img);
+                
+                if (item.tirage && item.tirageUrl) {
+                    wrapper.innerHTML += \`<a class="buy-button" href="\${item.tirageUrl}" target="_blank">🛒 \${TRANSLATIONS[this.currentLang]['buy-print']}</a>\`;
+                }
+                this.galleryContainer.appendChild(wrapper);
+                
+                if (item.audio && this.autoplayAudio) this.playAudio(item.audio);
+            }
+            
+            this.updateUI(item);
+            this.isTransitioning = false;
+        }, 200);
     }
 
-    showDescriptionSlide(item) {
-        const div = document.createElement('div');
-        div.className = 'description-slide';
-        div.innerHTML = \`<div class="description-content"><h2 class="description-title">\${item.title}</h2><p class="description-text">\${item.text}</p></div>\`;
-        this.galleryContainer.appendChild(div);
-        setTimeout(() => { div.classList.add('loaded'); this.isTransitioning = false; }, 50);
-        if (this.imageCaption) this.imageCaption.textContent = '';
-    }
-
-    showVideoSlide(item) {
-        const div = document.createElement('div');
-        div.className = 'video-container';
-        const url = item.platform === 'vimeo' ? \`https://player.vimeo.com/video/\${item.videoId}?title=0&byline=0&portrait=0\` : \`https://www.youtube.com/embed/\${item.videoId}?rel=0\`;
-        div.innerHTML = \`<iframe src="\${url}" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>\`;
-        this.galleryContainer.appendChild(div);
-        setTimeout(() => { div.classList.add('loaded'); this.isTransitioning = false; }, 50);
-        if (this.imageCaption) this.imageCaption.textContent = item.title || '';
-    }
-
-    showImageSlide(item) {
-        const img = document.createElement('img');
-        img.className = 'gallery-image';
-        img.alt = item.caption || '';
-        img.loading = 'lazy';
-        img.onload = () => { img.classList.add('loaded'); this.isTransitioning = false; };
-        img.onerror = () => { this.isTransitioning = false; };
-        this.galleryContainer.appendChild(img);
-        img.src = encodeURI(item.src);
+    updateUI(item) {
+        if (this.galleryCounter) this.galleryCounter.textContent = \`\${this.currentIndex + 1} / \${this.currentGallery.items.length}\`;
         if (this.imageCaption) this.imageCaption.textContent = item.caption || '';
-        if (item.audio) this.playAudio(item.audio);
+        if (this.audioControls) this.audioControls.classList.toggle('visible', item.type === 'image' && !!item.audio);
     }
 
-    updateAudioControls(item) { if (this.audioControls) this.audioControls.classList.toggle('visible', item.type === 'image' && !!item.audio); }
-    prevItem() { if (!this.currentGallery || this.currentPage) return; this.showItem(this.currentIndex > 0 ? this.currentIndex - 1 : this.currentGallery.items.length - 1); }
-    nextItem() { if (!this.currentGallery || this.currentPage) return; this.showItem(this.currentIndex < this.currentGallery.items.length - 1 ? this.currentIndex + 1 : 0); }
-    updateCounter() { if (this.galleryCounter && this.currentGallery) this.galleryCounter.textContent = \`\${this.currentIndex + 1} / \${this.currentGallery.items.length}\`; }
+    prev() { if (this.currentGallery) this.showItem(this.currentIndex > 0 ? this.currentIndex - 1 : this.currentGallery.items.length - 1); }
+    next() { if (this.currentGallery) this.showItem(this.currentIndex < this.currentGallery.items.length - 1 ? this.currentIndex + 1 : 0); }
 
-    playAudio(src) { this.stopAudio(); this.currentAudio = new Audio(encodeURI(src)); this.currentAudio.play().catch(() => {}); this.isPlaying = true; this.updateAudioButton(); this.currentAudio.addEventListener('ended', () => { this.isPlaying = false; this.updateAudioButton(); }); }
-    stopAudio() { if (this.currentAudio) { this.currentAudio.pause(); this.currentAudio = null; this.isPlaying = false; this.updateAudioButton(); } }
-    toggleAudio() { if (!this.currentGallery) return; const item = this.currentGallery.items[this.currentIndex]; if (!item || !item.audio) return; if (this.isPlaying) this.stopAudio(); else this.playAudio(item.audio); }
-    updateAudioButton() { if (!this.audioBtn) return; const icon = this.audioBtn.querySelector('.audio-icon'); const label = this.audioBtn.querySelector('.audio-label'); if (this.isPlaying) { if (icon) icon.innerHTML = '&#9724;'; if (label) label.textContent = this.t('pause'); this.audioBtn.classList.add('playing'); } else { if (icon) icon.innerHTML = '&#9654;'; if (label) label.textContent = this.t('play'); this.audioBtn.classList.remove('playing'); } }
+    playAudio(src) {
+        this.stopAudio();
+        this.currentAudio = new Audio(encodeURI(src));
+        this.currentAudio.play().catch(() => {});
+        this.isPlaying = true;
+        this.updateAudioBtn();
+        this.currentAudio.onended = () => { this.isPlaying = false; this.updateAudioBtn(); };
+    }
+    stopAudio() { if (this.currentAudio) { this.currentAudio.pause(); this.currentAudio = null; } this.isPlaying = false; this.updateAudioBtn(); }
+    toggleAudio() {
+        const item = this.currentGallery?.items[this.currentIndex];
+        if (!item?.audio) return;
+        this.isPlaying ? this.stopAudio() : this.playAudio(item.audio);
+    }
+    updateAudioBtn() {
+        if (!this.audioBtn) return;
+        this.audioBtn.innerHTML = this.isPlaying ? '⏸' : '▶';
+        this.audioBtn.classList.toggle('playing', this.isPlaying);
+    }
 
-    handleKeyboard(e) { if (!this.site || !this.site.classList.contains('active') || this.currentPage) return; if (e.key === 'ArrowLeft') { e.preventDefault(); this.prevItem(); } if (e.key === 'ArrowRight') { e.preventDefault(); this.nextItem(); } if (e.key === 'Escape') { this.hideThumbnails(); this.closeMenu(); } if (e.key === ' ') { e.preventDefault(); this.toggleAudio(); } }
-    initSwipe() { if (!this.galleryContainer) return; let startX = 0, startY = 0; this.galleryContainer.addEventListener('touchstart', (e) => { startX = e.changedTouches[0].screenX; startY = e.changedTouches[0].screenY; }, { passive: true }); this.galleryContainer.addEventListener('touchend', (e) => { if (this.currentPage) return; const diffX = startX - e.changedTouches[0].screenX; const diffY = Math.abs(startY - e.changedTouches[0].screenY); if (Math.abs(diffX) > 50 && diffY < 100) { if (diffX > 0) this.nextItem(); else this.prevItem(); } }, { passive: true }); }
+    showPage(id) {
+        const page = PAGES_CONFIG[id];
+        if (!page) return;
+        this.currentGallery = null;
+        if (this.galleryCounter) this.galleryCounter.style.display = 'none';
+        if (this.audioControls) this.audioControls.classList.remove('visible');
+        
+        let html = \`<div class="page-content"><div class="page-text">\${page.content.replace(/\\n/g, '<br>')}</div>\`;
+        if (page.price) html += \`<div class="page-price">\${page.price}</div>\`;
+        if (page.link) html += \`<a class="page-btn" href="\${page.link}" target="_blank">Réserver</a>\`;
+        html += '</div>';
+        this.galleryContainer.innerHTML = html;
+    }
 
-    toggleThumbnails() { if (this.thumbnailsPanel) { this.thumbnailsPanel.classList.toggle('active'); if (this.thumbnailsToggle) this.thumbnailsToggle.textContent = this.thumbnailsPanel.classList.contains('active') ? this.t('hide-thumbnails') : this.t('show-thumbnails'); } }
-    hideThumbnails() { if (this.thumbnailsPanel) { this.thumbnailsPanel.classList.remove('active'); if (this.thumbnailsToggle) this.thumbnailsToggle.textContent = this.t('show-thumbnails'); } }
-    generateThumbnails() { if (!this.thumbnailsGrid || !this.currentGallery) return; this.thumbnailsGrid.innerHTML = ''; this.currentGallery.items.forEach((item, i) => { const thumb = document.createElement('div'); thumb.className = 'thumbnail-item' + (i === this.currentIndex ? ' active' : ''); if (item.type === 'description') { thumb.innerHTML = '<span class="thumb-text">T</span>'; thumb.classList.add('thumb-description'); } else if (item.type === 'video') { thumb.innerHTML = '<span class="thumb-video">▶</span>'; thumb.classList.add('thumb-video-item'); } else { const img = document.createElement('img'); img.src = encodeURI(item.src); img.loading = 'lazy'; thumb.appendChild(img); } thumb.addEventListener('click', () => this.showItem(i)); this.thumbnailsGrid.appendChild(thumb); }); }
-    updateActiveThumbnail(index) { if (!this.thumbnailsGrid) return; this.thumbnailsGrid.querySelectorAll('.thumbnail-item').forEach((t, i) => t.classList.toggle('active', i === index)); }
-    updateProjectInfo() { if (!this.projectInfo || !this.currentGallery) return; if (this.currentGallery.projectTitle) { if (this.projectTitle) this.projectTitle.textContent = this.currentGallery.projectTitle; if (this.projectLink) this.projectLink.href = this.currentGallery.projectLink || '#'; this.projectInfo.classList.add('visible'); } else { this.projectInfo.classList.remove('visible'); } }
-    setLanguage(lang) { if (!TRANSLATIONS[lang]) return; this.currentLang = lang; this.langLinks.forEach(l => l.classList.toggle('active', l.dataset.lang === lang)); document.querySelectorAll('[data-i18n]').forEach(el => { const key = el.dataset.i18n; if (TRANSLATIONS[lang][key]) el.textContent = TRANSLATIONS[lang][key]; }); }
-    t(key) { return TRANSLATIONS[this.currentLang][key] || key; }
+    initSwipe() {
+        let startX;
+        this.galleryContainer?.addEventListener('touchstart', e => startX = e.touches[0].clientX);
+        this.galleryContainer?.addEventListener('touchend', e => {
+            const diff = startX - e.changedTouches[0].clientX;
+            if (Math.abs(diff) > 50) diff > 0 ? this.next() : this.prev();
+        });
+    }
 }
 
-document.addEventListener('DOMContentLoaded', () => { window.portfolio = new Portfolio(); });`;
+document.addEventListener('DOMContentLoaded', () => new Portfolio());
+`;
         }
 
         function closeModal(id) { document.getElementById(id).classList.remove('active'); }
         function copyToClipboard() { navigator.clipboard.writeText(document.getElementById('exportPreview').textContent).then(() => showToast('Copié !')); }
-        function downloadFile() { const blob = new Blob([document.getElementById('exportPreview').textContent], { type: 'text/javascript' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'gallery.js'; a.click(); showToast('Téléchargé !'); }
-        function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('active'); setTimeout(() => t.classList.remove('active'), 2000); }
-        document.querySelectorAll('.modal').forEach(m => m.addEventListener('click', (e) => { if (e.target === m) m.classList.remove('active'); }));
+        function downloadFile() {
+            const blob = new Blob([document.getElementById('exportPreview').textContent], { type: 'text/javascript' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'gallery.js';
+            a.click();
+            showToast('Téléchargé !');
+        }
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('active');
+            setTimeout(() => t.classList.remove('active'), 2000);
+        }
+        document.querySelectorAll('.modal').forEach(m => m.onclick = e => { if (e.target === m) m.classList.remove('active'); });
     </script>
 </body>
 </html>
