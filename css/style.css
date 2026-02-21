@@ -1005,6 +1005,27 @@ body {
         padding: 0.5rem 0;
     }
 
+    /* Fix sous-menus mobile */
+    .nav-dropdown {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+    }
+    
+    .nav-item.open > .nav-dropdown {
+        max-height: 1000px;
+    }
+    
+    .nav-sub-dropdown {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+    }
+    
+    .dropdown-link.has-submenu.open + .nav-sub-dropdown {
+        max-height: 500px;
+    }
+
     /* Footer - bottom bar */
     .sidebar-footer {
         position: fixed;
