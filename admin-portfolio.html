@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Bertrand Basset Portfolio</title>
+    <title>Admin - Bertrand Basset Portfolio V5</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #1a1a1a; color: #fff; min-height: 100vh; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #1a1a1a; color: #fff; min-height: 100vh; font-size: 14px; }
         
-        .header { background: #111; padding: 0.8rem 1.5rem; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
-        .header h1 { font-size: 1rem; font-weight: 500; }
-        .header-actions { display: flex; gap: 0.6rem; }
+        .header { background: #111; padding: 0.6rem 1.2rem; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+        .header h1 { font-size: 0.95rem; font-weight: 500; }
+        .header-actions { display: flex; gap: 0.5rem; }
         
-        .btn { padding: 0.45rem 0.9rem; border: none; border-radius: 4px; font-size: 0.75rem; cursor: pointer; transition: all 0.2s; }
+        .btn { padding: 0.4rem 0.8rem; border: none; border-radius: 4px; font-size: 0.7rem; cursor: pointer; transition: all 0.2s; }
         .btn-primary { background: #007AFF; color: white; }
         .btn-primary:hover { background: #0056b3; }
         .btn-secondary { background: #333; color: white; }
@@ -21,156 +21,124 @@
         .btn-success:hover { background: #218838; }
         .btn-danger { background: #d63031; color: white; }
         .btn-danger:hover { background: #b52828; }
-        .btn-small { padding: 0.25rem 0.5rem; font-size: 0.65rem; }
-        .btn-icon { width: 24px; height: 24px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; }
+        .btn-small { padding: 0.2rem 0.4rem; font-size: 0.65rem; }
         
-        .container { display: flex; height: calc(100vh - 52px); }
+        .container { display: flex; height: calc(100vh - 44px); }
         
         /* SIDEBAR */
-        .sidebar { width: 280px; background: #111; border-right: 1px solid #333; display: flex; flex-direction: column; flex-shrink: 0; }
-        
+        .sidebar { width: 260px; background: #111; border-right: 1px solid #333; display: flex; flex-direction: column; flex-shrink: 0; }
         .sidebar-tabs { display: flex; border-bottom: 1px solid #333; }
-        .sidebar-tab { flex: 1; padding: 0.7rem; text-align: center; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: #666; cursor: pointer; border-bottom: 2px solid transparent; }
+        .sidebar-tab { flex: 1; padding: 0.6rem; text-align: center; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.03em; color: #666; cursor: pointer; border-bottom: 2px solid transparent; }
         .sidebar-tab:hover { color: #aaa; }
         .sidebar-tab.active { color: #fff; border-bottom-color: #007AFF; }
+        .sidebar-content { flex: 1; overflow-y: auto; padding: 0.6rem; }
         
-        .sidebar-content { flex: 1; overflow-y: auto; padding: 0.8rem; }
+        .section-header { display: flex; justify-content: space-between; align-items: center; padding: 0.3rem 0; margin-bottom: 0.4rem; }
+        .section-title { font-size: 0.6rem; text-transform: uppercase; color: #666; letter-spacing: 0.03em; }
+        .btn-add { background: #007AFF; color: white; border: none; border-radius: 3px; width: 18px; height: 18px; font-size: 0.8rem; cursor: pointer; }
         
-        /* Menu Editor */
-        .menu-section { margin-bottom: 1rem; }
-        .menu-section-header { display: flex; justify-content: space-between; align-items: center; padding: 0.4rem 0; margin-bottom: 0.5rem; border-bottom: 1px solid #333; }
-        .menu-section-title { font-size: 0.65rem; text-transform: uppercase; color: #666; letter-spacing: 0.05em; }
-        
-        .menu-tree { }
-        
-        .menu-item { background: #222; border-radius: 4px; margin-bottom: 0.4rem; overflow: hidden; }
-        .menu-item.dragging { opacity: 0.5; }
-        .menu-item.drag-over { border: 1px dashed #007AFF; }
-        
-        .menu-item-header { display: flex; align-items: center; padding: 0.5rem; gap: 0.5rem; cursor: grab; }
-        .menu-item-header:active { cursor: grabbing; }
-        
-        .drag-handle { color: #555; font-size: 0.8rem; cursor: grab; }
-        .menu-item-name { flex: 1; font-size: 0.8rem; }
-        .menu-item-name input { background: transparent; border: none; color: #fff; font-size: 0.8rem; width: 100%; padding: 0.2rem; }
-        .menu-item-name input:focus { outline: none; background: #333; border-radius: 2px; }
-        
-        .menu-item-actions { display: flex; gap: 0.2rem; }
-        .menu-item-actions button { background: transparent; border: none; color: #666; cursor: pointer; padding: 0.2rem; font-size: 0.7rem; }
+        /* Menu items */
+        .menu-item { background: #222; border-radius: 4px; margin-bottom: 0.3rem; }
+        .menu-item-header { display: flex; align-items: center; padding: 0.4rem; gap: 0.4rem; }
+        .menu-item-header input { background: transparent; border: none; color: #fff; font-size: 0.75rem; flex: 1; padding: 0.15rem; }
+        .menu-item-header input:focus { outline: none; background: #333; border-radius: 2px; }
+        .menu-item-actions button { background: transparent; border: none; color: #666; cursor: pointer; padding: 0.15rem 0.25rem; font-size: 0.65rem; }
         .menu-item-actions button:hover { color: #fff; }
-        
-        .menu-item-toggle { background: none; border: none; color: #666; cursor: pointer; font-size: 0.6rem; padding: 0.2rem; transition: transform 0.2s; }
-        .menu-item.open .menu-item-toggle { transform: rotate(90deg); }
-        
-        .menu-item-children { padding-left: 1rem; display: none; padding-bottom: 0.5rem; }
+        .menu-item-children { padding-left: 0.8rem; display: none; padding-bottom: 0.4rem; }
         .menu-item.open .menu-item-children { display: block; }
+        .menu-item-toggle { background: none; border: none; color: #666; cursor: pointer; font-size: 0.5rem; padding: 0.15rem; }
+        .menu-item.open .menu-item-toggle { transform: rotate(90deg); }
+        .menu-item-link { font-size: 0.6rem; color: #007AFF; padding: 0.15rem 0.4rem; }
         
-        .menu-item-link { font-size: 0.65rem; color: #007AFF; padding: 0.2rem 0.5rem; }
+        /* Gallery items */
+        .gallery-item { display: flex; align-items: center; padding: 0.45rem 0.5rem; background: #222; border-radius: 4px; margin-bottom: 0.25rem; cursor: pointer; gap: 0.5rem; }
+        .gallery-item:hover { background: #2a2a2a; }
+        .gallery-item.active { background: #007AFF; }
+        .gallery-item .name { flex: 1; font-size: 0.75rem; }
+        .gallery-item .badges { display: flex; gap: 0.25rem; }
+        .gallery-item .badge { font-size: 0.55rem; padding: 0.1rem 0.3rem; border-radius: 2px; background: #444; }
+        .gallery-item .badge.hidden { background: #6c5ce7; }
+        .gallery-item .count { font-size: 0.6rem; color: #666; }
+        .gallery-item.active .count, .gallery-item.active .badge { color: rgba(255,255,255,0.7); background: rgba(255,255,255,0.2); }
         
-        .add-menu-item { display: flex; gap: 0.3rem; margin-top: 0.5rem; }
-        .add-menu-item input { flex: 1; padding: 0.4rem; background: #222; border: 1px solid #333; border-radius: 4px; color: #fff; font-size: 0.75rem; }
-        .add-menu-item input:focus { outline: none; border-color: #007AFF; }
-        
-        /* Galleries list */
-        .gallery-list-item { display: flex; align-items: center; padding: 0.5rem 0.6rem; background: #222; border-radius: 4px; margin-bottom: 0.3rem; cursor: pointer; transition: background 0.2s; }
-        .gallery-list-item:hover { background: #2a2a2a; }
-        .gallery-list-item.active { background: #007AFF; }
-        .gallery-list-item .name { flex: 1; font-size: 0.8rem; }
-        .gallery-list-item .count { font-size: 0.65rem; color: #666; }
-        .gallery-list-item.active .count { color: rgba(255,255,255,0.7); }
-        
-        /* Pages list */
-        .page-list-item { padding: 0.5rem 0.6rem; background: #222; border-radius: 4px; margin-bottom: 0.3rem; cursor: pointer; font-size: 0.8rem; }
-        .page-list-item:hover { background: #2a2a2a; }
-        .page-list-item.active { background: #007AFF; }
+        /* Page items */
+        .page-item { padding: 0.45rem 0.5rem; background: #222; border-radius: 4px; margin-bottom: 0.25rem; cursor: pointer; font-size: 0.75rem; }
+        .page-item:hover { background: #2a2a2a; }
+        .page-item.active { background: #007AFF; }
         
         /* MAIN */
-        .main { flex: 1; overflow-y: auto; padding: 1.5rem; background: #1a1a1a; }
+        .main { flex: 1; overflow-y: auto; padding: 1.2rem; background: #1a1a1a; }
         
-        .editor-section { background: #222; border-radius: 6px; padding: 1.2rem; margin-bottom: 1rem; }
-        .editor-section-title { font-size: 0.9rem; font-weight: 500; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; }
+        .editor-section { background: #222; border-radius: 6px; padding: 1rem; margin-bottom: 0.8rem; }
+        .editor-title { font-size: 0.85rem; font-weight: 500; margin-bottom: 0.8rem; display: flex; justify-content: space-between; align-items: center; }
         
-        .form-row { display: flex; gap: 1rem; margin-bottom: 0.8rem; }
-        .form-group { display: flex; flex-direction: column; gap: 0.3rem; flex: 1; }
-        .form-group.full { flex: 100%; }
-        .form-group label { font-size: 0.65rem; color: #888; text-transform: uppercase; letter-spacing: 0.03em; }
-        .form-group input, .form-group textarea, .form-group select { padding: 0.5rem; background: #333; border: 1px solid #444; border-radius: 4px; color: #fff; font-size: 0.8rem; font-family: inherit; }
-        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #007AFF; }
-        .form-group textarea { resize: vertical; min-height: 80px; }
+        .form-row { display: flex; gap: 0.8rem; margin-bottom: 0.6rem; }
+        .form-group { display: flex; flex-direction: column; gap: 0.2rem; flex: 1; }
+        .form-group label { font-size: 0.6rem; color: #888; text-transform: uppercase; }
+        .form-group input, .form-group textarea, .form-group select { padding: 0.4rem; background: #333; border: 1px solid #444; border-radius: 3px; color: #fff; font-size: 0.75rem; font-family: inherit; }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus { outline: none; border-color: #007AFF; }
+        .form-group textarea { resize: vertical; min-height: 60px; }
         
-        .checkbox-group { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0; }
-        .checkbox-group input { width: 16px; height: 16px; cursor: pointer; }
-        .checkbox-group label { font-size: 0.8rem; color: #aaa; cursor: pointer; }
-        
-        .char-count { font-size: 0.6rem; color: #666; margin-left: auto; }
-        .char-count.over { color: #d63031; }
+        .checkbox-row { display: flex; align-items: center; gap: 0.4rem; padding: 0.4rem 0; }
+        .checkbox-row input { width: 14px; height: 14px; }
+        .checkbox-row label { font-size: 0.75rem; color: #aaa; }
         
         /* Images grid */
-        .images-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 0.8rem; }
+        .images-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 0.8rem; }
         
-        .image-card { background: #2a2a2a; border-radius: 6px; overflow: hidden; cursor: grab; position: relative; }
-        .image-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
-        .image-card.dragging { opacity: 0.5; }
-        .image-card.drag-over { outline: 2px dashed #007AFF; }
+        .image-card { background: #2a2a2a; border-radius: 6px; overflow: hidden; }
+        .image-card-preview { display: flex; gap: 0.6rem; padding: 0.6rem; background: #222; }
+        .image-card-preview img { width: 80px; height: 80px; object-fit: cover; border-radius: 4px; flex-shrink: 0; }
+        .image-card-preview-info { flex: 1; min-width: 0; }
+        .image-card-filename { font-size: 0.6rem; color: #666; margin-bottom: 0.3rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         
-        .image-card img { width: 100%; height: 100px; object-fit: cover; display: block; }
-        .image-card-body { padding: 0.5rem; }
-        .image-card-title { font-size: 0.6rem; color: #666; margin-bottom: 0.3rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .image-card-fields { padding: 0.6rem; display: flex; flex-direction: column; gap: 0.4rem; }
+        .image-card-fields input, .image-card-fields textarea, .image-card-fields select { width: 100%; padding: 0.35rem; background: #333; border: 1px solid #444; border-radius: 3px; color: #fff; font-size: 0.7rem; font-family: inherit; }
+        .image-card-fields input:focus, .image-card-fields textarea:focus { outline: none; border-color: #007AFF; }
+        .image-card-fields textarea { resize: none; height: 50px; }
+        .image-card-fields label { font-size: 0.55rem; color: #888; text-transform: uppercase; margin-bottom: 0.1rem; display: block; }
         
-        .image-card textarea { width: 100%; padding: 0.3rem; background: #333; border: 1px solid #444; border-radius: 3px; color: #fff; font-size: 0.65rem; resize: none; height: 36px; font-family: inherit; }
-        .image-card textarea:focus { outline: none; border-color: #007AFF; }
+        .image-card-option { display: flex; align-items: center; gap: 0.4rem; padding: 0.35rem; background: #333; border-radius: 3px; }
+        .image-card-option input[type="checkbox"] { width: 12px; height: 12px; flex-shrink: 0; }
+        .image-card-option label { font-size: 0.65rem; color: #888; white-space: nowrap; }
+        .image-card-option select, .image-card-option input[type="text"] { flex: 1; min-width: 0; padding: 0.25rem; font-size: 0.65rem; }
+        .image-card-option.active { background: #1a3a1a; }
+        .image-card-option.active label { color: #4ade80; }
         
-        .image-card-row { display: flex; gap: 0.3rem; margin-top: 0.3rem; }
-        .image-card-row select { flex: 1; padding: 0.25rem; background: #333; border: 1px solid #444; border-radius: 3px; color: #fff; font-size: 0.6rem; }
-        
-        .image-option { display: flex; align-items: center; gap: 0.3rem; margin-top: 0.3rem; padding: 0.3rem; background: #333; border-radius: 3px; }
-        .image-option input[type="checkbox"] { width: 12px; height: 12px; }
-        .image-option label { font-size: 0.6rem; color: #888; }
-        .image-option.active { background: #1a3a1a; }
-        .image-option.active label { color: #4ade80; }
-        
-        .image-option input[type="text"] { flex: 1; padding: 0.2rem; background: #444; border: 1px solid #555; border-radius: 2px; color: #fff; font-size: 0.6rem; margin-left: 0.3rem; }
-        
-        .image-card-actions { display: flex; gap: 0.2rem; margin-top: 0.3rem; }
-        .image-card-actions button { flex: 1; padding: 0.25rem; font-size: 0.6rem; border: none; border-radius: 3px; cursor: pointer; }
+        .image-card-actions { display: flex; gap: 0.3rem; padding: 0.5rem 0.6rem; background: #222; border-top: 1px solid #333; }
+        .image-card-actions button { flex: 1; padding: 0.3rem; font-size: 0.6rem; border: none; border-radius: 3px; cursor: pointer; }
         .btn-copy { background: #6c5ce7; color: white; }
+        .btn-move { background: #00b894; color: white; }
         .btn-remove { background: #d63031; color: white; }
         
-        .order-badge { position: absolute; top: 4px; left: 4px; background: rgba(0,0,0,0.7); color: white; padding: 0.1rem 0.35rem; border-radius: 3px; font-size: 0.6rem; }
-        
-        .drop-zone { border: 2px dashed #444; border-radius: 6px; padding: 1.5rem; text-align: center; color: #666; margin-top: 0.8rem; transition: all 0.2s; font-size: 0.8rem; }
+        /* Drop zone */
+        .drop-zone { border: 2px dashed #444; border-radius: 6px; padding: 1.2rem; text-align: center; color: #666; margin-top: 0.6rem; font-size: 0.75rem; }
         .drop-zone.drag-over { border-color: #007AFF; background: rgba(0, 122, 255, 0.1); color: #007AFF; }
-        
-        /* Videos */
-        .video-item { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; background: #333; border-radius: 4px; margin-bottom: 0.4rem; }
-        .video-item select { width: 80px; padding: 0.3rem; font-size: 0.75rem; }
-        .video-item input { flex: 1; padding: 0.3rem; font-size: 0.75rem; }
         
         /* Modal */
         .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); z-index: 1000; align-items: center; justify-content: center; }
         .modal.active { display: flex; }
-        .modal-content { background: #222; border-radius: 8px; padding: 1.5rem; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto; }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
-        .modal-header h3 { font-size: 1rem; }
-        .modal-close { background: none; border: none; color: #888; font-size: 1.3rem; cursor: pointer; }
+        .modal-content { background: #222; border-radius: 8px; padding: 1.2rem; max-width: 550px; width: 90%; max-height: 75vh; overflow-y: auto; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; }
+        .modal-header h3 { font-size: 0.95rem; }
+        .modal-close { background: none; border: none; color: #888; font-size: 1.2rem; cursor: pointer; }
         
-        .export-preview { background: #111; border-radius: 4px; padding: 0.8rem; font-family: monospace; font-size: 0.6rem; max-height: 250px; overflow: auto; white-space: pre-wrap; color: #0f0; }
+        .modal-list { display: flex; flex-direction: column; gap: 0.3rem; }
+        .modal-item { padding: 0.6rem; background: #333; border-radius: 4px; cursor: pointer; font-size: 0.8rem; }
+        .modal-item:hover { background: #007AFF; }
         
-        .copy-list { display: flex; flex-direction: column; gap: 0.4rem; }
-        .copy-item { padding: 0.7rem; background: #333; border-radius: 4px; cursor: pointer; font-size: 0.85rem; }
-        .copy-item:hover { background: #007AFF; }
+        .export-preview { background: #111; border-radius: 4px; padding: 0.6rem; font-family: monospace; font-size: 0.55rem; max-height: 200px; overflow: auto; white-space: pre-wrap; color: #0f0; }
         
-        .toast { position: fixed; bottom: 1.5rem; right: 1.5rem; background: #28a745; color: white; padding: 0.7rem 1rem; border-radius: 4px; display: none; z-index: 1001; font-size: 0.8rem; }
-        .toast.active { display: block; animation: slideIn 0.3s ease; }
-        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        .toast { position: fixed; bottom: 1rem; right: 1rem; background: #28a745; color: white; padding: 0.6rem 1rem; border-radius: 4px; display: none; z-index: 1001; font-size: 0.75rem; }
+        .toast.active { display: block; }
         
-        .empty-state { text-align: center; padding: 3rem; color: #666; }
-        .empty-state h3 { margin-bottom: 0.5rem; font-weight: 400; }
+        .empty-state { text-align: center; padding: 2rem; color: #666; }
+        .empty-state h3 { font-weight: 400; margin-bottom: 0.4rem; }
     </style>
 </head>
 <body>
     <header class="header">
-        <h1>📷 Admin Portfolio</h1>
+        <h1>📷 Admin Portfolio V5</h1>
         <div class="header-actions">
             <button class="btn btn-secondary" onclick="importConfig()">📥 Importer</button>
             <button class="btn btn-success" onclick="exportConfig()">💾 Exporter</button>
@@ -195,474 +163,306 @@
         </main>
     </div>
 
-    <!-- Modal Export -->
+    <!-- Modals -->
     <div class="modal" id="exportModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>Exporter</h3>
+                <h3>Exporter gallery.js</h3>
                 <button class="modal-close" onclick="closeModal('exportModal')">&times;</button>
             </div>
             <pre class="export-preview" id="exportPreview"></pre>
-            <div style="margin-top: 1rem; display: flex; gap: 0.6rem;">
+            <div style="margin-top: 0.8rem; display: flex; gap: 0.5rem;">
                 <button class="btn btn-primary" onclick="copyToClipboard()">📋 Copier</button>
                 <button class="btn btn-success" onclick="downloadFile()">⬇️ Télécharger</button>
             </div>
         </div>
     </div>
 
-    <!-- Modal Copy -->
-    <div class="modal" id="copyModal">
+    <div class="modal" id="selectModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>Copier vers...</h3>
-                <button class="modal-close" onclick="closeModal('copyModal')">&times;</button>
+                <h3 id="selectModalTitle">Sélectionner</h3>
+                <button class="modal-close" onclick="closeModal('selectModal')">&times;</button>
             </div>
-            <div class="copy-list" id="copyList"></div>
-        </div>
-    </div>
-
-    <!-- Modal Link Gallery -->
-    <div class="modal" id="linkModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Lier à une galerie</h3>
-                <button class="modal-close" onclick="closeModal('linkModal')">&times;</button>
-            </div>
-            <div class="copy-list" id="linkList"></div>
+            <div class="modal-list" id="selectModalList"></div>
         </div>
     </div>
 
     <div class="toast" id="toast">Sauvegardé !</div>
 
     <script>
-        const MAX_DESC = 200;
-        const PHOTODECK_BASE = "https://bertrandbasset.photodeck.com";
-        
-        // État
+        // ==================== STATE ====================
         let currentTab = 'menu';
         let currentGallery = null;
         let currentPage = null;
-        let copyingImage = null;
-        let linkingMenuItem = null;
+        let selectCallback = null;
         
-        // Configuration du menu (structure arborescente)
+        // Menu structure
         let menuConfig = [
-            {
-                id: 'photographe',
-                name: 'Photographe',
-                type: 'category',
-                children: [
-                    { id: 'portrait', name: 'Portrait', type: 'gallery', galleryId: 'portrait' },
-                    {
-                        id: 'serie-portrait',
-                        name: 'Série Portrait',
-                        type: 'subcategory',
-                        children: [
-                            { id: 'gem-menu', name: 'Le GEM s\'endimanche', type: 'gallery', galleryId: 'gem' },
-                            { id: 'carre-das-menu', name: 'Carré d\'As', type: 'gallery', galleryId: 'carre-das' }
-                        ]
-                    },
-                    {
-                        id: 'immersion',
-                        name: 'Immersion',
-                        type: 'subcategory',
-                        children: [
-                            { id: 'burning-man-menu', name: 'Burning Man', type: 'gallery', galleryId: 'burning-man' },
-                            { id: 'st-melar-menu', name: 'St Mélar', type: 'gallery', galleryId: 'st-melar' }
-                        ]
-                    }
-                ]
-            },
-            {
-                id: 'realisateur',
-                name: 'Réalisateur',
-                type: 'category',
-                children: [
-                    { id: 'cinema-menu', name: 'Cinéma', type: 'gallery', galleryId: 'cinema' },
-                    { id: 'television-menu', name: 'Télévision', type: 'gallery', galleryId: 'television' }
-                ]
-            },
-            {
-                id: 'galerie-link',
-                name: 'Galerie',
-                type: 'external',
-                url: 'https://bertrandbasset.photodeck.com'
-            },
-            {
-                id: 'prestations',
-                name: 'Prestations',
-                type: 'category',
-                children: [
-                    { id: 'presta-portrait', name: 'Portrait', type: 'page', pageId: 'presta-portrait' },
-                    { id: 'presta-headshot', name: 'Headshot Corporate', type: 'page', pageId: 'presta-headshot' },
-                    { id: 'presta-immersion', name: 'Immersion Métier', type: 'page', pageId: 'presta-immersion' },
-                    { id: 'presta-empreinte', name: 'Empreinte', type: 'page', pageId: 'presta-empreinte' }
-                ]
-            },
-            { id: 'about-menu', name: 'À propos', type: 'page', pageId: 'about' },
-            { id: 'contact-menu', name: 'Contact', type: 'page', pageId: 'contact' }
+            { id: "portrait", name: "Portrait", type: "gallery", galleryId: "portrait" },
+            { id: "headshot", name: "Headshot", type: "gallery", galleryId: "headshot" },
+            { id: "series", name: "Séries", type: "category", children: [
+                { id: "burning-man-m", name: "Burning Man", type: "gallery", galleryId: "burning-man" },
+                { id: "gem-m", name: "Le GEM s'endimanche", type: "gallery", galleryId: "gem" },
+                { id: "carre-das-m", name: "Carré d'As", type: "gallery", galleryId: "carre-das" },
+                { id: "st-melar-m", name: "St Mélar", type: "gallery", galleryId: "st-melar" }
+            ]},
+            { id: "other", name: "Autres Travaux", type: "category", children: [
+                { id: "cinema-m", name: "Cinéma", type: "gallery", galleryId: "cinema" },
+                { id: "tv-m", name: "Télévision", type: "gallery", galleryId: "television" }
+            ]},
+            { id: "boutique", name: "Boutique", type: "external", url: "https://galerie.bertrandbasset.com" },
+            { id: "about-m", name: "À propos", type: "page", pageId: "about" },
+            { id: "contact-m", name: "Contact", type: "page", pageId: "contact" }
         ];
         
-        // Galeries
+        // Galleries
         let galleriesConfig = {
-            "accueil": { title: "Accueil", path: "images/accueil", description: "", autoplayAudio: false, videos: [], images: [] },
-            "portrait": { title: "Portrait", path: "images/photography/portrait", description: "", videos: [], images: [] },
-            "gem": { title: "Le GEM s'endimanche", path: "images/photography/serie-portrait/gem", description: "", projectTitle: "Le GEM s'endimanche", autoplayAudio: true, videos: [], images: [] },
-            "carre-das": { title: "Carré d'As", path: "images/photography/serie-portrait/Carré D'as", description: "", videos: [], images: [] },
-            "burning-man": { title: "Burning Man", path: "images/photography/immersion/Burning Man", description: "", videos: [], images: [] },
-            "st-melar": { title: "St Mélar", path: "images/photography/immersion/St Mélar", description: "", videos: [], images: [] },
-            "cinema": { title: "Cinéma", path: "images/filmmaker/cinema", description: "", videos: [], images: [] },
-            "television": { title: "Télévision", path: "images/filmmaker/Television", description: "", videos: [], images: [] }
+            "accueil": { title: "Accueil", path: "images/accueil", hidden: false, description: "", autoplayAudio: false, images: [] },
+            "portrait": { title: "Portrait", path: "images/photography/portrait", hidden: false, description: "", images: [] },
+            "headshot": { title: "Headshot", path: "images/photography/headshot", hidden: false, description: "", images: [] },
+            "gem": { title: "Le GEM s'endimanche", path: "images/photography/serie-portrait/gem", hidden: false, description: "Série de portraits au GEM de Morlaix.", autoplayAudio: true, projectPage: true, images: [] },
+            "carre-das": { title: "Carré d'As", path: "images/photography/serie-portrait/Carré D'as", hidden: false, description: "", images: [] },
+            "burning-man": { title: "Burning Man", path: "images/photography/immersion/Burning Man", hidden: false, description: "", images: [] },
+            "st-melar": { title: "St Mélar", path: "images/photography/immersion/St Mélar", hidden: false, description: "", images: [] },
+            "cinema": { title: "Cinéma", path: "images/filmmaker/cinema", hidden: false, description: "", images: [] },
+            "television": { title: "Télévision", path: "images/filmmaker/Television", hidden: false, description: "", images: [] }
         };
         
         // Pages
         let pagesConfig = {
-            "about": { title: "À propos", content: "Bertrand Basset\nPhotographe & Réalisateur\n\nBasé en Bretagne..." },
-            "contact": { title: "Contact", content: "contact@bertrandbasset.com\nCarantec, Finistère" },
-            "presta-portrait": { title: "Portrait", content: "Séance portrait en studio ou en extérieur.", price: "", link: "" },
-            "presta-headshot": { title: "Headshot Corporate", content: "Portraits professionnels pour LinkedIn, CV, sites web.", price: "", link: "" },
-            "presta-immersion": { title: "Immersion Métier", content: "Reportage photo au cœur de votre activité.", price: "", link: "" },
-            "presta-empreinte": { title: "Empreinte", content: "Entretien filmé pour conserver la mémoire de vos proches.", price: "", link: "" }
+            "about": { title: "À propos", content: "Bertrand Basset\nPhotographe & Réalisateur" },
+            "contact": { title: "Contact", content: "contact@bertrandbasset.com" }
         };
         
-        // Project pages
-        let projectPagesConfig = {};
+        // Project pages content
+        let projectPages = {};
         
-        // Audio files
+        // Audio files per gallery
         let audioFiles = {};
 
-        // Init
+        // ==================== INIT ====================
         document.addEventListener('DOMContentLoaded', () => {
-            loadSavedConfig();
+            loadConfig();
             renderSidebar();
         });
 
-        function loadSavedConfig() {
-            const saved = localStorage.getItem('portfolioConfigV4');
+        function loadConfig() {
+            const saved = localStorage.getItem('portfolioV5');
             if (saved) {
                 try {
                     const data = JSON.parse(saved);
                     if (data.menu) menuConfig = data.menu;
                     if (data.galleries) galleriesConfig = { ...galleriesConfig, ...data.galleries };
                     if (data.pages) pagesConfig = { ...pagesConfig, ...data.pages };
-                    if (data.projectPages) projectPagesConfig = data.projectPages;
+                    if (data.projectPages) projectPages = data.projectPages;
                     if (data.audioFiles) audioFiles = data.audioFiles;
-                } catch(e) { console.error('Load error:', e); }
+                } catch(e) { console.error(e); }
             }
         }
 
         function saveConfig() {
-            localStorage.setItem('portfolioConfigV4', JSON.stringify({
+            localStorage.setItem('portfolioV5', JSON.stringify({
                 menu: menuConfig,
                 galleries: galleriesConfig,
                 pages: pagesConfig,
-                projectPages: projectPagesConfig,
-                audioFiles: audioFiles
+                projectPages,
+                audioFiles
             }));
             showToast('Sauvegardé !');
         }
 
-        // Tabs
+        // ==================== TABS ====================
         function switchTab(tab) {
             currentTab = tab;
             document.querySelectorAll('.sidebar-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+            currentGallery = null;
+            currentPage = null;
             renderSidebar();
+            document.getElementById('mainContent').innerHTML = '<div class="empty-state"><h3>Sélectionne un élément</h3></div>';
         }
 
         function renderSidebar() {
-            const content = document.getElementById('sidebarContent');
-            if (currentTab === 'menu') renderMenuTab(content);
-            else if (currentTab === 'galleries') renderGalleriesTab(content);
-            else if (currentTab === 'pages') renderPagesTab(content);
+            const el = document.getElementById('sidebarContent');
+            if (currentTab === 'menu') renderMenuSidebar(el);
+            else if (currentTab === 'galleries') renderGalleriesSidebar(el);
+            else if (currentTab === 'pages') renderPagesSidebar(el);
         }
 
-        // Menu Tab
-        function renderMenuTab(container) {
-            let html = `
-                <div class="menu-section">
-                    <div class="menu-section-header">
-                        <span class="menu-section-title">Structure du menu</span>
-                    </div>
-                    <div class="menu-tree" id="menuTree">
-                        ${renderMenuItems(menuConfig, 0)}
-                    </div>
-                    <div class="add-menu-item">
-                        <input type="text" id="newMenuItemName" placeholder="Nouvel élément...">
-                        <button class="btn btn-primary btn-small" onclick="addMenuItem()">+</button>
-                    </div>
+        // ==================== MENU TAB ====================
+        function renderMenuSidebar(el) {
+            el.innerHTML = `
+                <div class="section-header">
+                    <span class="section-title">Structure du menu</span>
+                    <button class="btn-add" onclick="addMenuItem()">+</button>
                 </div>
+                <div id="menuTree">${renderMenuItems(menuConfig, 0)}</div>
             `;
-            container.innerHTML = html;
-            initMenuDragDrop();
+            initMenuDrag();
         }
 
         function renderMenuItems(items, level) {
-            return items.map((item, index) => {
-                const hasChildren = item.children && item.children.length > 0;
-                const typeIcon = item.type === 'external' ? '🔗' : item.type === 'gallery' ? '🖼️' : item.type === 'page' ? '📄' : '📁';
-                
+            return items.map((item, i) => {
+                const hasChildren = item.children?.length > 0;
+                const icon = item.type === 'external' ? '🔗' : item.type === 'page' ? '📄' : item.type === 'gallery' ? '🖼️' : '📁';
                 return `
-                    <div class="menu-item ${hasChildren ? '' : ''}" data-id="${item.id}" data-index="${index}" data-level="${level}" draggable="true">
+                    <div class="menu-item" data-id="${item.id}" data-level="${level}">
                         <div class="menu-item-header">
-                            <span class="drag-handle">⋮⋮</span>
-                            ${hasChildren ? `<button class="menu-item-toggle" onclick="toggleMenuItem('${item.id}')">▶</button>` : `<span style="width:18px"></span>`}
-                            <span class="menu-item-name">
-                                <input value="${item.name}" onchange="renameMenuItem('${item.id}', this.value)" onclick="event.stopPropagation()">
-                            </span>
-                            <span style="font-size:0.7rem">${typeIcon}</span>
+                            <span style="cursor:grab;color:#555">⋮⋮</span>
+                            ${hasChildren ? `<button class="menu-item-toggle" onclick="this.closest('.menu-item').classList.toggle('open')">▶</button>` : '<span style="width:14px"></span>'}
+                            <input value="${item.name}" onchange="renameMenuItem('${item.id}',this.value)">
+                            <span style="font-size:0.65rem">${icon}</span>
                             <div class="menu-item-actions">
-                                ${item.type === 'category' || item.type === 'subcategory' ? `<button onclick="addChildMenuItem('${item.id}')" title="Ajouter enfant">+</button>` : ''}
-                                ${item.type === 'gallery' ? `<button onclick="openLinkModal('${item.id}')" title="Lier galerie">🔗</button>` : ''}
-                                ${level > 0 ? `<button onclick="moveToRoot('${item.id}')" title="Remonter au niveau racine">↑</button>` : ''}
+                                ${item.type === 'category' ? `<button onclick="addChildMenuItem('${item.id}')" title="Ajouter">+</button>` : ''}
+                                ${level > 0 ? `<button onclick="moveToRoot('${item.id}')" title="Remonter">↑</button>` : ''}
+                                <button onclick="linkMenuItem('${item.id}')" title="Lier">🔗</button>
                                 <button onclick="deleteMenuItem('${item.id}')" title="Supprimer">×</button>
                             </div>
                         </div>
-                        ${hasChildren ? `
-                            <div class="menu-item-children">
-                                ${renderMenuItems(item.children, level + 1)}
-                            </div>
-                        ` : ''}
+                        ${hasChildren ? `<div class="menu-item-children">${renderMenuItems(item.children, level+1)}</div>` : ''}
                         ${item.galleryId ? `<div class="menu-item-link">→ ${galleriesConfig[item.galleryId]?.title || item.galleryId}</div>` : ''}
                         ${item.url ? `<div class="menu-item-link">→ ${item.url}</div>` : ''}
+                        ${item.pageId ? `<div class="menu-item-link">→ ${pagesConfig[item.pageId]?.title || item.pageId}</div>` : ''}
                     </div>
                 `;
             }).join('');
         }
 
-        function toggleMenuItem(id) {
-            const el = document.querySelector(`.menu-item[data-id="${id}"]`);
-            if (el) el.classList.toggle('open');
-        }
-
-        function renameMenuItem(id, newName) {
-            function findAndRename(items) {
-                for (let item of items) {
-                    if (item.id === id) { item.name = newName; return true; }
-                    if (item.children && findAndRename(item.children)) return true;
-                }
-                return false;
-            }
-            findAndRename(menuConfig);
-            saveConfig();
-        }
-
         function addMenuItem() {
-            const input = document.getElementById('newMenuItemName');
-            const name = input.value.trim();
+            const name = prompt('Nom:');
             if (!name) return;
-            
-            const id = 'menu-' + Date.now();
-            menuConfig.push({ id, name, type: 'category', children: [] });
-            input.value = '';
-            saveConfig();
-            renderSidebar();
+            menuConfig.push({ id: 'menu-'+Date.now(), name, type: 'category', children: [] });
+            saveConfig(); renderSidebar();
         }
 
         function addChildMenuItem(parentId) {
-            const name = prompt('Nom du sous-élément:');
+            const name = prompt('Nom:');
             if (!name) return;
-            
-            function findAndAdd(items) {
-                for (let item of items) {
-                    if (item.id === parentId) {
-                        if (!item.children) item.children = [];
-                        const id = 'menu-' + Date.now();
-                        item.children.push({ id, name, type: 'gallery', galleryId: null });
-                        return true;
-                    }
-                    if (item.children && findAndAdd(item.children)) return true;
-                }
-                return false;
-            }
-            findAndAdd(menuConfig);
+            findMenuItem(menuConfig, parentId, item => {
+                if (!item.children) item.children = [];
+                item.children.push({ id: 'menu-'+Date.now(), name, type: 'gallery', galleryId: null });
+            });
+            saveConfig(); renderSidebar();
+        }
+
+        function renameMenuItem(id, name) {
+            findMenuItem(menuConfig, id, item => item.name = name);
             saveConfig();
-            renderSidebar();
-            
-            // Open parent
-            setTimeout(() => {
-                document.querySelector(`.menu-item[data-id="${parentId}"]`)?.classList.add('open');
-            }, 50);
         }
 
         function deleteMenuItem(id) {
-            if (!confirm('Supprimer cet élément ?')) return;
-            
-            function findAndDelete(items) {
-                const index = items.findIndex(item => item.id === id);
-                if (index !== -1) { items.splice(index, 1); return true; }
-                for (let item of items) {
-                    if (item.children && findAndDelete(item.children)) return true;
-                }
-                return false;
-            }
-            findAndDelete(menuConfig);
-            saveConfig();
-            renderSidebar();
+            if (!confirm('Supprimer ?')) return;
+            deleteFromMenu(menuConfig, id);
+            saveConfig(); renderSidebar();
         }
 
         function moveToRoot(id) {
-            let movedItem = null;
-            
-            function findAndRemove(items) {
+            let moved = null;
+            function extract(items) {
                 for (let i = 0; i < items.length; i++) {
-                    if (items[i].id === id) {
-                        movedItem = items.splice(i, 1)[0];
-                        return true;
-                    }
-                    if (items[i].children && findAndRemove(items[i].children)) return true;
+                    if (items[i].id === id) { moved = items.splice(i,1)[0]; return true; }
+                    if (items[i].children && extract(items[i].children)) return true;
                 }
                 return false;
             }
-            
-            findAndRemove(menuConfig);
-            if (movedItem) {
-                menuConfig.push(movedItem);
-                saveConfig();
-                renderSidebar();
-                showToast('Déplacé au niveau racine');
-            }
+            extract(menuConfig);
+            if (moved) { menuConfig.push(moved); saveConfig(); renderSidebar(); showToast('Remonté !'); }
         }
 
-        function openLinkModal(menuItemId) {
-            linkingMenuItem = menuItemId;
-            const list = document.getElementById('linkList');
-            list.innerHTML = Object.entries(galleriesConfig)
-                .map(([id, g]) => `<div class="copy-item" onclick="linkMenuToGallery('${id}')">${g.title}</div>`)
-                .join('');
-            list.innerHTML += `<div class="copy-item" style="background:#444" onclick="linkMenuToExternal()">🔗 Lien externe...</div>`;
-            list.innerHTML += `<div class="copy-item" style="background:#444" onclick="linkMenuToPage()">📄 Page...</div>`;
-            document.getElementById('linkModal').classList.add('active');
-        }
-
-        function linkMenuToGallery(galleryId) {
-            function findAndLink(items) {
-                for (let item of items) {
-                    if (item.id === linkingMenuItem) {
-                        item.type = 'gallery';
-                        item.galleryId = galleryId;
-                        delete item.url;
-                        delete item.pageId;
-                        return true;
-                    }
-                    if (item.children && findAndLink(item.children)) return true;
-                }
-                return false;
-            }
-            findAndLink(menuConfig);
-            closeModal('linkModal');
-            saveConfig();
-            renderSidebar();
-        }
-
-        function linkMenuToExternal() {
-            const url = prompt('URL externe:', 'https://');
-            if (!url) return;
-            
-            function findAndLink(items) {
-                for (let item of items) {
-                    if (item.id === linkingMenuItem) {
-                        item.type = 'external';
-                        item.url = url;
-                        delete item.galleryId;
-                        delete item.pageId;
-                        return true;
-                    }
-                    if (item.children && findAndLink(item.children)) return true;
-                }
-                return false;
-            }
-            findAndLink(menuConfig);
-            closeModal('linkModal');
-            saveConfig();
-            renderSidebar();
-        }
-
-        function linkMenuToPage() {
-            const pageId = prompt('ID de la page:', 'nouvelle-page');
-            if (!pageId) return;
-            
-            if (!pagesConfig[pageId]) {
-                pagesConfig[pageId] = { title: pageId, content: '' };
-            }
-            
-            function findAndLink(items) {
-                for (let item of items) {
-                    if (item.id === linkingMenuItem) {
-                        item.type = 'page';
-                        item.pageId = pageId;
-                        delete item.galleryId;
-                        delete item.url;
-                        return true;
-                    }
-                    if (item.children && findAndLink(item.children)) return true;
-                }
-                return false;
-            }
-            findAndLink(menuConfig);
-            closeModal('linkModal');
-            saveConfig();
-            renderSidebar();
-        }
-
-        function initMenuDragDrop() {
-            const items = document.querySelectorAll('.menu-item[data-level="0"]');
-            items.forEach(item => {
-                item.addEventListener('dragstart', e => {
-                    e.dataTransfer.setData('text/plain', item.dataset.id);
-                    item.classList.add('dragging');
+        function linkMenuItem(id) {
+            selectCallback = (type, value) => {
+                findMenuItem(menuConfig, id, item => {
+                    if (type === 'gallery') { item.type = 'gallery'; item.galleryId = value; delete item.url; delete item.pageId; }
+                    else if (type === 'page') { item.type = 'page'; item.pageId = value; delete item.url; delete item.galleryId; }
+                    else if (type === 'external') { item.type = 'external'; item.url = value; delete item.galleryId; delete item.pageId; }
                 });
-                item.addEventListener('dragend', () => item.classList.remove('dragging'));
-                item.addEventListener('dragover', e => { e.preventDefault(); item.classList.add('drag-over'); });
-                item.addEventListener('dragleave', () => item.classList.remove('drag-over'));
-                item.addEventListener('drop', e => {
+                saveConfig(); renderSidebar();
+            };
+            showSelectModal('Lier à...', [
+                ...Object.entries(galleriesConfig).map(([id,g]) => ({ label: '🖼️ '+g.title, action: () => selectCallback('gallery', id) })),
+                ...Object.entries(pagesConfig).map(([id,p]) => ({ label: '📄 '+p.title, action: () => selectCallback('page', id) })),
+                { label: '🔗 Lien externe...', action: () => { const url = prompt('URL:'); if(url) selectCallback('external', url); } }
+            ]);
+        }
+
+        function findMenuItem(items, id, callback) {
+            for (let item of items) {
+                if (item.id === id) { callback(item); return true; }
+                if (item.children && findMenuItem(item.children, id, callback)) return true;
+            }
+            return false;
+        }
+
+        function deleteFromMenu(items, id) {
+            const i = items.findIndex(x => x.id === id);
+            if (i !== -1) { items.splice(i,1); return true; }
+            for (let item of items) if (item.children && deleteFromMenu(item.children, id)) return true;
+            return false;
+        }
+
+        function initMenuDrag() {
+            document.querySelectorAll('.menu-item[data-level="0"]').forEach(el => {
+                el.draggable = true;
+                el.ondragstart = e => { e.dataTransfer.setData('text', el.dataset.id); el.style.opacity = '0.5'; };
+                el.ondragend = () => el.style.opacity = '1';
+                el.ondragover = e => e.preventDefault();
+                el.ondrop = e => {
                     e.preventDefault();
-                    item.classList.remove('drag-over');
-                    const fromId = e.dataTransfer.getData('text/plain');
-                    const toId = item.dataset.id;
-                    if (fromId !== toId) reorderMenuItems(fromId, toId);
-                });
+                    const fromId = e.dataTransfer.getData('text');
+                    const toId = el.dataset.id;
+                    if (fromId !== toId) reorderMenu(fromId, toId);
+                };
             });
         }
 
-        function reorderMenuItems(fromId, toId) {
-            const fromIndex = menuConfig.findIndex(m => m.id === fromId);
-            const toIndex = menuConfig.findIndex(m => m.id === toId);
-            if (fromIndex === -1 || toIndex === -1) return;
-            
-            const [moved] = menuConfig.splice(fromIndex, 1);
-            menuConfig.splice(toIndex, 0, moved);
-            saveConfig();
-            renderSidebar();
+        function reorderMenu(fromId, toId) {
+            const fi = menuConfig.findIndex(x => x.id === fromId);
+            const ti = menuConfig.findIndex(x => x.id === toId);
+            if (fi === -1 || ti === -1) return;
+            const [moved] = menuConfig.splice(fi, 1);
+            menuConfig.splice(ti, 0, moved);
+            saveConfig(); renderSidebar();
         }
 
-        // Galleries Tab
-        function renderGalleriesTab(container) {
-            let html = `
-                <div class="menu-section">
-                    <div class="menu-section-header">
-                        <span class="menu-section-title">Galeries</span>
-                        <button class="btn btn-primary btn-small" onclick="addGallery()">+</button>
+        // ==================== GALLERIES TAB ====================
+        function renderGalleriesSidebar(el) {
+            const visible = Object.entries(galleriesConfig).filter(([,g]) => !g.hidden);
+            const hidden = Object.entries(galleriesConfig).filter(([,g]) => g.hidden);
+            
+            el.innerHTML = `
+                <div class="section-header">
+                    <span class="section-title">Galeries visibles</span>
+                    <button class="btn-add" onclick="addGallery()">+</button>
+                </div>
+                ${visible.map(([id,g]) => `
+                    <div class="gallery-item ${currentGallery===id?'active':''}" onclick="editGallery('${id}')">
+                        <span class="name">${g.title}</span>
+                        <span class="count">${g.images?.length||0}</span>
                     </div>
-                    ${Object.entries(galleriesConfig).map(([id, g]) => `
-                        <div class="gallery-list-item ${currentGallery === id ? 'active' : ''}" onclick="editGallery('${id}')">
+                `).join('')}
+                
+                ${hidden.length ? `
+                    <div class="section-header" style="margin-top:1rem">
+                        <span class="section-title">Galeries cachées</span>
+                    </div>
+                    ${hidden.map(([id,g]) => `
+                        <div class="gallery-item ${currentGallery===id?'active':''}" onclick="editGallery('${id}')">
                             <span class="name">${g.title}</span>
-                            <span class="count">${g.images.length}</span>
+                            <div class="badges"><span class="badge hidden">caché</span></div>
+                            <span class="count">${g.images?.length||0}</span>
                         </div>
                     `).join('')}
-                </div>
+                ` : ''}
             `;
-            container.innerHTML = html;
         }
 
         function addGallery() {
-            const name = prompt('Nom de la galerie:');
+            const name = prompt('Nom:');
             if (!name) return;
-            const id = name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-');
-            if (galleriesConfig[id]) { alert('Existe déjà !'); return; }
-            galleriesConfig[id] = { title: name, path: 'images/', description: '', videos: [], images: [] };
-            saveConfig();
-            renderSidebar();
-            editGallery(id);
+            const id = name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-');
+            if (galleriesConfig[id]) { alert('Existe déjà'); return; }
+            galleriesConfig[id] = { title: name, path: 'images/', hidden: false, description: '', images: [] };
+            saveConfig(); renderSidebar(); editGallery(id);
         }
 
         function editGallery(id) {
@@ -674,243 +474,177 @@
 
         function renderGalleryEditor(id) {
             const g = galleriesConfig[id];
-            const descLen = (g.description || '').length;
             const audios = audioFiles[id] || [];
-            const hasAudioImages = g.images.some(img => typeof img === 'object' && img.audio);
             
             document.getElementById('mainContent').innerHTML = `
                 <div class="editor-section">
-                    <div class="editor-section-title">
+                    <div class="editor-title">
                         ${g.title}
                         <button class="btn btn-danger btn-small" onclick="deleteGallery('${id}')">Supprimer</button>
                     </div>
-                    
                     <div class="form-row">
                         <div class="form-group">
                             <label>Titre</label>
-                            <input value="${g.title}" onchange="updateGallery('${id}', 'title', this.value)">
+                            <input value="${g.title}" onchange="updateGallery('${id}','title',this.value)">
                         </div>
                         <div class="form-group">
                             <label>Chemin images</label>
-                            <input value="${g.path}" onchange="updateGallery('${id}', 'path', this.value)">
+                            <input value="${g.path}" onchange="updateGallery('${id}','path',this.value)">
                         </div>
                     </div>
-                    
                     <div class="form-group">
-                        <label>Description (1ère slide) <span class="char-count ${descLen > MAX_DESC ? 'over' : ''}">${descLen}/${MAX_DESC}</span></label>
-                        <textarea maxlength="${MAX_DESC}" onchange="updateGallery('${id}', 'description', this.value)">${g.description || ''}</textarea>
+                        <label>Description (1ère slide)</label>
+                        <textarea onchange="updateGallery('${id}','description',this.value)">${g.description||''}</textarea>
                     </div>
-                    
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="hasProject" ${g.projectTitle ? 'checked' : ''} onchange="toggleProject('${id}', this.checked)">
-                        <label for="hasProject">Page "En savoir plus"</label>
+                    <div class="checkbox-row">
+                        <input type="checkbox" id="hidden" ${g.hidden?'checked':''} onchange="updateGallery('${id}','hidden',this.checked)">
+                        <label for="hidden">Galerie cachée (non visible dans le menu)</label>
                     </div>
-                    
-                    ${g.projectTitle ? `
-                        <div class="form-group" style="margin-top:0.5rem;padding:0.8rem;background:#1a3a1a;border-radius:4px;">
-                            <label>Contenu de la page projet</label>
-                            <textarea style="min-height:120px;" onchange="projectPagesConfig['${id}']=this.value;saveConfig();">${projectPagesConfig[id] || ''}</textarea>
-                        </div>
-                    ` : ''}
-                    
-                    ${hasAudioImages ? `
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="autoplay" ${g.autoplayAudio ? 'checked' : ''} onchange="updateGallery('${id}', 'autoplayAudio', this.checked)">
-                            <label for="autoplay">🔊 Autoplay audio</label>
+                    <div class="checkbox-row">
+                        <input type="checkbox" id="autoplay" ${g.autoplayAudio?'checked':''} onchange="updateGallery('${id}','autoplayAudio',this.checked)">
+                        <label for="autoplay">🔊 Autoplay audio</label>
+                    </div>
+                    <div class="checkbox-row">
+                        <input type="checkbox" id="projectPage" ${g.projectPage?'checked':''} onchange="updateGallery('${id}','projectPage',this.checked)">
+                        <label for="projectPage">📄 Page "En savoir plus"</label>
+                    </div>
+                    ${g.projectPage ? `
+                        <div class="form-group" style="margin-top:0.5rem;padding:0.6rem;background:#1a3a1a;border-radius:4px;">
+                            <label>Contenu page projet</label>
+                            <textarea style="min-height:100px" onchange="projectPages['${id}']=this.value;saveConfig()">${projectPages[id]||''}</textarea>
                         </div>
                     ` : ''}
                 </div>
                 
                 <div class="editor-section">
-                    <div class="editor-section-title">
-                        Vidéos
-                        <button class="btn btn-primary btn-small" onclick="addVideo('${id}')">+ Vidéo</button>
-                    </div>
-                    <div id="videosList">${renderVideos(id)}</div>
-                </div>
-                
-                <div class="editor-section">
-                    <div class="editor-section-title">Images (${g.images.length})</div>
-                    <div class="images-grid" id="imagesGrid">${renderImages(id, audios)}</div>
-                    <div class="drop-zone" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleFileDrop(event, '${id}')">
-                        📁 Glisse images ou MP3
+                    <div class="editor-title">Images (${g.images?.length||0})</div>
+                    <div class="images-grid">${renderImages(id, audios)}</div>
+                    <div class="drop-zone" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="handleDrop(event,'${id}')">
+                        📁 Glisse images ou MP3 ici
                     </div>
                 </div>
             `;
-            
-            initImagesDragDrop(id);
-        }
-
-        function updateGallery(id, field, value) {
-            galleriesConfig[id][field] = value;
-            saveConfig();
-            if (field === 'title') renderSidebar();
-        }
-
-        function toggleProject(id, enabled) {
-            if (enabled) {
-                galleriesConfig[id].projectTitle = galleriesConfig[id].title;
-            } else {
-                delete galleriesConfig[id].projectTitle;
-            }
-            saveConfig();
-            renderGalleryEditor(id);
-        }
-
-        function deleteGallery(id) {
-            if (!confirm('Supprimer cette galerie ?')) return;
-            delete galleriesConfig[id];
-            saveConfig();
-            currentGallery = null;
-            renderSidebar();
-            document.getElementById('mainContent').innerHTML = '<div class="empty-state"><h3>Galerie supprimée</h3></div>';
-        }
-
-        function renderVideos(id) {
-            const g = galleriesConfig[id];
-            if (!g.videos || !g.videos.length) return '<p style="color:#666;font-size:0.75rem;">Aucune vidéo</p>';
-            return g.videos.map((v, i) => `
-                <div class="video-item">
-                    <select onchange="galleriesConfig['${id}'].videos[${i}].type=this.value;saveConfig();">
-                        <option value="vimeo" ${v.type === 'vimeo' ? 'selected' : ''}>Vimeo</option>
-                        <option value="youtube" ${v.type === 'youtube' ? 'selected' : ''}>YouTube</option>
-                    </select>
-                    <input placeholder="ID" value="${v.id || ''}" onchange="galleriesConfig['${id}'].videos[${i}].id=this.value;saveConfig();">
-                    <input placeholder="Titre" value="${v.title || ''}" onchange="galleriesConfig['${id}'].videos[${i}].title=this.value;saveConfig();">
-                    <button class="btn btn-danger btn-small" onclick="galleriesConfig['${id}'].videos.splice(${i},1);saveConfig();renderGalleryEditor('${id}');">×</button>
-                </div>
-            `).join('');
-        }
-
-        function addVideo(id) {
-            if (!galleriesConfig[id].videos) galleriesConfig[id].videos = [];
-            galleriesConfig[id].videos.push({ type: 'vimeo', id: '', title: '' });
-            saveConfig();
-            renderGalleryEditor(id);
+            initImagesDrag(id);
         }
 
         function renderImages(galleryId, audios) {
             const g = galleriesConfig[galleryId];
+            if (!g.images?.length) return '<p style="color:#666;font-size:0.75rem;">Aucune image</p>';
+            
+            // Get all gallery IDs for dropdown
+            const galleryOptions = Object.entries(galleriesConfig).map(([id,g]) => `<option value="${id}">${g.title}</option>`).join('');
+            
             return g.images.map((img, i) => {
-                const fn = typeof img === 'string' ? img : img.filename;
-                const caption = typeof img === 'object' ? (img.caption || '') : '';
-                const audio = typeof img === 'object' ? (img.audio || '') : '';
-                const tirage = typeof img === 'object' && img.tirage;
-                const tirageUrl = typeof img === 'object' ? (img.tirageUrl || '') : '';
-                const imgLink = typeof img === 'object' && img.hasLink;
-                const linkType = typeof img === 'object' ? (img.linkType || 'serie') : 'serie';
-                const linkUrl = typeof img === 'object' ? (img.linkUrl || '') : '';
-                
+                const fn = img.filename || img;
                 return `
                     <div class="image-card" draggable="true" data-index="${i}">
-                        <span class="order-badge">${i + 1}</span>
-                        <img src="${g.path}/${fn}" onerror="this.style.background='#333'">
-                        <div class="image-card-body">
-                            <div class="image-card-title">${fn}</div>
-                            <textarea placeholder="Légende..." onchange="updateImage('${galleryId}',${i},'caption',this.value)">${caption}</textarea>
+                        <div class="image-card-preview">
+                            <img src="${g.path}/${fn}" onerror="this.style.background='#444'">
+                            <div class="image-card-preview-info">
+                                <div class="image-card-filename">${fn}</div>
+                                <div class="image-card-fields">
+                                    <input placeholder="Titre" value="${img.title||''}" onchange="updateImg('${galleryId}',${i},'title',this.value)">
+                                    <input placeholder="Sous-titre / lieu" value="${img.subtitle||''}" onchange="updateImg('${galleryId}',${i},'subtitle',this.value)">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="image-card-fields">
+                            <textarea placeholder="Description courte..." onchange="updateImg('${galleryId}',${i},'description',this.value)">${img.description||''}</textarea>
                             
-                            <div class="image-card-row">
-                                <select onchange="updateImage('${galleryId}',${i},'audio',this.value)">
-                                    <option value="">Audio</option>
-                                    ${audios.map(a => `<option value="${a}" ${a===audio?'selected':''}>${a}</option>`).join('')}
-                                </select>
+                            <div class="image-card-option ${img.linkSerie?'active':''}">
+                                <input type="checkbox" ${img.linkSerie?'checked':''} onchange="updateImg('${galleryId}',${i},'linkSerie',this.checked)">
+                                <label>Voir la série →</label>
+                                ${img.linkSerie ? `<select onchange="updateImg('${galleryId}',${i},'linkSerieTarget',this.value)">
+                                    <option value="">Choisir...</option>
+                                    ${Object.entries(galleriesConfig).map(([id,g]) => `<option value="${id}" ${img.linkSerieTarget===id?'selected':''}>${g.title}</option>`).join('')}
+                                </select>` : ''}
                             </div>
                             
-                            <div class="image-option ${tirage ? 'active' : ''}">
-                                <input type="checkbox" id="tir-${i}" ${tirage ? 'checked' : ''} onchange="updateImage('${galleryId}',${i},'tirage',this.checked)">
-                                <label for="tir-${i}">🛒</label>
-                                ${tirage ? `<input type="text" placeholder="URL Photodeck" value="${tirageUrl}" onchange="updateImage('${galleryId}',${i},'tirageUrl',this.value)">` : ''}
+                            <div class="image-card-option ${img.linkSavoir?'active':''}">
+                                <input type="checkbox" ${img.linkSavoir?'checked':''} onchange="updateImg('${galleryId}',${i},'linkSavoir',this.checked)">
+                                <label>En savoir + →</label>
+                                ${img.linkSavoir ? `<input type="text" placeholder="URL" value="${img.linkSavoirUrl||''}" onchange="updateImg('${galleryId}',${i},'linkSavoirUrl',this.value)">` : ''}
                             </div>
                             
-                            <div class="image-option ${imgLink ? 'active' : ''}">
-                                <input type="checkbox" id="link-${i}" ${imgLink ? 'checked' : ''} onchange="updateImage('${galleryId}',${i},'hasLink',this.checked)">
-                                <label for="link-${i}">🔗</label>
-                                ${imgLink ? `
-                                    <select onchange="updateImage('${galleryId}',${i},'linkType',this.value)" style="width:90px;">
-                                        <option value="serie" ${linkType === 'serie' ? 'selected' : ''}>Voir la série</option>
-                                        <option value="savoir" ${linkType === 'savoir' ? 'selected' : ''}>En savoir +</option>
+                            <div class="image-card-option ${img.tirage?'active':''}">
+                                <input type="checkbox" ${img.tirage?'checked':''} onchange="updateImg('${galleryId}',${i},'tirage',this.checked)">
+                                <label>🛒 Acheter →</label>
+                                ${img.tirage ? `<input type="text" placeholder="URL Photodeck" value="${img.tirageUrl||''}" onchange="updateImg('${galleryId}',${i},'tirageUrl',this.value)">` : ''}
+                            </div>
+                            
+                            ${audios.length ? `
+                                <div class="image-card-option ${img.audio?'active':''}">
+                                    <label>🔊 Audio</label>
+                                    <select onchange="updateImg('${galleryId}',${i},'audio',this.value)">
+                                        <option value="">Aucun</option>
+                                        ${audios.map(a => `<option value="${a}" ${img.audio===a?'selected':''}>${a}</option>`).join('')}
                                     </select>
-                                    <input type="text" placeholder="URL" value="${linkUrl}" onchange="updateImage('${galleryId}',${i},'linkUrl',this.value)">
-                                ` : ''}
-                            </div>
-                            
-                            <div class="image-card-actions">
-                                <button class="btn-copy" onclick="openCopyModal('${galleryId}',${i})">📋</button>
-                                <button class="btn-remove" onclick="removeImage('${galleryId}',${i})">×</button>
-                            </div>
+                                </div>
+                            ` : ''}
+                        </div>
+                        <div class="image-card-actions">
+                            <button class="btn-copy" onclick="copyImage('${galleryId}',${i})">📋 Copier</button>
+                            <button class="btn-move" onclick="moveImage('${galleryId}',${i})">📤 Déplacer</button>
+                            <button class="btn-remove" onclick="removeImage('${galleryId}',${i})">×</button>
                         </div>
                     </div>
                 `;
             }).join('');
         }
 
-        function updateImage(galleryId, index, field, value) {
-            let img = galleriesConfig[galleryId].images[index];
-            if (typeof img === 'string') {
-                img = { filename: img };
-                galleriesConfig[galleryId].images[index] = img;
-            }
-            img[field] = value;
+        function updateGallery(id, field, value) {
+            galleriesConfig[id][field] = value;
             saveConfig();
-            if (field === 'tirage') renderGalleryEditor(galleryId);
+            if (field === 'hidden' || field === 'title') renderSidebar();
+            if (field === 'projectPage') renderGalleryEditor(id);
+        }
+
+        function updateImg(galleryId, index, field, value) {
+            const img = galleriesConfig[galleryId].images[index];
+            if (typeof img === 'string') {
+                galleriesConfig[galleryId].images[index] = { filename: img, [field]: value };
+            } else {
+                img[field] = value;
+            }
+            saveConfig();
+            if (['linkSerie','linkSavoir','tirage'].includes(field)) renderGalleryEditor(galleryId);
         }
 
         function removeImage(galleryId, index) {
             galleriesConfig[galleryId].images.splice(index, 1);
-            saveConfig();
-            renderGalleryEditor(galleryId);
-            renderSidebar();
+            saveConfig(); renderGalleryEditor(galleryId); renderSidebar();
         }
 
-        function openCopyModal(galleryId, index) {
-            copyingImage = { galleryId, index };
-            document.getElementById('copyList').innerHTML = Object.entries(galleriesConfig)
-                .filter(([id]) => id !== galleryId)
-                .map(([id, g]) => `<div class="copy-item" onclick="copyImageTo('${id}')">${g.title}</div>`)
-                .join('');
-            document.getElementById('copyModal').classList.add('active');
+        function copyImage(galleryId, index) {
+            showSelectModal('Copier vers...', Object.entries(galleriesConfig).filter(([id])=>id!==galleryId).map(([id,g]) => ({
+                label: g.title,
+                action: () => {
+                    const img = galleriesConfig[galleryId].images[index];
+                    galleriesConfig[id].images.push(typeof img === 'string' ? img : {...img});
+                    saveConfig(); renderSidebar(); showToast('Copié !');
+                }
+            })));
         }
 
-        function copyImageTo(targetId) {
-            if (!copyingImage) return;
-            const img = galleriesConfig[copyingImage.galleryId].images[copyingImage.index];
-            galleriesConfig[targetId].images.push(typeof img === 'string' ? img : { ...img });
-            saveConfig();
-            closeModal('copyModal');
-            showToast('Copié !');
-            renderSidebar();
+        function moveImage(galleryId, index) {
+            showSelectModal('Déplacer vers...', Object.entries(galleriesConfig).filter(([id])=>id!==galleryId).map(([id,g]) => ({
+                label: g.title,
+                action: () => {
+                    const [img] = galleriesConfig[galleryId].images.splice(index, 1);
+                    galleriesConfig[id].images.push(img);
+                    saveConfig(); renderGalleryEditor(galleryId); renderSidebar(); showToast('Déplacé !');
+                }
+            })));
         }
 
-        function initImagesDragDrop(galleryId) {
-            const grid = document.getElementById('imagesGrid');
-            if (!grid) return;
-            grid.querySelectorAll('.image-card').forEach(card => {
-                card.addEventListener('dragstart', e => {
-                    e.dataTransfer.setData('text/plain', card.dataset.index);
-                    card.classList.add('dragging');
-                });
-                card.addEventListener('dragend', () => card.classList.remove('dragging'));
-                card.addEventListener('dragover', e => { e.preventDefault(); card.classList.add('drag-over'); });
-                card.addEventListener('dragleave', () => card.classList.remove('drag-over'));
-                card.addEventListener('drop', e => {
-                    e.preventDefault();
-                    card.classList.remove('drag-over');
-                    const from = parseInt(e.dataTransfer.getData('text/plain'));
-                    const to = parseInt(card.dataset.index);
-                    if (from !== to) {
-                        const imgs = galleriesConfig[galleryId].images;
-                        const [moved] = imgs.splice(from, 1);
-                        imgs.splice(to, 0, moved);
-                        saveConfig();
-                        renderGalleryEditor(galleryId);
-                    }
-                });
-            });
+        function deleteGallery(id) {
+            if (!confirm('Supprimer ?')) return;
+            delete galleriesConfig[id];
+            saveConfig(); currentGallery = null; renderSidebar();
+            document.getElementById('mainContent').innerHTML = '<div class="empty-state"><h3>Galerie supprimée</h3></div>';
         }
 
-        function handleDragOver(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
-        function handleDragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
-        function handleFileDrop(e, galleryId) {
+        function handleDrop(e, galleryId) {
             e.preventDefault();
             e.currentTarget.classList.remove('drag-over');
             Array.from(e.dataTransfer.files).forEach(file => {
@@ -922,99 +656,105 @@
                     if (!audioFiles[galleryId].includes(file.name)) audioFiles[galleryId].push(file.name);
                 }
             });
-            saveConfig();
-            renderGalleryEditor(galleryId);
-            renderSidebar();
+            saveConfig(); renderGalleryEditor(galleryId); renderSidebar();
         }
 
-        // Pages Tab
-        function renderPagesTab(container) {
-            container.innerHTML = `
-                <div class="menu-section">
-                    <div class="menu-section-header">
-                        <span class="menu-section-title">Pages</span>
-                        <button class="btn btn-primary btn-small" onclick="addPage()">+</button>
-                    </div>
-                    ${Object.entries(pagesConfig).map(([id, p]) => `
-                        <div class="page-list-item ${currentPage === id ? 'active' : ''}" onclick="editPage('${id}')">
-                            ${p.title}
-                        </div>
-                    `).join('')}
+        function initImagesDrag(galleryId) {
+            document.querySelectorAll('.image-card').forEach(card => {
+                card.ondragstart = e => { e.dataTransfer.setData('text', card.dataset.index); card.style.opacity = '0.5'; };
+                card.ondragend = () => card.style.opacity = '1';
+                card.ondragover = e => e.preventDefault();
+                card.ondrop = e => {
+                    e.preventDefault(); e.stopPropagation();
+                    const from = parseInt(e.dataTransfer.getData('text'));
+                    const to = parseInt(card.dataset.index);
+                    if (from !== to && !isNaN(from)) {
+                        const imgs = galleriesConfig[galleryId].images;
+                        const [moved] = imgs.splice(from, 1);
+                        imgs.splice(to, 0, moved);
+                        saveConfig(); renderGalleryEditor(galleryId);
+                    }
+                };
+            });
+        }
+
+        // ==================== PAGES TAB ====================
+        function renderPagesSidebar(el) {
+            el.innerHTML = `
+                <div class="section-header">
+                    <span class="section-title">Pages</span>
+                    <button class="btn-add" onclick="addPage()">+</button>
                 </div>
+                ${Object.entries(pagesConfig).map(([id,p]) => `
+                    <div class="page-item ${currentPage===id?'active':''}" onclick="editPage('${id}')">${p.title}</div>
+                `).join('')}
             `;
         }
 
         function addPage() {
-            const name = prompt('Nom de la page:');
+            const name = prompt('Nom:');
             if (!name) return;
-            const id = name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-');
+            const id = name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-');
             pagesConfig[id] = { title: name, content: '' };
-            saveConfig();
-            renderSidebar();
-            editPage(id);
+            saveConfig(); renderSidebar(); editPage(id);
         }
 
         function editPage(id) {
             currentPage = id;
             currentGallery = null;
             renderSidebar();
-            
             const p = pagesConfig[id];
-            const isPresta = id.startsWith('presta-');
-            
             document.getElementById('mainContent').innerHTML = `
                 <div class="editor-section">
-                    <div class="editor-section-title">
-                        ${p.title}
-                        <button class="btn btn-danger btn-small" onclick="deletePage('${id}')">Supprimer</button>
-                    </div>
-                    
+                    <div class="editor-title">${p.title} <button class="btn btn-danger btn-small" onclick="deletePage('${id}')">Supprimer</button></div>
                     <div class="form-group">
                         <label>Titre</label>
-                        <input value="${p.title}" onchange="pagesConfig['${id}'].title=this.value;saveConfig();renderSidebar();">
+                        <input value="${p.title}" onchange="pagesConfig['${id}'].title=this.value;saveConfig();renderSidebar()">
                     </div>
-                    
                     <div class="form-group">
                         <label>Contenu</label>
-                        <textarea style="min-height:200px;" onchange="pagesConfig['${id}'].content=this.value;saveConfig();">${p.content || ''}</textarea>
+                        <textarea style="min-height:200px" onchange="pagesConfig['${id}'].content=this.value;saveConfig()">${p.content||''}</textarea>
                     </div>
-                    
-                    ${isPresta ? `
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Prix indicatif</label>
-                                <input value="${p.price || ''}" placeholder="ex: à partir de 150€" onchange="pagesConfig['${id}'].price=this.value;saveConfig();">
-                            </div>
-                            <div class="form-group">
-                                <label>Lien réservation</label>
-                                <input value="${p.link || ''}" placeholder="URL Photodeck" onchange="pagesConfig['${id}'].link=this.value;saveConfig();">
-                            </div>
-                        </div>
-                    ` : ''}
+                    <div class="form-group">
+                        <label>Prix (optionnel)</label>
+                        <input value="${p.price||''}" placeholder="ex: à partir de 150€" onchange="pagesConfig['${id}'].price=this.value;saveConfig()">
+                    </div>
+                    <div class="form-group">
+                        <label>Lien réservation (optionnel)</label>
+                        <input value="${p.link||''}" placeholder="URL" onchange="pagesConfig['${id}'].link=this.value;saveConfig()">
+                    </div>
                 </div>
             `;
         }
 
         function deletePage(id) {
-            if (!confirm('Supprimer cette page ?')) return;
+            if (!confirm('Supprimer ?')) return;
             delete pagesConfig[id];
-            saveConfig();
-            currentPage = null;
-            renderSidebar();
+            saveConfig(); currentPage = null; renderSidebar();
             document.getElementById('mainContent').innerHTML = '<div class="empty-state"><h3>Page supprimée</h3></div>';
         }
 
-        // Import / Export
+        // ==================== MODAL ====================
+        function showSelectModal(title, items) {
+            document.getElementById('selectModalTitle').textContent = title;
+            document.getElementById('selectModalList').innerHTML = items.map(item => 
+                `<div class="modal-item" onclick="(${item.action.toString()})();closeModal('selectModal')">${item.label}</div>`
+            ).join('');
+            document.getElementById('selectModal').classList.add('active');
+        }
+
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+        // ==================== IMPORT/EXPORT ====================
         function importConfig() {
             const input = document.createElement('input');
             input.type = 'file';
             input.accept = '.js';
             input.onchange = async e => {
-                const file = e.target.files[0];
-                if (!file) return;
-                const text = await file.text();
+                const text = await e.target.files[0]?.text();
+                if (!text) return;
                 try {
-                    // Import galleries
+                    // Parse GALLERIES_CONFIG
                     const galMatch = text.match(/const GALLERIES_CONFIG = ({[\s\S]*?});/);
                     if (galMatch) {
                         const config = eval('(' + galMatch[1] + ')');
@@ -1022,23 +762,28 @@
                             galleriesConfig[id] = {
                                 title: g.title,
                                 path: g.path,
+                                hidden: g.hidden || false,
                                 description: g.description || '',
-                                projectTitle: g.projectTitle,
                                 autoplayAudio: g.autoplayAudio || false,
-                                videos: g.videos || [],
-                                images: g.images.map(img => typeof img === 'string' ? { filename: img } : img)
+                                projectPage: g.projectPage || false,
+                                images: (g.images || []).map(img => typeof img === 'string' ? { filename: img } : img)
                             };
+                            // Extract audio files
                             audioFiles[id] = [];
-                            g.images.forEach(img => {
-                                if (typeof img === 'object' && img.audio) {
+                            (g.images || []).forEach(img => {
+                                if (img.audio) {
                                     const name = img.audio.split('/').pop();
                                     if (!audioFiles[id].includes(name)) audioFiles[id].push(name);
                                 }
                             });
                         }
                     }
-                    saveConfig();
-                    renderSidebar();
+                    // Parse MENU_CONFIG
+                    const menuMatch = text.match(/const MENU_CONFIG = (\[[\s\S]*?\]);/);
+                    if (menuMatch) {
+                        menuConfig = eval(menuMatch[1]);
+                    }
+                    saveConfig(); renderSidebar();
                     showToast('Importé !');
                 } catch(err) { alert('Erreur: ' + err.message); }
             };
@@ -1051,13 +796,9 @@
         }
 
         function generateJS() {
-            // Generate menu structure for HTML
-            let menuHTML = generateMenuHTML(menuConfig);
-            
-            // Generate JS config
             let js = `/**
  * Bertrand Basset Portfolio
- * Auto-generated
+ * Auto-generated by Admin V5
  */
 
 const MENU_CONFIG = ${JSON.stringify(menuConfig, null, 2)};
@@ -1068,52 +809,37 @@ const GALLERIES_CONFIG = {\n`;
                 js += `    "${id}": {\n`;
                 js += `        title: "${g.title}",\n`;
                 js += `        path: "${g.path}",\n`;
-                if (g.description) js += `        description: "${g.description.replace(/"/g, '\\"').replace(/\n/g, '\\n')}",\n`;
-                if (g.projectTitle) js += `        projectTitle: "${g.projectTitle}",\n`;
+                if (g.hidden) js += `        hidden: true,\n`;
+                if (g.description) js += `        description: "${g.description.replace(/"/g,'\\"').replace(/\n/g,'\\n')}",\n`;
                 if (g.autoplayAudio) js += `        autoplayAudio: true,\n`;
-                if (g.videos && g.videos.length) {
-                    js += `        videos: [${g.videos.map(v => `{ type: "${v.type}", id: "${v.id}", title: "${v.title || ''}" }`).join(', ')}],\n`;
-                }
+                if (g.projectPage) js += `        projectPage: true,\n`;
                 js += `        images: [\n`;
-                g.images.forEach((img, i) => {
-                    const fn = typeof img === 'string' ? img : img.filename;
-                    const parts = [`filename: "${fn}"`];
-                    if (img.caption) parts.push(`caption: "${img.caption.replace(/"/g, '\\"')}"`);
+                (g.images || []).forEach((img, i) => {
+                    const parts = [`filename: "${img.filename || img}"`];
+                    if (img.title) parts.push(`title: "${img.title}"`);
+                    if (img.subtitle) parts.push(`subtitle: "${img.subtitle}"`);
+                    if (img.description) parts.push(`description: "${img.description.replace(/"/g,'\\"')}"`);
+                    if (img.linkSerie) { parts.push(`linkSerie: true`); if (img.linkSerieTarget) parts.push(`linkSerieTarget: "${img.linkSerieTarget}"`); }
+                    if (img.linkSavoir) { parts.push(`linkSavoir: true`); if (img.linkSavoirUrl) parts.push(`linkSavoirUrl: "${img.linkSavoirUrl}"`); }
+                    if (img.tirage) { parts.push(`tirage: true`); if (img.tirageUrl) parts.push(`tirageUrl: "${img.tirageUrl}"`); }
                     if (img.audio) parts.push(`audio: "${img.audio}"`);
-                    if (img.tirage) parts.push(`tirage: true`);
-                    if (img.tirageUrl) parts.push(`tirageUrl: "${img.tirageUrl}"`);
-                    if (img.hasLink) {
-                        parts.push(`hasLink: true`);
-                        parts.push(`linkType: "${img.linkType || 'serie'}"`);
-                        parts.push(`linkUrl: "${img.linkUrl || ''}"`);
-                    }
                     js += `            { ${parts.join(', ')} }${i < g.images.length - 1 ? ',' : ''}\n`;
                 });
                 js += `        ]\n    },\n`;
             }
             js += `};\n\n`;
-            
+
             js += `const PAGES_CONFIG = ${JSON.stringify(pagesConfig, null, 2)};\n\n`;
-            js += `const PROJECT_PAGES = ${JSON.stringify(projectPagesConfig, null, 2)};\n\n`;
-            
-            return js + getPortfolioClassCode();
+            js += `const PROJECT_PAGES = ${JSON.stringify(projectPages, null, 2)};\n\n`;
+
+            js += generatePortfolioClass();
+            return js;
         }
 
-        function generateMenuHTML(items, level = 0) {
-            // This would generate the HTML for index.html
-            return items.map(item => {
-                if (item.type === 'category' || item.type === 'subcategory') {
-                    return `<nav-item>${item.name}...children</nav-item>`;
-                }
-                return `<link>${item.name}</link>`;
-            }).join('\n');
-        }
-
-        function getPortfolioClassCode() {
-            return `
-const TRANSLATIONS = {
-    en: { "prev": "prev", "next": "next", "show-thumbnails": "thumbnails", "hide-thumbnails": "hide", "play": "play", "pause": "pause", "buy-print": "Buy print" },
-    fr: { "prev": "préc", "next": "suiv", "show-thumbnails": "vignettes", "hide-thumbnails": "masquer", "play": "écouter", "pause": "pause", "buy-print": "Acheter" }
+        function generatePortfolioClass() {
+            return `const TRANSLATIONS = {
+    en: { "prev": "prev", "next": "next", "show-thumbnails": "thumbnails", "play": "play", "pause": "pause", "buy-print": "Buy", "see-series": "See series", "learn-more": "Learn more" },
+    fr: { "prev": "préc", "next": "suiv", "show-thumbnails": "vignettes", "play": "écouter", "pause": "pause", "buy-print": "Acheter", "see-series": "Voir la série", "learn-more": "En savoir plus" }
 };
 
 class Portfolio {
@@ -1125,7 +851,6 @@ class Portfolio {
         this.currentAudio = null;
         this.isPlaying = false;
         this.currentLang = 'fr';
-        this.isMobile = window.innerWidth <= 768;
         this.autoplayAudio = false;
         this.init();
     }
@@ -1135,15 +860,20 @@ class Portfolio {
         for (const [id, config] of Object.entries(GALLERIES_CONFIG)) {
             const items = [];
             if (config.description) items.push({ type: 'description', title: config.title, text: config.description });
-            if (config.videos) config.videos.forEach(v => items.push({ type: 'video', platform: v.type, videoId: v.id, title: v.title }));
             config.images.forEach(img => {
                 items.push({
                     type: 'image',
                     src: \`\${config.path}/\${img.filename}\`,
-                    caption: img.caption || '',
+                    title: img.title || '',
+                    subtitle: img.subtitle || '',
+                    description: img.description || '',
                     audio: img.audio ? \`\${config.path}/\${img.audio}\` : null,
                     tirage: img.tirage,
-                    tirageUrl: img.tirageUrl
+                    tirageUrl: img.tirageUrl,
+                    linkSerie: img.linkSerie,
+                    linkSerieTarget: img.linkSerieTarget,
+                    linkSavoir: img.linkSavoir,
+                    linkSavoirUrl: img.linkSavoirUrl
                 });
             });
             galleries[id] = { ...config, items };
@@ -1165,12 +895,10 @@ class Portfolio {
         this.mainNav = document.getElementById('mainNav');
         this.galleryContainer = document.getElementById('galleryContainer');
         this.galleryCounter = document.querySelector('.gallery-counter');
-        this.imageCaption = document.querySelector('.image-caption');
+        this.imageInfo = document.querySelector('.image-info');
         this.audioControls = document.querySelector('.audio-controls');
         this.audioBtn = document.getElementById('audioBtn');
-        this.autoplayToggle = document.getElementById('autoplayToggle');
         this.homeLink = document.getElementById('homeLink');
-        this.cursor = document.getElementById('customCursor');
         this.navItems = document.querySelectorAll('.nav-item[data-expandable]');
         this.dropdownLinks = document.querySelectorAll('[data-gallery]');
         this.pageLinks = document.querySelectorAll('[data-page]');
@@ -1196,14 +924,13 @@ class Portfolio {
         
         if (this.galleryContainer) {
             this.galleryContainer.onclick = e => {
-                if (e.target.closest('.video-container, .buy-button')) return;
+                if (e.target.closest('.video-container, .buy-button, .image-link')) return;
                 const rect = this.galleryContainer.getBoundingClientRect();
                 (e.clientX - rect.left) < rect.width / 2 ? this.prev() : this.next();
             };
         }
         
         if (this.audioBtn) this.audioBtn.onclick = () => this.toggleAudio();
-        if (this.autoplayToggle) this.autoplayToggle.onchange = () => { this.autoplayAudio = this.autoplayToggle.checked; };
         
         document.onkeydown = e => {
             if (e.key === 'ArrowLeft') this.prev();
@@ -1222,9 +949,9 @@ class Portfolio {
         const g = this.galleries[id];
         if (!g?.items.length) return;
         this.currentGallery = g;
+        this.currentGalleryId = id;
         this.currentIndex = 0;
         this.autoplayAudio = g.autoplayAudio || false;
-        if (this.autoplayToggle) this.autoplayToggle.checked = this.autoplayAudio;
         this.showItem(0);
     }
 
@@ -1243,9 +970,6 @@ class Portfolio {
             
             if (item.type === 'description') {
                 this.galleryContainer.innerHTML = \`<div class="description-slide loaded"><div class="description-content"><h2>\${item.title}</h2><p>\${item.text}</p></div></div>\`;
-            } else if (item.type === 'video') {
-                const url = item.platform === 'vimeo' ? \`https://player.vimeo.com/video/\${item.videoId}\` : \`https://www.youtube.com/embed/\${item.videoId}\`;
-                this.galleryContainer.innerHTML = \`<div class="video-container loaded"><iframe src="\${url}" frameborder="0" allowfullscreen></iframe></div>\`;
             } else {
                 const wrapper = document.createElement('div');
                 wrapper.className = 'image-wrapper';
@@ -1255,11 +979,17 @@ class Portfolio {
                 img.src = encodeURI(item.src);
                 wrapper.appendChild(img);
                 
+                // Buy button
                 if (item.tirage && item.tirageUrl) {
-                    wrapper.innerHTML += \`<a class="buy-button" href="\${item.tirageUrl}" target="_blank">🛒 \${TRANSLATIONS[this.currentLang]['buy-print']}</a>\`;
+                    const btn = document.createElement('a');
+                    btn.className = 'buy-button';
+                    btn.href = item.tirageUrl;
+                    btn.target = '_blank';
+                    btn.textContent = '🛒 ' + TRANSLATIONS[this.currentLang]['buy-print'];
+                    wrapper.appendChild(btn);
                 }
-                this.galleryContainer.appendChild(wrapper);
                 
+                this.galleryContainer.appendChild(wrapper);
                 if (item.audio && this.autoplayAudio) this.playAudio(item.audio);
             }
             
@@ -1270,7 +1000,22 @@ class Portfolio {
 
     updateUI(item) {
         if (this.galleryCounter) this.galleryCounter.textContent = \`\${this.currentIndex + 1} / \${this.currentGallery.items.length}\`;
-        if (this.imageCaption) this.imageCaption.textContent = item.caption || '';
+        
+        // Update sidebar info
+        if (this.imageInfo) {
+            let html = '';
+            if (item.title) html += \`<h3 class="image-title">\${item.title}</h3>\`;
+            if (item.subtitle) html += \`<p class="image-subtitle">\${item.subtitle}</p>\`;
+            if (item.description) html += \`<p class="image-description">\${item.description}</p>\`;
+            if (item.linkSerie && item.linkSerieTarget) {
+                html += \`<a href="#" class="image-link" onclick="event.preventDefault();portfolio.openGallery('\${item.linkSerieTarget}')">\${TRANSLATIONS[this.currentLang]['see-series']} →</a>\`;
+            }
+            if (item.linkSavoir && item.linkSavoirUrl) {
+                html += \`<a href="\${item.linkSavoirUrl}" target="_blank" class="image-link">\${TRANSLATIONS[this.currentLang]['learn-more']} →</a>\`;
+            }
+            this.imageInfo.innerHTML = html;
+        }
+        
         if (this.audioControls) this.audioControls.classList.toggle('visible', item.type === 'image' && !!item.audio);
     }
 
@@ -1285,12 +1030,19 @@ class Portfolio {
         this.updateAudioBtn();
         this.currentAudio.onended = () => { this.isPlaying = false; this.updateAudioBtn(); };
     }
-    stopAudio() { if (this.currentAudio) { this.currentAudio.pause(); this.currentAudio = null; } this.isPlaying = false; this.updateAudioBtn(); }
+    
+    stopAudio() { 
+        if (this.currentAudio) { this.currentAudio.pause(); this.currentAudio = null; } 
+        this.isPlaying = false; 
+        this.updateAudioBtn(); 
+    }
+    
     toggleAudio() {
         const item = this.currentGallery?.items[this.currentIndex];
         if (!item?.audio) return;
         this.isPlaying ? this.stopAudio() : this.playAudio(item.audio);
     }
+    
     updateAudioBtn() {
         if (!this.audioBtn) return;
         this.audioBtn.innerHTML = this.isPlaying ? '⏸' : '▶';
@@ -1303,6 +1055,7 @@ class Portfolio {
         this.currentGallery = null;
         if (this.galleryCounter) this.galleryCounter.style.display = 'none';
         if (this.audioControls) this.audioControls.classList.remove('visible');
+        if (this.imageInfo) this.imageInfo.innerHTML = '';
         
         let html = \`<div class="page-content"><div class="page-text">\${page.content.replace(/\\n/g, '<br>')}</div>\`;
         if (page.price) html += \`<div class="page-price">\${page.price}</div>\`;
@@ -1321,12 +1074,15 @@ class Portfolio {
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => new Portfolio());
+document.addEventListener('DOMContentLoaded', () => window.portfolio = new Portfolio());
 `;
         }
 
-        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-        function copyToClipboard() { navigator.clipboard.writeText(document.getElementById('exportPreview').textContent).then(() => showToast('Copié !')); }
+        function copyToClipboard() {
+            navigator.clipboard.writeText(document.getElementById('exportPreview').textContent);
+            showToast('Copié !');
+        }
+
         function downloadFile() {
             const blob = new Blob([document.getElementById('exportPreview').textContent], { type: 'text/javascript' });
             const a = document.createElement('a');
@@ -1335,12 +1091,14 @@ document.addEventListener('DOMContentLoaded', () => new Portfolio());
             a.click();
             showToast('Téléchargé !');
         }
+
         function showToast(msg) {
             const t = document.getElementById('toast');
             t.textContent = msg;
             t.classList.add('active');
             setTimeout(() => t.classList.remove('active'), 2000);
         }
+
         document.querySelectorAll('.modal').forEach(m => m.onclick = e => { if (e.target === m) m.classList.remove('active'); });
     </script>
 </body>
