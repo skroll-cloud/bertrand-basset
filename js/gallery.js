@@ -5,78 +5,70 @@
 
 const MENU_CONFIG = [
   {
-    "id": "photographe",
-    "name": "Photographe",
+    "id": "portrait",
+    "name": "Portrait",
+    "type": "gallery",
+    "galleryId": "portrait"
+  },
+  {
+    "id": "menu-1771785535379",
+    "name": "Headshot",
+    "type": "gallery",
+    "galleryId": null
+  },
+  {
+    "id": "menu-1771785696392",
+    "name": "Séries",
     "type": "category",
     "children": [
       {
-        "id": "portrait",
-        "name": "Portrait",
+        "id": "menu-1771785921650",
+        "name": "Burning Man",
         "type": "gallery",
-        "galleryId": "portrait"
+        "galleryId": null
       },
       {
-        "id": "serie-portrait",
-        "name": "Série Portrait",
-        "type": "subcategory",
-        "children": [
-          {
-            "id": "gem-menu",
-            "name": "Le GEM s'endimanche",
-            "type": "gallery",
-            "galleryId": "gem"
-          },
-          {
-            "id": "carre-das-menu",
-            "name": "Carré d'As",
-            "type": "gallery",
-            "galleryId": "carre-das"
-          }
-        ]
+        "id": "menu-1771785931705",
+        "name": "Carré d'As",
+        "type": "gallery",
+        "galleryId": null
       },
       {
-        "id": "immersion",
-        "name": "Immersion",
-        "type": "subcategory",
-        "children": [
-          {
-            "id": "burning-man-menu",
-            "name": "Burning Man",
-            "type": "gallery",
-            "galleryId": "burning-man"
-          },
-          {
-            "id": "st-melar-menu",
-            "name": "St Mélar",
-            "type": "gallery",
-            "galleryId": "st-melar"
-          }
-        ]
+        "id": "menu-1771786142240",
+        "name": "St Mélar",
+        "type": "gallery",
+        "galleryId": null
+      },
+      {
+        "id": "menu-1771786164338",
+        "name": "Le GEM s'endimanche",
+        "type": "gallery",
+        "galleryId": null
       }
     ]
   },
   {
-    "id": "realisateur",
-    "name": "Réalisateur",
+    "id": "menu-1771785719535",
+    "name": "Autres Travaux",
     "type": "category",
     "children": [
       {
-        "id": "cinema-menu",
+        "id": "menu-1771785910156",
         "name": "Cinéma",
         "type": "gallery",
-        "galleryId": "cinema"
+        "galleryId": null
       },
       {
-        "id": "television-menu",
+        "id": "menu-1771786086324",
         "name": "Télévision",
         "type": "gallery",
-        "galleryId": "television"
+        "galleryId": null
       }
     ]
   },
   {
     "id": "galerie-link",
-    "name": "Galerie",
+    "name": "Boutique",
     "type": "external",
     "url": "https://bertrandbasset.photodeck.com"
   },
@@ -108,6 +100,12 @@ const MENU_CONFIG = [
         "name": "Empreinte",
         "type": "page",
         "pageId": "presta-empreinte"
+      },
+      {
+        "id": "menu-1771786121112",
+        "name": "Boutique",
+        "type": "gallery",
+        "galleryId": null
       }
     ]
   },
@@ -122,6 +120,12 @@ const MENU_CONFIG = [
     "name": "Contact",
     "type": "page",
     "pageId": "contact"
+  },
+  {
+    "id": "serie-portrait",
+    "name": "Série Portrait",
+    "type": "subcategory",
+    "children": []
   }
 ];
 
@@ -130,6 +134,7 @@ const GALLERIES_CONFIG = {
         title: "Accueil",
         path: "images/accueil",
         images: [
+            { filename: "02.jpg" },
             { filename: "prise de vue sans titre-3616BB@SS.jpg" },
             { filename: "prise de vue sans titre-1220776Man&Pia.jpg" },
             { filename: "prise de vue sans titre-3610BB@SS.jpg" },
@@ -142,20 +147,20 @@ const GALLERIES_CONFIG = {
             { filename: "prise de vue sans titre-1220784Man&Pia.jpg" },
             { filename: "prise de vue sans titre-1220830Man&Pia.jpg" },
             { filename: "prise de vue sans titre-3629BB@SS.jpg" },
-            { filename: "prise de vue sans titre-3650BB@SS.jpg" }
+            { filename: "prise de vue sans titre-3650BB@SS.jpg" },
+            { filename: "AngeMarine18@bertrandbasset 18.jpg" }
         ]
     },
     "portrait": {
         title: "Portrait",
         path: "images/photography/portrait",
         images: [
-            { filename: "02.jpg" },
+            { filename: "02.jpg", caption: "Headshot Acteur", hasLink: true, linkType: "serie", linkUrl: "" },
             { filename: "AngeMarine18@bertrandbasset 18.jpg" },
             { filename: "L1020643.jpg" },
             { filename: "Stephanie06@bertrandbasset 6.jpg" },
             { filename: "Imane02@bertrandbasset 2.jpg" },
             { filename: "AngeMarine01@bertrandbasset 1.jpg" },
-            { filename: "Timoté01@bertrandbasset 1.jpg" },
             { filename: "prise_de_vue_sans_titre-1000589-ModifierMan_Pia.jpg" },
             { filename: "AngeMarine13@bertrandbasset 13.jpg" },
             { filename: "Mathilde&Louise04@bertrandbasset 4.jpg" },

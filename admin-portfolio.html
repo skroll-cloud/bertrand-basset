@@ -413,6 +413,7 @@
                             <div class="menu-item-actions">
                                 ${item.type === 'category' || item.type === 'subcategory' ? `<button onclick="addChildMenuItem('${item.id}')" title="Ajouter enfant">+</button>` : ''}
                                 ${item.type === 'gallery' ? `<button onclick="openLinkModal('${item.id}')" title="Lier galerie">🔗</button>` : ''}
+                                ${level > 0 ? `<button onclick="moveToRoot('${item.id}')" title="Remonter au niveau racine">↑</button>` : ''}
                                 <button onclick="deleteMenuItem('${item.id}')" title="Supprimer">×</button>
                             </div>
                         </div>
@@ -497,6 +498,29 @@
             findAndDelete(menuConfig);
             saveConfig();
             renderSidebar();
+        }
+
+        function moveToRoot(id) {
+            let movedItem = null;
+            
+            function findAndRemove(items) {
+                for (let i = 0; i < items.length; i++) {
+                    if (items[i].id === id) {
+                        movedItem = items.splice(i, 1)[0];
+                        return true;
+                    }
+                    if (items[i].children && findAndRemove(items[i].children)) return true;
+                }
+                return false;
+            }
+            
+            findAndRemove(menuConfig);
+            if (movedItem) {
+                menuConfig.push(movedItem);
+                saveConfig();
+                renderSidebar();
+                showToast('Déplacé au niveau racine');
+            }
         }
 
         function openLinkModal(menuItemId) {
@@ -773,6 +797,9 @@
                 const audio = typeof img === 'object' ? (img.audio || '') : '';
                 const tirage = typeof img === 'object' && img.tirage;
                 const tirageUrl = typeof img === 'object' ? (img.tirageUrl || '') : '';
+                const imgLink = typeof img === 'object' && img.hasLink;
+                const linkType = typeof img === 'object' ? (img.linkType || 'serie') : 'serie';
+                const linkUrl = typeof img === 'object' ? (img.linkUrl || '') : '';
                 
                 return `
                     <div class="image-card" draggable="true" data-index="${i}">
@@ -793,6 +820,18 @@
                                 <input type="checkbox" id="tir-${i}" ${tirage ? 'checked' : ''} onchange="updateImage('${galleryId}',${i},'tirage',this.checked)">
                                 <label for="tir-${i}">🛒</label>
                                 ${tirage ? `<input type="text" placeholder="URL Photodeck" value="${tirageUrl}" onchange="updateImage('${galleryId}',${i},'tirageUrl',this.value)">` : ''}
+                            </div>
+                            
+                            <div class="image-option ${imgLink ? 'active' : ''}">
+                                <input type="checkbox" id="link-${i}" ${imgLink ? 'checked' : ''} onchange="updateImage('${galleryId}',${i},'hasLink',this.checked)">
+                                <label for="link-${i}">🔗</label>
+                                ${imgLink ? `
+                                    <select onchange="updateImage('${galleryId}',${i},'linkType',this.value)" style="width:90px;">
+                                        <option value="serie" ${linkType === 'serie' ? 'selected' : ''}>Voir la série</option>
+                                        <option value="savoir" ${linkType === 'savoir' ? 'selected' : ''}>En savoir +</option>
+                                    </select>
+                                    <input type="text" placeholder="URL" value="${linkUrl}" onchange="updateImage('${galleryId}',${i},'linkUrl',this.value)">
+                                ` : ''}
                             </div>
                             
                             <div class="image-card-actions">
@@ -1043,6 +1082,11 @@ const GALLERIES_CONFIG = {\n`;
                     if (img.audio) parts.push(`audio: "${img.audio}"`);
                     if (img.tirage) parts.push(`tirage: true`);
                     if (img.tirageUrl) parts.push(`tirageUrl: "${img.tirageUrl}"`);
+                    if (img.hasLink) {
+                        parts.push(`hasLink: true`);
+                        parts.push(`linkType: "${img.linkType || 'serie'}"`);
+                        parts.push(`linkUrl: "${img.linkUrl || ''}"`);
+                    }
                     js += `            { ${parts.join(', ')} }${i < g.images.length - 1 ? ',' : ''}\n`;
                 });
                 js += `        ]\n    },\n`;
