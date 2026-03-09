@@ -1,6 +1,6 @@
 /**
  * Bertrand Basset Portfolio — gallery.js
- * Généré par Admin V4 — 09/03/2026 20:59:23
+ * Généré par Admin V4 — 09/03/2026 21:32:08
  */
 
 const SITE_CONFIG = {
@@ -107,7 +107,7 @@ const GALLERIES_CONFIG = {
         autoplayDelay: 4,
         cartons: [
         {
-                "cid": "cmmjltwbyapr",
+                "cid": "cmmjmvhik0mg",
                 "position": 8,
                 "titleEn": "",
                 "titleFr": "",
@@ -118,7 +118,8 @@ const GALLERIES_CONFIG = {
                 "ctaUrl": ""
         }
 ],
-        captions: {},
+        captions: {"02.jpg":{"en":"","fr":"Jean-Philippe Davodeau\nActeur"},"conversation-02.jpg":{"en":"","fr":"Antoine Asnar\nActeur"},"Imane02@bertrandbasset 2.jpg":{"en":"","fr":"Imène\nActrice"},"JF.jpg":{"en":"","fr":"Jean-François\nSérie \"Le GEM S'endimanche\""}},
+        buttons: {"02.jpg":{"label":"Voir la session","url":"https://bertrandbasset.photodeck.com/-/galleries/jean-philippe-davodeau"}},
     },
 
     "conversation-s-": {
@@ -127,7 +128,7 @@ const GALLERIES_CONFIG = {
         autoplayDelay: 4,
         cartons: [
         {
-                "cid": "cmmjltwby2gz",
+                "cid": "cmmjmvhikeyu",
                 "position": 0,
                 "titleEn": "",
                 "titleFr": "",
@@ -147,7 +148,7 @@ const GALLERIES_CONFIG = {
         autoplayDelay: 4,
         cartons: [
         {
-                "cid": "cmmjltwbywe5",
+                "cid": "cmmjmvhikyfp",
                 "position": 0,
                 "titleEn": "",
                 "titleFr": "",
@@ -207,7 +208,7 @@ const GALLERIES_CONFIG = {
         autoplayAudio: true,
         cartons: [
         {
-                "cid": "cmmjltwbyovk",
+                "cid": "cmmjmvhikucv",
                 "position": 0,
                 "titleEn": "",
                 "titleFr": "",
@@ -467,6 +468,16 @@ class Portfolio {
             if (e.key === 'ArrowLeft')  this.prev();
             if (e.key === 'ArrowRight') this.next();
         });
+        /* Touch swipe for mobile */
+        const gcEl = document.getElementById('galleryContainer');
+        if (gcEl) {
+            let _tx = 0;
+            gcEl.addEventListener('touchstart', e => { _tx = e.touches[0].clientX; }, { passive: true });
+            gcEl.addEventListener('touchend', e => {
+                const dx = e.changedTouches[0].clientX - _tx;
+                if (Math.abs(dx) > 40) { dx < 0 ? this.next() : this.prev(); }
+            }, { passive: true });
+        }
     }
 
     setLang(lang) {
@@ -870,7 +881,10 @@ class Portfolio {
                 <div class="audio-progress-fill" id="audioFill"></div>
             </div>
             <span class="audio-time" id="audioTime">0:00</span>`;
-        galleryDesc.prepend(playerDiv);
+        const sf = document.getElementById('sidebarFooter');
+        const fn = sf?.querySelector('.gallery-footer-nav');
+        if (sf && fn) { sf.insertBefore(playerDiv, fn); }
+        else { galleryDesc.appendChild(playerDiv); }
         audio.addEventListener('timeupdate', () => {
             const fill = document.getElementById('audioFill');
             const time = document.getElementById('audioTime');
