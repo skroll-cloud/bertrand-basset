@@ -1,24 +1,24 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Bertrand Basset — Photographe & Réalisateur</title>
-    
+    <title>Bertrand Basset — Photographer & Filmmaker</title>
+
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="assets/logo-b.svg">
-    
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-    
+
     <!-- Styles -->
     <link rel="stylesheet" href="css/style.css">
-    
+
     <!-- Open Graph -->
-    <meta property="og:title" content="Bertrand Basset — Photographe & Réalisateur">
-    <meta property="og:description" content="Portrait — Immersion — Mémoire. Photographe et réalisateur basé en Bretagne.">
+    <meta property="og:title" content="Bertrand Basset — Photographer & Filmmaker">
+    <meta property="og:description" content="Portrait — Immersion — Conversation. Photographer and filmmaker based in Brittany.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://bertrandbasset.com">
 </head>
@@ -30,9 +30,9 @@
         </div>
         <div class="landing-content">
             <div class="lang-toggle">
-                <a href="#" data-lang="fr" class="active">FR</a>
+                <a href="#" data-lang="en" class="active">EN</a>
                 <span>/</span>
-                <a href="#" data-lang="en">EN</a>
+                <a href="#" data-lang="fr">FR</a>
             </div>
 
             <div class="brand-wrapper">
@@ -42,10 +42,10 @@
                     </div>
                     <div class="brand-text">
                         <span class="brand-name">Bertrand Basset</span>
-                        <span class="brand-subtitle">Photographe & Réalisateur</span>
+                        <span class="brand-subtitle">Photographer & Filmmaker</span>
                     </div>
                 </div>
-                <button class="enter-btn" id="enterBtn">Entrer</button>
+                <button class="enter-btn" id="enterBtn">Enter</button>
             </div>
         </div>
     </div>
@@ -59,9 +59,9 @@
                     <span class="sidebar-brand-name">Bertrand Basset</span>
                 </a>
                 <div class="sidebar-lang">
-                    <a href="#" data-lang="fr" class="active">FR</a>
+                    <a href="#" data-lang="en" class="active">EN</a>
                     <span>/</span>
-                    <a href="#" data-lang="en">EN</a>
+                    <a href="#" data-lang="fr">FR</a>
                 </div>
             </header>
 
@@ -72,54 +72,13 @@
                 <span></span>
             </button>
 
-            <nav class="main-nav" id="mainNav">
-                <!-- PHOTOGRAPHY -->
-                <div class="nav-item" data-expandable>
-                    <a href="#" class="nav-link" data-i18n="photography">Photographie</a>
-                    <div class="nav-dropdown">
-                        <a href="#" class="dropdown-link" data-gallery="portrait" data-i18n="portrait">Portrait</a>
-                        
-                        <a href="#" class="dropdown-link has-submenu" data-expandable data-i18n="serie-portrait">Série Portrait</a>
-                        <div class="nav-sub-dropdown">
-                            <a href="#" class="dropdown-sublink" data-gallery="gem">Le GEM s'endimanche</a>
-                            <a href="#" class="dropdown-sublink" data-gallery="carre-das">Carré d'As</a>
-                        </div>
-                        
-                        <a href="#" class="dropdown-link has-submenu" data-expandable data-i18n="immersion">Immersion</a>
-                        <div class="nav-sub-dropdown">
-                            <a href="#" class="dropdown-sublink" data-gallery="burning-man">Burning Man</a>
-                            <a href="#" class="dropdown-sublink" data-gallery="st-melar">St Mélar</a>
-                        </div>
-                    </div>
-                </div>
+            <!-- Nav — built dynamically by gallery.js -->
+            <nav class="main-nav" id="mainNav"></nav>
 
-                <!-- FILMMAKER -->
-                <div class="nav-item" data-expandable>
-                    <a href="#" class="nav-link" data-i18n="filmmaker">Réalisateur</a>
-                    <div class="nav-dropdown">
-                        <a href="#" class="dropdown-link" data-gallery="cinema" data-i18n="cinema">Cinéma</a>
-                        <a href="#" class="dropdown-link" data-gallery="television" data-i18n="television">Télévision</a>
-                    </div>
-                </div>
-
-                <!-- ABOUT -->
-                <div class="nav-item">
-                    <a href="#" class="nav-link" data-page="about" data-i18n="about">À propos</a>
-                </div>
-
-                <!-- CONTACT -->
-                <div class="nav-item">
-                    <a href="#" class="nav-link" data-page="contact" data-i18n="contact">Contact</a>
-                </div>
-            </nav>
+            <!-- Gallery description zone -->
+            <div id="galleryDesc" class="gallery-desc"></div>
 
             <footer class="sidebar-footer" id="sidebarFooter">
-                <!-- Project info -->
-                <div class="project-info">
-                    <span class="project-title"></span>
-                    <a href="#" class="project-link" data-i18n="learn-more">en savoir plus</a>
-                </div>
-
                 <!-- Image caption -->
                 <div class="image-caption"></div>
 
@@ -127,18 +86,19 @@
                 <div class="gallery-footer-nav">
                     <div class="gallery-counter"></div>
                     <div class="gallery-nav">
-                        <a href="#" id="prevBtn" data-i18n="prev">préc</a>
+                        <a href="#" id="prevBtn">prev</a>
                         <span>/</span>
-                        <a href="#" id="nextBtn" data-i18n="next">suiv</a>
+                        <a href="#" id="nextBtn">next</a>
                     </div>
-                    <a href="#" class="show-thumbnails" id="thumbnailsToggle" data-i18n="show-thumbnails">voir vignettes</a>
+                    <button id="autoplayToggle" class="autoplay-btn active" title="Toggle autoplay">⟳ auto</button>
+                    <button id="gridToggle" class="grid-toggle-btn" title="Vue grille / vue unique">⊞</button>
                 </div>
             </footer>
         </aside>
 
         <main class="site-main">
             <div class="gallery-container" id="galleryContainer">
-                <img src="images/landing/landing-01.jpg" alt="Portfolio" class="gallery-image">
+                <img src="images/landing/landing-01.jpg" alt="Portfolio" class="gallery-image loaded">
             </div>
         </main>
 
@@ -156,6 +116,8 @@
         </svg>
     </div>
 
+    <!-- Auto-generated image lists — run: node scan-galleries.js to refresh -->
+    <script src="js/gallery-images.js"></script>
     <script src="js/gallery.js"></script>
 </body>
 </html>
