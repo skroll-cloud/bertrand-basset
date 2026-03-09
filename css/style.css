@@ -307,6 +307,34 @@ body {
     color: var(--red);
 }
 
+/* ── NAV GROUPS (sous-menus) ── */
+.nav-group {
+    margin-bottom: 0.15rem;
+}
+
+.nav-group-header {
+    font-size: 0.62rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--black);
+    padding: 0.9rem 0 0.1rem;
+    opacity: 0.55;
+    cursor: default;
+    user-select: none;
+}
+
+.nav-group-children {
+    /* children sit directly under header, indented slightly */
+}
+
+.nav-sub-item .nav-link {
+    font-size: 0.72rem;
+    font-weight: 300;
+    padding: 0.25rem 0 0.25rem 0.6rem;
+    color: var(--black);
+}
+
 /* DROPDOWN */
 .nav-dropdown {
     max-height: 0;
@@ -1638,18 +1666,22 @@ body {
 .grid-toggle-btn {
     background: none;
     border: none;
+    -webkit-appearance: none;
+    appearance: none;
     font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 0.75rem;
-    letter-spacing: 0.04em;
+    font-size: 0.72rem;
     color: var(--light-gray);
     cursor: pointer;
-    padding: 0 0 0 0.6rem;
+    padding: 0;
     transition: color 0.2s;
     line-height: 1;
+    outline: none;
+    opacity: 0.55;
 }
 .grid-toggle-btn:hover,
 .grid-toggle-btn.active {
     color: var(--black);
+    opacity: 1;
 }
 
 /* ── Gallery grid mode ── */
