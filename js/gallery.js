@@ -1,6 +1,6 @@
 /**
  * Bertrand Basset Portfolio — gallery.js
- * Généré par Admin V4 — 09/03/2026 21:32:08
+ * Généré par Admin V4 — 09/03/2026 21:34:47
  */
 
 const SITE_CONFIG = {
@@ -55,7 +55,7 @@ const MENU_CONFIG = [
     "id": "immersion",
     "name": "IMMERSION",
     "type": "gallery",
-    "galleryId": "studio"
+    "galleryId": "gem"
   },
   {
     "id": "infos",
