@@ -1144,6 +1144,25 @@ body {
     .custom-cursor {
         display: none !important;
     }
+
+    /* Hide caption area — it lives in the header bar on mobile */
+    #galleryDesc {
+        display: none;
+    }
+
+    /* Audio player: fixed bar just above the bottom nav bar */
+    #audioPlayer.audio-player {
+        position: fixed;
+        bottom: 50px;
+        left: 0;
+        right: 0;
+        background: var(--white);
+        border-top: 1px solid var(--light-gray);
+        padding: 0.5rem 1rem;
+        margin: 0;
+        z-index: 99;
+        border-bottom: none;
+    }
 }
 
 /* Small mobile */
@@ -1291,14 +1310,14 @@ body {
     margin: 0;
 }
 
-/* ── Audio player ── */
+/* ── Audio player (in sidebar-footer, above counter) ── */
 .audio-player {
     display: flex;
     align-items: center;
     gap: 0.7rem;
-    margin-bottom: 1rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid rgba(0,0,0,0.1);
+    padding-bottom: 0.6rem;
+    margin-bottom: 0.6rem;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
 }
 .audio-play-btn {
     background: none;
