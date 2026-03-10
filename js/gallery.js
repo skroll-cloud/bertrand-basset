@@ -1,6 +1,6 @@
 /**
  * Bertrand Basset Portfolio — gallery.js
- * Généré par Admin V4 — 10/03/2026 20:34:44
+ * Généré par Admin V4 — 10/03/2026 21:58:16
  */
 
 const SITE_CONFIG = {
@@ -39,40 +39,77 @@ const T = {
 /* ─── MENU ──────────────────────────────────────────────────── */
 const MENU_CONFIG = [
   {
-    "id": "portrait",
+    "id": "group-1773174817135",
     "name": "PORTRAIT",
+    "type": "group"
+  },
+  {
+    "id": "item-1773174917949",
+    "name": "METIER",
     "type": "gallery",
-    "galleryId": "portrait"
+    "galleryId": "studio",
+    "parent": "group-1773174817135"
+  },
+  {
+    "id": "item-1773158258360",
+    "name": "TELEVISION",
+    "type": "gallery",
+    "galleryId": "television",
+    "parent": "conversation"
+  },
+  {
+    "id": "item-1773174948772",
+    "name": "SERIE",
+    "type": "gallery",
+    "galleryId": "gem",
+    "parent": "group-1773174817135"
+  },
+  {
+    "id": "item-1773174967818",
+    "name": "TELEVISION",
+    "type": "gallery",
+    "galleryId": "television",
+    "hidden": true
+  },
+  {
+    "id": "item-1773174901597",
+    "name": "STUDIO",
+    "type": "gallery",
+    "galleryId": "studio",
+    "parent": "group-1773174817135"
+  },
+  {
+    "id": "portrait",
+    "name": "ACTEUR",
+    "type": "gallery",
+    "galleryId": "portrait",
+    "parent": "group-1773174817135"
   },
   {
     "id": "immersion",
     "name": "IMMERSION",
     "type": "group",
-    "galleryId": "gem",
-    "hidden": true
+    "galleryId": "gem"
   },
   {
     "id": "st-melar",
     "name": "ST MELAR",
     "type": "gallery",
     "galleryId": "st-melar",
-    "parent": "immersion",
-    "hidden": true
+    "parent": "immersion"
   },
   {
     "id": "item-1773158098062",
     "name": "Burning Man",
     "type": "gallery",
     "galleryId": "portrait",
-    "parent": "immersion",
-    "hidden": true
+    "parent": "immersion"
   },
   {
     "id": "conversation",
     "name": "CONVERSATION(S)",
-    "type": "gallery",
-    "galleryId": "conversation-s-",
-    "hidden": true
+    "type": "group",
+    "galleryId": "conversation-s-"
   },
   {
     "id": "group-1773157969699",
@@ -85,8 +122,7 @@ const MENU_CONFIG = [
     "name": "GEM",
     "type": "gallery",
     "galleryId": "gem",
-    "parent": "group-1773157969699",
-    "hidden": true
+    "parent": "conversation"
   },
   {
     "id": "item-1773158051230",
@@ -99,27 +135,34 @@ const MENU_CONFIG = [
   {
     "id": "group-1773158227466",
     "name": "FILM",
-    "type": "group"
+    "type": "group",
+    "hidden": true
   },
   {
     "id": "item-1773158247053",
     "name": "CINEMA",
     "type": "gallery",
     "galleryId": "cinema",
-    "parent": "group-1773158227466"
-  },
-  {
-    "id": "item-1773158258360",
-    "name": "TELEVISION",
-    "type": "gallery",
-    "galleryId": "television",
-    "parent": "group-1773158227466"
+    "parent": "group-1773158227466",
+    "hidden": true
   },
   {
     "id": "infos",
     "name": "INFOS",
     "type": "page",
     "pageId": "infos"
+  },
+  {
+    "id": "item-1773175848292",
+    "name": "ARCHIVES",
+    "type": "gallery",
+    "galleryId": "portrait"
+  },
+  {
+    "id": "archives",
+    "name": "ARCHIVES",
+    "type": "gallery",
+    "galleryId": "archives"
   }
 ];
 
@@ -165,17 +208,18 @@ const GALLERIES_CONFIG = {
         {
                 "cid": "cmmkol4ggo7b",
                 "position": 8,
-                "titleEn": "",
                 "titleFr": "",
-                "categoryEn": "",
-                "categoryFr": "",
-                "sidebarEn": "",
-                "sidebarFr": "",
-                "descEn": "Artist, artisan, executive, employee, self-employed professional — let's organise a portrait session.",
+                "titleEn": "",
+                "subtitleFr": "",
+                "subtitleEn": "",
                 "descFr": "Acteur, Artisan, Dirigeant, Artiste, profession libérale — organisons une séance portrait.",
-                "credits": "",
+                "descEn": "Artist, artisan, executive, employee, self-employed professional — let's organise a portrait session.",
                 "ctaLabel": "",
-                "ctaUrl": ""
+                "ctaUrl": "",
+                "categoryFr": "",
+                "categoryEn": "",
+                "sidebarFr": "",
+                "sidebarEn": ""
         }
 ],
         captions: {"02.jpg":{"en":"","fr":"Jean-Philippe Davodeau\nActeur"},"conversation-02.jpg":{"en":"","fr":"Antoine Asnar\nActeur"},"Imane02@bertrandbasset 2.jpg":{"en":"","fr":"Imene\nActrice"},"JF.jpg":{"en":"","fr":"Jean-François\nSerie GEM"},"L1020630.jpg":{"en":"","fr":"Patrick Ewen\nConteur"},"portrait-02.jpg":{"en":"","fr":"Ange-Marine\nActrice"}},
@@ -189,17 +233,18 @@ const GALLERIES_CONFIG = {
         {
                 "cid": "cmmkol4ggyqr",
                 "position": 0,
-                "titleEn": "",
                 "titleFr": "",
-                "categoryEn": "",
-                "categoryFr": "",
-                "sidebarEn": "",
-                "sidebarFr": "",
-                "descEn": "More than a photo — a conversation between you and me.\n\nIn the form of a documentary series or individual portrait, a conversation can take the shape of a photograph, a recorded interview or a memory film. Multiple approaches are possible depending on the project, the subject, the person.\n\nContact me to find out more.",
+                "titleEn": "",
+                "subtitleFr": "",
+                "subtitleEn": "",
                 "descFr": "Un peu plus qu'une photo, une rencontre, une conversation entre vous et moi.\n\nUne conversation, c'est d'abord une rencontre où on prend le temps, on discute, dans un lieu de votre choix, sans appareil photo. Puis, on reprend la conversation pour la séance photo, on cherche ensemble à capturer le fruit de notre rencontre. C'est une démarche qui rompt avec l'instanéité, une sorte d'éloge de la lenteur, parce que le résultat sera plus intemporelle, fruit d'une maturation.\n\nLe rendu peut-être photographique, sonore ou sous la forme d'entretien mémoire.\n\nContactez moi pour en savoir plus.",
-                "credits": "",
+                "descEn": "More than a photo — a conversation between you and me.\n\nIn the form of a documentary series or individual portrait, a conversation can take the shape of a photograph, a recorded interview or a memory film. Multiple approaches are possible depending on the project, the subject, the person.\n\nContact me to find out more.",
                 "ctaLabel": "",
-                "ctaUrl": ""
+                "ctaUrl": "",
+                "categoryFr": "",
+                "categoryEn": "",
+                "sidebarFr": "",
+                "sidebarEn": ""
         }
 ],
         captions: {},
@@ -213,17 +258,18 @@ const GALLERIES_CONFIG = {
         {
                 "cid": "cmmkol4ggs5l",
                 "position": 0,
-                "titleEn": "",
                 "titleFr": "",
-                "categoryEn": "",
-                "categoryFr": "",
-                "sidebarEn": "",
-                "sidebarFr": "",
-                "descEn": "Immersion in a trade, documentary immersion — I blend into the landscape to tell through portraits a place, a craft, a moment of life.\n\nHere, I took a room for a week at St Melar, a unit of the Ephad de Lanmeur, for a photographic residency.",
+                "titleEn": "",
+                "subtitleFr": "",
+                "subtitleEn": "",
                 "descFr": "J'ai 45 ans, un peu de kilomètre et la maitrise d'un savoir faire, me fondre dans un lieu, un collectif, un évènement, et rendre compte avec une approche humaniste, c'est à dire qui met en avant les humains, leur interactions. Le portrait restant ma spécialité, j'aime raconter par les gueules, les instants, les petits couac.\n\nPar exemple, il y a un an, j'ai pris une chambre dans un Ephad pendant une semaine. St Melar, une unité de l'Ephad de Lanmeur, où j'ai pu bénéficier d'une résidence photographique pour faire de la recherche de forme, voici les 6 planches que j'ai livrée pour l'exposition à l'hopital.",
-                "credits": "",
+                "descEn": "Immersion in a trade, documentary immersion — I blend into the landscape to tell through portraits a place, a craft, a moment of life.\n\nHere, I took a room for a week at St Melar, a unit of the Ephad de Lanmeur, for a photographic residency.",
                 "ctaLabel": "",
-                "ctaUrl": ""
+                "ctaUrl": "",
+                "categoryFr": "",
+                "categoryEn": "",
+                "sidebarFr": "",
+                "sidebarEn": ""
         }
 ],
         captions: {},
@@ -238,17 +284,18 @@ const GALLERIES_CONFIG = {
         {
                 "cid": "cmmkspnzpiaa",
                 "position": 0,
-                "titleEn": "",
                 "titleFr": "J'arrive",
-                "categoryEn": "",
-                "categoryFr": "",
-                "sidebarEn": "",
-                "sidebarFr": "",
-                "descEn": "",
+                "titleEn": "",
+                "subtitleFr": "",
+                "subtitleEn": "",
                 "descFr": "Court métrage de 13 minutes\nProduit par Respiro Production\n+ de 40 selections et 20 prix\nRhodes Island, Los Angeles, Clermont-Ferrand, Arles...",
-                "credits": "",
+                "descEn": "",
                 "ctaLabel": "",
-                "ctaUrl": ""
+                "ctaUrl": "",
+                "categoryFr": "",
+                "categoryEn": "",
+                "sidebarFr": "",
+                "sidebarEn": ""
         }
 ],
         images: [
@@ -274,17 +321,18 @@ const GALLERIES_CONFIG = {
         {
                 "cid": "cmmkyiyviovc",
                 "position": 0,
-                "titleEn": "",
                 "titleFr": "Réalisateur - France 2",
-                "categoryEn": "",
-                "categoryFr": "",
-                "sidebarEn": "",
-                "sidebarFr": "",
-                "descEn": "",
+                "titleEn": "",
+                "subtitleFr": "",
+                "subtitleEn": "",
                 "descFr": "Réalisation de portraits d'invités pour 20H30 le dimanche, de portrait reportage pour 13H15 le samedi ou de documentaire historique pour 13H15 le dimanche. ",
-                "credits": "",
+                "descEn": "",
                 "ctaLabel": "",
-                "ctaUrl": ""
+                "ctaUrl": "",
+                "categoryFr": "",
+                "categoryEn": "",
+                "sidebarFr": "",
+                "sidebarEn": ""
         }
 ],
         images: [
@@ -310,17 +358,18 @@ const GALLERIES_CONFIG = {
         {
                 "cid": "cmmkol4gg639",
                 "position": 0,
-                "titleEn": "",
                 "titleFr": "",
-                "categoryEn": "",
-                "categoryFr": "",
-                "sidebarEn": "",
-                "sidebarFr": "",
-                "descEn": "Portrait series made at the GEM in Morlaix.\nEach portrait comes with an audio testimony.",
+                "titleEn": "",
+                "subtitleFr": "",
+                "subtitleEn": "",
                 "descFr": "Série de portraits réalisée au GEM de Morlaix.\nChaque portrait est accompagné d’un témoignage audio.",
-                "credits": "",
+                "descEn": "Portrait series made at the GEM in Morlaix.\nEach portrait comes with an audio testimony.",
                 "ctaLabel": "",
-                "ctaUrl": ""
+                "ctaUrl": "",
+                "categoryFr": "",
+                "categoryEn": "",
+                "sidebarFr": "",
+                "sidebarEn": ""
         }
 ],
         images: [
@@ -352,6 +401,39 @@ const GALLERIES_CONFIG = {
             {"filename":"stmelar-4.jpg"},
             {"filename":"stmelar-5.jpg"},
             {"filename":"stmelar-6.jpg"}
+        ],
+        captions: {}
+    },
+
+    "archives": {
+        path:          "images/archives",
+        autoplay:      false,
+        autoplayDelay: 4,
+        cartons: [
+        {
+                "cid": "cmml35z29tav",
+                "position": 0,
+                "titleFr": "PORTRAIT INVITE",
+                "titleEn": "",
+                "subtitleFr": "",
+                "subtitleEn": "",
+                "descFr": "Avec l'aide d'un compte INA et d'un fidèle monteur, j'ai réalisé une série de portrait pour la partie magazine du 20H de France 2 du dimanche soir. ",
+                "descEn": "",
+                "ctaLabel": "",
+                "ctaUrl": "",
+                "categoryFr": "",
+                "categoryEn": "",
+                "sidebarFr": "",
+                "sidebarEn": ""
+        }
+],
+        images: [
+            {"filename":"01.jpg"},
+            {"filename":"06.jpg"},
+            {"filename":"07.jpg"},
+            {"filename":"08.jpg"},
+            {"filename":"09.jpg"},
+            {"filename":"10.jpg"}
         ],
         captions: {}
     },
@@ -522,27 +604,41 @@ class Portfolio {
     buildMenu() {
         const nav = document.getElementById('mainNav');
         if (!nav) return;
-        const items = MENU_CONFIG.filter(i => !i.hidden);
-        let html = '';
-        let openGroupId = null;
-        const itemHtml = (item) => {
-            const cls = item.parent ? 'nav-item nav-sub-item' : 'nav-item';
+        const hiddenGroups = new Set(MENU_CONFIG.filter(i => i.type === 'group' && i.hidden).map(i => i.id));
+        const visible = MENU_CONFIG.filter(i => !i.hidden && !(i.parent && hiddenGroups.has(i.parent)));
+
+        /* Build children map so ordering in config doesn't matter */
+        const childrenOf = {};
+        visible.filter(i => i.parent).forEach(i => {
+            if (!childrenOf[i.parent]) childrenOf[i.parent] = [];
+            childrenOf[i.parent].push(i);
+        });
+
+        const itemHtml = (item, isSub) => {
+            const cls = isSub ? 'nav-item nav-sub-item' : 'nav-item';
             if (item.type === 'gallery')  return `<div class="${cls}"><a href="#" class="nav-link" data-gallery="${item.galleryId}">${item.name}</a></div>`;
             if (item.type === 'page')     return `<div class="${cls}"><a href="#" class="nav-link" data-page="${item.pageId}">${item.name}</a></div>`;
             if (item.type === 'external') return `<div class="${cls}"><a href="${item.url}" class="nav-link" target="_blank">${item.name}</a></div>`;
             return '';
         };
-        for (const item of items) {
+
+        let html = '';
+        for (const item of visible) {
+            if (item.parent) continue; /* children rendered inside their group */
             if (item.type === 'group') {
-                if (openGroupId !== null) html += '</div></div>';
-                html += `<div class="nav-group"><div class="nav-group-header">${item.name}</div><div class="nav-group-children">`;
-                openGroupId = item.id;
+                const children = childrenOf[item.id] || [];
+                html += `<div class="nav-group">`;
+                html += `<div class="nav-group-header">${item.name}</div>`;
+                if (children.length > 0) {
+                    html += `<div class="nav-group-children">`;
+                    children.forEach(c => { html += itemHtml(c, true); });
+                    html += `</div>`;
+                }
+                html += `</div>`;
             } else {
-                if (openGroupId !== null && !item.parent) { html += '</div></div>'; openGroupId = null; }
-                html += itemHtml(item);
+                html += itemHtml(item, false);
             }
         }
-        if (openGroupId !== null) html += '</div></div>';
         nav.innerHTML = html;
     }
 
@@ -735,10 +831,10 @@ class Portfolio {
         // Always clear footer caption first (showImageInfo fills it for image types)
         if (footerCap) footerCap.innerHTML = '';
 
-        if (item.type === 'image' || item.type === 'accueil-image') {
-            // For images: clear the sidebar desc (caption goes to footerCaption)
+        if (item.type === 'image') {
+            // For plain images: clear the sidebar desc (caption goes to footerCaption)
             if (galleryDesc) galleryDesc.innerHTML = '';
-        } else {
+        } else if (item.type !== 'accueil-image') {
             this.stopSlideshow();
             this.stopAudio();
         }
@@ -805,15 +901,14 @@ class Portfolio {
         } else if (item.type === 'carton') {
             const en         = lang === 'en';
             const title      = en ? (item.titleEn    || item.titleFr    || '') : (item.titleFr    || item.titleEn    || '');
+            const subtitle   = en ? (item.subtitleEn || item.subtitleFr || '') : (item.subtitleFr || item.subtitleEn || '');
             const category   = en ? (item.categoryEn || item.categoryFr || '') : (item.categoryFr || item.categoryEn || '');
             const sidebarTxt = en ? (item.sidebarEn  || item.sidebarFr  || '') : (item.sidebarFr  || item.sidebarEn  || '');
             const desc       = en ? (item.descEn     || item.descFr     || '') : (item.descFr     || item.descEn     || '');
-            const credits    = item.credits  || '';
             const ctaUrl     = item.ctaUrl   || '';
             const ctaLbl     = item.ctaLabel || (en ? 'See more' : 'En savoir plus');
 
-            /* ── SIDEBAR: catégorie + titre + texte sidebar dédié + lien ── */
-            /* La description longue (desc) n'apparaît PAS ici, seulement dans le carton central */
+            /* ── SIDEBAR: sous-titre (category) + titre + texte sidebar + bouton ── */
             if (galleryDesc) {
                 const ctaLink = ctaUrl
                     ? `<a href="${ctaUrl}" target="_blank" rel="noopener" class="sidebar-carton-link">${ctaLbl} \u2192</a>`
@@ -827,16 +922,16 @@ class Portfolio {
                     </div>`;
             }
 
-            /* ── CARTON CENTRAL: titre + description complète + crédits ── */
+            /* ── CARTON CENTRAL: titre + sous-titre + texte + bouton ── */
             const ctaBtn = ctaUrl
                 ? `<a href="${ctaUrl}" target="_blank" rel="noopener" class="carton-cta-btn">${ctaLbl} \u2192</a>`
                 : '';
             container.innerHTML = `
                 <div class="carton-slide loaded">
                     <div class="carton-slide-inner">
-                        ${title   ? `<h2 class="carton-slide-title">${title}</h2>` : ''}
-                        ${desc    ? `<p class="carton-slide-desc">${desc.replace(/\n/g,'<br>')}</p>` : ''}
-                        ${credits ? `<div class="carton-slide-credits">${credits}</div>` : ''}
+                        ${title    ? `<h2 class="carton-slide-title">${title}</h2>` : ''}
+                        ${subtitle ? `<p class="carton-slide-subtitle">${subtitle}</p>` : ''}
+                        ${desc     ? `<p class="carton-slide-desc">${desc.replace(/\n/g,'<br>')}</p>` : ''}
                         ${ctaBtn}
                     </div>
                 </div>`;
@@ -844,38 +939,24 @@ class Portfolio {
         } else if (item.type === 'accueil-image') {
             this.showImageInfo(item.caption, item.button);
             const linkGallery = item.link_gallery;
+            /* ── SIDEBAR: gallery link shown in sidebar, not as image overlay ── */
+            if (galleryDesc) {
+                if (linkGallery && item.label) {
+                    galleryDesc.innerHTML = `<a class="accueil-sidebar-link" href="#"
+                        onclick="portfolio.openGalleryFromAccueil('${linkGallery}');return false;">
+                        ${item.label} \u2192</a>`;
+                } else {
+                    galleryDesc.innerHTML = '';
+                }
+            }
             const img = new Image();
             img.className = 'gallery-image';
             img.alt = item.label || '';
             img.onload = () => {
                 container.innerHTML = '';
                 const wrapper = document.createElement('div');
-                wrapper.className = 'image-wrapper accueil-wrapper';
+                wrapper.className = 'image-wrapper';
                 wrapper.appendChild(img);
-                if (item.label || linkGallery) {
-                    const overlay = document.createElement('div');
-                    overlay.className = 'accueil-overlay';
-                    if (linkGallery) {
-                        /* Entire overlay is clickable — label acts as the CTA */
-                        overlay.style.cursor = 'pointer';
-                        overlay.addEventListener('click', e => {
-                            e.stopPropagation();
-                            this.openGalleryFromAccueil(linkGallery);
-                        });
-                    }
-                    const nameSpan = document.createElement('span');
-                    nameSpan.className = 'accueil-gallery-name';
-                    nameSpan.textContent = item.label || '';
-                    overlay.appendChild(nameSpan);
-                    if (linkGallery) {
-                        /* Arrow indicator — purely visual, click handled by overlay */
-                        const arrow = document.createElement('span');
-                        arrow.className = 'accueil-link';
-                        arrow.textContent = '\u2192';
-                        overlay.appendChild(arrow);
-                    }
-                    wrapper.appendChild(overlay);
-                }
                 container.appendChild(wrapper);
                 requestAnimationFrame(() => img.classList.add('loaded'));
             };
@@ -915,6 +996,8 @@ class Portfolio {
 
         const counter = document.querySelector('.gallery-counter');
         if (counter) counter.textContent = `${index + 1} / ${items.length}`;
+        const footerNav = document.querySelector('.gallery-footer-nav');
+        if (footerNav) footerNav.style.visibility = items.length <= 1 ? 'hidden' : '';
     }
 
     prev() {
