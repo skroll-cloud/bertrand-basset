@@ -7,6 +7,7 @@
     --black: #0a0a0a;
     --white: #fafafa;
     --gray: #666;
+    --dim: #999;
     --light-gray: #e0e0e0;
     --red: #c41e1e;
 }
@@ -151,10 +152,12 @@ body {
     animation: fadeUp 0.8s ease-out 0.5s forwards;
 }
 
-.lang-toggle {
-    position: absolute;
+/* Global lang toggle — fixed top-left, visible on landing + main site */
+.global-lang-toggle {
+    position: fixed;
     top: 2rem;
     right: 2rem;
+    z-index: 1000;
     display: flex;
     gap: 0.5rem;
     font-size: 0.6rem;
@@ -164,18 +167,18 @@ body {
     animation: fadeIn 0.8s ease-out 0.9s forwards;
 }
 
-.lang-toggle a {
+.global-lang-toggle a {
     color: var(--gray);
     text-decoration: none;
     transition: color 0.3s ease;
 }
 
-.lang-toggle a:hover,
-.lang-toggle a.active {
+.global-lang-toggle a:hover,
+.global-lang-toggle a.active {
     color: var(--black);
 }
 
-.lang-toggle span {
+.global-lang-toggle span {
     color: var(--light-gray);
 }
 
@@ -222,7 +225,7 @@ body {
     display: flex;
     flex-direction: column;
     height: 100vh;
-    overflow-y: auto;
+    overflow: hidden;
     border-right: 1px solid var(--light-gray);
 }
 
@@ -253,28 +256,7 @@ body {
     text-transform: uppercase;
 }
 
-.sidebar-lang {
-    display: flex;
-    gap: 0.4rem;
-    font-size: 0.6rem;
-    letter-spacing: 0.08em;
-    font-weight: 400;
-}
-
-.sidebar-lang a {
-    color: var(--gray);
-    text-decoration: none;
-    transition: color 0.2s ease;
-}
-
-.sidebar-lang a:hover,
-.sidebar-lang a.active {
-    color: var(--black);
-}
-
-.sidebar-lang span {
-    color: var(--light-gray);
-}
+/* .sidebar-lang removed — replaced by #globalLangToggle (fixed top-right) */
 
 /* Menu toggle - hidden on desktop */
 .menu-toggle {
@@ -285,7 +267,7 @@ body {
 /* NAVIGATION                         */
 /* ================================== */
 .main-nav {
-    flex: 1;
+    flex-shrink: 0;
 }
 
 .nav-item {
@@ -1304,10 +1286,18 @@ body {
     color: var(--gray);
     line-height: 1.65;
     min-height: 0;
+    display: flex;
+    flex-direction: column;
 }
 
 .gallery-desc p {
     margin: 0;
+}
+
+/* Tout contenu sidebar ancré en bas de la zone gallery-desc */
+.gallery-desc-content {
+    margin-top: auto;
+    width: 100%;
 }
 
 .gallery-desc-caption {
@@ -1340,9 +1330,7 @@ body {
 }
 
 .gallery-caption-block {
-    /* no border here — separator lines in footer handle visual division */
     padding-top: 0;
-    margin-top: 0;
 }
 .gallery-caption-name {
     font-size: 0.6rem;
