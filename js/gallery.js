@@ -1,6 +1,6 @@
 /**
  * Bertrand Basset Portfolio — gallery.js
- * Généré par Admin V4 — 10/03/2026 22:07:36
+ * Généré par Admin V4 — 10/03/2026 22:15:38
  */
 
 const SITE_CONFIG = {
@@ -41,28 +41,31 @@ const MENU_CONFIG = [
   {
     "id": "group-1773174817135",
     "name": "PORTRAIT",
-    "type": "group"
+    "type": "gallery"
   },
   {
     "id": "item-1773174917949",
     "name": "METIER",
     "type": "gallery",
     "galleryId": "studio",
-    "parent": "group-1773174817135"
+    "parent": "group-1773174817135",
+    "hidden": true
   },
   {
     "id": "item-1773158258360",
     "name": "TELEVISION",
     "type": "gallery",
     "galleryId": "television",
-    "parent": "conversation"
+    "parent": "conversation",
+    "hidden": true
   },
   {
     "id": "item-1773174948772",
     "name": "SERIE",
     "type": "gallery",
     "galleryId": "gem",
-    "parent": "group-1773174817135"
+    "parent": "group-1773174817135",
+    "hidden": true
   },
   {
     "id": "item-1773174967818",
@@ -76,18 +79,20 @@ const MENU_CONFIG = [
     "name": "STUDIO",
     "type": "gallery",
     "galleryId": "studio",
-    "parent": "group-1773174817135"
+    "parent": "group-1773174817135",
+    "hidden": true
   },
   {
     "id": "portrait",
     "name": "ACTEUR",
     "type": "gallery",
     "galleryId": "portrait",
-    "parent": "group-1773174817135"
+    "parent": "group-1773174817135",
+    "hidden": true
   },
   {
     "id": "immersion",
-    "name": "IMMERSION",
+    "name": "SERIE",
     "type": "group",
     "galleryId": "gem"
   },
@@ -97,6 +102,13 @@ const MENU_CONFIG = [
     "type": "gallery",
     "galleryId": "st-melar",
     "parent": "immersion"
+  },
+  {
+    "id": "item-1773157975176",
+    "name": "GEM",
+    "type": "gallery",
+    "galleryId": "gem",
+    "parent": "group-1773157969699"
   },
   {
     "id": "item-1773158098062",
@@ -109,20 +121,14 @@ const MENU_CONFIG = [
     "id": "conversation",
     "name": "CONVERSATION(S)",
     "type": "group",
-    "galleryId": "conversation-s-"
+    "galleryId": "conversation-s-",
+    "hidden": true
   },
   {
     "id": "group-1773157969699",
     "name": "SERIE",
     "type": "group",
     "hidden": true
-  },
-  {
-    "id": "item-1773157975176",
-    "name": "GEM",
-    "type": "gallery",
-    "galleryId": "gem",
-    "parent": "conversation"
   },
   {
     "id": "item-1773158051230",
@@ -156,13 +162,14 @@ const MENU_CONFIG = [
     "id": "item-1773175848292",
     "name": "ARCHIVES",
     "type": "gallery",
-    "galleryId": "portrait"
+    "galleryId": "television"
   },
   {
     "id": "archives",
     "name": "ARCHIVES",
     "type": "gallery",
-    "galleryId": "archives"
+    "galleryId": "archives",
+    "hidden": true
   }
 ];
 
