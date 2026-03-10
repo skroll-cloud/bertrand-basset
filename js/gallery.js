@@ -1,6 +1,6 @@
 /**
  * Bertrand Basset Portfolio — gallery.js
- * Généré par Admin V4 — 10/03/2026 22:42:10
+ * Généré par Admin V4 — 11/03/2026 00:50:52
  */
 
 const SITE_CONFIG = {
@@ -155,16 +155,17 @@ const MENU_CONFIG = [
     "hidden": true
   },
   {
+    "id": "item-1773175848292",
+    "name": "ARCHIVES",
+    "type": "gallery",
+    "galleryId": "television",
+    "hidden": true
+  },
+  {
     "id": "infos",
     "name": "INFOS",
     "type": "page",
     "pageId": "infos"
-  },
-  {
-    "id": "item-1773175848292",
-    "name": "ARCHIVES",
-    "type": "gallery",
-    "galleryId": "television"
   },
   {
     "id": "archives",
@@ -221,9 +222,9 @@ const GALLERIES_CONFIG = {
                 "titleEn": "",
                 "subtitleFr": "",
                 "subtitleEn": "",
-                "descFr": "Acteur, Artisan, Dirigeant, Artiste, profession libérale — organisons une séance portrait.",
+                "descFr": "Acteur, Artisan, Dirigeant, Artiste, profession libérale, série.",
                 "descEn": "Artist, artisan, executive, employee, self-employed professional — let's organise a portrait session.",
-                "ctaLabel": "",
+                "ctaLabel": "Reserver votre portrait",
                 "ctaUrl": "",
                 "categoryFr": "",
                 "categoryEn": "",
@@ -231,7 +232,7 @@ const GALLERIES_CONFIG = {
                 "sidebarEn": ""
         }
 ],
-        captions: {"02.jpg":{"en":"","fr":"Jean-Philippe Davodeau\nActeur"},"conversation-02.jpg":{"en":"","fr":"Antoine Asnar\nActeur"},"Imane02@bertrandbasset 2.jpg":{"en":"","fr":"Imene\nActrice"},"JF.jpg":{"en":"","fr":"Jean-François\nSerie GEM"},"L1020630.jpg":{"en":"","fr":"Patrick Ewen\nConteur"},"portrait-02.jpg":{"en":"","fr":"Ange-Marine\nActrice"}},
+        captions: {"02.jpg":{"en":"","fr":"Jean-Philippe Davodeau\nActeur"},"conversation-02.jpg":{"en":"","fr":"Antoine Asnar\nActeur"},"Imane02@bertrandbasset 2.jpg":{"en":"","fr":"Imene\nActrice"},"portrait-02.jpg":{"en":"","fr":"Ange-Marine\nActrice"},"JF.jpg":{"en":"","fr":"Jean-François\nSerie GEM"},"L1020630.jpg":{"en":"","fr":"Patrick Ewen\nConteur"}},
     },
 
     "conversation-s-": {
@@ -363,28 +364,10 @@ const GALLERIES_CONFIG = {
         path:          "images/gem",
         autoplay:      false,
         autoplayDelay: 4,
-        cartons: [
-        {
-                "cid": "cmmkol4gg639",
-                "position": 0,
-                "titleFr": "",
-                "titleEn": "",
-                "subtitleFr": "",
-                "subtitleEn": "",
-                "descFr": "Série de portraits réalisée au GEM de Morlaix.\nChaque portrait est accompagné d’un témoignage audio.",
-                "descEn": "Portrait series made at the GEM in Morlaix.\nEach portrait comes with an audio testimony.",
-                "ctaLabel": "",
-                "ctaUrl": "",
-                "categoryFr": "",
-                "categoryEn": "",
-                "sidebarFr": "",
-                "sidebarEn": ""
-        }
-],
         images: [
-            {"filename":"JeanFrancois.jpg","audio":"JeanFrancois.mp3","title":"Jean-François","subtitle":"SERIE GEM LE SYMPA","caption":{"en":"","fr":"Jean-François"}},
-            {"filename":"ALain.jpg","audio":"ALain.mp3","title":"Alain"},
-            {"filename":"Beatrice.jpg","audio":"Beatrice.mp3","title":"Béatrice"},
+            {"filename":"JeanFrancois.jpg","audio":"JeanFrancois.mp3","caption":{"en":"","fr":"Jean-François"}},
+            {"filename":"ALain.jpg","audio":"ALain.mp3","caption":{"en":"","fr":"Alain"}},
+            {"filename":"Beatrice.jpg","audio":"Beatrice.mp3","caption":{"en":"","fr":"Béatrice"}},
             {"filename":"Bernard.jpg","audio":"Bernard.mp3","title":"Bernard"},
             {"filename":"Bruno.jpg","title":"Bruno"},
             {"filename":"GUY.jpg","title":"Guy"},
@@ -613,6 +596,7 @@ class Portfolio {
     buildMenu() {
         const nav = document.getElementById('mainNav');
         if (!nav) return;
+        /* Hidden groups — used to suppress orphan children */
         const hiddenGroups = new Set(MENU_CONFIG.filter(i => i.type === 'group' && i.hidden).map(i => i.id));
         const visible = MENU_CONFIG.filter(i => !i.hidden && !(i.parent && hiddenGroups.has(i.parent)));
 
@@ -649,6 +633,8 @@ class Portfolio {
             }
         }
         nav.innerHTML = html;
+        /* Re-bind nav click events after rebuild */
+        this.bindNavEvents();
     }
 
     bindEvents() {
@@ -667,22 +653,7 @@ class Portfolio {
         document.querySelectorAll('[data-lang]').forEach(el => {
             el.addEventListener('click', e => { e.preventDefault(); this.setLang(el.dataset.lang); });
         });
-        document.querySelectorAll('[data-gallery]').forEach(link => {
-            link.addEventListener('click', e => {
-                e.preventDefault();
-                this.openGallery(link.dataset.gallery);
-                this.setActiveLink(link);
-                this.closeMenu();
-            });
-        });
-        document.querySelectorAll('[data-page]').forEach(link => {
-            link.addEventListener('click', e => {
-                e.preventDefault();
-                this.showPage(link.dataset.page);
-                this.setActiveLink(link);
-                this.closeMenu();
-            });
-        });
+        this.bindNavEvents();
         document.getElementById('galleryContainer')?.addEventListener('click', e => {
             if (e.target.closest('a,button,select,textarea,form')) return;
             const rect = e.currentTarget.getBoundingClientRect();
@@ -733,6 +704,25 @@ class Portfolio {
         if (autoBtn) autoBtn.textContent = t.autoplay_btn;
         const subtitle = document.querySelector('.brand-subtitle');
         if (subtitle) subtitle.textContent = t.subtitle;
+    }
+
+    bindNavEvents() {
+        document.querySelectorAll('[data-gallery]').forEach(link => {
+            link.addEventListener('click', e => {
+                e.preventDefault();
+                this.openGallery(link.dataset.gallery);
+                this.setActiveLink(link);
+                this.closeMenu();
+            });
+        });
+        document.querySelectorAll('[data-page]').forEach(link => {
+            link.addEventListener('click', e => {
+                e.preventDefault();
+                this.showPage(link.dataset.page);
+                this.setActiveLink(link);
+                this.closeMenu();
+            });
+        });
     }
 
     toggleMenu() {
@@ -851,13 +841,13 @@ class Portfolio {
             const galleryId = item.link_gallery;
             const eyebrow   = galleryId === 'cinema' ? (lang === 'fr' ? 'Cin\u00E9ma' : 'Cinema') : '';
             if (galleryDesc) {
-                galleryDesc.innerHTML = `
+                galleryDesc.innerHTML = `<div class="gallery-desc-content">
                     <div class="sidebar-featured">
                         ${eyebrow ? `<p class="sidebar-featured-eyebrow">${eyebrow}</p>` : ''}
                         <h2 class="sidebar-featured-title">${item.title}</h2>
                         <p class="sidebar-featured-text">${text}</p>
                         ${galleryId ? `<button class="sidebar-featured-btn" onclick="portfolio.openGalleryFromAccueil('${galleryId}')">${seeMore} \u2192</button>` : ''}
-                    </div>`;
+                    </div></div>`;
             }
             const accueilG = this.galleries['accueil'];
             const matchImg = accueilG?.items.find(i => i.type === 'accueil-image' && i.link_gallery === galleryId);
@@ -920,7 +910,7 @@ class Portfolio {
                 if (category)   h += `<p class="sidebar-item-subtitle">${category}</p>`;
                 if (title)      h += `<h2 class="sidebar-item-title">${title}</h2>`;
                 if (sidebarTxt) h += `<p class="sidebar-main-desc">${sidebarTxt.replace(/\n/g,'<br>')}</p>`;
-                galleryDesc.innerHTML = h;
+                galleryDesc.innerHTML = h ? `<div class="gallery-desc-content">${h}</div>` : '';
             }
             if (footerCap) {
                 footerCap.innerHTML = ctaUrl
@@ -943,16 +933,16 @@ class Portfolio {
                 </div>`;
 
         } else if (item.type === 'accueil-image') {
-            this.showImageInfo(item.caption, item.button);
             const linkGallery = item.link_gallery;
-            /* ── SIDEBAR: gallery link shown in sidebar, not as image overlay ── */
-            if (galleryDesc) {
+            /* ── SIDEBAR: empty galleryDesc; Portrait → link in footerCaption ── */
+            if (galleryDesc) galleryDesc.innerHTML = '';
+            if (footerCap) {
                 if (linkGallery && item.label) {
-                    galleryDesc.innerHTML = `<a class="accueil-sidebar-link" href="#"
+                    footerCap.innerHTML = `<a class="accueil-sidebar-link" href="#"
                         onclick="portfolio.openGalleryFromAccueil('${linkGallery}');return false;">
                         ${item.label} \u2192</a>`;
                 } else {
-                    galleryDesc.innerHTML = '';
+                    footerCap.innerHTML = '';
                 }
             }
             const img = new Image();
@@ -971,20 +961,43 @@ class Portfolio {
             img.src = encodeURI(item.src);
 
         } else {
-            /* Sidebar: image title + subtitle + description */
+            /* Sidebar galleryDesc:
+             * — si title présent : subtitle + title (ex: GEM "Jean-François / SERIE GEM")
+             * — si pas de title : caption format Davodeau (nom + métier en bas via margin-top:auto)
+             */
             if (galleryDesc) {
                 const t = item.title || '';
                 const s = item.subtitle || '';
-                const d = item.caption
+                const d = !t && item.caption
                     ? (typeof item.caption==='string' ? item.caption : (item.caption[lang]||item.caption.fr||item.caption.en||''))
                     : '';
                 let h = '';
-                if (s) h += `<p class="sidebar-item-subtitle">${s}</p>`;
-                if (t) h += `<h2 class="sidebar-item-title">${t}</h2>`;
-                if (d) h += `<p class="sidebar-main-desc">${d.replace(/\n/g,'<br>')}</p>`;
-                galleryDesc.innerHTML = h;
+                if (t) {
+                    /* Image nommée (ex: GEM) — subtitle + title */
+                    if (s) h += `<p class="sidebar-item-subtitle">${s}</p>`;
+                    h += `<h2 class="sidebar-item-title">${t}</h2>`;
+                } else if (d) {
+                    /* Image avec légende seulement (ex: Portrait Davodeau) */
+                    const lines = d.split('\n').map(l => l.trim()).filter(Boolean);
+                    const name = lines[0] || '';
+                    const rest = lines.slice(1).join('\n');
+                    h += `<div class="gallery-caption-block">`;
+                    if (name) h += `<p class="gallery-caption-name">${name}</p>`;
+                    if (rest)  h += `<p class="gallery-caption-desc">${rest.replace(/\n/g,'<br>')}</p>`;
+                    h += `</div>`;
+                }
+                /* gallery-desc-content : margin-top:auto ancre l'info en bas */
+                galleryDesc.innerHTML = h ? `<div class="gallery-desc-content">${h}</div>` : '';
             }
-            this.showImageInfo(item.caption, item.button);
+            /* footerCaption: bouton uniquement — pas de caption (déjà dans galleryDesc) */
+            if (footerCap) {
+                if (item.button?.url) {
+                    const lbl = item.button.label || (lang === 'en' ? 'See more' : 'En savoir plus');
+                    footerCap.innerHTML = `<a class="accueil-sidebar-link" href="${item.button.url}" target="_blank" rel="noopener">${lbl} \u2192</a>`;
+                } else {
+                    footerCap.innerHTML = '';
+                }
+            }
             /* audioAutoplay per-image: true=force on, false=force off, undefined=use gallery setting */
             const shouldAutoplayAudio = item.audio && (
                 item.audioAutoplay === true ||
