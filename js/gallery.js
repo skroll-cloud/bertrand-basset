@@ -1,6 +1,6 @@
 /**
  * Bertrand Basset Portfolio — gallery.js
- * Généré par Admin V4 — 09/03/2026 21:34:47
+ * Généré par Admin V4 — 10/03/2026 15:11:31
  */
 
 const SITE_CONFIG = {
@@ -95,9 +95,7 @@ const GALLERIES_CONFIG = {
         autoplay: false,
         featured: [],
         images: [
-            {"filename":"accueil-01.jpg","label":"Portrait","link_gallery":"portrait","caption":{"en":"","fr":""}},
-            {"filename":"Atelier_Plougasnou.jpg","label":"Immersion","link_gallery":"studio","caption":{"en":"","fr":""}},
-            {"filename":"1.jpg","label":"Cinema","link_gallery":"cinema","caption":{"en":"","fr":""}}
+            {"filename":"accueil-01.jpg","label":"Portrait","link_gallery":"portrait","caption":{"en":"","fr":""}}
         ]
     },
 
@@ -105,9 +103,10 @@ const GALLERIES_CONFIG = {
         path:          "images/portrait",
         autoplay:      true,
         autoplayDelay: 4,
+        cta: { en: "Artist, artisan, executive, employee, self-employed professional — let's organise a portrait session.", fr: "Acteur, Artisan, Dirigeant, Artiste, profession libérale — organisons une séance portrait." },
         cartons: [
         {
-                "cid": "cmmjmvhik0mg",
+                "cid": "cmmkol4ggo7b",
                 "position": 8,
                 "titleEn": "",
                 "titleFr": "",
@@ -118,17 +117,17 @@ const GALLERIES_CONFIG = {
                 "ctaUrl": ""
         }
 ],
-        captions: {"02.jpg":{"en":"","fr":"Jean-Philippe Davodeau\nActeur"},"conversation-02.jpg":{"en":"","fr":"Antoine Asnar\nActeur"},"Imane02@bertrandbasset 2.jpg":{"en":"","fr":"Imène\nActrice"},"JF.jpg":{"en":"","fr":"Jean-François\nSérie \"Le GEM S'endimanche\""}},
-        buttons: {"02.jpg":{"label":"Voir la session","url":"https://bertrandbasset.photodeck.com/-/galleries/jean-philippe-davodeau"}},
+        captions: {"02.jpg":{"en":"","fr":"Jean-Philippe Davodeau\nActeur"}},
     },
 
     "conversation-s-": {
         path:          "images/conversation",
         autoplay:      true,
         autoplayDelay: 4,
+        description: { en: "More than a photo — a conversation between you and me.\n\nIn the form of a documentary series or individual portrait, a conversation can take the shape of a photograph, a recorded interview or a memory film. Multiple approaches are possible depending on the project, the subject, the person.\n\nContact me to find out more.", fr: "Un peu plus qu'une photo, une rencontre, une conversation entre vous et moi.\n\nUne conversation, c'est d'abord une rencontre où on prend le temps, on discute, dans un lieu de votre choix, sans appareil photo. Puis, on reprend la conversation pour la séance photo, on cherche ensemble à capturer le fruit de notre rencontre. C'est une démarche qui rompt avec l'instanéité, une sorte d'éloge de la lenteur, parce que le résultat sera plus intemporelle, fruit d'une maturation.\n\nLe rendu peut-être photographique, sonore ou sous la forme d'entretien mémoire.\n\nContactez moi pour en savoir plus." },
         cartons: [
         {
-                "cid": "cmmjmvhikeyu",
+                "cid": "cmmkol4ggyqr",
                 "position": 0,
                 "titleEn": "",
                 "titleFr": "",
@@ -146,9 +145,10 @@ const GALLERIES_CONFIG = {
         path:          "images/immersion",
         autoplay:      false,
         autoplayDelay: 4,
+        description: { en: "Immersion in a trade, documentary immersion — I blend into the landscape to tell through portraits a place, a craft, a moment of life.\n\nHere, I took a room for a week at St Melar, a unit of the Ephad de Lanmeur, for a photographic residency.", fr: "J'ai 45 ans, un peu de kilomètre et la maitrise d'un savoir faire, me fondre dans un lieu, un collectif, un évènement, et rendre compte avec une approche humaniste, c'est à dire qui met en avant les humains, leur interactions. Le portrait restant ma spécialité, j'aime raconter par les gueules, les instants, les petits couac.\n\nPar exemple, il y a un an, j'ai pris une chambre dans un Ephad pendant une semaine. St Melar, une unité de l'Ephad de Lanmeur, où j'ai pu bénéficier d'une résidence photographique pour faire de la recherche de forme, voici les 6 planches que j'ai livrée pour l'exposition à l'hopital." },
         cartons: [
         {
-                "cid": "cmmjmvhikyfp",
+                "cid": "cmmkol4ggs5l",
                 "position": 0,
                 "titleEn": "",
                 "titleFr": "",
@@ -206,9 +206,10 @@ const GALLERIES_CONFIG = {
         autoplay:      false,
         autoplayDelay: 4,
         autoplayAudio: true,
+        description: { en: "Portrait series made at the GEM in Morlaix.\nEach portrait comes with an audio testimony.", fr: "Série de portraits réalisée au GEM de Morlaix.\nChaque portrait est accompagné d’un témoignage audio." },
         cartons: [
         {
-                "cid": "cmmjmvhikucv",
+                "cid": "cmmkol4gg639",
                 "position": 0,
                 "titleEn": "",
                 "titleFr": "",
@@ -569,7 +570,8 @@ class Portfolio {
     }
 
     showImageInfo(caption, button) {
-        const el = document.getElementById('galleryDesc');
+        /* Use #footerCaption (new layout) or fall back to #galleryDesc (old layout) */
+        const el = document.getElementById('footerCaption') || document.getElementById('galleryDesc');
         if (!el) return;
         let html = '';
         if (caption) {
@@ -604,10 +606,18 @@ class Portfolio {
         const item        = items[index];
         const container   = document.getElementById('galleryContainer');
         const galleryDesc = document.getElementById('galleryDesc');
+        const footerCap   = document.getElementById('footerCaption');
         const lang        = this.currentLang;
 
-        if (item.type !== 'image' && item.type !== 'accueil-image') {
+        // Always clear footer caption first (showImageInfo fills it for image types)
+        if (footerCap) footerCap.innerHTML = '';
+
+        if (item.type === 'image' || item.type === 'accueil-image') {
+            // For images: clear the sidebar desc (caption goes to footerCaption)
+            if (galleryDesc) galleryDesc.innerHTML = '';
+        } else {
             this.stopSlideshow();
+            this.stopAudio();
         }
 
         if (item.type === 'featured') {
@@ -638,7 +648,7 @@ class Portfolio {
                     container.appendChild(wrapper);
                     requestAnimationFrame(() => img.classList.add('loaded'));
                 };
-                img.onerror = () => { container.innerHTML = ''; };
+                img.onerror = () => { container.innerHTML = '<div class="img-missing-placeholder">🖼</div>'; };
                 container.innerHTML = '';
                 img.src = encodeURI(matchImg.src);
             } else {
@@ -746,7 +756,7 @@ class Portfolio {
                 container.appendChild(wrapper);
                 requestAnimationFrame(() => img.classList.add('loaded'));
             };
-            img.onerror = () => { container.innerHTML = ''; };
+            img.onerror = () => { container.innerHTML = '<div class="img-missing-placeholder">🖼</div>'; };
             container.innerHTML = '';
             img.src = encodeURI(item.src);
 
@@ -770,7 +780,7 @@ class Portfolio {
                 container.appendChild(wrapper);
                 requestAnimationFrame(() => img.classList.add('loaded'));
             };
-            img.onerror = () => { container.innerHTML = ''; };
+            img.onerror = () => { container.innerHTML = '<div class="img-missing-placeholder">🖼</div>'; };
             container.innerHTML = '';
             img.src = encodeURI(item.src);
         }
@@ -863,15 +873,16 @@ class Portfolio {
             this.currentAudio.src = '';
             this.currentAudio = null;
         }
-        document.getElementById('audioPlayer')?.remove();
+        const zone = document.getElementById('audioPlayerZone');
+        if (zone) zone.innerHTML = '';
     }
 
     playAudio(src) {
         this.stopAudio();
         const audio = new Audio(src);
         this.currentAudio = audio;
-        const galleryDesc = document.getElementById('galleryDesc');
-        if (!galleryDesc) return;
+        const zone = document.getElementById('audioPlayerZone');
+        if (!zone) return;
         const playerDiv = document.createElement('div');
         playerDiv.id = 'audioPlayer';
         playerDiv.className = 'audio-player';
@@ -881,10 +892,7 @@ class Portfolio {
                 <div class="audio-progress-fill" id="audioFill"></div>
             </div>
             <span class="audio-time" id="audioTime">0:00</span>`;
-        const sf = document.getElementById('sidebarFooter');
-        const fn = sf?.querySelector('.gallery-footer-nav');
-        if (sf && fn) { sf.insertBefore(playerDiv, fn); }
-        else { galleryDesc.appendChild(playerDiv); }
+        zone.appendChild(playerDiv);
         audio.addEventListener('timeupdate', () => {
             const fill = document.getElementById('audioFill');
             const time = document.getElementById('audioTime');
@@ -930,6 +938,9 @@ class Portfolio {
         if (counter) counter.textContent = '';
         const descEl = document.getElementById('galleryDesc');
         if (descEl) descEl.innerHTML = '';
+        const footerCap = document.getElementById('footerCaption');
+        if (footerCap) footerCap.innerHTML = '';
+        this.stopAudio();
     }
 
     showContactPage() {
