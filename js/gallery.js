@@ -1,6 +1,6 @@
 /**
  * Bertrand Basset Portfolio — gallery.js
- * Généré par Admin V4 — 10/03/2026 15:57:24
+ * Généré par Admin V4 — 10/03/2026 16:11:32
  */
 
 const SITE_CONFIG = {
@@ -103,7 +103,6 @@ const GALLERIES_CONFIG = {
         path:          "images/portrait",
         autoplay:      true,
         autoplayDelay: 4,
-        cta: { en: "Artist, artisan, executive, employee, self-employed professional — let's organise a portrait session.", fr: "Acteur, Artisan, Dirigeant, Artiste, profession libérale — organisons une séance portrait." },
         cartons: [
         {
                 "cid": "cmmkol4ggo7b",
@@ -124,7 +123,6 @@ const GALLERIES_CONFIG = {
         path:          "images/conversation",
         autoplay:      true,
         autoplayDelay: 4,
-        description: { en: "More than a photo — a conversation between you and me.\n\nIn the form of a documentary series or individual portrait, a conversation can take the shape of a photograph, a recorded interview or a memory film. Multiple approaches are possible depending on the project, the subject, the person.\n\nContact me to find out more.", fr: "Un peu plus qu'une photo, une rencontre, une conversation entre vous et moi.\n\nUne conversation, c'est d'abord une rencontre où on prend le temps, on discute, dans un lieu de votre choix, sans appareil photo. Puis, on reprend la conversation pour la séance photo, on cherche ensemble à capturer le fruit de notre rencontre. C'est une démarche qui rompt avec l'instanéité, une sorte d'éloge de la lenteur, parce que le résultat sera plus intemporelle, fruit d'une maturation.\n\nLe rendu peut-être photographique, sonore ou sous la forme d'entretien mémoire.\n\nContactez moi pour en savoir plus." },
         cartons: [
         {
                 "cid": "cmmkol4ggyqr",
@@ -145,7 +143,6 @@ const GALLERIES_CONFIG = {
         path:          "images/immersion",
         autoplay:      false,
         autoplayDelay: 4,
-        description: { en: "Immersion in a trade, documentary immersion — I blend into the landscape to tell through portraits a place, a craft, a moment of life.\n\nHere, I took a room for a week at St Melar, a unit of the Ephad de Lanmeur, for a photographic residency.", fr: "J'ai 45 ans, un peu de kilomètre et la maitrise d'un savoir faire, me fondre dans un lieu, un collectif, un évènement, et rendre compte avec une approche humaniste, c'est à dire qui met en avant les humains, leur interactions. Le portrait restant ma spécialité, j'aime raconter par les gueules, les instants, les petits couac.\n\nPar exemple, il y a un an, j'ai pris une chambre dans un Ephad pendant une semaine. St Melar, une unité de l'Ephad de Lanmeur, où j'ai pu bénéficier d'une résidence photographique pour faire de la recherche de forme, voici les 6 planches que j'ai livrée pour l'exposition à l'hopital." },
         cartons: [
         {
                 "cid": "cmmkol4ggs5l",
