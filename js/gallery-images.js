@@ -1,6 +1,6 @@
 /**
  * gallery-images.js
- * Généré par Admin V4 — 10/03/2026 22:42:10
+ * Généré par Admin V4 — 11/03/2026 00:50:52
  * Ne pas éditer manuellement.
  */
 const GALLERY_IMAGES = {
@@ -8,12 +8,14 @@ const GALLERY_IMAGES = {
         { "filename": "02.jpg" },
         { "filename": "L1060508.jpg" },
         { "filename": "conversation-02.jpg" },
-        { "filename": "portrait-01.jpg" },
+        { "filename": "Atelier_Plougasnou.jpg" },
         { "filename": "Imane02@bertrandbasset 2.jpg" },
+        { "filename": "portrait-02.jpg" },
         { "filename": "JF.jpg" },
+        { "filename": "Atelier_Plougasnou 1.jpg" },
+        { "filename": "portrait-01.jpg" },
         { "filename": "L1020630.jpg" },
-        { "filename": "placeholder-8.jpg" },
-        { "filename": "portrait-02.jpg" }
+        { "filename": "placeholder-8.jpg" }
     ],
     "conversation-s-": [
         { "filename": "conversation-01.jpg" },
