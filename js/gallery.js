@@ -1,6 +1,6 @@
 /**
  * Bertrand Basset Portfolio — gallery.js
- * Généré par Admin V4 — 10/03/2026 16:11:32
+ * Généré par Admin V4 — 10/03/2026 20:34:44
  */
 
 const SITE_CONFIG = {
@@ -45,6 +45,29 @@ const MENU_CONFIG = [
     "galleryId": "portrait"
   },
   {
+    "id": "immersion",
+    "name": "IMMERSION",
+    "type": "group",
+    "galleryId": "gem",
+    "hidden": true
+  },
+  {
+    "id": "st-melar",
+    "name": "ST MELAR",
+    "type": "gallery",
+    "galleryId": "st-melar",
+    "parent": "immersion",
+    "hidden": true
+  },
+  {
+    "id": "item-1773158098062",
+    "name": "Burning Man",
+    "type": "gallery",
+    "galleryId": "portrait",
+    "parent": "immersion",
+    "hidden": true
+  },
+  {
     "id": "conversation",
     "name": "CONVERSATION(S)",
     "type": "gallery",
@@ -52,10 +75,45 @@ const MENU_CONFIG = [
     "hidden": true
   },
   {
-    "id": "immersion",
-    "name": "IMMERSION",
+    "id": "group-1773157969699",
+    "name": "SERIE",
+    "type": "group",
+    "hidden": true
+  },
+  {
+    "id": "item-1773157975176",
+    "name": "GEM",
     "type": "gallery",
-    "galleryId": "gem"
+    "galleryId": "gem",
+    "parent": "group-1773157969699",
+    "hidden": true
+  },
+  {
+    "id": "item-1773158051230",
+    "name": "Carré d'AS",
+    "type": "gallery",
+    "galleryId": "portrait",
+    "parent": "group-1773157969699",
+    "hidden": true
+  },
+  {
+    "id": "group-1773158227466",
+    "name": "FILM",
+    "type": "group"
+  },
+  {
+    "id": "item-1773158247053",
+    "name": "CINEMA",
+    "type": "gallery",
+    "galleryId": "cinema",
+    "parent": "group-1773158227466"
+  },
+  {
+    "id": "item-1773158258360",
+    "name": "TELEVISION",
+    "type": "gallery",
+    "galleryId": "television",
+    "parent": "group-1773158227466"
   },
   {
     "id": "infos",
@@ -101,7 +159,7 @@ const GALLERIES_CONFIG = {
 
     "portrait": {
         path:          "images/portrait",
-        autoplay:      true,
+        autoplay:      false,
         autoplayDelay: 4,
         cartons: [
         {
@@ -109,6 +167,10 @@ const GALLERIES_CONFIG = {
                 "position": 8,
                 "titleEn": "",
                 "titleFr": "",
+                "categoryEn": "",
+                "categoryFr": "",
+                "sidebarEn": "",
+                "sidebarFr": "",
                 "descEn": "Artist, artisan, executive, employee, self-employed professional — let's organise a portrait session.",
                 "descFr": "Acteur, Artisan, Dirigeant, Artiste, profession libérale — organisons une séance portrait.",
                 "credits": "",
@@ -116,7 +178,7 @@ const GALLERIES_CONFIG = {
                 "ctaUrl": ""
         }
 ],
-        captions: {"02.jpg":{"en":"","fr":"Jean-Philippe Davodeau\nActeur"}},
+        captions: {"02.jpg":{"en":"","fr":"Jean-Philippe Davodeau\nActeur"},"conversation-02.jpg":{"en":"","fr":"Antoine Asnar\nActeur"},"Imane02@bertrandbasset 2.jpg":{"en":"","fr":"Imene\nActrice"},"JF.jpg":{"en":"","fr":"Jean-François\nSerie GEM"},"L1020630.jpg":{"en":"","fr":"Patrick Ewen\nConteur"},"portrait-02.jpg":{"en":"","fr":"Ange-Marine\nActrice"}},
     },
 
     "conversation-s-": {
@@ -129,6 +191,10 @@ const GALLERIES_CONFIG = {
                 "position": 0,
                 "titleEn": "",
                 "titleFr": "",
+                "categoryEn": "",
+                "categoryFr": "",
+                "sidebarEn": "",
+                "sidebarFr": "",
                 "descEn": "More than a photo — a conversation between you and me.\n\nIn the form of a documentary series or individual portrait, a conversation can take the shape of a photograph, a recorded interview or a memory film. Multiple approaches are possible depending on the project, the subject, the person.\n\nContact me to find out more.",
                 "descFr": "Un peu plus qu'une photo, une rencontre, une conversation entre vous et moi.\n\nUne conversation, c'est d'abord une rencontre où on prend le temps, on discute, dans un lieu de votre choix, sans appareil photo. Puis, on reprend la conversation pour la séance photo, on cherche ensemble à capturer le fruit de notre rencontre. C'est une démarche qui rompt avec l'instanéité, une sorte d'éloge de la lenteur, parce que le résultat sera plus intemporelle, fruit d'une maturation.\n\nLe rendu peut-être photographique, sonore ou sous la forme d'entretien mémoire.\n\nContactez moi pour en savoir plus.",
                 "credits": "",
@@ -149,6 +215,10 @@ const GALLERIES_CONFIG = {
                 "position": 0,
                 "titleEn": "",
                 "titleFr": "",
+                "categoryEn": "",
+                "categoryFr": "",
+                "sidebarEn": "",
+                "sidebarFr": "",
                 "descEn": "Immersion in a trade, documentary immersion — I blend into the landscape to tell through portraits a place, a craft, a moment of life.\n\nHere, I took a room for a week at St Melar, a unit of the Ephad de Lanmeur, for a photographic residency.",
                 "descFr": "J'ai 45 ans, un peu de kilomètre et la maitrise d'un savoir faire, me fondre dans un lieu, un collectif, un évènement, et rendre compte avec une approche humaniste, c'est à dire qui met en avant les humains, leur interactions. Le portrait restant ma spécialité, j'aime raconter par les gueules, les instants, les petits couac.\n\nPar exemple, il y a un an, j'ai pris une chambre dans un Ephad pendant une semaine. St Melar, une unité de l'Ephad de Lanmeur, où j'ai pu bénéficier d'une résidence photographique pour faire de la recherche de forme, voici les 6 planches que j'ai livrée pour l'exposition à l'hopital.",
                 "credits": "",
@@ -164,6 +234,23 @@ const GALLERIES_CONFIG = {
         autoplay:      false,
         autoplayDelay: 4,
         hidden: true,
+        cartons: [
+        {
+                "cid": "cmmkspnzpiaa",
+                "position": 0,
+                "titleEn": "",
+                "titleFr": "J'arrive",
+                "categoryEn": "",
+                "categoryFr": "",
+                "sidebarEn": "",
+                "sidebarFr": "",
+                "descEn": "",
+                "descFr": "Court métrage de 13 minutes\nProduit par Respiro Production\n+ de 40 selections et 20 prix\nRhodes Island, Los Angeles, Clermont-Ferrand, Arles...",
+                "credits": "",
+                "ctaLabel": "",
+                "ctaUrl": ""
+        }
+],
         images: [
             {"filename":"1.jpg"},
             {"filename":"2.jpg"},
@@ -183,17 +270,34 @@ const GALLERIES_CONFIG = {
         autoplay:      false,
         autoplayDelay: 4,
         hidden: true,
+        cartons: [
+        {
+                "cid": "cmmkyiyviovc",
+                "position": 0,
+                "titleEn": "",
+                "titleFr": "Réalisateur - France 2",
+                "categoryEn": "",
+                "categoryFr": "",
+                "sidebarEn": "",
+                "sidebarFr": "",
+                "descEn": "",
+                "descFr": "Réalisation de portraits d'invités pour 20H30 le dimanche, de portrait reportage pour 13H15 le samedi ou de documentaire historique pour 13H15 le dimanche. ",
+                "credits": "",
+                "ctaLabel": "",
+                "ctaUrl": ""
+        }
+],
         images: [
-            {"filename":"01.jpg"},
-            {"filename":"02.jpg"},
-            {"filename":"03.jpg"},
-            {"filename":"04.jpg"},
-            {"filename":"05.jpg"},
-            {"filename":"06.jpg"},
-            {"filename":"07.jpg"},
-            {"filename":"08.jpg"},
-            {"filename":"09.jpg"},
-            {"filename":"10.jpg"}
+            {"filename":"01.jpg","title":"Jean Rochefort","caption":{"en":"","fr":"Jean Rochefort"}},
+            {"filename":"02.jpg","caption":{"en":"","fr":"Léon Gautier\nLes hommes du Commando Kieffer\n40 minutes"}},
+            {"filename":"03.jpg","caption":{"en":"","fr":"Jean Claude Drouot\nL'arrivée de la télévision\n40 minutes"}},
+            {"filename":"04.jpg","caption":{"en":"","fr":"Armel Le Cleac'h\nPortrait 26 minutes"}},
+            {"filename":"05.jpg","caption":{"en":"","fr":"Nicolas Huchet\nMy human Kit\n26 minutes"}},
+            {"filename":"06.jpg","caption":{"en":"","fr":"Philippe Bouvard\nPortrait invité"}},
+            {"filename":"07.jpg","caption":{"en":"","fr":"José Garcia\nPortrait invité"}},
+            {"filename":"08.jpg","caption":{"en":"","fr":"Marc Levy\nPortrait invité"}},
+            {"filename":"09.jpg","caption":{"en":"","fr":"Aurelie Filipetti\nPortrait invité"}},
+            {"filename":"10.jpg","caption":{"en":"","fr":"Woody Allen\nPortrait invité"}}
         ],
         captions: {}
     },
@@ -202,13 +306,16 @@ const GALLERIES_CONFIG = {
         path:          "images/gem",
         autoplay:      false,
         autoplayDelay: 4,
-        autoplayAudio: true,
         cartons: [
         {
                 "cid": "cmmkol4gg639",
                 "position": 0,
                 "titleEn": "",
                 "titleFr": "",
+                "categoryEn": "",
+                "categoryFr": "",
+                "sidebarEn": "",
+                "sidebarFr": "",
                 "descEn": "Portrait series made at the GEM in Morlaix.\nEach portrait comes with an audio testimony.",
                 "descFr": "Série de portraits réalisée au GEM de Morlaix.\nChaque portrait est accompagné d’un témoignage audio.",
                 "credits": "",
@@ -217,7 +324,7 @@ const GALLERIES_CONFIG = {
         }
 ],
         images: [
-            {"filename":"JeanFrancois.jpg","audio":"JeanFrancois.mp3","title":"Jean-François","subtitle":"SERIE GEM LE SYMPA"},
+            {"filename":"JeanFrancois.jpg","audio":"JeanFrancois.mp3","title":"Jean-François","subtitle":"SERIE GEM LE SYMPA","caption":{"en":"","fr":"Jean-François"}},
             {"filename":"ALain.jpg","audio":"ALain.mp3","title":"Alain"},
             {"filename":"Beatrice.jpg","audio":"Beatrice.mp3","title":"Béatrice"},
             {"filename":"Bernard.jpg","audio":"Bernard.mp3","title":"Bernard"},
@@ -230,6 +337,21 @@ const GALLERIES_CONFIG = {
             {"filename":"Theo.jpg","audio":"Theo.mp3","title":"Théo"},
             {"filename":"Veronique.jpg","title":"Véronique"},
             {"filename":"VALERIE.jpg","audio":"VALERIE.mp3","title":"Valerie"}
+        ],
+        captions: {}
+    },
+
+    "st-melar": {
+        path:          "images/ST MELAR",
+        autoplay:      false,
+        autoplayDelay: 4,
+        images: [
+            {"filename":"stmelar-1.jpg"},
+            {"filename":"stmelar-2.jpg"},
+            {"filename":"stmelar-3.jpg"},
+            {"filename":"stmelar-4.jpg"},
+            {"filename":"stmelar-5.jpg"},
+            {"filename":"stmelar-6.jpg"}
         ],
         captions: {}
     },
@@ -518,7 +640,12 @@ class Portfolio {
     }
     setActiveLink(el) {
         document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-        if (el) el.classList.add('active');
+        document.querySelectorAll('.nav-group').forEach(g => g.classList.remove('has-active-child'));
+        if (el) {
+            el.classList.add('active');
+            const group = el.closest('.nav-group');
+            if (group) group.classList.add('has-active-child');
+        }
     }
 
     enterSite() {
@@ -759,7 +886,12 @@ class Portfolio {
         } else {
             this.stopAudio();
             this.showImageInfo(item.caption, item.button);
-            if (item.audio && this.currentGallery?.autoplayAudio) {
+            /* audioAutoplay per-image: true=force on, false=force off, undefined=use gallery setting */
+            const shouldAutoplayAudio = item.audio && (
+                item.audioAutoplay === true ||
+                (item.audioAutoplay !== false && this.currentGallery?.autoplayAudio)
+            );
+            if (shouldAutoplayAudio) {
                 const audioSrc = item.audio.startsWith('images/')
                     ? item.audio
                     : `${this.currentGallery.path}/${item.audio}`;
