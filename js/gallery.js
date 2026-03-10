@@ -1,6 +1,6 @@
 /**
  * Bertrand Basset Portfolio — gallery.js
- * Généré par Admin V4 — 10/03/2026 15:31:22
+ * Généré par Admin V4 — 10/03/2026 15:57:24
  */
 
 const SITE_CONFIG = {
@@ -206,7 +206,6 @@ const GALLERIES_CONFIG = {
         autoplay:      false,
         autoplayDelay: 4,
         autoplayAudio: true,
-        description: { en: "Portrait series made at the GEM in Morlaix.\nEach portrait comes with an audio testimony.", fr: "Série de portraits réalisée au GEM de Morlaix.\nChaque portrait est accompagné d’un témoignage audio." },
         cartons: [
         {
                 "cid": "cmmkol4gg639",
@@ -221,19 +220,19 @@ const GALLERIES_CONFIG = {
         }
 ],
         images: [
-            {"filename":"ALain.jpg","audio":"ALain.mp3"},
-            {"filename":"Beatrice.jpg","audio":"Beatrice.mp3"},
-            {"filename":"Bernard.jpg","audio":"Bernard.mp3"},
-            {"filename":"Bruno.jpg"},
-            {"filename":"GUY.jpg"},
-            {"filename":"Helene.jpg","audio":"Helene.mp3"},
-            {"filename":"Jean-Pierre.jpg"},
-            {"filename":"JeanFrancois.jpg","audio":"JeanFrancois.mp3"},
-            {"filename":"Laurence.jpg"},
-            {"filename":"Patricia.jpg","audio":"Patricia.mp3"},
-            {"filename":"Theo.jpg","audio":"Theo.mp3"},
-            {"filename":"Veronique.jpg"},
-            {"filename":"VALERIE.jpg","audio":"VALERIE.mp3"}
+            {"filename":"JeanFrancois.jpg","audio":"JeanFrancois.mp3","title":"Jean-François","subtitle":"SERIE GEM LE SYMPA"},
+            {"filename":"ALain.jpg","audio":"ALain.mp3","title":"Alain"},
+            {"filename":"Beatrice.jpg","audio":"Beatrice.mp3","title":"Béatrice"},
+            {"filename":"Bernard.jpg","audio":"Bernard.mp3","title":"Bernard"},
+            {"filename":"Bruno.jpg","title":"Bruno"},
+            {"filename":"GUY.jpg","title":"Guy"},
+            {"filename":"Helene.jpg","audio":"Helene.mp3","title":"Hélène"},
+            {"filename":"Jean-Pierre.jpg","title":"Jean-Pierre"},
+            {"filename":"Laurence.jpg","title":"Laurence"},
+            {"filename":"Patricia.jpg","audio":"Patricia.mp3","title":"Patricia"},
+            {"filename":"Theo.jpg","audio":"Theo.mp3","title":"Théo"},
+            {"filename":"Veronique.jpg","title":"Véronique"},
+            {"filename":"VALERIE.jpg","audio":"VALERIE.mp3","title":"Valerie"}
         ],
         captions: {}
     },
