@@ -313,19 +313,26 @@ body {
 }
 
 .nav-group-header {
-    font-size: 0.62rem;
-    font-weight: 500;
-    letter-spacing: 0.1em;
+    font-size: 0.8rem;
+    font-weight: 400;
+    letter-spacing: 0;
     text-transform: uppercase;
     color: var(--black);
-    padding: 0.9rem 0 0.1rem;
-    opacity: 0.55;
+    padding: 0.35rem 0;
+    opacity: 1;
     cursor: default;
     user-select: none;
 }
 
 .nav-group-children {
-    /* children sit directly under header, indented slightly */
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.25s ease;
+}
+
+.nav-group:hover .nav-group-children,
+.nav-group.has-active-child .nav-group-children {
+    max-height: 300px;
 }
 
 .nav-sub-item .nav-link {
@@ -1470,11 +1477,20 @@ body {
 }
 
 .carton-slide-title {
-    font-size: clamp(1.6rem, 4vw, 2.8rem);
+    font-size: clamp(1.2rem, 2.5vw, 1.8rem);
     font-weight: 300;
     letter-spacing: -0.01em;
-    line-height: 1.1;
+    line-height: 1.15;
     color: var(--black);
+    margin-bottom: 0.5rem;
+}
+
+.carton-slide-subtitle {
+    font-size: 0.72rem;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--gray);
     margin-bottom: 1.2rem;
 }
 
@@ -1484,17 +1500,6 @@ body {
     line-height: 1.75;
     color: var(--gray);
     margin-bottom: 1.4rem;
-}
-
-.carton-slide-credits {
-    font-size: 0.62rem;
-    font-weight: 400;
-    letter-spacing: 0.06em;
-    color: #aaa;
-    border-top: 1px solid var(--light-gray);
-    padding-top: 0.75rem;
-    margin-top: 1.4rem;
-    line-height: 1.8;
 }
 
 .carton-cta-btn {
@@ -1520,7 +1525,7 @@ body {
 
 /* Sidebar display for carton items */
 .sidebar-carton {
-    padding: 0.8rem 0 0;
+    padding: 1.2rem 0 0;
 }
 
 .sidebar-carton-category {
@@ -1533,11 +1538,11 @@ body {
 }
 
 .sidebar-carton-title {
-    font-size: 1.25rem;
+    font-size: 0.9rem;
     font-weight: 300;
-    line-height: 1.15;
+    line-height: 1.2;
     color: var(--black);
-    margin-bottom: 0.65rem;
+    margin-bottom: 0.5rem;
     letter-spacing: -0.01em;
 }
 
