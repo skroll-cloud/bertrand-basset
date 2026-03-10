@@ -1,6 +1,6 @@
 /**
  * Bertrand Basset Portfolio — gallery.js
- * Généré par Admin V4 — 10/03/2026 22:15:38
+ * Généré par Admin V4 — 10/03/2026 22:42:10
  */
 
 const SITE_CONFIG = {
@@ -39,17 +39,18 @@ const T = {
 /* ─── MENU ──────────────────────────────────────────────────── */
 const MENU_CONFIG = [
   {
-    "id": "group-1773174817135",
-    "name": "PORTRAIT",
-    "type": "gallery"
-  },
-  {
     "id": "item-1773174917949",
     "name": "METIER",
     "type": "gallery",
     "galleryId": "studio",
     "parent": "group-1773174817135",
     "hidden": true
+  },
+  {
+    "id": "item-1773178057178",
+    "name": "PORTRAIT",
+    "type": "gallery",
+    "galleryId": "portrait"
   },
   {
     "id": "item-1773158258360",
@@ -104,18 +105,19 @@ const MENU_CONFIG = [
     "parent": "immersion"
   },
   {
-    "id": "item-1773157975176",
-    "name": "GEM",
+    "id": "item-1773178125975",
+    "name": "LE GEM S'ENDIMANCHE",
     "type": "gallery",
     "galleryId": "gem",
-    "parent": "group-1773157969699"
+    "parent": "immersion"
   },
   {
     "id": "item-1773158098062",
     "name": "Burning Man",
     "type": "gallery",
     "galleryId": "portrait",
-    "parent": "immersion"
+    "parent": "immersion",
+    "hidden": true
   },
   {
     "id": "conversation",
@@ -912,18 +914,18 @@ class Portfolio {
             const ctaUrl     = item.ctaUrl   || '';
             const ctaLbl     = item.ctaLabel || (en ? 'See more' : 'En savoir plus');
 
-            /* ── SIDEBAR: sous-titre (category) + titre + texte sidebar + bouton ── */
+            /* ── SIDEBAR: sous-titre + titre + texte — bouton dans footerCaption ── */
             if (galleryDesc) {
-                const ctaLink = ctaUrl
-                    ? `<a href="${ctaUrl}" target="_blank" rel="noopener" class="sidebar-carton-link">${ctaLbl} \u2192</a>`
+                let h = '';
+                if (category)   h += `<p class="sidebar-item-subtitle">${category}</p>`;
+                if (title)      h += `<h2 class="sidebar-item-title">${title}</h2>`;
+                if (sidebarTxt) h += `<p class="sidebar-main-desc">${sidebarTxt.replace(/\n/g,'<br>')}</p>`;
+                galleryDesc.innerHTML = h;
+            }
+            if (footerCap) {
+                footerCap.innerHTML = ctaUrl
+                    ? `<a class="accueil-sidebar-link" href="${ctaUrl}" target="_blank" rel="noopener">${ctaLbl} \u2192</a>`
                     : '';
-                galleryDesc.innerHTML = `
-                    <div class="sidebar-carton">
-                        ${category   ? `<div class="sidebar-carton-category">${category}</div>` : ''}
-                        ${title      ? `<h2 class="sidebar-carton-title">${title}</h2>` : ''}
-                        ${sidebarTxt ? `<p class="sidebar-carton-desc">${sidebarTxt.replace(/\n/g,'<br>')}</p>` : ''}
-                        ${ctaLink}
-                    </div>`;
             }
 
             /* ── CARTON CENTRAL: titre + sous-titre + texte + bouton ── */
@@ -969,13 +971,18 @@ class Portfolio {
             img.src = encodeURI(item.src);
 
         } else {
-            /* Sidebar: show image title + subtitle if set */
+            /* Sidebar: image title + subtitle + description */
             if (galleryDesc) {
                 const t = item.title || '';
                 const s = item.subtitle || '';
-                galleryDesc.innerHTML = (t || s)
-                    ? `<div class="sidebar-item-info">${t ? `<h2 class="sidebar-item-title">${t}</h2>` : ''}${s ? `<p class="sidebar-item-subtitle">${s}</p>` : ''}</div>`
+                const d = item.caption
+                    ? (typeof item.caption==='string' ? item.caption : (item.caption[lang]||item.caption.fr||item.caption.en||''))
                     : '';
+                let h = '';
+                if (s) h += `<p class="sidebar-item-subtitle">${s}</p>`;
+                if (t) h += `<h2 class="sidebar-item-title">${t}</h2>`;
+                if (d) h += `<p class="sidebar-main-desc">${d.replace(/\n/g,'<br>')}</p>`;
+                galleryDesc.innerHTML = h;
             }
             this.showImageInfo(item.caption, item.button);
             /* audioAutoplay per-image: true=force on, false=force off, undefined=use gallery setting */
@@ -1102,7 +1109,7 @@ class Portfolio {
         if (zone) zone.innerHTML = '';
     }
 
-    playAudio(src, autostart = true) {
+    playAudio(src, autostart = false) {
         this.stopAudio();
         const audio = new Audio(src);
         this.currentAudio = audio;
