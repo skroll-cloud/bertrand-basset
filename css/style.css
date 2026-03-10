@@ -1564,6 +1564,15 @@ body {
 }
 .accueil-sidebar-link:hover { opacity: 0.5; }
 
+/* ── Unified sidebar description text (all item types) ── */
+.sidebar-main-desc {
+    font-size: 0.7rem;
+    font-weight: 300;
+    line-height: 1.7;
+    color: var(--gray);
+    margin: 0.5rem 0 0;
+}
+
 .sidebar-carton-category {
     font-size: 0.58rem;
     font-weight: 400;
