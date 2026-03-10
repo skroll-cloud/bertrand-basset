@@ -1,6 +1,6 @@
 /**
  * Bertrand Basset Portfolio — gallery.js
- * Généré par Admin V4 — 10/03/2026 21:58:16
+ * Généré par Admin V4 — 10/03/2026 22:07:36
  */
 
 const SITE_CONFIG = {
@@ -831,10 +831,7 @@ class Portfolio {
         // Always clear footer caption first (showImageInfo fills it for image types)
         if (footerCap) footerCap.innerHTML = '';
 
-        if (item.type === 'image') {
-            // For plain images: clear the sidebar desc (caption goes to footerCaption)
-            if (galleryDesc) galleryDesc.innerHTML = '';
-        } else if (item.type !== 'accueil-image') {
+        if (item.type !== 'image' && item.type !== 'accueil-image') {
             this.stopSlideshow();
             this.stopAudio();
         }
@@ -965,18 +962,28 @@ class Portfolio {
             img.src = encodeURI(item.src);
 
         } else {
-            this.stopAudio();
+            /* Sidebar: show image title + subtitle if set */
+            if (galleryDesc) {
+                const t = item.title || '';
+                const s = item.subtitle || '';
+                galleryDesc.innerHTML = (t || s)
+                    ? `<div class="sidebar-item-info">${t ? `<h2 class="sidebar-item-title">${t}</h2>` : ''}${s ? `<p class="sidebar-item-subtitle">${s}</p>` : ''}</div>`
+                    : '';
+            }
             this.showImageInfo(item.caption, item.button);
             /* audioAutoplay per-image: true=force on, false=force off, undefined=use gallery setting */
             const shouldAutoplayAudio = item.audio && (
                 item.audioAutoplay === true ||
                 (item.audioAutoplay !== false && this.currentGallery?.autoplayAudio)
             );
-            if (shouldAutoplayAudio) {
+            /* Always show audio player if image has audio; autostart depends on settings */
+            if (item.audio) {
                 const audioSrc = item.audio.startsWith('images/')
                     ? item.audio
                     : `${this.currentGallery.path}/${item.audio}`;
-                this.playAudio(audioSrc);
+                this.playAudio(audioSrc, shouldAutoplayAudio);
+            } else {
+                this.stopAudio();
             }
             const img = new Image();
             img.className = 'gallery-image';
@@ -1088,7 +1095,7 @@ class Portfolio {
         if (zone) zone.innerHTML = '';
     }
 
-    playAudio(src) {
+    playAudio(src, autostart = true) {
         this.stopAudio();
         const audio = new Audio(src);
         this.currentAudio = audio;
@@ -1113,7 +1120,7 @@ class Portfolio {
         audio.addEventListener('play',  () => { const b = document.getElementById('audioPlayBtn'); if (b) b.innerHTML = '&#9646;&#9646;'; });
         audio.addEventListener('pause', () => { const b = document.getElementById('audioPlayBtn'); if (b) b.innerHTML = '&#9654;'; });
         audio.addEventListener('ended', () => { const b = document.getElementById('audioPlayBtn'); if (b) b.innerHTML = '&#9654;'; });
-        audio.play().catch(() => {});
+        if (autostart) audio.play().catch(() => {});
     }
 
     toggleAudio() {
