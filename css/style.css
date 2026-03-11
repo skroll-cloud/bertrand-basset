@@ -939,7 +939,7 @@ body {
     /* Site layout */
     .site.active {
         grid-template-columns: 1fr;
-        grid-template-rows: 56px 1fr 50px;
+        grid-template-rows: 56px 1fr 80px;
     }
 
     /* Sidebar becomes top header */
@@ -1106,7 +1106,7 @@ body {
         display: flex;
         flex-direction: column;
         gap: 0;
-        height: calc(100vh - 56px - 50px);
+        height: calc(100vh - 56px - 80px);
     }
 
     .gallery-container {
@@ -1115,7 +1115,7 @@ body {
         min-height: 0;
     }
 
-    /* Breadcrumb sous l'image : GALLERY / ROLE / NOM */
+    /* Breadcrumb dans le footer — au-dessus du liseret (séparateur nav) */
     .mobile-breadcrumb {
         display: block;
         font-size: 0.6rem;
@@ -1126,8 +1126,9 @@ body {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        padding: 0.3rem 0 0.2rem;
-        flex-shrink: 0;
+        padding: 0.5rem 0 0.4rem;
+        border-bottom: 1px solid var(--light-gray);
+        margin-bottom: 0.4rem;
     }
 
     /* Cacher hamburger et EN/FR de la top bar */
@@ -1135,9 +1136,7 @@ body {
         display: none;
     }
 
-    #globalLangToggle {
-        display: none;
-    }
+    /* EN/FR reste en haut à droite sur mobile */
 
     /* Bottom bar au-dessus du menu overlay */
     .sidebar-footer {
@@ -1156,22 +1155,6 @@ body {
         gap: 0.5rem;
     }
 
-    .mobile-lang {
-        font-size: 0.65rem;
-        font-weight: 400;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        color: var(--gray);
-        text-decoration: none;
-    }
-    .mobile-lang.active {
-        color: var(--black);
-        font-weight: 500;
-    }
-    .mobile-lang-sep {
-        font-size: 0.6rem;
-        color: var(--light-gray);
-    }
 
     /* Hamburger mobile (dans la barre du bas) */
     .mobile-menu-btn {
@@ -1259,7 +1242,7 @@ body {
     #audioPlayerZone.audio-player-zone:not(:empty) {
         display: block !important;
         position: fixed;
-        bottom: 50px;
+        bottom: 80px;
         left: 0;
         right: 0;
         min-height: 0;
