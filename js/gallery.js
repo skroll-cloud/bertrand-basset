@@ -1,13 +1,13 @@
 /**
  * Bertrand Basset Portfolio — gallery.js
- * Généré par Admin V4 — 11/03/2026 01:45:16
+ * Généré par Admin V4 — 11/03/2026 12:53:42
  */
 
 const SITE_CONFIG = {
     name:         "Bertrand Basset",
     email:        "bertrand.basset@gmail.com",
     defaultLang:  "en",
-    showLanding:  true,
+    showLanding:  false,
     landingImage: "images/landing/landing-01.jpg",
     social: {
         instagram: "https://www.instagram.com/bassetbertrand/",
@@ -209,7 +209,7 @@ const GALLERIES_CONFIG = {
                 "sidebarEn": ""
         }
 ],
-        captions: {"02.jpg":{"en":"","fr":"Jean-Philippe Davodeau\nActeur"},"conversation-02.jpg":{"en":"","fr":"Antoine Asnar\nActeur"},"Imane02@bertrandbasset 2.jpg":{"en":"","fr":"Imene\nActrice"},"portrait-02.jpg":{"en":"","fr":"Ange-Marine\nActrice"},"JF.jpg":{"en":"","fr":"Jean-François\nSerie GEM"},"L1020630.jpg":{"en":"","fr":"Patrick Ewen\nConteur"}},
+        captions: {"02.jpg":{"en":"","fr":"Jean-Philippe Davodeau\nActeur"},"L1060508.jpg":{"en":"","fr":"Ange-Marine Chénevat\nActrice"},"conversation-02.jpg":{"en":"","fr":"Antoine Asnar\nActeur"},"Imane02@bertrandbasset 2.jpg":{"en":"","fr":"Imene\nActrice"},"portrait-02.jpg":{"en":"","fr":"Ange-Marine Chénevat\nActrice"},"JF.jpg":{"en":"","fr":"Jean-François\nSerie GEM"},"L1020630.jpg":{"en":"","fr":"Patrick Ewen\nConteur"}},
     },
 
     "conversation-s-": {
@@ -727,8 +727,7 @@ class Portfolio {
     }
 
     openHomeGallery() {
-        const acc = this.galleries['accueil'];
-        this.openGallery(acc?.items?.length ? 'accueil' : 'portrait');
+        this.openGallery('portrait');
     }
 
     toggleAutoplay() {
@@ -1003,6 +1002,21 @@ class Portfolio {
             img.onerror = () => { container.innerHTML = '<div class="img-missing-placeholder">🖼</div>'; };
             container.innerHTML = '';
             img.src = encodeURI(item.src);
+        }
+
+        /* Mobile info zone — nom/caption en bas de l'image */
+        const mobileInfo = document.getElementById('mobileInfo');
+        if (mobileInfo) {
+            let mobileText = '';
+            if (item.type === 'image') {
+                if (item.title) {
+                    mobileText = item.title;
+                } else if (item.caption) {
+                    const cap = typeof item.caption === 'string' ? item.caption : (item.caption[lang] || item.caption.fr || item.caption.en || '');
+                    mobileText = cap.split('\\n')[0].trim();
+                }
+            }
+            mobileInfo.textContent = mobileText;
         }
 
         const counter = document.querySelector('.gallery-counter');
