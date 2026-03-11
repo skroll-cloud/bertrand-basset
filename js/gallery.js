@@ -1,14 +1,14 @@
 /**
  * Bertrand Basset Portfolio — gallery.js
- * Généré par Admin V4 — 11/03/2026 13:47:37
+ * Généré par Admin V4 — 11/03/2026 14:17:02
  */
 
 const SITE_CONFIG = {
     name:         "Bertrand Basset",
     email:        "bertrand.basset@gmail.com",
-    defaultLang:  "en",
+    defaultLang:  "fr",
     showLanding:  true,
-    landingImage: "images/landing/landing-01.jpg",
+    landingImage: "images/accueil/accueil-01.jpg",
     social: {
         instagram: "https://www.instagram.com/bassetbertrand/",
         facebook:  "https://www.facebook.com/BertrandBassetPhotographie",
@@ -1018,7 +1018,7 @@ class Portfolio {
                     parts.push(item.title.toUpperCase());
                 } else if (item.caption) {
                     const cap = typeof item.caption === 'string' ? item.caption : (item.caption[lang] || item.caption.fr || item.caption.en || '');
-                    const lines = cap.split('\\n').map(l => l.trim()).filter(Boolean);
+                    const lines = cap.split('\n').map(l => l.trim()).filter(Boolean);
                     if (lines.length >= 2) {
                         parts.push(lines[1].toUpperCase());
                         parts.push(lines[0].toUpperCase());
