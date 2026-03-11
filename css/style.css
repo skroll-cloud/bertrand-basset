@@ -896,6 +896,11 @@ body {
 /* MOBILE RESPONSIVE                  */
 /* ================================== */
 
+/* Info zone mobile — cachée sur desktop, visible sur mobile */
+.mobile-info {
+    display: none;
+}
+
 @media (max-width: 768px) {
     /* Landing */
     .landing {
@@ -1025,36 +1030,26 @@ body {
         font-size: 1.1rem;
         padding: 0.8rem 0;
     }
-    
-    .dropdown-link {
-        font-size: 0.95rem;
-        padding: 0.6rem 0;
-    }
-    
-    .dropdown-sublink {
-        font-size: 0.85rem;
-        padding: 0.5rem 0;
+
+    /* Groupes nav : même taille que les liens directs */
+    .nav-group-header {
+        font-size: 1.1rem;
+        font-weight: 400;
+        padding: 0.8rem 0;
+        cursor: default;
     }
 
-    /* Fix sous-menus mobile */
-    .nav-dropdown {
-        max-height: 0;
-        overflow: hidden;
-        transition: max-height 0.3s ease;
+    /* Sous-items toujours visibles en overlay mobile */
+    .nav-group-children {
+        max-height: none;
+        overflow: visible;
     }
-    
-    .nav-item.open > .nav-dropdown {
-        max-height: 1000px;
-    }
-    
-    .nav-sub-dropdown {
-        max-height: 0;
-        overflow: hidden;
-        transition: max-height 0.3s ease;
-    }
-    
-    .dropdown-link.has-submenu.open + .nav-sub-dropdown {
-        max-height: 500px;
+
+    /* Enfants légèrement plus petits */
+    .nav-sub-item .nav-link {
+        font-size: 0.9rem;
+        padding: 0.5rem 0 0.5rem 1rem;
+        color: var(--gray);
     }
 
     /* Footer - bottom bar */
@@ -1104,14 +1099,33 @@ body {
         font-size: 0.7rem;
     }
 
-    /* Main gallery */
+    /* Main gallery — flex column pour empiler image + mobile-info */
     .site-main {
-        padding: 1rem;
+        padding: 0.8rem 1rem 0.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0;
         height: calc(100vh - 56px - 50px);
     }
-    
+
     .gallery-container {
         cursor: pointer;
+        flex: 1;
+        min-height: 0;
+    }
+
+    /* Zone info mobile sous l'image */
+    .mobile-info {
+        display: flex;
+        align-items: center;
+        min-height: 32px;
+        padding: 0.3rem 0 0;
+        font-size: 0.65rem;
+        font-weight: 500;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--black);
+        flex-shrink: 0;
     }
 
     /* Description slide mobile */
@@ -1126,6 +1140,14 @@ body {
     
     .description-text {
         font-size: 0.85rem;
+    }
+
+    /* Carton — occupe toute la hauteur disponible */
+    .carton-slide {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     /* Page content mobile */
