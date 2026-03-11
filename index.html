@@ -33,7 +33,7 @@
     <!-- LANDING PAGE -->
     <div class="landing" id="landing">
         <div class="landing-image">
-            <img src="images/landing/landing-01.jpg" alt="Photography by Bertrand Basset">
+            <img src="images/accueil/accueil-01.jpg" alt="Photography by Bertrand Basset">
         </div>
         <div class="landing-content">
             <div class="brand-wrapper">
@@ -75,6 +75,9 @@
             <div id="galleryDesc" class="gallery-desc"></div>
 
             <footer class="sidebar-footer" id="sidebarFooter">
+                <!-- Breadcrumb mobile : GALLERY / RÔLE / NOM — masqué sur desktop -->
+                <div class="mobile-breadcrumb" id="mobileBreadcrumb"></div>
+
                 <!-- Caption block: filled by JS showImageInfo() -->
                 <div id="footerCaption" class="footer-caption-zone"></div>
 
@@ -96,11 +99,8 @@
                         <a href="#" id="nextBtn">next</a>
                     </div>
                     <button id="gridToggle" class="grid-toggle-btn" title="Voir toutes les photos">⊞</button>
-                    <!-- Contrôles mobiles : EN/FR + hamburger — masqués sur desktop -->
+                    <!-- Hamburger mobile — masqué sur desktop, EN/FR reste en haut à droite -->
                     <div id="mobileNavControls" class="mobile-nav-controls">
-                        <a href="#" data-lang="en" class="mobile-lang">EN</a>
-                        <span class="mobile-lang-sep">/</span>
-                        <a href="#" data-lang="fr" class="mobile-lang">FR</a>
                         <button id="mobileMenuBtn" class="mobile-menu-btn" aria-label="Menu" onclick="window.portfolio?.toggleMenu()">
                             <span></span><span></span><span></span>
                         </button>
@@ -111,10 +111,8 @@
 
         <main class="site-main">
             <div class="gallery-container" id="galleryContainer">
-                <img src="images/landing/landing-01.jpg" alt="Portfolio" class="gallery-image loaded">
+                <img src="images/accueil/accueil-01.jpg" alt="Portfolio" class="gallery-image loaded">
             </div>
-            <!-- Breadcrumb mobile : GALLERY / ROLE / NOM — juste au-dessus du liseret -->
-            <div class="mobile-breadcrumb" id="mobileBreadcrumb"></div>
         </main>
 
         <!-- Thumbnails Panel -->
