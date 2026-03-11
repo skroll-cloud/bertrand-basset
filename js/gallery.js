@@ -1,13 +1,13 @@
 /**
  * Bertrand Basset Portfolio — gallery.js
- * Généré par Admin V4 — 11/03/2026 12:53:42
+ * Généré par Admin V4 — 11/03/2026 13:28:04
  */
 
 const SITE_CONFIG = {
     name:         "Bertrand Basset",
     email:        "bertrand.basset@gmail.com",
     defaultLang:  "en",
-    showLanding:  false,
+    showLanding:  true,
     landingImage: "images/landing/landing-01.jpg",
     social: {
         instagram: "https://www.instagram.com/bassetbertrand/",
@@ -704,10 +704,12 @@ class Portfolio {
 
     toggleMenu() {
         document.getElementById('menuToggle')?.classList.toggle('open');
+        document.getElementById('mobileMenuBtn')?.classList.toggle('open');
         document.getElementById('mainNav')?.classList.toggle('open');
     }
     closeMenu() {
         document.getElementById('menuToggle')?.classList.remove('open');
+        document.getElementById('mobileMenuBtn')?.classList.remove('open');
         document.getElementById('mainNav')?.classList.remove('open');
     }
     setActiveLink(el) {
@@ -1004,19 +1006,29 @@ class Portfolio {
             img.src = encodeURI(item.src);
         }
 
-        /* Mobile info zone — nom/caption en bas de l'image */
-        const mobileInfo = document.getElementById('mobileInfo');
-        if (mobileInfo) {
-            let mobileText = '';
+        /* Mobile breadcrumb : GALLERY / ROLE / NOM — au-dessus du liseret */
+        const mobileBreadcrumb = document.getElementById('mobileBreadcrumb');
+        if (mobileBreadcrumb) {
+            let breadcrumb = '';
             if (item.type === 'image') {
+                const menuItem = MENU_CONFIG.find(i => i.galleryId === this.currentGalleryId && !i.hidden && i.type !== 'group');
+                const galleryName = (menuItem?.name || this.currentGalleryId).toUpperCase();
+                const parts = [galleryName];
                 if (item.title) {
-                    mobileText = item.title;
+                    parts.push(item.title.toUpperCase());
                 } else if (item.caption) {
                     const cap = typeof item.caption === 'string' ? item.caption : (item.caption[lang] || item.caption.fr || item.caption.en || '');
-                    mobileText = cap.split('\\n')[0].trim();
+                    const lines = cap.split('\\n').map(l => l.trim()).filter(Boolean);
+                    if (lines.length >= 2) {
+                        parts.push(lines[1].toUpperCase());
+                        parts.push(lines[0].toUpperCase());
+                    } else if (lines.length === 1) {
+                        parts.push(lines[0].toUpperCase());
+                    }
                 }
+                breadcrumb = parts.join(' / ');
             }
-            mobileInfo.textContent = mobileText;
+            mobileBreadcrumb.textContent = breadcrumb;
         }
 
         const counter = document.querySelector('.gallery-counter');
