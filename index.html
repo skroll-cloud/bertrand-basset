@@ -96,6 +96,15 @@
                         <a href="#" id="nextBtn">next</a>
                     </div>
                     <button id="gridToggle" class="grid-toggle-btn" title="Voir toutes les photos">⊞</button>
+                    <!-- Contrôles mobiles : EN/FR + hamburger — masqués sur desktop -->
+                    <div id="mobileNavControls" class="mobile-nav-controls">
+                        <a href="#" data-lang="en" class="mobile-lang">EN</a>
+                        <span class="mobile-lang-sep">/</span>
+                        <a href="#" data-lang="fr" class="mobile-lang">FR</a>
+                        <button id="mobileMenuBtn" class="mobile-menu-btn" aria-label="Menu" onclick="window.portfolio?.toggleMenu()">
+                            <span></span><span></span><span></span>
+                        </button>
+                    </div>
                 </div>
             </footer>
         </aside>
@@ -104,8 +113,8 @@
             <div class="gallery-container" id="galleryContainer">
                 <img src="images/landing/landing-01.jpg" alt="Portfolio" class="gallery-image loaded">
             </div>
-            <!-- Info zone visible only on mobile (sidebar info n'est pas visible sur mobile) -->
-            <div class="mobile-info" id="mobileInfo"></div>
+            <!-- Breadcrumb mobile : GALLERY / ROLE / NOM — juste au-dessus du liseret -->
+            <div class="mobile-breadcrumb" id="mobileBreadcrumb"></div>
         </main>
 
         <!-- Thumbnails Panel -->
