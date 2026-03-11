@@ -1090,12 +1090,17 @@ body {
     }
     
     .gallery-footer-nav {
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-        width: 100%;
+        /* Réduit à la taille du hamburger seul */
+        width: auto;
+        flex: 0 0 auto;
     }
-    
+
+    /* Breadcrumb prend tout l'espace libre → hamburger poussé à droite */
+    .mobile-breadcrumb {
+        flex: 1;
+        min-width: 0;
+    }
+
     /* Prev/next et compteur masqués sur mobile — navigation au swipe */
     .gallery-counter {
         display: none;
