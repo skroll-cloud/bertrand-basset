@@ -1,6 +1,6 @@
 /**
  * Bertrand Basset Portfolio — gallery.js
- * Généré par Admin V4 — 11/03/2026 01:39:37
+ * Généré par Admin V4 — 11/03/2026 01:45:16
  */
 
 const SITE_CONFIG = {
@@ -53,26 +53,11 @@ const MENU_CONFIG = [
     "galleryId": "portrait"
   },
   {
-    "id": "item-1773158258360",
-    "name": "TELEVISION",
-    "type": "gallery",
-    "galleryId": "television",
-    "parent": "conversation",
-    "hidden": true
-  },
-  {
     "id": "item-1773174948772",
     "name": "SERIE",
     "type": "gallery",
     "galleryId": "gem",
     "parent": "group-1773174817135",
-    "hidden": true
-  },
-  {
-    "id": "item-1773174967818",
-    "name": "TELEVISION",
-    "type": "gallery",
-    "galleryId": "television",
     "hidden": true
   },
   {
@@ -120,19 +105,6 @@ const MENU_CONFIG = [
     "hidden": true
   },
   {
-    "id": "conversation",
-    "name": "CONVERSATION(S)",
-    "type": "group",
-    "galleryId": "conversation-s-",
-    "hidden": true
-  },
-  {
-    "id": "group-1773157969699",
-    "name": "SERIE",
-    "type": "group",
-    "hidden": true
-  },
-  {
     "id": "item-1773158051230",
     "name": "Carré d'AS",
     "type": "gallery",
@@ -143,16 +115,21 @@ const MENU_CONFIG = [
   {
     "id": "group-1773158227466",
     "name": "FILM",
-    "type": "group",
-    "hidden": true
+    "type": "group"
   },
   {
     "id": "item-1773158247053",
     "name": "CINEMA",
     "type": "gallery",
     "galleryId": "cinema",
-    "parent": "group-1773158227466",
-    "hidden": true
+    "parent": "group-1773158227466"
+  },
+  {
+    "id": "item-1773174967818",
+    "name": "TELEVISION",
+    "type": "gallery",
+    "galleryId": "television",
+    "parent": "group-1773158227466"
   },
   {
     "id": "item-1773175848292",
