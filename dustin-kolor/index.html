@@ -1069,9 +1069,11 @@
     }
     if (name === 'merci') renderMerci();
 
-    // Update hash (sans reload)
-    const hash = name === 'hero' ? '' : (slug ? `#${slug}` : `#${name}`);
-    history.pushState(null, '', location.pathname + hash);
+    // Update hash (sans reload) — try/catch pour file:// local
+    try {
+      const hash = name === 'hero' ? '' : (slug ? `#${slug}` : `#${name}`);
+      history.pushState(null, '', location.pathname + hash);
+    } catch(e) { /* file:// local — pas de pushState, boutons ok quand même */ }
   }
 
   function routeFromHash() {
@@ -1395,11 +1397,12 @@
     initSupabase();
     routeFromHash();
 
-    // Hero bg check
+    // Hero bg : caché par défaut, visible seulement si l'image existe
     const heroBg = document.getElementById('heroBg');
+    heroBg.style.display = 'none';
     const testImg = new Image();
-    testImg.onload = () => { heroBg.style.display = 'block'; };
-    testImg.onerror = () => { heroBg.style.display = 'none'; };
+    testImg.onload = () => { heroBg.style.display = 'block'; heroBg.style.zIndex = '2'; };
+    testImg.onerror = () => { /* swatches visibles par défaut */ };
     testImg.src = IMG_BASE + '01-sandstorm.jpg';
 
     // Hero swatches fallback (7 couleurs des œuvres)
