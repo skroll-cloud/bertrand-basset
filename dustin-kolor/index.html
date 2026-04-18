@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Dust'in Kolor — Bertrand Basset</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/logo-b.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <!-- Supabase JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0a0a0a;
+      --text:     #f0f0ee;
+      --gray:     #888;
+      --light:    #333;
+      --font:     'IBM Plex Sans', sans-serif;
+      --header-h: 52px;
+    }
+
+    html, body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      font-weight: 300;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button { font-family: var(--font); cursor: pointer; border: none; background: none; }
+
+    /* ── HEADER ─────────────────────────────────────────── */
+    .dk-header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--header-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.5rem;
+      z-index: 100;
+      background: rgba(10,10,10,0.92);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid #1e1e1e;
+    }
+
+    .dk-header-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      font-weight: 400;
+      text-transform: uppercase;
+      color: var(--gray);
+    }
+
+    .dk-header-brand img { width: 16px; height: 16px; filter: invert(1); }
+
+    .dk-header-brand strong {
+      color: var(--text);
+      letter-spacing: 0.08em;
+    }
+
+    .dk-header-sep {
+      display: inline-block;
+      width: 1px;
+      height: 12px;
+      background: #333;
+      margin: 0 0.5rem;
+    }
+
+    .dk-header-expo {
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      color: var(--gray);
+      text-transform: uppercase;
+    }
+
+    .dk-header-right {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+    }
+
+    .dk-back-link {
+      color: var(--gray);
+      transition: color 0.2s;
+      text-transform: uppercase;
+    }
+    .dk-back-link:hover { color: var(--text); }
+
+    .dk-lang { color: var(--gray); }
+    .dk-lang a { transition: color 0.2s; }
+    .dk-lang a:hover, .dk-lang a.active { color: var(--text); }
+    .dk-lang span { margin: 0 0.25rem; color: #333; }
+
+    /* ── VIEWS ──────────────────────────────────────────── */
+    .dk-view { display: none; padding-top: var(--header-h); min-height: 100vh; }
+    .dk-view.active { display: block; }
+
+    /* ── HERO ───────────────────────────────────────────── */
+    #view-hero {
+      display: none;
+      min-height: 100vh;
+      padding-top: 0;
+      flex-direction: column;
+    }
+    #view-hero.active { display: flex; }
+
+    .hero-full {
+      position: relative;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background-image: url('../images/dustin-kolor/01-sandstorm.jpg');
+      background-size: cover;
+      background-position: center;
+      filter: brightness(0.25);
+      transition: opacity 0.6s ease;
+    }
+
+    .hero-bg-fallback {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(160deg, #FF4500 0%, #0a0a0a 60%);
+      opacity: 0.15;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 2rem;
+      max-width: 700px;
+    }
+
+    .hero-label {
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      color: var(--gray);
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-title {
+      font-size: clamp(2.8rem, 9vw, 6rem);
+      font-weight: 300;
+      letter-spacing: 0.06em;
+      line-height: 1;
+      margin-bottom: 0.3em;
+    }
+
+    .hero-subtitle {
+      font-size: clamp(0.65rem, 1.5vw, 0.75rem);
+      letter-spacing: 0.15em;
+      color: var(--gray);
+      text-transform: uppercase;
+      margin-bottom: 3rem;
+    }
+
+    .hero-quote {
+      font-size: clamp(0.85rem, 2vw, 1rem);
+      font-weight: 300;
+      line-height: 1.7;
+      color: #bbb;
+      margin-bottom: 0.8rem;
+      font-style: italic;
+    }
+
+    .hero-signature {
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      color: var(--gray);
+      margin-bottom: 3rem;
+    }
+
+    .hero-cta-group {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      padding: 0.75rem 2rem;
+      border: 1px solid var(--text);
+      color: var(--text);
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      transition: background 0.2s, color 0.2s;
+    }
+    .btn-primary:hover { background: var(--text); color: var(--bg); }
+
+    .btn-ghost {
+      padding: 0.75rem 2rem;
+      border: 1px solid #333;
+      color: var(--gray);
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-ghost:hover { border-color: var(--gray); color: var(--text); }
+
+    /* Hero scroll indicator */
+    .hero-scroll {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      color: #444;
+      font-size: 0.55rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      animation: fadeInUp 1s 1.5s ease both;
+    }
+    .hero-scroll-line {
+      width: 1px;
+      height: 32px;
+      background: linear-gradient(to bottom, transparent, #444);
+    }
+
+    /* ── GALERIE ─────────────────────────────────────────── */
+    #view-galerie { background: var(--bg); }
+
+    .section-header {
+      padding: 3rem 2rem 2rem;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      border-bottom: 1px solid #1a1a1a;
+    }
+
+    .section-title {
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gray);
+    }
+
+    .section-count {
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      color: #444;
+    }
+
+    .galerie-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: #111;
+    }
+
+    .galerie-card {
+      position: relative;
+      aspect-ratio: 4/3;
+      overflow: hidden;
+      cursor: pointer;
+      background: #0d0d0d;
+    }
+
+    .galerie-card:hover .galerie-card-overlay { opacity: 1; }
+    .galerie-card:hover .galerie-card-img { transform: scale(1.04); }
+
+    .galerie-card-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+      display: block;
+    }
+
+    .galerie-card-color {
+      position: absolute;
+      inset: 0;
+      opacity: 0.5;
+      transition: opacity 0.3s;
+    }
+
+    /* Show color when no image loaded */
+    .galerie-card-img[data-loaded="false"] { display: none; }
+    .galerie-card:has(.galerie-card-img[data-loaded="false"]) .galerie-card-color { opacity: 1; }
+
+    .galerie-card-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 1.5rem;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .galerie-card-num {
+      font-size: 0.55rem;
+      letter-spacing: 0.15em;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 0.3rem;
+    }
+
+    .galerie-card-title {
+      font-size: 1rem;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+    }
+
+    .galerie-card-info {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 1rem 1.2rem;
+      background: linear-gradient(transparent, rgba(0,0,0,0.8));
+    }
+
+    .galerie-card-num-visible {
+      font-size: 0.5rem;
+      letter-spacing: 0.15em;
+      color: rgba(255,255,255,0.4);
+    }
+
+    .galerie-card-title-visible {
+      font-size: 0.75rem;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+    }
+
+    /* ── BOUTIQUE ────────────────────────────────────────── */
+    #view-boutique { background: var(--bg); }
+
+    .boutique-filters {
+      padding: 1.5rem 2rem;
+      display: flex;
+      gap: 0.5rem;
+      border-bottom: 1px solid #1a1a1a;
+    }
+
+    .filter-btn {
+      padding: 0.4rem 1rem;
+      border: 1px solid #222;
+      color: var(--gray);
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: all 0.2s;
+    }
+    .filter-btn.active, .filter-btn:hover {
+      border-color: var(--text);
+      color: var(--text);
+    }
+
+    .boutique-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1px;
+      background: #111;
+      padding: 1px;
+    }
+
+    .boutique-card {
+      background: var(--bg);
+      cursor: pointer;
+      padding: 2rem;
+      display: flex;
+      gap: 1.5rem;
+      transition: background 0.2s;
+      position: relative;
+    }
+    .boutique-card:hover { background: #0f0f0f; }
+
+    .boutique-card-thumb {
+      width: 90px;
+      height: 90px;
+      flex-shrink: 0;
+      object-fit: cover;
+    }
+
+    .boutique-card-color-thumb {
+      width: 90px;
+      height: 90px;
+      flex-shrink: 0;
+    }
+
+    .boutique-card-body { flex: 1; min-width: 0; }
+
+    .boutique-card-num {
+      font-size: 0.5rem;
+      letter-spacing: 0.15em;
+      color: #444;
+      margin-bottom: 0.3rem;
+    }
+
+    .boutique-card-title {
+      font-size: 0.9rem;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.8rem;
+    }
+
+    .boutique-card-formats { display: flex; flex-direction: column; gap: 0.4rem; }
+
+    .boutique-format-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.6rem;
+      letter-spacing: 0.05em;
+    }
+
+    .boutique-format-name { color: var(--gray); }
+
+    .boutique-format-right {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .boutique-price { color: var(--text); font-weight: 400; }
+
+    .boutique-stock {
+      font-size: 0.5rem;
+      letter-spacing: 0.05em;
+      padding: 0.2rem 0.5rem;
+      border-radius: 2px;
+    }
+
+    .stock-available {
+      color: #666;
+      border: 1px solid #222;
+    }
+
+    .stock-low {
+      color: #e8a838;
+      border: 1px solid #3a2a10;
+    }
+
+    .stock-out {
+      color: #666;
+      border: 1px solid #1e1e1e;
+      text-decoration: line-through;
+    }
+
+    .boutique-card-color-dot {
+      position: absolute;
+      top: 2rem;
+      right: 1.5rem;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    /* ── PAGE PRODUIT ────────────────────────────────────── */
+    #view-produit { min-height: 100vh; background: var(--bg); }
+
+    .produit-back {
+      padding: 1rem 2rem;
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      color: var(--gray);
+      text-transform: uppercase;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border-bottom: 1px solid #1a1a1a;
+      transition: color 0.2s;
+    }
+    .produit-back:hover { color: var(--text); }
+
+    .produit-layout {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      min-height: calc(100vh - var(--header-h) - 50px);
+    }
+
+    .produit-image-zone {
+      position: relative;
+      overflow: hidden;
+      background: #050505;
+    }
+
+    .produit-image-zone img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .produit-color-bg {
+      position: absolute;
+      inset: 0;
+      opacity: 0.08;
+    }
+
+    .produit-panel {
+      padding: 3rem 2.5rem;
+      border-left: 1px solid #1a1a1a;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      overflow-y: auto;
+    }
+
+    .produit-num {
+      font-size: 0.55rem;
+      letter-spacing: 0.2em;
+      color: #444;
+    }
+
+    .produit-titre {
+      font-size: 1.6rem;
+      font-weight: 300;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.3rem;
+    }
+
+    .produit-couleur {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      color: var(--gray);
+    }
+
+    .produit-couleur-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .produit-sep { height: 1px; background: #1a1a1a; }
+
+    /* Format selector */
+    .format-selector { display: flex; flex-direction: column; gap: 0.8rem; }
+
+    .format-label {
+      font-size: 0.55rem;
+      letter-spacing: 0.15em;
+      color: var(--gray);
+      text-transform: uppercase;
+    }
+
+    .format-options { display: flex; flex-direction: column; gap: 0.5rem; }
+
+    .format-option {
+      padding: 1rem 1.2rem;
+      border: 1px solid #222;
+      cursor: pointer;
+      transition: border-color 0.2s;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 0.5rem;
+      align-items: start;
+    }
+    .format-option:hover { border-color: #444; }
+    .format-option.selected { border-color: var(--text); }
+
+    .format-option-name {
+      font-size: 0.7rem;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.3rem;
+    }
+
+    .format-option-desc {
+      font-size: 0.55rem;
+      letter-spacing: 0.05em;
+      color: var(--gray);
+      line-height: 1.5;
+    }
+
+    .format-option-price-zone { text-align: right; }
+
+    .format-option-price {
+      font-size: 1.1rem;
+      font-weight: 300;
+      letter-spacing: 0.02em;
+    }
+
+    .format-option-tiers {
+      font-size: 0.5rem;
+      letter-spacing: 0.05em;
+      color: #444;
+      line-height: 1.6;
+      margin-top: 0.2rem;
+    }
+
+    .format-option-stock {
+      display: inline-block;
+      font-size: 0.5rem;
+      letter-spacing: 0.05em;
+      padding: 0.15rem 0.4rem;
+      border-radius: 2px;
+      margin-top: 0.4rem;
+    }
+
+    /* Prix zone */
+    .produit-prix-zone { display: flex; flex-direction: column; gap: 0.4rem; }
+
+    .produit-prix-label {
+      font-size: 0.55rem;
+      letter-spacing: 0.15em;
+      color: var(--gray);
+      text-transform: uppercase;
+    }
+
+    .produit-prix-montant {
+      font-size: 2rem;
+      font-weight: 300;
+      letter-spacing: 0.02em;
+    }
+
+    .produit-prix-baremes {
+      font-size: 0.55rem;
+      color: #555;
+      line-height: 1.8;
+      letter-spacing: 0.05em;
+    }
+
+    .produit-prix-current-tier {
+      display: inline-block;
+      padding: 0.1rem 0.4rem;
+      border-radius: 2px;
+      font-size: 0.5rem;
+      background: #1a1a1a;
+      color: var(--gray);
+      margin-left: 0.4rem;
+      vertical-align: middle;
+    }
+
+    /* Stock */
+    .produit-stock-zone {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      font-size: 0.6rem;
+      letter-spacing: 0.05em;
+    }
+
+    .produit-stock-bar {
+      flex: 1;
+      height: 2px;
+      background: #1a1a1a;
+      border-radius: 1px;
+      overflow: hidden;
+    }
+
+    .produit-stock-fill {
+      height: 100%;
+      border-radius: 1px;
+      transition: width 0.5s ease;
+    }
+
+    .produit-stock-text { color: var(--gray); white-space: nowrap; }
+
+    /* Bouton achat */
+    .btn-acheter {
+      width: 100%;
+      padding: 1rem;
+      background: var(--text);
+      color: var(--bg);
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 400;
+      transition: opacity 0.2s;
+    }
+    .btn-acheter:hover { opacity: 0.85; }
+    .btn-acheter:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    /* Inclus */
+    .produit-inclus { display: flex; flex-direction: column; gap: 0.5rem; }
+
+    .produit-inclus-label {
+      font-size: 0.55rem;
+      letter-spacing: 0.15em;
+      color: #444;
+      text-transform: uppercase;
+    }
+
+    .produit-inclus-item {
+      font-size: 0.6rem;
+      letter-spacing: 0.04em;
+      color: var(--gray);
+      padding-left: 0.8rem;
+      position: relative;
+      line-height: 1.5;
+    }
+
+    .produit-inclus-item::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: #333;
+    }
+
+    /* ── PAGE MERCI ──────────────────────────────────────── */
+    #view-merci {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding-top: 0;
+    }
+    #view-merci.active { display: flex; }
+
+    .merci-content {
+      text-align: center;
+      max-width: 500px;
+      padding: 3rem 2rem;
+    }
+
+    .merci-icon {
+      font-size: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .merci-title {
+      font-size: 1.2rem;
+      font-weight: 300;
+      letter-spacing: 0.06em;
+      margin-bottom: 1rem;
+    }
+
+    .merci-text {
+      font-size: 0.75rem;
+      color: var(--gray);
+      line-height: 1.8;
+      letter-spacing: 0.04em;
+      margin-bottom: 2rem;
+    }
+
+    .merci-order-recap {
+      background: #0f0f0f;
+      border: 1px solid #1a1a1a;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      text-align: left;
+    }
+
+    .merci-order-label {
+      font-size: 0.5rem;
+      letter-spacing: 0.15em;
+      color: #444;
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+    }
+
+    .merci-order-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.65rem;
+      letter-spacing: 0.04em;
+      color: var(--gray);
+      padding: 0.25rem 0;
+    }
+
+    .merci-order-row strong { color: var(--text); }
+
+    /* ── TOAST ───────────────────────────────────────────── */
+    .dk-toast {
+      position: fixed;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #1a1a1a;
+      border: 1px solid #333;
+      color: var(--text);
+      padding: 0.7rem 1.5rem;
+      font-size: 0.65rem;
+      letter-spacing: 0.06em;
+      z-index: 9999;
+      transition: transform 0.3s ease;
+      white-space: nowrap;
+    }
+    .dk-toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* ── LOADING ─────────────────────────────────────────── */
+    .dk-spinner {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border: 1px solid #333;
+      border-top-color: var(--gray);
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      margin-right: 0.5rem;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes fadeInUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+
+    /* ── RESPONSIVE ──────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .galerie-grid { grid-template-columns: repeat(2, 1fr); }
+      .boutique-grid { grid-template-columns: 1fr; }
+      .produit-layout { grid-template-columns: 1fr; }
+      .produit-panel {
+        border-left: none;
+        border-top: 1px solid #1a1a1a;
+        padding: 2rem 1.5rem;
+      }
+      .produit-image-zone { min-height: 50vw; }
+    }
+
+    @media (max-width: 580px) {
+      .galerie-grid { grid-template-columns: 1fr; }
+      .dk-header-expo { display: none; }
+      .dk-header-sep { display: none; }
+      .hero-cta-group { flex-direction: column; align-items: center; }
+      .boutique-card { padding: 1.5rem 1rem; }
+      .boutique-card-thumb, .boutique-card-color-thumb { width: 70px; height: 70px; }
+      .section-header { padding: 2rem 1rem 1.5rem; }
+      .boutique-filters { padding: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── HEADER ── -->
+  <header class="dk-header">
+    <div class="dk-header-brand">
+      <img src="../assets/logo-b.svg" alt="B">
+      <strong>Bertrand Basset</strong>
+      <span class="dk-header-sep"></span>
+      <span class="dk-header-expo">Dust'in Kolor</span>
+    </div>
+    <div class="dk-header-right">
+      <div class="dk-lang">
+        <a href="#" data-lang="fr" class="active">FR</a>
+        <span>/</span>
+        <a href="#" data-lang="en">EN</a>
+      </div>
+      <a href="../" class="dk-back-link">← Retour au site</a>
+    </div>
+  </header>
+
+  <!-- ── VUE : HERO ── -->
+  <div id="view-hero" class="dk-view active">
+    <div class="hero-full">
+      <div class="hero-bg" id="heroBg"></div>
+      <div class="hero-bg-fallback"></div>
+      <div class="hero-content">
+        <p class="hero-label">Désert du Nevada — Août 2016</p>
+        <h1 class="hero-title">DUST'IN<br>KOLOR</h1>
+        <p class="hero-subtitle">Bertrand Basset — Photographie 2016</p>
+        <p class="hero-quote">
+          En pleine tempête de sable, la visibilité est proche de zéro,<br>
+          tout devient gris, flou. On enfile alors les goggles, ces lunettes<br>
+          de protection aux verres colorés.<br><br>
+          Le monde devient alors rouge, bleu, orange, rose…
+        </p>
+        <p class="hero-signature">Dust'in Kolor n'est pas une série colorisée. C'est ce que j'ai vu.</p>
+        <div class="hero-cta-group">
+          <button class="btn-primary" onclick="showView('galerie')">Découvrir la série</button>
+          <button class="btn-ghost" onclick="showView('boutique')">Voir les tirages</button>
+        </div>
+      </div>
+      <div class="hero-scroll">
+        <div class="hero-scroll-line"></div>
+        Série
+      </div>
+    </div>
+  </div>
+
+  <!-- ── VUE : GALERIE ── -->
+  <div id="view-galerie" class="dk-view">
+    <div class="section-header">
+      <span class="section-title">La Série — 7 Œuvres</span>
+      <button class="btn-ghost" onclick="showView('boutique')" style="padding:0.4rem 1rem;font-size:0.6rem;letter-spacing:0.1em;">Voir les tirages →</button>
+    </div>
+    <div class="galerie-grid" id="galerieGrid"></div>
+  </div>
+
+  <!-- ── VUE : BOUTIQUE ── -->
+  <div id="view-boutique" class="dk-view">
+    <div class="section-header">
+      <span class="section-title">Tirages d'Art — Éditions limitées</span>
+      <span class="section-count">7 œuvres</span>
+    </div>
+    <div class="boutique-filters">
+      <button class="filter-btn active" data-filter="all" onclick="setBoutiqueFilter('all',this)">Tous</button>
+      <button class="filter-btn" data-filter="dibond" onclick="setBoutiqueFilter('dibond',this)">Dibond — 10 ex.</button>
+      <button class="filter-btn" data-filter="a4" onclick="setBoutiqueFilter('a4',this)">A4 Hahnemühle — 30 ex.</button>
+    </div>
+    <div class="boutique-grid" id="boutiqueGrid"></div>
+  </div>
+
+  <!-- ── VUE : PRODUIT ── -->
+  <div id="view-produit" class="dk-view">
+    <button class="produit-back" onclick="history.back()">← Retour</button>
+    <div class="produit-layout">
+      <div class="produit-image-zone">
+        <div class="produit-color-bg" id="produitColorBg"></div>
+        <img id="produitImg" src="" alt="" style="position:relative;z-index:1;">
+      </div>
+      <div class="produit-panel" id="produitPanel">
+        <!-- Rempli par JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ── VUE : MERCI ── -->
+  <div id="view-merci" class="dk-view">
+    <div class="merci-content">
+      <div class="merci-icon">✦</div>
+      <h2 class="merci-title">Commande confirmée</h2>
+      <p class="merci-text">
+        Merci pour votre achat. Un email de confirmation vous a été envoyé
+        avec les détails de votre tirage numéroté.<br><br>
+        La livraison est soigneusement préparée et vous contactera
+        dans les 7 à 10 jours ouvrés.
+      </p>
+      <div class="merci-order-recap" id="merciRecap">
+        <div class="merci-order-label">Récapitulatif</div>
+        <!-- Rempli par JS -->
+      </div>
+      <button class="btn-ghost" onclick="showView('galerie')">Voir les autres œuvres</button>
+    </div>
+  </div>
+
+  <div class="dk-toast" id="toast"></div>
+
+  <script>
+  /* ═══════════════════════════════════════════════════════
+     CONFIG — remplacer par vos valeurs Supabase + Stripe
+  ═══════════════════════════════════════════════════════ */
+  const SUPABASE_URL  = 'https://suecslynruuputmujudg.supabase.co';
+  const SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN1ZWNzbHlucnV1cHV0bXVqdWRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY1MTYyODcsImV4cCI6MjA5MjA5MjI4N30.c9Pa_x6MEcJdqVekBodSYpu3it-riVU1hYhC-m5iCsU';
+  const CHECKOUT_URL  = `${SUPABASE_URL}/functions/v1/stripe-checkout`;
+  const IMG_BASE      = '../images/dustin-kolor/';
+
+  /* ═══════════════════════════════════════════════════════
+     CATALOGUE DES 7 ŒUVRES
+  ═══════════════════════════════════════════════════════ */
+  const WORKS = [
+    {
+      num: '01', slug: 'sandstorm-feu',
+      titre: 'Sandstorm', couleur: '#FF4500',
+      format_dibond: '60×90 cm', achat_ttc: 214.30,
+      prix: [820, 960, 1100], prix_a4: 180,
+      img: '01-sandstorm.jpg'
+    },
+    {
+      num: '02', slug: 'flying-car-orange',
+      titre: 'Flying Car', couleur: '#FF6600',
+      format_dibond: '70×124 cm', achat_ttc: 317.60,
+      prix: [1290, 1490, 1690], prix_a4: 180,
+      img: '02-flying-car.jpg'
+    },
+    {
+      num: '03', slug: 'after-the-storm-vert',
+      titre: 'After the Storm', couleur: '#7BC043',
+      format_dibond: '70×124 cm', achat_ttc: 317.60,
+      prix: [1290, 1490, 1690], prix_a4: 180,
+      img: '03-after-the-storm.jpg'
+    },
+    {
+      num: '04', slug: 'lost-in-the-dust-rouge',
+      titre: 'Lost in the Dust', couleur: '#CC0000',
+      format_dibond: '60×80 cm', achat_ttc: 186.00,
+      prix: [890, 1020, 1150], prix_a4: 180,
+      img: '04-lost-in-the-dust.jpg'
+    },
+    {
+      num: '05', slug: 'camp-lighters-jaune',
+      titre: 'Camp Lighters', couleur: '#FFB300',
+      format_dibond: '40×100 cm', achat_ttc: 188.00,
+      prix: [790, 910, 1030], prix_a4: 180,
+      img: '05-camp-lighters.jpg'
+    },
+    {
+      num: '06', slug: 'im-here-bleu',
+      titre: "I'm Here", couleur: '#0066CC',
+      format_dibond: '60×80 cm', achat_ttc: 186.00,
+      prix: [890, 1020, 1150], prix_a4: 180,
+      img: '06-im-here.jpg'
+    },
+    {
+      num: '08', slug: 'umbrellas-way-rose',
+      titre: 'Umbrellas Way', couleur: '#FF1493',
+      format_dibond: '60×80 cm', achat_ttc: 186.00,
+      prix: [890, 1020, 1150], prix_a4: 180,
+      img: '08-umbrellas-way.jpg'
+    }
+  ];
+
+  /* ═══════════════════════════════════════════════════════
+     ÉTAT
+  ═══════════════════════════════════════════════════════ */
+  let supabase = null;
+  let stockData = {};       // { slug: { vendus_dibond, vendus_a4 } }
+  let currentFilter = 'all';
+  let currentWork = null;
+  let selectedFormat = 'dibond';
+  let lang = 'fr';
+
+  /* ═══════════════════════════════════════════════════════
+     INIT SUPABASE
+  ═══════════════════════════════════════════════════════ */
+  function initSupabase() {
+    if (SUPABASE_URL === 'YOUR_SUPABASE_URL') return; // pas encore configuré
+    try {
+      supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+      loadStock();
+      subscribeStock();
+    } catch(e) { console.warn('Supabase non configuré', e); }
+  }
+
+  async function loadStock() {
+    if (!supabase) return;
+    const { data, error } = await supabase
+      .from('kolor_editions')
+      .select('slug, vendus_dibond, vendus_a4');
+    if (error) { console.warn('Supabase error:', error); return; }
+    stockData = {};
+    (data || []).forEach(r => { stockData[r.slug] = r; });
+    renderAll();
+  }
+
+  function subscribeStock() {
+    if (!supabase) return;
+    supabase.channel('kolor-stock')
+      .on('postgres_changes', {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'kolor_editions'
+      }, payload => {
+        const r = payload.new;
+        stockData[r.slug] = r;
+        renderAll();
+      })
+      .subscribe();
+  }
+
+  function getStock(slug) {
+    return stockData[slug] || { vendus_dibond: 0, vendus_a4: 0 };
+  }
+
+  function getPrixDibond(work, vendus) {
+    if (vendus <= 3) return work.prix[0];
+    if (vendus <= 7) return work.prix[1];
+    return work.prix[2];
+  }
+
+  /* ═══════════════════════════════════════════════════════
+     ROUTING
+  ═══════════════════════════════════════════════════════ */
+  function showView(name, slug) {
+    document.querySelectorAll('.dk-view').forEach(v => v.classList.remove('active'));
+    const el = document.getElementById('view-' + name);
+    if (el) el.classList.add('active');
+    window.scrollTo(0, 0);
+
+    if (name === 'produit' && slug) {
+      const work = WORKS.find(w => w.slug === slug);
+      if (work) { currentWork = work; selectedFormat = 'dibond'; renderProduit(); }
+    }
+    if (name === 'merci') renderMerci();
+
+    // Update hash (sans reload)
+    const hash = name === 'hero' ? '' : (slug ? `#${slug}` : `#${name}`);
+    history.pushState(null, '', location.pathname + hash);
+  }
+
+  function routeFromHash() {
+    const hash = location.hash.slice(1);
+    if (!hash || hash === 'hero') { showView('hero'); return; }
+    if (hash === 'galerie') { showView('galerie'); return; }
+    if (hash === 'boutique') { showView('boutique'); return; }
+    if (hash === 'merci') { showView('merci'); return; }
+    // Check if it's a work slug
+    const work = WORKS.find(w => w.slug === hash);
+    if (work) { showView('produit', hash); return; }
+    showView('hero');
+  }
+
+  window.addEventListener('popstate', routeFromHash);
+  window.addEventListener('hashchange', routeFromHash);
+
+  /* ═══════════════════════════════════════════════════════
+     RENDER : GALERIE
+  ═══════════════════════════════════════════════════════ */
+  function renderGalerie() {
+    const grid = document.getElementById('galerieGrid');
+    grid.innerHTML = WORKS.map(w => `
+      <div class="galerie-card" onclick="showView('produit','${w.slug}')">
+        <div class="galerie-card-color" style="background:${w.couleur};"></div>
+        <img class="galerie-card-img" src="${IMG_BASE}${w.img}"
+             alt="${w.titre}" data-loaded="false"
+             onload="this.dataset.loaded='true'"
+             onerror="this.dataset.loaded='false'">
+        <div class="galerie-card-info">
+          <div class="galerie-card-num-visible">${w.num}</div>
+          <div class="galerie-card-title-visible">${w.titre}</div>
+        </div>
+        <div class="galerie-card-overlay">
+          <div class="galerie-card-num">${w.num}</div>
+          <div class="galerie-card-title">${w.titre}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  /* ═══════════════════════════════════════════════════════
+     RENDER : BOUTIQUE
+  ═══════════════════════════════════════════════════════ */
+  function setBoutiqueFilter(f, btn) {
+    currentFilter = f;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderBoutique();
+  }
+
+  function renderBoutique() {
+    const grid = document.getElementById('boutiqueGrid');
+    grid.innerHTML = WORKS.map(w => {
+      const s = getStock(w.slug);
+      const dispD = 10 - s.vendus_dibond;
+      const dispA4 = 30 - s.vendus_a4;
+      const prixD = getPrixDibond(w, s.vendus_dibond);
+
+      const stockD = stockBadge(dispD, 10);
+      const stockA4 = stockBadge(dispA4, 30);
+
+      const showDibond = currentFilter !== 'a4';
+      const showA4     = currentFilter !== 'dibond';
+
+      return `
+      <div class="boutique-card" onclick="showView('produit','${w.slug}')">
+        <img class="boutique-card-thumb"
+             src="${IMG_BASE}${w.img}" alt="${w.titre}"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+        <div class="boutique-card-color-thumb" style="background:${w.couleur};display:none;"></div>
+        <div class="boutique-card-body">
+          <div class="boutique-card-num">${w.num}</div>
+          <div class="boutique-card-title">${w.titre}</div>
+          <div class="boutique-card-formats">
+            ${showDibond ? `
+            <div class="boutique-format-line">
+              <span class="boutique-format-name">Dibond ${w.format_dibond}</span>
+              <div class="boutique-format-right">
+                <span class="boutique-price">${prixD}€</span>
+                <span class="boutique-stock ${stockD.cls}">${dispD > 0 ? dispD + '/10' : 'Épuisé'}</span>
+              </div>
+            </div>` : ''}
+            ${showA4 ? `
+            <div class="boutique-format-line">
+              <span class="boutique-format-name">A4 Hahnemühle</span>
+              <div class="boutique-format-right">
+                <span class="boutique-price">180€</span>
+                <span class="boutique-stock ${stockA4.cls}">${dispA4 > 0 ? dispA4 + '/30' : 'Épuisé'}</span>
+              </div>
+            </div>` : ''}
+          </div>
+        </div>
+        <div class="boutique-card-color-dot" style="background:${w.couleur};"></div>
+      </div>`;
+    }).join('');
+  }
+
+  function stockBadge(restants, total) {
+    if (restants <= 0)           return { cls: 'stock-out',       label: 'Épuisé' };
+    if (restants <= total * 0.3) return { cls: 'stock-low',       label: `${restants}/${total}` };
+    return                              { cls: 'stock-available',  label: `${restants}/${total}` };
+  }
+
+  /* ═══════════════════════════════════════════════════════
+     RENDER : PAGE PRODUIT
+  ═══════════════════════════════════════════════════════ */
+  function renderProduit() {
+    const w = currentWork;
+    if (!w) return;
+    const s = getStock(w.slug);
+
+    // Image + bg couleur
+    const img = document.getElementById('produitImg');
+    img.src = IMG_BASE + w.img;
+    img.alt = w.titre;
+    document.getElementById('produitColorBg').style.background = w.couleur;
+
+    const panel = document.getElementById('produitPanel');
+    const dispD  = 10 - s.vendus_dibond;
+    const dispA4 = 30 - s.vendus_a4;
+    const prixD  = getPrixDibond(w, s.vendus_dibond);
+    const dispo  = selectedFormat === 'dibond' ? dispD : dispA4;
+    const prix   = selectedFormat === 'dibond' ? prixD : 180;
+    const total  = selectedFormat === 'dibond' ? 10 : 30;
+    const fillPct = ((total - dispo) / total * 100).toFixed(0);
+    const tierLabel = s.vendus_dibond <= 3 ? 'ex. 1–3' : s.vendus_dibond <= 7 ? 'ex. 4–7' : 'ex. 8–10';
+
+    panel.innerHTML = `
+      <div>
+        <div class="produit-num">№ ${w.num}</div>
+        <h2 class="produit-titre">${w.titre}</h2>
+        <div class="produit-couleur">
+          <div class="produit-couleur-dot" style="background:${w.couleur};"></div>
+          <span>${w.couleur}</span>
+        </div>
+      </div>
+
+      <div class="produit-sep"></div>
+
+      <div class="format-selector">
+        <div class="format-label">Format</div>
+        <div class="format-options">
+          <div class="format-option ${selectedFormat==='dibond'?'selected':''}"
+               onclick="selectFormat('dibond')" style="border-color:${selectedFormat==='dibond'?'#f0f0ee':''}">
+            <div>
+              <div class="format-option-name">Dibond Museum Etching</div>
+              <div class="format-option-desc">${w.format_dibond} · Museum Etching 350g<br>contrecollé Dibond 2mm · Châssis alu</div>
+              <span class="format-option-stock ${stockBadge(dispD,10).cls}">
+                ${dispD > 0 ? dispD + ' / 10 disponibles' : 'Édition complète'}
+              </span>
+            </div>
+            <div class="format-option-price-zone">
+              <div class="format-option-price">${prixD}€</div>
+              <div class="format-option-tiers">
+                ${w.prix[0]}€ · ex. 1–3<br>
+                ${w.prix[1]}€ · ex. 4–7<br>
+                ${w.prix[2]}€ · ex. 8–10
+              </div>
+            </div>
+          </div>
+
+          <div class="format-option ${selectedFormat==='a4'?'selected':''}"
+               onclick="selectFormat('a4')" style="border-color:${selectedFormat==='a4'?'#f0f0ee':''}">
+            <div>
+              <div class="format-option-name">A4 Hahnemühle</div>
+              <div class="format-option-desc">21×29,7 cm · Papier Fine Art<br>Signé, numéroté · 30 exemplaires</div>
+              <span class="format-option-stock ${stockBadge(dispA4,30).cls}">
+                ${dispA4 > 0 ? dispA4 + ' / 30 disponibles' : 'Édition complète'}
+              </span>
+            </div>
+            <div class="format-option-price-zone">
+              <div class="format-option-price">180€</div>
+              <div class="format-option-tiers">Prix fixe</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="produit-sep"></div>
+
+      <div class="produit-stock-zone">
+        <div class="produit-stock-bar">
+          <div class="produit-stock-fill"
+               style="width:${fillPct}%;background:${w.couleur};"></div>
+        </div>
+        <div class="produit-stock-text">
+          ${dispo > 0 ? `${dispo} / ${total} disponibles` : 'Édition complète'}
+        </div>
+      </div>
+
+      <div>
+        <button class="btn-acheter" id="acheterBtn"
+                onclick="startCheckout('${w.slug}')"
+                ${dispo <= 0 ? 'disabled' : ''}>
+          ${dispo > 0 ? 'Commander — ' + prix + '€' : 'Édition complète'}
+        </button>
+      </div>
+
+      <div class="produit-sep"></div>
+
+      <div class="produit-inclus">
+        <div class="produit-inclus-label">Inclus dans chaque tirage</div>
+        <div class="produit-inclus-item">Tirage signé et numéroté par Bertrand Basset</div>
+        <div class="produit-inclus-item">Certificat d'authenticité</div>
+        <div class="produit-inclus-item">
+          ${selectedFormat === 'dibond'
+            ? 'Museum Etching 350g contrecollé Dibond 2mm + châssis rentrant aluminium'
+            : 'Papier Hahnemühle Fine Art A4'}
+        </div>
+        <div class="produit-inclus-item">Livraison soigneusement emballée</div>
+      </div>
+    `;
+  }
+
+  function selectFormat(fmt) {
+    selectedFormat = fmt;
+    renderProduit();
+  }
+
+  /* ═══════════════════════════════════════════════════════
+     CHECKOUT STRIPE
+  ═══════════════════════════════════════════════════════ */
+  async function startCheckout(slug) {
+    const btn = document.getElementById('acheterBtn');
+    if (!btn || btn.disabled) return;
+
+    const w = WORKS.find(x => x.slug === slug);
+    if (!w) return;
+
+    const s = getStock(w.slug);
+    const dispD  = 10 - s.vendus_dibond;
+    const dispA4 = 30 - s.vendus_a4;
+    if (selectedFormat === 'dibond' && dispD <= 0) { showToast('Cette édition est complète.'); return; }
+    if (selectedFormat === 'a4' && dispA4 <= 0) { showToast('Cette édition est complète.'); return; }
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="dk-spinner"></span>Redirection…';
+
+    try {
+      if (CHECKOUT_URL.includes('YOUR_SUPABASE')) {
+        // Mode démo sans Supabase configuré
+        showToast('⚙️ Stripe non configuré — mode démo');
+        setTimeout(() => { btn.disabled=false; btn.textContent='Commander'; }, 2000);
+        return;
+      }
+
+      const prix = selectedFormat === 'dibond'
+        ? getPrixDibond(w, s.vendus_dibond) : 180;
+
+      const resp = await fetch(CHECKOUT_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${SUPABASE_KEY}`
+        },
+        body: JSON.stringify({
+          slug,
+          format: selectedFormat,
+          prix,
+          titre: w.titre,
+          success_url: `${location.origin}/dustin-kolor/#merci`,
+          cancel_url:  `${location.origin}/dustin-kolor/#${slug}`
+        })
+      });
+
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      const { url, error } = await resp.json();
+      if (error) throw new Error(error);
+      window.location.href = url;
+
+    } catch(e) {
+      console.error('Checkout error:', e);
+      showToast('Erreur — ' + e.message);
+      btn.disabled = false;
+      btn.textContent = 'Commander';
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════════
+     RENDER : MERCI
+  ═══════════════════════════════════════════════════════ */
+  function renderMerci() {
+    const recap = document.getElementById('merciRecap');
+    // Récupère les params depuis l'URL après redirect Stripe
+    const params = new URLSearchParams(location.search);
+    const session = params.get('session_id');
+    recap.innerHTML = `
+      <div class="merci-order-label">Commande confirmée</div>
+      ${session ? `<div class="merci-order-row"><span>Référence</span><strong>${session.slice(0,20)}…</strong></div>` : ''}
+      <div class="merci-order-row">
+        <span>Un email de confirmation vous a été envoyé avec tous les détails de votre tirage.</span>
+      </div>
+    `;
+  }
+
+  /* ═══════════════════════════════════════════════════════
+     UTILS
+  ═══════════════════════════════════════════════════════ */
+  function renderAll() {
+    renderGalerie();
+    renderBoutique();
+    if (currentWork && document.getElementById('view-produit').classList.contains('active')) {
+      renderProduit();
+    }
+  }
+
+  function showToast(msg, duration=3000) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), duration);
+  }
+
+  /* ═══════════════════════════════════════════════════════
+     BOOT
+  ═══════════════════════════════════════════════════════ */
+  document.addEventListener('DOMContentLoaded', () => {
+    renderGalerie();
+    renderBoutique();
+    initSupabase();
+    routeFromHash();
+
+    // Hero bg check
+    const heroBg = document.getElementById('heroBg');
+    const testImg = new Image();
+    testImg.onload = () => { heroBg.style.display = 'block'; };
+    testImg.onerror = () => { heroBg.style.display = 'none'; };
+    testImg.src = IMG_BASE + '01-sandstorm.jpg';
+  });
+  </script>
+</body>
+</html>
