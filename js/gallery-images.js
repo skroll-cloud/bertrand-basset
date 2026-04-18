@@ -1,6 +1,6 @@
 /**
  * gallery-images.js
- * Généré par Admin V4 — 11/03/2026 14:29:49
+ * Généré par Admin V4 — 19/04/2026 00:20:54
  * Ne pas éditer manuellement.
  */
 const GALLERY_IMAGES = {
@@ -12,8 +12,8 @@ const GALLERY_IMAGES = {
         { "filename": "Imane02@bertrandbasset 2.jpg" },
         { "filename": "portrait-02.jpg" },
         { "filename": "JF.jpg" },
-        { "filename": "Atelier_Plougasnou 1.jpg" },
         { "filename": "portrait-01.jpg" },
+        { "filename": "Atelier_Plougasnou 1.jpg" },
         { "filename": "L1020630.jpg" },
         { "filename": "placeholder-8.jpg" }
     ],
