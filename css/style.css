@@ -289,6 +289,26 @@ body {
     color: var(--red);
 }
 
+/* Lien expo Dust'in Kolor — mis en avant dans la nav */
+.nav-link-expo {
+    position: relative;
+    font-style: italic;
+    letter-spacing: 0.04em;
+}
+.nav-link-expo::after {
+    content: 'EXPO';
+    font-size: 0.45rem;
+    letter-spacing: 0.12em;
+    font-style: normal;
+    color: var(--gray);
+    border: 1px solid var(--light-gray);
+    padding: 0.1rem 0.3rem;
+    margin-left: 0.5rem;
+    vertical-align: middle;
+    position: relative;
+    top: -1px;
+}
+
 /* ── NAV GROUPS (sous-menus) ── */
 .nav-group {
     margin-bottom: 0.15rem;
