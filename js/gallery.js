@@ -1,6 +1,6 @@
 /**
  * Bertrand Basset Portfolio — gallery.js
- * Généré par Admin V4 — 11/03/2026 14:29:49
+ * Généré par Admin V4 — 19/04/2026 00:20:54
  */
 
 const SITE_CONFIG = {
@@ -38,6 +38,13 @@ const T = {
 
 /* ─── MENU ──────────────────────────────────────────────────── */
 const MENU_CONFIG = [
+  {
+    "id": "dustin-kolor-link",
+    "name": "DUST'IN KOLOR",
+    "type": "external",
+    "url": "dustin-kolor/",
+    "highlight": true
+  },
   {
     "id": "item-1773174917949",
     "name": "METIER",
@@ -209,7 +216,7 @@ const GALLERIES_CONFIG = {
                 "sidebarEn": ""
         }
 ],
-        captions: {"02.jpg":{"en":"","fr":"Jean-Philippe Davodeau\nActeur"},"L1060508.jpg":{"en":"","fr":"Ange-Marine Chénevat\nActrice"},"conversation-02.jpg":{"en":"","fr":"Antoine Asnar\nActeur"},"Imane02@bertrandbasset 2.jpg":{"en":"","fr":"Imene\nActrice"},"portrait-02.jpg":{"en":"","fr":"Ange-Marine Chénevat\nActrice"},"JF.jpg":{"en":"","fr":"Jean-François\nSerie GEM"},"L1020630.jpg":{"en":"","fr":"Patrick Ewen\nConteur"}},
+        captions: {"02.jpg":{"en":"","fr":"Jean-Philippe Davodeau\nActeur"},"L1060508.jpg":{"en":"","fr":"Ange-Marine Chénevat\nActrice"},"conversation-02.jpg":{"en":"","fr":"Antoine Asnar\nActeur"},"Atelier_Plougasnou.jpg":{"en":"","fr":"Cuisinier "},"Imane02@bertrandbasset 2.jpg":{"en":"","fr":"Imene\nActrice"},"portrait-02.jpg":{"en":"","fr":"Ange-Marine Chénevat\nActrice"},"JF.jpg":{"en":"","fr":"Jean-François\nSerie GEM"},"L1020630.jpg":{"en":"","fr":"Patrick Ewen\nConteur"}},
     },
 
     "conversation-s-": {
