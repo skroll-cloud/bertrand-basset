@@ -271,86 +271,240 @@
       color: var(--dim);
     }
 
+    /* ── GALERIE ────────────────────────────────────────── */
     .galerie-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1px;
-      background: var(--border);
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0;
     }
 
     .galerie-card {
-      position: relative;
-      aspect-ratio: 4/3;
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      border-bottom: 1px solid var(--border);
+    }
+    .galerie-card:nth-child(odd) { border-right: 1px solid var(--border); }
+
+    .galerie-card-photo {
+      aspect-ratio: 3/2;
       overflow: hidden;
-      cursor: pointer;
-      background: #f0f0f0;
+      background: #f5f5f5;
     }
 
-    .galerie-card:hover .galerie-card-overlay { opacity: 1; }
-    .galerie-card:hover .galerie-card-img { transform: scale(1.04); }
-
-    .galerie-card-img {
+    .galerie-card-photo img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 0.5s ease;
       display: block;
-    }
-
-    .galerie-card-color {
-      position: absolute;
-      inset: 0;
-      opacity: 0.6;
       transition: opacity 0.3s;
     }
+    .galerie-card:hover .galerie-card-photo img { opacity: 0.88; }
 
-    .galerie-card-img[data-loaded="false"] { display: none; }
-    .galerie-card:has(.galerie-card-img[data-loaded="false"]) .galerie-card-color { opacity: 1; }
-
-    .galerie-card-overlay {
-      position: absolute;
-      inset: 0;
-      background: rgba(255,255,255,0.88);
+    .galerie-card-caption {
+      padding: 1rem 1.5rem 1.4rem;
       display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      padding: 1.5rem;
-      opacity: 0;
-      transition: opacity 0.3s;
+      align-items: baseline;
+      gap: 1rem;
+      border-top: 1px solid var(--border);
     }
 
     .galerie-card-num {
-      font-size: 0.5rem;
-      letter-spacing: 0.15em;
+      font-size: 0.48rem;
+      letter-spacing: 0.18em;
       color: var(--dim);
-      margin-bottom: 0.3rem;
+      text-transform: uppercase;
+      flex-shrink: 0;
     }
 
     .galerie-card-title {
-      font-size: 0.95rem;
+      font-size: 0.72rem;
+      font-weight: 300;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text);
+    }
+
+    .galerie-card-acheter {
+      margin-left: auto;
+      font-size: 0.48rem;
+      letter-spacing: 0.12em;
+      color: var(--dim);
+      text-transform: uppercase;
+      border-bottom: 1px solid transparent;
+      transition: color 0.2s, border-color 0.2s;
+      flex-shrink: 0;
+    }
+    .galerie-card:hover .galerie-card-acheter {
+      color: var(--text);
+      border-bottom-color: var(--text);
+    }
+
+    /* ── PAGE PRODUIT (statique, 7 sections) ─────────────── */
+    .product-page { background: var(--bg); }
+    .product-page:target { display: block; }
+    body:has(.product-page:target) #view-hero,
+    body:has(.product-page:target) #view-galerie,
+    body:has(.product-page:target) #view-boutique { display: none; }
+
+    .pp-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem 1.5rem;
+      font-size: 0.52rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gray);
+      text-decoration: none;
+      border-bottom: 1px solid var(--border);
+      width: 100%;
+      transition: color 0.2s;
+    }
+    .pp-back:hover { color: var(--text); }
+
+    .pp-layout {
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      min-height: calc(100vh - var(--header-h) - 45px);
+    }
+
+    .pp-photo {
+      background: #f5f5f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .pp-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .pp-panel {
+      padding: 3rem 2.5rem;
+      border-left: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      overflow-y: auto;
+    }
+
+    .pp-num {
+      font-size: 0.5rem;
+      letter-spacing: 0.2em;
+      color: var(--dim);
+      text-transform: uppercase;
+      margin-bottom: 0.6rem;
+    }
+
+    .pp-title {
+      font-size: 1.8rem;
+      font-weight: 300;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+
+    .pp-location {
+      font-size: 0.55rem;
+      letter-spacing: 0.14em;
+      color: var(--dim);
+      text-transform: uppercase;
+      margin-bottom: 2.5rem;
+    }
+
+    .pp-sep { height: 1px; background: var(--border); margin: 2rem 0; }
+
+    .pp-format-label {
+      font-size: 0.48rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--dim);
+      margin-bottom: 1.2rem;
+    }
+
+    .pp-format {
+      padding: 1.2rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .pp-format:first-of-type { border-top: 1px solid var(--border); }
+
+    .pp-format-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .pp-format-name {
+      font-size: 0.72rem;
       font-weight: 400;
       letter-spacing: 0.04em;
-      color: var(--text);
+      margin-bottom: 0.3rem;
     }
 
-    .galerie-card-info {
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      padding: 0.8rem 1rem;
-      background: rgba(250,250,250,0.9);
+    .pp-format-desc {
+      font-size: 0.52rem;
+      letter-spacing: 0.06em;
+      color: var(--gray);
+      line-height: 1.6;
     }
 
-    .galerie-card-num-visible {
+    .pp-format-prix {
+      text-align: right;
+    }
+
+    .pp-prix-val {
+      font-size: 1rem;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+    }
+
+    .pp-stock {
+      font-size: 0.45rem;
+      letter-spacing: 0.08em;
+      color: var(--dim);
+      margin-top: 0.2rem;
+    }
+
+    .pp-buy {
+      margin-top: 2rem;
+      padding: 1rem 0;
+      background: var(--text);
+      color: var(--bg);
+      font-family: var(--font);
+      font-size: 0.58rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      transition: opacity 0.2s;
+    }
+    .pp-buy:hover { opacity: 0.75; }
+
+    .pp-inclus {
+      margin-top: 2rem;
+    }
+
+    .pp-inclus-label {
       font-size: 0.45rem;
       letter-spacing: 0.15em;
+      text-transform: uppercase;
       color: var(--dim);
+      margin-bottom: 0.8rem;
     }
 
-    .galerie-card-title-visible {
-      font-size: 0.7rem;
-      font-weight: 400;
-      letter-spacing: 0.06em;
-      color: var(--text);
+    .pp-inclus-item {
+      font-size: 0.58rem;
+      letter-spacing: 0.04em;
+      color: var(--gray);
+      padding: 0.4rem 0;
+      border-bottom: 1px solid var(--border);
     }
 
     /* ── BOUTIQUE ────────────────────────────────────────── */
@@ -890,47 +1044,61 @@
       <a class="btn-ghost" href="#view-boutique" style="padding:0.4rem 1rem;font-size:0.6rem;letter-spacing:0.1em;text-decoration:none;">Voir les tirages →</a>
     </div>
     <div class="galerie-grid" id="galerieGrid">
-      <a class="galerie-card" href="#sandstorm-feu" style="display:block;text-decoration:none;color:inherit;">
-        <div class="galerie-card-color" style="background:#FF4500;"></div>
-        <img class="galerie-card-img" src="../images/dustin-kolor/01.jpg" alt="Sandstorm" onerror="this.style.display='none'">
-        <div class="galerie-card-info"><div class="galerie-card-num-visible">01</div><div class="galerie-card-title-visible">Sandstorm</div></div>
-        <div class="galerie-card-overlay"><div class="galerie-card-num">01</div><div class="galerie-card-title">Sandstorm</div></div>
+      <a class="galerie-card" href="#sandstorm-feu">
+        <div class="galerie-card-photo"><img src="../images/dustin-kolor/01.jpg" alt="Sandstorm"></div>
+        <div class="galerie-card-caption">
+          <span class="galerie-card-num">01</span>
+          <span class="galerie-card-title">Sandstorm</span>
+          <span class="galerie-card-acheter">Commander →</span>
+        </div>
       </a>
-      <a class="galerie-card" href="#flying-car-orange" style="display:block;text-decoration:none;color:inherit;">
-        <div class="galerie-card-color" style="background:#FF6600;"></div>
-        <img class="galerie-card-img" src="../images/dustin-kolor/02.jpg" alt="Flying Car" onerror="this.style.display='none'">
-        <div class="galerie-card-info"><div class="galerie-card-num-visible">02</div><div class="galerie-card-title-visible">Flying Car</div></div>
-        <div class="galerie-card-overlay"><div class="galerie-card-num">02</div><div class="galerie-card-title">Flying Car</div></div>
+      <a class="galerie-card" href="#flying-car-orange">
+        <div class="galerie-card-photo"><img src="../images/dustin-kolor/02.jpg" alt="Flying Car"></div>
+        <div class="galerie-card-caption">
+          <span class="galerie-card-num">02</span>
+          <span class="galerie-card-title">Flying Car</span>
+          <span class="galerie-card-acheter">Commander →</span>
+        </div>
       </a>
-      <a class="galerie-card" href="#after-the-storm-vert" style="display:block;text-decoration:none;color:inherit;">
-        <div class="galerie-card-color" style="background:#7BC043;"></div>
-        <img class="galerie-card-img" src="../images/dustin-kolor/03.jpg" alt="After the Storm" onerror="this.style.display='none'">
-        <div class="galerie-card-info"><div class="galerie-card-num-visible">03</div><div class="galerie-card-title-visible">After the Storm</div></div>
-        <div class="galerie-card-overlay"><div class="galerie-card-num">03</div><div class="galerie-card-title">After the Storm</div></div>
+      <a class="galerie-card" href="#after-the-storm-vert">
+        <div class="galerie-card-photo"><img src="../images/dustin-kolor/03.jpg" alt="After the Storm"></div>
+        <div class="galerie-card-caption">
+          <span class="galerie-card-num">03</span>
+          <span class="galerie-card-title">After the Storm</span>
+          <span class="galerie-card-acheter">Commander →</span>
+        </div>
       </a>
-      <a class="galerie-card" href="#lost-in-the-dust-rouge" style="display:block;text-decoration:none;color:inherit;">
-        <div class="galerie-card-color" style="background:#CC0000;"></div>
-        <img class="galerie-card-img" src="../images/dustin-kolor/04.jpg" alt="Lost in the Dust" onerror="this.style.display='none'">
-        <div class="galerie-card-info"><div class="galerie-card-num-visible">04</div><div class="galerie-card-title-visible">Lost in the Dust</div></div>
-        <div class="galerie-card-overlay"><div class="galerie-card-num">04</div><div class="galerie-card-title">Lost in the Dust</div></div>
+      <a class="galerie-card" href="#lost-in-the-dust-rouge">
+        <div class="galerie-card-photo"><img src="../images/dustin-kolor/04.jpg" alt="Lost in the Dust"></div>
+        <div class="galerie-card-caption">
+          <span class="galerie-card-num">04</span>
+          <span class="galerie-card-title">Lost in the Dust</span>
+          <span class="galerie-card-acheter">Commander →</span>
+        </div>
       </a>
-      <a class="galerie-card" href="#camp-lighters-jaune" style="display:block;text-decoration:none;color:inherit;">
-        <div class="galerie-card-color" style="background:#FFB300;"></div>
-        <img class="galerie-card-img" src="../images/dustin-kolor/05.jpg" alt="Camp Lighters" onerror="this.style.display='none'">
-        <div class="galerie-card-info"><div class="galerie-card-num-visible">05</div><div class="galerie-card-title-visible">Camp Lighters</div></div>
-        <div class="galerie-card-overlay"><div class="galerie-card-num">05</div><div class="galerie-card-title">Camp Lighters</div></div>
+      <a class="galerie-card" href="#camp-lighters-jaune">
+        <div class="galerie-card-photo"><img src="../images/dustin-kolor/05.jpg" alt="Camp Lighters"></div>
+        <div class="galerie-card-caption">
+          <span class="galerie-card-num">05</span>
+          <span class="galerie-card-title">Camp Lighters</span>
+          <span class="galerie-card-acheter">Commander →</span>
+        </div>
       </a>
-      <a class="galerie-card" href="#im-here-bleu" style="display:block;text-decoration:none;color:inherit;">
-        <div class="galerie-card-color" style="background:#0066CC;"></div>
-        <img class="galerie-card-img" src="../images/dustin-kolor/06.jpg" alt="I'm Here" onerror="this.style.display='none'">
-        <div class="galerie-card-info"><div class="galerie-card-num-visible">06</div><div class="galerie-card-title-visible">I'm Here</div></div>
-        <div class="galerie-card-overlay"><div class="galerie-card-num">06</div><div class="galerie-card-title">I'm Here</div></div>
+      <a class="galerie-card" href="#im-here-bleu">
+        <div class="galerie-card-photo"><img src="../images/dustin-kolor/06.jpg" alt="I'm Here"></div>
+        <div class="galerie-card-caption">
+          <span class="galerie-card-num">06</span>
+          <span class="galerie-card-title">I'm Here</span>
+          <span class="galerie-card-acheter">Commander →</span>
+        </div>
       </a>
-      <a class="galerie-card" href="#umbrellas-way-rose" style="display:block;text-decoration:none;color:inherit;">
-        <div class="galerie-card-color" style="background:#FF1493;"></div>
-        <img class="galerie-card-img" src="../images/dustin-kolor/08.jpg" alt="Umbrellas Way" onerror="this.style.display='none'">
-        <div class="galerie-card-info"><div class="galerie-card-num-visible">08</div><div class="galerie-card-title-visible">Umbrellas Way</div></div>
-        <div class="galerie-card-overlay"><div class="galerie-card-num">08</div><div class="galerie-card-title">Umbrellas Way</div></div>
+      <a class="galerie-card" href="#umbrellas-way-rose">
+        <div class="galerie-card-photo"><img src="../images/dustin-kolor/08.jpg" alt="Umbrellas Way"></div>
+        <div class="galerie-card-caption">
+          <span class="galerie-card-num">08</span>
+          <span class="galerie-card-title">Umbrellas Way</span>
+          <span class="galerie-card-acheter">Commander →</span>
+        </div>
       </a>
     </div>
   </div>
@@ -1034,16 +1202,235 @@
     </div>
   </div>
 
-  <!-- ── VUE : PRODUIT ── -->
-  <div id="view-produit" class="dk-view">
-    <a class="produit-back" href="#view-galerie">← Retour</a>
-    <div class="produit-layout">
-      <div class="produit-image-zone">
-        <div class="produit-color-bg" id="produitColorBg"></div>
-        <img id="produitImg" src="" alt="" style="position:relative;z-index:1;">
+  <!-- ── PAGES PRODUIT (7 statiques, CSS :target) ── -->
+
+  <div id="sandstorm-feu" class="dk-view product-page">
+    <a class="pp-back" href="#view-galerie">← La Série</a>
+    <div class="pp-layout">
+      <div class="pp-photo"><img src="../images/dustin-kolor/01.jpg" alt="Sandstorm"></div>
+      <div class="pp-panel">
+        <div class="pp-num">01</div>
+        <div class="pp-title">Sandstorm</div>
+        <div class="pp-location">Désert du Nevada — Août 2016</div>
+        <div class="pp-sep"></div>
+        <div class="pp-format-label">Tirages disponibles</div>
+        <div class="pp-format">
+          <div class="pp-format-row">
+            <div><div class="pp-format-name">Dibond aluminium</div><div class="pp-format-desc">60 × 90 cm · Signé, numéroté<br>Museum Etching 350g · 10 exemplaires</div></div>
+            <div class="pp-format-prix"><div class="pp-prix-val">820€</div><div class="pp-stock">10 / 10 disponibles</div></div>
+          </div>
+        </div>
+        <div class="pp-format">
+          <div class="pp-format-row">
+            <div><div class="pp-format-name">A4 Hahnemühle Fine Art</div><div class="pp-format-desc">21 × 29,7 cm · Signé, numéroté<br>Papier Fine Art · 30 exemplaires</div></div>
+            <div class="pp-format-prix"><div class="pp-prix-val">180€</div><div class="pp-stock">30 / 30 disponibles</div></div>
+          </div>
+        </div>
+        <button class="pp-buy" onclick="startCheckout('sandstorm-feu')">Commander un tirage</button>
+        <div class="pp-inclus">
+          <div class="pp-inclus-label">Inclus</div>
+          <div class="pp-inclus-item">Tirage signé et numéroté par Bertrand Basset</div>
+          <div class="pp-inclus-item">Certificat d'authenticité</div>
+          <div class="pp-inclus-item">Livraison soigneusement emballée</div>
+        </div>
       </div>
-      <div class="produit-panel" id="produitPanel">
-        <!-- Rempli par JS -->
+    </div>
+  </div>
+
+  <div id="flying-car-orange" class="dk-view product-page">
+    <a class="pp-back" href="#view-galerie">← La Série</a>
+    <div class="pp-layout">
+      <div class="pp-photo"><img src="../images/dustin-kolor/02.jpg" alt="Flying Car"></div>
+      <div class="pp-panel">
+        <div class="pp-num">02</div>
+        <div class="pp-title">Flying Car</div>
+        <div class="pp-location">Désert du Nevada — Août 2016</div>
+        <div class="pp-sep"></div>
+        <div class="pp-format-label">Tirages disponibles</div>
+        <div class="pp-format">
+          <div class="pp-format-row">
+            <div><div class="pp-format-name">Dibond aluminium</div><div class="pp-format-desc">70 × 124 cm · Signé, numéroté<br>Museum Etching 350g · 10 exemplaires</div></div>
+            <div class="pp-format-prix"><div class="pp-prix-val">1290€</div><div class="pp-stock">10 / 10 disponibles</div></div>
+          </div>
+        </div>
+        <div class="pp-format">
+          <div class="pp-format-row">
+            <div><div class="pp-format-name">A4 Hahnemühle Fine Art</div><div class="pp-format-desc">21 × 29,7 cm · Signé, numéroté<br>Papier Fine Art · 30 exemplaires</div></div>
+            <div class="pp-format-prix"><div class="pp-prix-val">180€</div><div class="pp-stock">30 / 30 disponibles</div></div>
+          </div>
+        </div>
+        <button class="pp-buy" onclick="startCheckout('flying-car-orange')">Commander un tirage</button>
+        <div class="pp-inclus">
+          <div class="pp-inclus-label">Inclus</div>
+          <div class="pp-inclus-item">Tirage signé et numéroté par Bertrand Basset</div>
+          <div class="pp-inclus-item">Certificat d'authenticité</div>
+          <div class="pp-inclus-item">Livraison soigneusement emballée</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="after-the-storm-vert" class="dk-view product-page">
+    <a class="pp-back" href="#view-galerie">← La Série</a>
+    <div class="pp-layout">
+      <div class="pp-photo"><img src="../images/dustin-kolor/03.jpg" alt="After the Storm"></div>
+      <div class="pp-panel">
+        <div class="pp-num">03</div>
+        <div class="pp-title">After the Storm</div>
+        <div class="pp-location">Désert du Nevada — Août 2016</div>
+        <div class="pp-sep"></div>
+        <div class="pp-format-label">Tirages disponibles</div>
+        <div class="pp-format">
+          <div class="pp-format-row">
+            <div><div class="pp-format-name">Dibond aluminium</div><div class="pp-format-desc">70 × 124 cm · Signé, numéroté<br>Museum Etching 350g · 10 exemplaires</div></div>
+            <div class="pp-format-prix"><div class="pp-prix-val">1290€</div><div class="pp-stock">10 / 10 disponibles</div></div>
+          </div>
+        </div>
+        <div class="pp-format">
+          <div class="pp-format-row">
+            <div><div class="pp-format-name">A4 Hahnemühle Fine Art</div><div class="pp-format-desc">21 × 29,7 cm · Signé, numéroté<br>Papier Fine Art · 30 exemplaires</div></div>
+            <div class="pp-format-prix"><div class="pp-prix-val">180€</div><div class="pp-stock">30 / 30 disponibles</div></div>
+          </div>
+        </div>
+        <button class="pp-buy" onclick="startCheckout('after-the-storm-vert')">Commander un tirage</button>
+        <div class="pp-inclus">
+          <div class="pp-inclus-label">Inclus</div>
+          <div class="pp-inclus-item">Tirage signé et numéroté par Bertrand Basset</div>
+          <div class="pp-inclus-item">Certificat d'authenticité</div>
+          <div class="pp-inclus-item">Livraison soigneusement emballée</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="lost-in-the-dust-rouge" class="dk-view product-page">
+    <a class="pp-back" href="#view-galerie">← La Série</a>
+    <div class="pp-layout">
+      <div class="pp-photo"><img src="../images/dustin-kolor/04.jpg" alt="Lost in the Dust"></div>
+      <div class="pp-panel">
+        <div class="pp-num">04</div>
+        <div class="pp-title">Lost in the Dust</div>
+        <div class="pp-location">Désert du Nevada — Août 2016</div>
+        <div class="pp-sep"></div>
+        <div class="pp-format-label">Tirages disponibles</div>
+        <div class="pp-format">
+          <div class="pp-format-row">
+            <div><div class="pp-format-name">Dibond aluminium</div><div class="pp-format-desc">60 × 80 cm · Signé, numéroté<br>Museum Etching 350g · 10 exemplaires</div></div>
+            <div class="pp-format-prix"><div class="pp-prix-val">890€</div><div class="pp-stock">10 / 10 disponibles</div></div>
+          </div>
+        </div>
+        <div class="pp-format">
+          <div class="pp-format-row">
+            <div><div class="pp-format-name">A4 Hahnemühle Fine Art</div><div class="pp-format-desc">21 × 29,7 cm · Signé, numéroté<br>Papier Fine Art · 30 exemplaires</div></div>
+            <div class="pp-format-prix"><div class="pp-prix-val">180€</div><div class="pp-stock">30 / 30 disponibles</div></div>
+          </div>
+        </div>
+        <button class="pp-buy" onclick="startCheckout('lost-in-the-dust-rouge')">Commander un tirage</button>
+        <div class="pp-inclus">
+          <div class="pp-inclus-label">Inclus</div>
+          <div class="pp-inclus-item">Tirage signé et numéroté par Bertrand Basset</div>
+          <div class="pp-inclus-item">Certificat d'authenticité</div>
+          <div class="pp-inclus-item">Livraison soigneusement emballée</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="camp-lighters-jaune" class="dk-view product-page">
+    <a class="pp-back" href="#view-galerie">← La Série</a>
+    <div class="pp-layout">
+      <div class="pp-photo"><img src="../images/dustin-kolor/05.jpg" alt="Camp Lighters"></div>
+      <div class="pp-panel">
+        <div class="pp-num">05</div>
+        <div class="pp-title">Camp Lighters</div>
+        <div class="pp-location">Désert du Nevada — Août 2016</div>
+        <div class="pp-sep"></div>
+        <div class="pp-format-label">Tirages disponibles</div>
+        <div class="pp-format">
+          <div class="pp-format-row">
+            <div><div class="pp-format-name">Dibond aluminium</div><div class="pp-format-desc">40 × 100 cm · Signé, numéroté<br>Museum Etching 350g · 10 exemplaires</div></div>
+            <div class="pp-format-prix"><div class="pp-prix-val">790€</div><div class="pp-stock">10 / 10 disponibles</div></div>
+          </div>
+        </div>
+        <div class="pp-format">
+          <div class="pp-format-row">
+            <div><div class="pp-format-name">A4 Hahnemühle Fine Art</div><div class="pp-format-desc">21 × 29,7 cm · Signé, numéroté<br>Papier Fine Art · 30 exemplaires</div></div>
+            <div class="pp-format-prix"><div class="pp-prix-val">180€</div><div class="pp-stock">30 / 30 disponibles</div></div>
+          </div>
+        </div>
+        <button class="pp-buy" onclick="startCheckout('camp-lighters-jaune')">Commander un tirage</button>
+        <div class="pp-inclus">
+          <div class="pp-inclus-label">Inclus</div>
+          <div class="pp-inclus-item">Tirage signé et numéroté par Bertrand Basset</div>
+          <div class="pp-inclus-item">Certificat d'authenticité</div>
+          <div class="pp-inclus-item">Livraison soigneusement emballée</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="im-here-bleu" class="dk-view product-page">
+    <a class="pp-back" href="#view-galerie">← La Série</a>
+    <div class="pp-layout">
+      <div class="pp-photo"><img src="../images/dustin-kolor/06.jpg" alt="I'm Here"></div>
+      <div class="pp-panel">
+        <div class="pp-num">06</div>
+        <div class="pp-title">I'm Here</div>
+        <div class="pp-location">Désert du Nevada — Août 2016</div>
+        <div class="pp-sep"></div>
+        <div class="pp-format-label">Tirages disponibles</div>
+        <div class="pp-format">
+          <div class="pp-format-row">
+            <div><div class="pp-format-name">Dibond aluminium</div><div class="pp-format-desc">60 × 80 cm · Signé, numéroté<br>Museum Etching 350g · 10 exemplaires</div></div>
+            <div class="pp-format-prix"><div class="pp-prix-val">890€</div><div class="pp-stock">10 / 10 disponibles</div></div>
+          </div>
+        </div>
+        <div class="pp-format">
+          <div class="pp-format-row">
+            <div><div class="pp-format-name">A4 Hahnemühle Fine Art</div><div class="pp-format-desc">21 × 29,7 cm · Signé, numéroté<br>Papier Fine Art · 30 exemplaires</div></div>
+            <div class="pp-format-prix"><div class="pp-prix-val">180€</div><div class="pp-stock">30 / 30 disponibles</div></div>
+          </div>
+        </div>
+        <button class="pp-buy" onclick="startCheckout('im-here-bleu')">Commander un tirage</button>
+        <div class="pp-inclus">
+          <div class="pp-inclus-label">Inclus</div>
+          <div class="pp-inclus-item">Tirage signé et numéroté par Bertrand Basset</div>
+          <div class="pp-inclus-item">Certificat d'authenticité</div>
+          <div class="pp-inclus-item">Livraison soigneusement emballée</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="umbrellas-way-rose" class="dk-view product-page">
+    <a class="pp-back" href="#view-galerie">← La Série</a>
+    <div class="pp-layout">
+      <div class="pp-photo"><img src="../images/dustin-kolor/08.jpg" alt="Umbrellas Way"></div>
+      <div class="pp-panel">
+        <div class="pp-num">08</div>
+        <div class="pp-title">Umbrellas Way</div>
+        <div class="pp-location">Désert du Nevada — Août 2016</div>
+        <div class="pp-sep"></div>
+        <div class="pp-format-label">Tirages disponibles</div>
+        <div class="pp-format">
+          <div class="pp-format-row">
+            <div><div class="pp-format-name">Dibond aluminium</div><div class="pp-format-desc">60 × 80 cm · Signé, numéroté<br>Museum Etching 350g · 10 exemplaires</div></div>
+            <div class="pp-format-prix"><div class="pp-prix-val">890€</div><div class="pp-stock">10 / 10 disponibles</div></div>
+          </div>
+        </div>
+        <div class="pp-format">
+          <div class="pp-format-row">
+            <div><div class="pp-format-name">A4 Hahnemühle Fine Art</div><div class="pp-format-desc">21 × 29,7 cm · Signé, numéroté<br>Papier Fine Art · 30 exemplaires</div></div>
+            <div class="pp-format-prix"><div class="pp-prix-val">180€</div><div class="pp-stock">30 / 30 disponibles</div></div>
+          </div>
+        </div>
+        <button class="pp-buy" onclick="startCheckout('umbrellas-way-rose')">Commander un tirage</button>
+        <div class="pp-inclus">
+          <div class="pp-inclus-label">Inclus</div>
+          <div class="pp-inclus-item">Tirage signé et numéroté par Bertrand Basset</div>
+          <div class="pp-inclus-item">Certificat d'authenticité</div>
+          <div class="pp-inclus-item">Livraison soigneusement emballée</div>
+        </div>
       </div>
     </div>
   </div>
