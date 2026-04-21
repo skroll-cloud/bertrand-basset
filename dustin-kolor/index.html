@@ -130,7 +130,7 @@
     .hero-image-side {
       position: relative;
       overflow: hidden;
-      background: #e8e8e8;
+      min-height: calc(100vh - var(--header-h));
     }
 
     .hero-bg {
@@ -140,7 +140,9 @@
       background-size: cover;
       background-position: center;
       transition: opacity 0.6s ease;
+      opacity: 0;
     }
+    .hero-bg.loaded { opacity: 1; }
 
     /* Color swatches strip — shown when no image */
     .hero-bg-fallback {
@@ -152,7 +154,6 @@
 
     .hero-swatch {
       flex: 1;
-      opacity: 0.85;
     }
 
     /* Right: text side */
@@ -850,9 +851,17 @@
   <div id="view-hero" class="dk-view active">
     <div class="hero-full">
       <!-- Image / couleurs côté gauche -->
-      <div class="hero-image-side" style="background:#f0f0f0;">
-        <div class="hero-bg" id="heroBg" style="display:none;"></div>
-        <div class="hero-bg-fallback" id="heroSwatches" style="position:absolute;inset:0;display:flex;flex-direction:column;"></div>
+      <div class="hero-image-side">
+        <div class="hero-bg" id="heroBg"></div>
+        <div class="hero-bg-fallback" id="heroSwatches">
+          <div class="hero-swatch" style="background:#FF4500;"></div>
+          <div class="hero-swatch" style="background:#FF6600;"></div>
+          <div class="hero-swatch" style="background:#7BC043;"></div>
+          <div class="hero-swatch" style="background:#CC0000;"></div>
+          <div class="hero-swatch" style="background:#FFB300;"></div>
+          <div class="hero-swatch" style="background:#0066CC;"></div>
+          <div class="hero-swatch" style="background:#FF1493;"></div>
+        </div>
       </div>
       <!-- Texte côté droit -->
       <div class="hero-content">
@@ -1397,21 +1406,11 @@
     initSupabase();
     routeFromHash();
 
-    // Hero bg : caché par défaut, visible seulement si l'image existe
+    // Hero bg : si l'image se charge, on l'affiche par-dessus les swatches
     const heroBg = document.getElementById('heroBg');
-    heroBg.style.display = 'none';
     const testImg = new Image();
-    testImg.onload = () => { heroBg.style.display = 'block'; heroBg.style.zIndex = '2'; };
-    testImg.onerror = () => { /* swatches visibles par défaut */ };
+    testImg.onload = () => { heroBg.classList.add('loaded'); };
     testImg.src = IMG_BASE + '01-sandstorm.jpg';
-
-    // Hero swatches fallback (7 couleurs des œuvres)
-    const swatchesEl = document.getElementById('heroSwatches');
-    if (swatchesEl) {
-      swatchesEl.innerHTML = WORKS.map(w =>
-        `<div class="hero-swatch" style="background:${w.couleur};"></div>`
-      ).join('');
-    }
   });
   </script>
 </body>
