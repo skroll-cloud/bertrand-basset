@@ -136,13 +136,10 @@
     .hero-bg {
       position: absolute;
       inset: 0;
-      background-image: url('../images/dustin-kolor/01-sandstorm.jpg');
+      background-image: url('../images/dustin-kolor/01.jpg');
       background-size: cover;
       background-position: center;
-      transition: opacity 0.6s ease;
-      opacity: 0;
     }
-    .hero-bg.loaded { opacity: 1; }
 
     /* Color swatches strip — shown when no image */
     .hero-bg-fallback {
@@ -850,18 +847,9 @@
   <!-- ── VUE : HERO ── -->
   <div id="view-hero" class="dk-view active">
     <div class="hero-full">
-      <!-- Image / couleurs côté gauche -->
+      <!-- Photo côté gauche -->
       <div class="hero-image-side">
-        <div class="hero-bg" id="heroBg"></div>
-        <div class="hero-bg-fallback" id="heroSwatches">
-          <div class="hero-swatch" style="background:#FF4500;"></div>
-          <div class="hero-swatch" style="background:#FF6600;"></div>
-          <div class="hero-swatch" style="background:#7BC043;"></div>
-          <div class="hero-swatch" style="background:#CC0000;"></div>
-          <div class="hero-swatch" style="background:#FFB300;"></div>
-          <div class="hero-swatch" style="background:#0066CC;"></div>
-          <div class="hero-swatch" style="background:#FF1493;"></div>
-        </div>
+        <div class="hero-bg"></div>
       </div>
       <!-- Texte côté droit -->
       <div class="hero-content">
@@ -876,8 +864,8 @@
         </p>
         <p class="hero-signature">Dust'in Kolor n'est pas une série colorisée. C'est ce que j'ai vu.</p>
         <div class="hero-cta-group">
-          <a class="btn-primary" href="#galerie" onclick="event.preventDefault();showView('galerie')">Découvrir la série</a>
-          <a class="btn-ghost" href="#boutique" onclick="event.preventDefault();showView('boutique')">Voir les tirages</a>
+          <a id="btn-galerie" class="btn-primary" href="#galerie">Découvrir la série</a>
+          <a id="btn-boutique" class="btn-ghost" href="#boutique">Voir les tirages</a>
         </div>
       </div>
     </div>
@@ -941,7 +929,7 @@
 
   <div class="dk-toast" id="toast"></div>
 
-  <script>
+  <script data-cfasync="false">
   /* ═══════════════════════════════════════════════════════
      CONFIG — remplacer par vos valeurs Supabase + Stripe
   ═══════════════════════════════════════════════════════ */
@@ -959,49 +947,49 @@
       titre: 'Sandstorm', couleur: '#FF4500',
       format_dibond: '60×90 cm', achat_ttc: 214.30,
       prix: [820, 960, 1100], prix_a4: 180,
-      img: '01-sandstorm.jpg'
+      img: '01.jpg'
     },
     {
       num: '02', slug: 'flying-car-orange',
       titre: 'Flying Car', couleur: '#FF6600',
       format_dibond: '70×124 cm', achat_ttc: 317.60,
       prix: [1290, 1490, 1690], prix_a4: 180,
-      img: '02-flying-car.jpg'
+      img: '02.jpg'
     },
     {
       num: '03', slug: 'after-the-storm-vert',
       titre: 'After the Storm', couleur: '#7BC043',
       format_dibond: '70×124 cm', achat_ttc: 317.60,
       prix: [1290, 1490, 1690], prix_a4: 180,
-      img: '03-after-the-storm.jpg'
+      img: '03.jpg'
     },
     {
       num: '04', slug: 'lost-in-the-dust-rouge',
       titre: 'Lost in the Dust', couleur: '#CC0000',
       format_dibond: '60×80 cm', achat_ttc: 186.00,
       prix: [890, 1020, 1150], prix_a4: 180,
-      img: '04-lost-in-the-dust.jpg'
+      img: '04.jpg'
     },
     {
       num: '05', slug: 'camp-lighters-jaune',
       titre: 'Camp Lighters', couleur: '#FFB300',
       format_dibond: '40×100 cm', achat_ttc: 188.00,
       prix: [790, 910, 1030], prix_a4: 180,
-      img: '05-camp-lighters.jpg'
+      img: '05.jpg'
     },
     {
       num: '06', slug: 'im-here-bleu',
       titre: "I'm Here", couleur: '#0066CC',
       format_dibond: '60×80 cm', achat_ttc: 186.00,
       prix: [890, 1020, 1150], prix_a4: 180,
-      img: '06-im-here.jpg'
+      img: '06.jpg'
     },
     {
       num: '08', slug: 'umbrellas-way-rose',
       titre: 'Umbrellas Way', couleur: '#FF1493',
       format_dibond: '60×80 cm', achat_ttc: 186.00,
       prix: [890, 1020, 1150], prix_a4: 180,
-      img: '08-umbrellas-way.jpg'
+      img: '08.jpg'
     }
   ];
 
@@ -1406,11 +1394,9 @@
     initSupabase();
     routeFromHash();
 
-    // Hero bg : si l'image se charge, on l'affiche par-dessus les swatches
-    const heroBg = document.getElementById('heroBg');
-    const testImg = new Image();
-    testImg.onload = () => { heroBg.classList.add('loaded'); };
-    testImg.src = IMG_BASE + '01-sandstorm.jpg';
+    // Boutons hero
+    document.getElementById('btn-galerie').addEventListener('click', function(e) { e.preventDefault(); showView('galerie'); });
+    document.getElementById('btn-boutique').addEventListener('click', function(e) { e.preventDefault(); showView('boutique'); });
   });
   </script>
 </body>
