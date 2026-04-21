@@ -361,152 +361,6 @@
       width: 100%;
       transition: color 0.2s;
     }
-    .pp-back:hover { color: var(--text); }
-
-    .pp-layout {
-      display: grid;
-      grid-template-columns: 1fr 420px;
-      min-height: calc(100vh - var(--header-h) - 45px);
-    }
-
-    .pp-photo {
-      background: #f5f5f5;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-    }
-
-    .pp-photo img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      display: block;
-    }
-
-    .pp-panel {
-      padding: 3rem 2.5rem;
-      border-left: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-      overflow-y: auto;
-    }
-
-    .pp-num {
-      font-size: 0.5rem;
-      letter-spacing: 0.2em;
-      color: var(--dim);
-      text-transform: uppercase;
-      margin-bottom: 0.6rem;
-    }
-
-    .pp-title {
-      font-size: 1.8rem;
-      font-weight: 300;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      line-height: 1;
-      margin-bottom: 0.5rem;
-    }
-
-    .pp-location {
-      font-size: 0.55rem;
-      letter-spacing: 0.14em;
-      color: var(--dim);
-      text-transform: uppercase;
-      margin-bottom: 2.5rem;
-    }
-
-    .pp-sep { height: 1px; background: var(--border); margin: 2rem 0; }
-
-    .pp-format-label {
-      font-size: 0.48rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--dim);
-      margin-bottom: 1.2rem;
-    }
-
-    .pp-format {
-      padding: 1.2rem 0;
-      border-bottom: 1px solid var(--border);
-    }
-    .pp-format:first-of-type { border-top: 1px solid var(--border); }
-
-    .pp-format-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-    }
-
-    .pp-format-name {
-      font-size: 0.72rem;
-      font-weight: 400;
-      letter-spacing: 0.04em;
-      margin-bottom: 0.3rem;
-    }
-
-    .pp-format-desc {
-      font-size: 0.52rem;
-      letter-spacing: 0.06em;
-      color: var(--gray);
-      line-height: 1.6;
-    }
-
-    .pp-format-prix {
-      text-align: right;
-    }
-
-    .pp-prix-val {
-      font-size: 1rem;
-      font-weight: 400;
-      letter-spacing: 0.04em;
-    }
-
-    .pp-stock {
-      font-size: 0.45rem;
-      letter-spacing: 0.08em;
-      color: var(--dim);
-      margin-top: 0.2rem;
-    }
-
-    .pp-buy {
-      margin-top: 2rem;
-      padding: 1rem 0;
-      background: var(--text);
-      color: var(--bg);
-      font-family: var(--font);
-      font-size: 0.58rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      border: none;
-      cursor: pointer;
-      width: 100%;
-      transition: opacity 0.2s;
-    }
-    .pp-buy:hover { opacity: 0.75; }
-
-    .pp-inclus {
-      margin-top: 2rem;
-    }
-
-    .pp-inclus-label {
-      font-size: 0.45rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--dim);
-      margin-bottom: 0.8rem;
-    }
-
-    .pp-inclus-item {
-      font-size: 0.58rem;
-      letter-spacing: 0.04em;
-      color: var(--gray);
-      padding: 0.4rem 0;
-      border-bottom: 1px solid var(--border);
-    }
-
     /* ── BOUTIQUE ────────────────────────────────────────── */
     #view-boutique { background: var(--bg); }
 
@@ -631,246 +485,180 @@
       border-radius: 50%;
     }
 
-    /* ── PAGE PRODUIT ────────────────────────────────────── */
-    #view-produit { min-height: 100vh; background: var(--bg); }
+    /* ── PAGES PRODUIT — sidebar gauche + photo plein écran ── */
 
-    .produit-back {
-      padding: 1rem 2rem;
-      font-size: 0.58rem;
-      letter-spacing: 0.1em;
-      color: var(--gray);
-      text-transform: uppercase;
-      cursor: pointer;
+    /* layout: sidebar fixe gauche + photo plein écran droite */
+    .product-page { background: var(--bg); }
+    .product-page:target { display: flex; flex-direction: column; }
+    body:has(.product-page:target) #view-hero,
+    body:has(.product-page:target) #view-galerie,
+    body:has(.product-page:target) #view-boutique { display: none; }
+
+    .pp-inner {
+      display: flex;
+      height: calc(100vh - var(--header-h));
+    }
+
+    .pp-sidebar {
+      width: 280px;
+      flex-shrink: 0;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .pp-back {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      padding: 1.2rem 1.5rem;
+      font-size: 0.5rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gray);
+      text-decoration: none;
       border-bottom: 1px solid var(--border);
       transition: color 0.2s;
+      flex-shrink: 0;
     }
-    .produit-back:hover { color: var(--text); }
+    .pp-back:hover { color: var(--text); }
 
-    .produit-layout {
-      display: grid;
-      grid-template-columns: 1fr 380px;
-      min-height: calc(100vh - var(--header-h) - 50px);
+    .pp-info {
+      padding: 2rem 1.5rem 1.5rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
     }
 
-    .produit-image-zone {
-      position: relative;
+    .pp-num {
+      font-size: 0.48rem;
+      letter-spacing: 0.2em;
+      color: var(--dim);
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .pp-title {
+      font-size: 1.3rem;
+      font-weight: 300;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      line-height: 1.1;
+      margin-bottom: 0.4rem;
+    }
+
+    .pp-location {
+      font-size: 0.5rem;
+      letter-spacing: 0.12em;
+      color: var(--dim);
+      text-transform: uppercase;
+      margin-bottom: 2rem;
+    }
+
+    .pp-sep { height: 1px; background: var(--border); margin: 1.5rem 0; }
+
+    .pp-format-label {
+      font-size: 0.45rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--dim);
+      margin-bottom: 1rem;
+    }
+
+    .pp-format {
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .pp-format:first-of-type { border-top: 1px solid var(--border); }
+
+    .pp-format-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+
+    .pp-format-name {
+      font-size: 0.65rem;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.25rem;
+    }
+
+    .pp-format-desc {
+      font-size: 0.48rem;
+      letter-spacing: 0.05em;
+      color: var(--gray);
+      line-height: 1.6;
+    }
+
+    .pp-format-prix { text-align: right; flex-shrink: 0; }
+
+    .pp-prix-val {
+      font-size: 0.9rem;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+    }
+
+    .pp-stock {
+      font-size: 0.42rem;
+      letter-spacing: 0.06em;
+      color: var(--dim);
+      margin-top: 0.15rem;
+    }
+
+    .pp-buy {
+      width: 100%;
+      margin-top: auto;
+      padding: 0.9rem 1rem;
+      background: var(--text);
+      color: var(--bg);
+      font-family: var(--font);
+      font-size: 0.52rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      margin-top: 1.5rem;
+    }
+    .pp-buy:hover { opacity: 0.75; }
+    .pp-buy:disabled { opacity: 0.3; cursor: not-allowed; }
+
+    .pp-inclus {
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .pp-inclus-label {
+      font-size: 0.42rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--dim);
+      margin-bottom: 0.7rem;
+    }
+
+    .pp-inclus-item {
+      font-size: 0.52rem;
+      letter-spacing: 0.03em;
+      color: var(--gray);
+      padding: 0.3rem 0;
+      border-bottom: 1px solid var(--border);
+      line-height: 1.4;
+    }
+
+    .pp-photo-area {
+      flex: 1;
       overflow: hidden;
-      background: #f0f0f0;
+      background: #f5f5f5;
     }
 
-    .produit-image-zone img {
+    .pp-photo-area img {
       width: 100%;
       height: 100%;
       object-fit: contain;
       display: block;
-    }
-
-    .produit-color-bg {
-      position: absolute;
-      inset: 0;
-      opacity: 0.12;
-    }
-
-    .produit-panel {
-      padding: 3rem 2.5rem;
-      border-left: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      gap: 2rem;
-      overflow-y: auto;
-    }
-
-    .produit-num {
-      font-size: 0.52rem;
-      letter-spacing: 0.2em;
-      color: var(--dim);
-    }
-
-    .produit-titre {
-      font-size: 1.6rem;
-      font-weight: 300;
-      letter-spacing: 0.04em;
-      margin-bottom: 0.3rem;
-    }
-
-    .produit-couleur {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      font-size: 0.58rem;
-      letter-spacing: 0.1em;
-      color: var(--gray);
-    }
-
-    .produit-couleur-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-
-    .produit-sep { height: 1px; background: var(--border); }
-
-    .format-selector { display: flex; flex-direction: column; gap: 0.8rem; }
-
-    .format-label {
-      font-size: 0.52rem;
-      letter-spacing: 0.15em;
-      color: var(--gray);
-      text-transform: uppercase;
-    }
-
-    .format-options { display: flex; flex-direction: column; gap: 0.5rem; }
-
-    .format-option {
-      padding: 1rem 1.2rem;
-      border: 1px solid var(--border);
-      cursor: pointer;
-      transition: border-color 0.2s;
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 0.5rem;
-      align-items: start;
-    }
-    .format-option:hover { border-color: var(--gray); }
-    .format-option.selected { border-color: var(--text); }
-
-    .format-option-name {
-      font-size: 0.7rem;
-      font-weight: 400;
-      letter-spacing: 0.04em;
-      margin-bottom: 0.3rem;
-    }
-
-    .format-option-desc {
-      font-size: 0.52rem;
-      letter-spacing: 0.05em;
-      color: var(--gray);
-      line-height: 1.5;
-    }
-
-    .format-option-price-zone { text-align: right; }
-
-    .format-option-price {
-      font-size: 1.1rem;
-      font-weight: 300;
-      letter-spacing: 0.02em;
-    }
-
-    .format-option-tiers {
-      font-size: 0.48rem;
-      letter-spacing: 0.05em;
-      color: var(--dim);
-      line-height: 1.6;
-      margin-top: 0.2rem;
-    }
-
-    .format-option-stock {
-      display: inline-block;
-      font-size: 0.48rem;
-      letter-spacing: 0.05em;
-      padding: 0.15rem 0.4rem;
-      border-radius: 2px;
-      margin-top: 0.4rem;
-    }
-
-    .produit-prix-zone { display: flex; flex-direction: column; gap: 0.4rem; }
-
-    .produit-prix-label {
-      font-size: 0.52rem;
-      letter-spacing: 0.15em;
-      color: var(--gray);
-      text-transform: uppercase;
-    }
-
-    .produit-prix-montant {
-      font-size: 2rem;
-      font-weight: 300;
-      letter-spacing: 0.02em;
-    }
-
-    .produit-prix-baremes {
-      font-size: 0.52rem;
-      color: var(--gray);
-      line-height: 1.8;
-      letter-spacing: 0.05em;
-    }
-
-    .produit-prix-current-tier {
-      display: inline-block;
-      padding: 0.1rem 0.4rem;
-      border-radius: 2px;
-      font-size: 0.48rem;
-      background: #efefef;
-      color: var(--gray);
-      margin-left: 0.4rem;
-      vertical-align: middle;
-    }
-
-    .produit-stock-zone {
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-      font-size: 0.58rem;
-      letter-spacing: 0.05em;
-    }
-
-    .produit-stock-bar {
-      flex: 1;
-      height: 2px;
-      background: var(--border);
-      border-radius: 1px;
-      overflow: hidden;
-    }
-
-    .produit-stock-fill {
-      height: 100%;
-      border-radius: 1px;
-      transition: width 0.5s ease;
-    }
-
-    .produit-stock-text { color: var(--gray); white-space: nowrap; }
-
-    .btn-acheter {
-      width: 100%;
-      padding: 1rem;
-      background: var(--text);
-      color: var(--bg);
-      font-size: 0.7rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      font-weight: 400;
-      transition: opacity 0.2s;
-    }
-    .btn-acheter:hover { opacity: 0.8; }
-    .btn-acheter:disabled { opacity: 0.3; cursor: not-allowed; }
-
-    .produit-inclus { display: flex; flex-direction: column; gap: 0.5rem; }
-
-    .produit-inclus-label {
-      font-size: 0.52rem;
-      letter-spacing: 0.15em;
-      color: var(--dim);
-      text-transform: uppercase;
-    }
-
-    .produit-inclus-item {
-      font-size: 0.58rem;
-      letter-spacing: 0.04em;
-      color: var(--gray);
-      padding-left: 0.8rem;
-      position: relative;
-      line-height: 1.5;
-    }
-
-    .produit-inclus-item::before {
-      content: '—';
-      position: absolute;
-      left: 0;
-      color: var(--border);
     }
 
     /* ── PAGE MERCI ──────────────────────────────────────── */
@@ -1205,10 +993,10 @@
   <!-- ── PAGES PRODUIT (7 statiques, CSS :target) ── -->
 
   <div id="sandstorm-feu" class="dk-view product-page">
-    <a class="pp-back" href="#view-galerie">← La Série</a>
-    <div class="pp-layout">
-      <div class="pp-photo"><img src="../images/dustin-kolor/01.jpg" alt="Sandstorm"></div>
-      <div class="pp-panel">
+  <div class="pp-inner">
+    <div class="pp-sidebar">
+      <a class="pp-back" href="#view-galerie">← La Série</a>
+      <div class="pp-info">
         <div class="pp-num">01</div>
         <div class="pp-title">Sandstorm</div>
         <div class="pp-location">Désert du Nevada — Août 2016</div>
@@ -1216,7 +1004,7 @@
         <div class="pp-format-label">Tirages disponibles</div>
         <div class="pp-format">
           <div class="pp-format-row">
-            <div><div class="pp-format-name">Dibond aluminium</div><div class="pp-format-desc">60 × 90 cm · Signé, numéroté<br>Museum Etching 350g · 10 exemplaires</div></div>
+            <div><div class="pp-format-name">Dibond aluminium</div><div class="pp-format-desc">60 × 90 cm · Signé, numéroté<br>Museum Etching · 10 exemplaires</div></div>
             <div class="pp-format-prix"><div class="pp-prix-val">820€</div><div class="pp-stock">10 / 10 disponibles</div></div>
           </div>
         </div>
@@ -1226,7 +1014,7 @@
             <div class="pp-format-prix"><div class="pp-prix-val">180€</div><div class="pp-stock">30 / 30 disponibles</div></div>
           </div>
         </div>
-        <button class="pp-buy" onclick="startCheckout('sandstorm-feu')">Commander un tirage</button>
+        <button class="pp-buy" onclick="startCheckout('sandstorm-feu',this)">Commander un tirage</button>
         <div class="pp-inclus">
           <div class="pp-inclus-label">Inclus</div>
           <div class="pp-inclus-item">Tirage signé et numéroté par Bertrand Basset</div>
@@ -1235,13 +1023,15 @@
         </div>
       </div>
     </div>
+    <div class="pp-photo-area"><img src="../images/dustin-kolor/01.jpg" alt="Sandstorm"></div>
   </div>
+  </div><!-- /sandstorm-feu -->
 
   <div id="flying-car-orange" class="dk-view product-page">
-    <a class="pp-back" href="#view-galerie">← La Série</a>
-    <div class="pp-layout">
-      <div class="pp-photo"><img src="../images/dustin-kolor/02.jpg" alt="Flying Car"></div>
-      <div class="pp-panel">
+  <div class="pp-inner">
+    <div class="pp-sidebar">
+      <a class="pp-back" href="#view-galerie">← La Série</a>
+      <div class="pp-info">
         <div class="pp-num">02</div>
         <div class="pp-title">Flying Car</div>
         <div class="pp-location">Désert du Nevada — Août 2016</div>
@@ -1249,7 +1039,7 @@
         <div class="pp-format-label">Tirages disponibles</div>
         <div class="pp-format">
           <div class="pp-format-row">
-            <div><div class="pp-format-name">Dibond aluminium</div><div class="pp-format-desc">70 × 124 cm · Signé, numéroté<br>Museum Etching 350g · 10 exemplaires</div></div>
+            <div><div class="pp-format-name">Dibond aluminium</div><div class="pp-format-desc">70 × 124 cm · Signé, numéroté<br>Museum Etching · 10 exemplaires</div></div>
             <div class="pp-format-prix"><div class="pp-prix-val">1290€</div><div class="pp-stock">10 / 10 disponibles</div></div>
           </div>
         </div>
@@ -1259,7 +1049,7 @@
             <div class="pp-format-prix"><div class="pp-prix-val">180€</div><div class="pp-stock">30 / 30 disponibles</div></div>
           </div>
         </div>
-        <button class="pp-buy" onclick="startCheckout('flying-car-orange')">Commander un tirage</button>
+        <button class="pp-buy" onclick="startCheckout('flying-car-orange',this)">Commander un tirage</button>
         <div class="pp-inclus">
           <div class="pp-inclus-label">Inclus</div>
           <div class="pp-inclus-item">Tirage signé et numéroté par Bertrand Basset</div>
@@ -1268,13 +1058,15 @@
         </div>
       </div>
     </div>
+    <div class="pp-photo-area"><img src="../images/dustin-kolor/02.jpg" alt="Flying Car"></div>
   </div>
+  </div><!-- /flying-car-orange -->
 
   <div id="after-the-storm-vert" class="dk-view product-page">
-    <a class="pp-back" href="#view-galerie">← La Série</a>
-    <div class="pp-layout">
-      <div class="pp-photo"><img src="../images/dustin-kolor/03.jpg" alt="After the Storm"></div>
-      <div class="pp-panel">
+  <div class="pp-inner">
+    <div class="pp-sidebar">
+      <a class="pp-back" href="#view-galerie">← La Série</a>
+      <div class="pp-info">
         <div class="pp-num">03</div>
         <div class="pp-title">After the Storm</div>
         <div class="pp-location">Désert du Nevada — Août 2016</div>
@@ -1282,7 +1074,7 @@
         <div class="pp-format-label">Tirages disponibles</div>
         <div class="pp-format">
           <div class="pp-format-row">
-            <div><div class="pp-format-name">Dibond aluminium</div><div class="pp-format-desc">70 × 124 cm · Signé, numéroté<br>Museum Etching 350g · 10 exemplaires</div></div>
+            <div><div class="pp-format-name">Dibond aluminium</div><div class="pp-format-desc">70 × 124 cm · Signé, numéroté<br>Museum Etching · 10 exemplaires</div></div>
             <div class="pp-format-prix"><div class="pp-prix-val">1290€</div><div class="pp-stock">10 / 10 disponibles</div></div>
           </div>
         </div>
@@ -1292,7 +1084,7 @@
             <div class="pp-format-prix"><div class="pp-prix-val">180€</div><div class="pp-stock">30 / 30 disponibles</div></div>
           </div>
         </div>
-        <button class="pp-buy" onclick="startCheckout('after-the-storm-vert')">Commander un tirage</button>
+        <button class="pp-buy" onclick="startCheckout('after-the-storm-vert',this)">Commander un tirage</button>
         <div class="pp-inclus">
           <div class="pp-inclus-label">Inclus</div>
           <div class="pp-inclus-item">Tirage signé et numéroté par Bertrand Basset</div>
@@ -1301,13 +1093,15 @@
         </div>
       </div>
     </div>
+    <div class="pp-photo-area"><img src="../images/dustin-kolor/03.jpg" alt="After the Storm"></div>
   </div>
+  </div><!-- /after-the-storm-vert -->
 
   <div id="lost-in-the-dust-rouge" class="dk-view product-page">
-    <a class="pp-back" href="#view-galerie">← La Série</a>
-    <div class="pp-layout">
-      <div class="pp-photo"><img src="../images/dustin-kolor/04.jpg" alt="Lost in the Dust"></div>
-      <div class="pp-panel">
+  <div class="pp-inner">
+    <div class="pp-sidebar">
+      <a class="pp-back" href="#view-galerie">← La Série</a>
+      <div class="pp-info">
         <div class="pp-num">04</div>
         <div class="pp-title">Lost in the Dust</div>
         <div class="pp-location">Désert du Nevada — Août 2016</div>
@@ -1315,7 +1109,7 @@
         <div class="pp-format-label">Tirages disponibles</div>
         <div class="pp-format">
           <div class="pp-format-row">
-            <div><div class="pp-format-name">Dibond aluminium</div><div class="pp-format-desc">60 × 80 cm · Signé, numéroté<br>Museum Etching 350g · 10 exemplaires</div></div>
+            <div><div class="pp-format-name">Dibond aluminium</div><div class="pp-format-desc">60 × 80 cm · Signé, numéroté<br>Museum Etching · 10 exemplaires</div></div>
             <div class="pp-format-prix"><div class="pp-prix-val">890€</div><div class="pp-stock">10 / 10 disponibles</div></div>
           </div>
         </div>
@@ -1325,7 +1119,7 @@
             <div class="pp-format-prix"><div class="pp-prix-val">180€</div><div class="pp-stock">30 / 30 disponibles</div></div>
           </div>
         </div>
-        <button class="pp-buy" onclick="startCheckout('lost-in-the-dust-rouge')">Commander un tirage</button>
+        <button class="pp-buy" onclick="startCheckout('lost-in-the-dust-rouge',this)">Commander un tirage</button>
         <div class="pp-inclus">
           <div class="pp-inclus-label">Inclus</div>
           <div class="pp-inclus-item">Tirage signé et numéroté par Bertrand Basset</div>
@@ -1334,13 +1128,15 @@
         </div>
       </div>
     </div>
+    <div class="pp-photo-area"><img src="../images/dustin-kolor/04.jpg" alt="Lost in the Dust"></div>
   </div>
+  </div><!-- /lost-in-the-dust-rouge -->
 
   <div id="camp-lighters-jaune" class="dk-view product-page">
-    <a class="pp-back" href="#view-galerie">← La Série</a>
-    <div class="pp-layout">
-      <div class="pp-photo"><img src="../images/dustin-kolor/05.jpg" alt="Camp Lighters"></div>
-      <div class="pp-panel">
+  <div class="pp-inner">
+    <div class="pp-sidebar">
+      <a class="pp-back" href="#view-galerie">← La Série</a>
+      <div class="pp-info">
         <div class="pp-num">05</div>
         <div class="pp-title">Camp Lighters</div>
         <div class="pp-location">Désert du Nevada — Août 2016</div>
@@ -1348,7 +1144,7 @@
         <div class="pp-format-label">Tirages disponibles</div>
         <div class="pp-format">
           <div class="pp-format-row">
-            <div><div class="pp-format-name">Dibond aluminium</div><div class="pp-format-desc">40 × 100 cm · Signé, numéroté<br>Museum Etching 350g · 10 exemplaires</div></div>
+            <div><div class="pp-format-name">Dibond aluminium</div><div class="pp-format-desc">40 × 100 cm · Signé, numéroté<br>Museum Etching · 10 exemplaires</div></div>
             <div class="pp-format-prix"><div class="pp-prix-val">790€</div><div class="pp-stock">10 / 10 disponibles</div></div>
           </div>
         </div>
@@ -1358,7 +1154,7 @@
             <div class="pp-format-prix"><div class="pp-prix-val">180€</div><div class="pp-stock">30 / 30 disponibles</div></div>
           </div>
         </div>
-        <button class="pp-buy" onclick="startCheckout('camp-lighters-jaune')">Commander un tirage</button>
+        <button class="pp-buy" onclick="startCheckout('camp-lighters-jaune',this)">Commander un tirage</button>
         <div class="pp-inclus">
           <div class="pp-inclus-label">Inclus</div>
           <div class="pp-inclus-item">Tirage signé et numéroté par Bertrand Basset</div>
@@ -1367,13 +1163,15 @@
         </div>
       </div>
     </div>
+    <div class="pp-photo-area"><img src="../images/dustin-kolor/05.jpg" alt="Camp Lighters"></div>
   </div>
+  </div><!-- /camp-lighters-jaune -->
 
   <div id="im-here-bleu" class="dk-view product-page">
-    <a class="pp-back" href="#view-galerie">← La Série</a>
-    <div class="pp-layout">
-      <div class="pp-photo"><img src="../images/dustin-kolor/06.jpg" alt="I'm Here"></div>
-      <div class="pp-panel">
+  <div class="pp-inner">
+    <div class="pp-sidebar">
+      <a class="pp-back" href="#view-galerie">← La Série</a>
+      <div class="pp-info">
         <div class="pp-num">06</div>
         <div class="pp-title">I'm Here</div>
         <div class="pp-location">Désert du Nevada — Août 2016</div>
@@ -1381,7 +1179,7 @@
         <div class="pp-format-label">Tirages disponibles</div>
         <div class="pp-format">
           <div class="pp-format-row">
-            <div><div class="pp-format-name">Dibond aluminium</div><div class="pp-format-desc">60 × 80 cm · Signé, numéroté<br>Museum Etching 350g · 10 exemplaires</div></div>
+            <div><div class="pp-format-name">Dibond aluminium</div><div class="pp-format-desc">60 × 80 cm · Signé, numéroté<br>Museum Etching · 10 exemplaires</div></div>
             <div class="pp-format-prix"><div class="pp-prix-val">890€</div><div class="pp-stock">10 / 10 disponibles</div></div>
           </div>
         </div>
@@ -1391,7 +1189,7 @@
             <div class="pp-format-prix"><div class="pp-prix-val">180€</div><div class="pp-stock">30 / 30 disponibles</div></div>
           </div>
         </div>
-        <button class="pp-buy" onclick="startCheckout('im-here-bleu')">Commander un tirage</button>
+        <button class="pp-buy" onclick="startCheckout('im-here-bleu',this)">Commander un tirage</button>
         <div class="pp-inclus">
           <div class="pp-inclus-label">Inclus</div>
           <div class="pp-inclus-item">Tirage signé et numéroté par Bertrand Basset</div>
@@ -1400,13 +1198,15 @@
         </div>
       </div>
     </div>
+    <div class="pp-photo-area"><img src="../images/dustin-kolor/06.jpg" alt="I'm Here"></div>
   </div>
+  </div><!-- /im-here-bleu -->
 
   <div id="umbrellas-way-rose" class="dk-view product-page">
-    <a class="pp-back" href="#view-galerie">← La Série</a>
-    <div class="pp-layout">
-      <div class="pp-photo"><img src="../images/dustin-kolor/08.jpg" alt="Umbrellas Way"></div>
-      <div class="pp-panel">
+  <div class="pp-inner">
+    <div class="pp-sidebar">
+      <a class="pp-back" href="#view-galerie">← La Série</a>
+      <div class="pp-info">
         <div class="pp-num">08</div>
         <div class="pp-title">Umbrellas Way</div>
         <div class="pp-location">Désert du Nevada — Août 2016</div>
@@ -1414,7 +1214,7 @@
         <div class="pp-format-label">Tirages disponibles</div>
         <div class="pp-format">
           <div class="pp-format-row">
-            <div><div class="pp-format-name">Dibond aluminium</div><div class="pp-format-desc">60 × 80 cm · Signé, numéroté<br>Museum Etching 350g · 10 exemplaires</div></div>
+            <div><div class="pp-format-name">Dibond aluminium</div><div class="pp-format-desc">60 × 80 cm · Signé, numéroté<br>Museum Etching · 10 exemplaires</div></div>
             <div class="pp-format-prix"><div class="pp-prix-val">890€</div><div class="pp-stock">10 / 10 disponibles</div></div>
           </div>
         </div>
@@ -1424,7 +1224,7 @@
             <div class="pp-format-prix"><div class="pp-prix-val">180€</div><div class="pp-stock">30 / 30 disponibles</div></div>
           </div>
         </div>
-        <button class="pp-buy" onclick="startCheckout('umbrellas-way-rose')">Commander un tirage</button>
+        <button class="pp-buy" onclick="startCheckout('umbrellas-way-rose',this)">Commander un tirage</button>
         <div class="pp-inclus">
           <div class="pp-inclus-label">Inclus</div>
           <div class="pp-inclus-item">Tirage signé et numéroté par Bertrand Basset</div>
@@ -1433,7 +1233,9 @@
         </div>
       </div>
     </div>
+    <div class="pp-photo-area"><img src="../images/dustin-kolor/08.jpg" alt="Umbrellas Way"></div>
   </div>
+  </div><!-- /umbrellas-way-rose -->
 
   <!-- ── VUE : MERCI ── -->
   <div id="view-merci" class="dk-view">
@@ -1824,8 +1626,8 @@
   /* ═══════════════════════════════════════════════════════
      CHECKOUT STRIPE
   ═══════════════════════════════════════════════════════ */
-  async function startCheckout(slug) {
-    const btn = document.getElementById('acheterBtn');
+  async function startCheckout(slug, btn) {
+    if (!btn) btn = document.getElementById('acheterBtn');
     if (!btn || btn.disabled) return;
 
     const w = WORKS.find(x => x.slug === slug);
