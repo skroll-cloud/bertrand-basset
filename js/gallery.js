@@ -43,7 +43,7 @@ const MENU_CONFIG = [
     "id": "dustin-kolor-link",
     "name": "DUST'IN KOLOR",
     "type": "external",
-    "url": "dustin-kolor/",
+    "url": "dustin-kolor/index.html",
     "highlight": true
   },
   {
