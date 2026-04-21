@@ -4,11 +4,12 @@
  */
 
 const SITE_CONFIG = {
-    name:         "Bertrand Basset",
-    email:        "bertrand.basset@gmail.com",
-    defaultLang:  "fr",
-    showLanding:  true,
-    landingImage: "images/accueil/accueil-01.jpg",
+    name:           "Bertrand Basset",
+    email:          "bertrand.basset@gmail.com",
+    defaultLang:    "fr",
+    showLanding:    true,
+    landingImage:   "images/accueil/accueil-01.jpg",
+    defaultGallery: "portrait",
     social: {
         instagram: "https://www.instagram.com/bassetbertrand/",
         facebook:  "https://www.facebook.com/BertrandBassetPhotographie",
@@ -736,7 +737,7 @@ class Portfolio {
     }
 
     openHomeGallery() {
-        this.openGallery('portrait');
+        this.openGallery(SITE_CONFIG.defaultGallery || 'portrait');
     }
 
     toggleAutoplay() {

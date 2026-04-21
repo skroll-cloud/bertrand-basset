@@ -1636,9 +1636,10 @@ const DEFAULT_STATE = {
     settings: {
         siteName:     'Bertrand Basset',
         email:        'bertrand.basset@gmail.com',
-        defaultLang:  'fr',
-        showLanding:  true,
-        landingImage: 'images/accueil/accueil-01.jpg',
+        defaultLang:    'fr',
+        showLanding:    true,
+        landingImage:   'images/accueil/accueil-01.jpg',
+        defaultGallery: 'portrait',
         instagram: 'https://www.instagram.com/bassetbertrand/',
         facebook:  'https://www.facebook.com/BertrandBassetPhotographie',
         linkedin:  'https://www.linkedin.com/in/bertrand-basset/'
@@ -3148,6 +3149,22 @@ function renderSettingsEditor() {
         </div>
     </div>
 
+    <div class="section-title"><span>Galerie ouverte au d\u00e9marrage</span></div>
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:0.75rem;margin-bottom:1rem;">
+        <label class="field-label" style="margin-bottom:0.4rem;display:block;">Galerie affich\u00e9e par d\u00e9faut apr\u00e8s "Entrer"</label>
+        <select style="background:var(--surface);border:1px solid var(--border2);color:var(--text);padding:0.35rem 0.5rem;font-size:0.72rem;font-family:inherit;border-radius:2px;width:100%;"
+            onchange="state.settings.defaultGallery=this.value;saveState()">
+            ${Object.entries(state.galleriesConfig)
+                .filter(([id]) => id !== 'accueil')
+                .map(([id, g]) => {
+                    const label = getGalleryMeta(id).label || g.title || id;
+                    const sel = (s.defaultGallery || 'portrait') === id ? 'selected' : '';
+                    return `<option value="${id}" ${sel}>${label}</option>`;
+                }).join('')}
+        </select>
+        <p style="font-size:0.6rem;color:#555;margin-top:0.4rem;">C'est la premi\u00e8re galerie visible quand le visiteur entre sur le site.</p>
+    </div>
+
     <div class="section-title"><span>Langue</span></div>
     <div style="background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:0.75rem;margin-bottom:1rem;">
         <label class="field-label">Langue par d\u00e9faut du site</label>
@@ -4207,11 +4224,12 @@ function generateGalleryJS() {
  */
 
 const SITE_CONFIG = {
-    name:         ${JSON.stringify(s.siteName)},
-    email:        ${JSON.stringify(s.email||'bertrand.basset@gmail.com')},
-    defaultLang:  ${JSON.stringify(s.defaultLang||'en')},
-    showLanding:  ${s.showLanding!==false?'true':'false'},
-    landingImage: ${JSON.stringify(s.landingImage||'images/landing/landing-01.jpg')},
+    name:           ${JSON.stringify(s.siteName)},
+    email:          ${JSON.stringify(s.email||'bertrand.basset@gmail.com')},
+    defaultLang:    ${JSON.stringify(s.defaultLang||'en')},
+    showLanding:    ${s.showLanding!==false?'true':'false'},
+    landingImage:   ${JSON.stringify(s.landingImage||'images/landing/landing-01.jpg')},
+    defaultGallery: ${JSON.stringify(s.defaultGallery||'portrait')},
     social: {
         instagram: ${JSON.stringify(s.instagram)},
         facebook:  ${JSON.stringify(s.facebook)},
