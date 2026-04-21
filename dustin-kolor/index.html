@@ -130,7 +130,7 @@
     .hero-image-side {
       position: relative;
       overflow: hidden;
-      background: #111;
+      background: #e8e8e8;
     }
 
     .hero-bg {
@@ -850,9 +850,9 @@
   <div id="view-hero" class="dk-view active">
     <div class="hero-full">
       <!-- Image / couleurs côté gauche -->
-      <div class="hero-image-side">
-        <div class="hero-bg" id="heroBg"></div>
-        <div class="hero-bg-fallback" id="heroSwatches"></div>
+      <div class="hero-image-side" style="background:#f0f0f0;">
+        <div class="hero-bg" id="heroBg" style="display:none;"></div>
+        <div class="hero-bg-fallback" id="heroSwatches" style="position:absolute;inset:0;display:flex;flex-direction:column;"></div>
       </div>
       <!-- Texte côté droit -->
       <div class="hero-content">
@@ -867,8 +867,8 @@
         </p>
         <p class="hero-signature">Dust'in Kolor n'est pas une série colorisée. C'est ce que j'ai vu.</p>
         <div class="hero-cta-group">
-          <button class="btn-primary" onclick="showView('galerie')">Découvrir la série</button>
-          <button class="btn-ghost" onclick="showView('boutique')">Voir les tirages</button>
+          <a class="btn-primary" href="#galerie" onclick="event.preventDefault();showView('galerie')">Découvrir la série</a>
+          <a class="btn-ghost" href="#boutique" onclick="event.preventDefault();showView('boutique')">Voir les tirages</a>
         </div>
       </div>
     </div>
