@@ -1,6 +1,6 @@
 /**
  * gallery-images.js
- * Généré par Admin V4 — 19/04/2026 00:20:54
+ * Généré par Admin V4 — 21/04/2026
  * Ne pas éditer manuellement.
  */
 const GALLERY_IMAGES = {
@@ -29,4 +29,13 @@ const GALLERY_IMAGES = {
         { "filename": "stmelar-5.jpg" },
         { "filename": "stmelar-6.jpg" }
     ],
+    "dustin-kolor": [
+        { "filename": "01.jpg" },
+        { "filename": "02.jpg" },
+        { "filename": "03.jpg" },
+        { "filename": "04.jpg" },
+        { "filename": "05.jpg" },
+        { "filename": "06.jpg" },
+        { "filename": "08.jpg" }
+    ]
 };

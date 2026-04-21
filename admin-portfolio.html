@@ -1655,14 +1655,17 @@ const DEFAULT_STATE = {
             ctaEn: "Artist, artisan, executive, employee, self-employed professional \u2014 let's organise a portrait session.",
             ctaFr: "Acteur, Artisan, Dirigeant, Artiste, profession lib\u00E9rale \u2014 organisons une s\u00E9ance portrait.",
             images: [
-                { filename: '02.jpg',                       captionEn: '', captionFr: '', btnLabel: 'En savoir plus', btnUrl: '' },
-                { filename: 'conversation-02.jpg',          captionEn: '', captionFr: '', btnLabel: 'En savoir plus', btnUrl: '' },
-                { filename: 'Imane02@bertrandbasset 2.jpg', captionEn: '', captionFr: '', btnLabel: 'En savoir plus', btnUrl: '' },
-                { filename: 'JF.jpg',                       captionEn: '', captionFr: '', btnLabel: 'En savoir plus', btnUrl: '' },
-                { filename: 'L1020630.jpg',                 captionEn: '', captionFr: '', btnLabel: 'En savoir plus', btnUrl: '' },
-                { filename: 'placeholder-8.jpg',            captionEn: '', captionFr: '', btnLabel: 'En savoir plus', btnUrl: '' },
-                { filename: 'portrait-01.jpg',              captionEn: '', captionFr: '', btnLabel: 'En savoir plus', btnUrl: '' },
-                { filename: 'portrait-02.jpg',              captionEn: '', captionFr: '', btnLabel: 'En savoir plus', btnUrl: '' }
+                { filename: '02.jpg',                        captionEn: '', captionFr: '', btnLabel: 'En savoir plus', btnUrl: '' },
+                { filename: 'L1060508.jpg',                  captionEn: '', captionFr: '', btnLabel: 'En savoir plus', btnUrl: '' },
+                { filename: 'conversation-02.jpg',           captionEn: '', captionFr: '', btnLabel: 'En savoir plus', btnUrl: '' },
+                { filename: 'Atelier_Plougasnou.jpg',        captionEn: '', captionFr: '', btnLabel: 'En savoir plus', btnUrl: '' },
+                { filename: 'Imane02@bertrandbasset 2.jpg',  captionEn: '', captionFr: '', btnLabel: 'En savoir plus', btnUrl: '' },
+                { filename: 'portrait-02.jpg',               captionEn: '', captionFr: '', btnLabel: 'En savoir plus', btnUrl: '' },
+                { filename: 'JF.jpg',                        captionEn: '', captionFr: '', btnLabel: 'En savoir plus', btnUrl: '' },
+                { filename: 'portrait-01.jpg',               captionEn: '', captionFr: '', btnLabel: 'En savoir plus', btnUrl: '' },
+                { filename: 'Atelier_Plougasnou 1.jpg',      captionEn: '', captionFr: '', btnLabel: 'En savoir plus', btnUrl: '' },
+                { filename: 'L1020630.jpg',                  captionEn: '', captionFr: '', btnLabel: 'En savoir plus', btnUrl: '' },
+                { filename: 'placeholder-8.jpg',             captionEn: '', captionFr: '', btnLabel: 'En savoir plus', btnUrl: '' }
             ]
         },
         'conversation-s-': {
@@ -1723,6 +1726,21 @@ const DEFAULT_STATE = {
                 { filename: 'accueil-01.jpg',        label: 'Portrait',  link_gallery: 'portrait', captionEn: '', captionFr: '' },
                 { filename: 'Atelier_Plougasnou.jpg', label: 'Immersion', link_gallery: 'studio',   captionEn: '', captionFr: '' },
                 { filename: '1.jpg',                  label: 'Cinema',    link_gallery: 'cinema',   captionEn: '', captionFr: '' }
+            ]
+        },
+        'dustin-kolor': {
+            title: "Dust'in Kolor", path: 'images/dustin-kolor',
+            autoplay: false, autoplayDelay: 5,
+            descFr: "En pleine temp\u00eate de sable, la visibilit\u00e9 est proche de z\u00e9ro. On enfile les goggles — ces lunettes de protection aux verres color\u00e9s. Le monde devient rouge, bleu, orange, rose\u2026\n\nDust'in Kolor n'est pas une s\u00e9rie coloris\u00e9e. C'est ce que j'ai vu.\n\nD\u00e9sert du Nevada — Burning Man, ao\u00fbt 2016.",
+            descEn: "In the middle of a sandstorm, visibility drops to near zero. You put on goggles — those coloured protective lenses. The world turns red, blue, orange, pink\u2026\n\nDust'in Kolor is not a colorised series. It's what I saw.\n\nNevada Desert — Burning Man, August 2016.",
+            images: [
+                { filename: '01.jpg', captionFr: 'Sandstorm',      captionEn: 'Sandstorm',      btnLabel: '', btnUrl: '' },
+                { filename: '02.jpg', captionFr: 'Flying Car',      captionEn: 'Flying Car',      btnLabel: '', btnUrl: '' },
+                { filename: '03.jpg', captionFr: 'After the Storm', captionEn: 'After the Storm', btnLabel: '', btnUrl: '' },
+                { filename: '04.jpg', captionFr: 'Lost in the Dust',captionEn: 'Lost in the Dust',btnLabel: '', btnUrl: '' },
+                { filename: '05.jpg', captionFr: 'Camp Lighters',   captionEn: 'Camp Lighters',  btnLabel: '', btnUrl: '' },
+                { filename: '06.jpg', captionFr: "I'm Here",        captionEn: "I'm Here",        btnLabel: '', btnUrl: '' },
+                { filename: '08.jpg', captionFr: 'Umbrellas Way',   captionEn: 'Umbrellas Way',   btnLabel: '', btnUrl: '' }
             ]
         },
         gem: {
@@ -1813,6 +1831,23 @@ function loadState() {
                 return item;
             });
 
+            /* ── Patch portrait: ensure all images are present ── */
+            {
+                const pCfg = state.galleriesConfig.portrait;
+                const defP = JSON.parse(JSON.stringify(DEFAULT_STATE)).galleriesConfig.portrait;
+                if (pCfg && defP) {
+                    const existing = new Set((pCfg.images||[]).map(i => i.filename));
+                    defP.images.forEach(img => {
+                        if (!existing.has(img.filename)) pCfg.images.push(img);
+                    });
+                }
+            }
+
+            /* ── Patch dustin-kolor: inject if missing ── */
+            if (!state.galleriesConfig['dustin-kolor']) {
+                state.galleriesConfig['dustin-kolor'] = JSON.parse(JSON.stringify(DEFAULT_STATE)).galleriesConfig['dustin-kolor'];
+            }
+
             /* ── Patch accueil: ensure Immersion image is present ── */
             const accueilImgs = state.galleriesConfig.accueil?.images || [];
             const hasImmersion = accueilImgs.some(img => img.link_gallery === 'studio');
@@ -1829,7 +1864,7 @@ function loadState() {
             }
 
             /* Restore custom GALLERY_META entries */
-            const builtIn = ['portrait','conversation-s-','studio','cinema','television','accueil'];
+            const builtIn = ['portrait','conversation-s-','studio','cinema','television','accueil','dustin-kolor'];
             Object.keys(state.galleriesConfig).forEach(id => {
                 if (!builtIn.includes(id) && !GALLERY_META[id]) {
                     const g = state.galleriesConfig[id];
@@ -1889,7 +1924,8 @@ const GALLERY_META = {
     studio:            { icon: '\uD83C\uDFA5', label: 'Immersion',      autoScan: true,  hasDesc: true,  hasCta: false },
     cinema:            { icon: '\uD83C\uDFAC', label: 'Cin\u00E9ma',    autoScan: false, hasDesc: false, hasCta: false, hidden: true },
     television:        { icon: '\uD83D\uDCFA', label: 'T\u00E9l\u00E9vision', autoScan: false, hasDesc: false, hasCta: false, hidden: true },
-    accueil:           { icon: '\uD83C\uDFE0', label: 'Accueil',        autoScan: false, hasDesc: false, hasCta: false, special: true }
+    accueil:           { icon: '\uD83C\uDFE0', label: 'Accueil',        autoScan: false, hasDesc: false, hasCta: false, special: true },
+    'dustin-kolor':    { icon: '\uD83C\uDFA8', label: "Dust'in Kolor", autoScan: false, hasDesc: true,  hasCta: false }
 };
 
 /* ═══════════════════════════════════════════════════════

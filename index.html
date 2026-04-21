@@ -14,7 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 
     <!-- Styles -->
-    <link rel="stylesheet" href="css/style.css?v=20260419">
+    <link rel="stylesheet" href="css/style.css?v=20260311">
 
     <!-- Open Graph -->
     <meta property="og:title" content="Bertrand Basset — Photographer & Filmmaker">
@@ -33,7 +33,7 @@
     <!-- LANDING PAGE -->
     <div class="landing" id="landing">
         <div class="landing-image">
-            <img src="images/accueil/accueil-01.jpg" alt="Photography by Bertrand Basset">
+            <img src="images/accueil/accueil-01.jpg" alt="Photography by Bertrand Basset" id="landingImg">
         </div>
         <div class="landing-content">
             <div class="brand-wrapper">
@@ -47,6 +47,34 @@
                     </div>
                 </div>
                 <button class="enter-btn" id="enterBtn">Enter</button>
+            </div>
+
+            <!-- Carrousel séries -->
+            <div class="landing-carousel" id="landingCarousel">
+                <div class="lc-slides" id="lcSlides">
+                    <div class="lc-slide active">
+                        <div class="lc-label">Portrait</div>
+                        <div class="lc-text">Acteur, artisan, dirigeant, artiste — organisons une séance portrait. Une rencontre d'abord, une photo ensuite.</div>
+                    </div>
+                    <div class="lc-slide">
+                        <div class="lc-label">Immersion</div>
+                        <div class="lc-text">Je me fonds dans un lieu, un collectif, un événement pour raconter avec une approche humaniste — les visages, les instants, les petits couac.</div>
+                    </div>
+                    <div class="lc-slide">
+                        <div class="lc-label">Conversation(s)</div>
+                        <div class="lc-text">Un peu plus qu'une photo — une rencontre, une conversation. On prend le temps, on discute, puis on cherche ensemble à capturer quelque chose d'intemporel.</div>
+                    </div>
+                    <div class="lc-slide">
+                        <div class="lc-label">Dust'in Kolor</div>
+                        <div class="lc-text">En pleine tempête de sable au désert du Nevada, les goggles de protection transforment le monde en rouge, bleu, orange, rose… Ce n'est pas une série colorisée. C'est ce que j'ai vu.</div>
+                    </div>
+                </div>
+                <div class="lc-nav">
+                    <button class="lc-dot active" onclick="lcGo(0)"></button>
+                    <button class="lc-dot" onclick="lcGo(1)"></button>
+                    <button class="lc-dot" onclick="lcGo(2)"></button>
+                    <button class="lc-dot" onclick="lcGo(3)"></button>
+                </div>
             </div>
         </div>
     </div>
@@ -130,7 +158,32 @@
     </div>
 
     <!-- Auto-generated image lists — run: node scan-galleries.js to refresh -->
-    <script src="js/gallery-images.js?v=20260419"></script>
-    <script src="js/gallery.js?v=20260419"></script>
+    <script src="js/gallery-images.js?v=20260311"></script>
+    <script src="js/gallery.js?v=20260311"></script>
+
+    <script>
+    /* ── Landing carousel ── */
+    let _lcIdx = 0;
+    let _lcTimer = null;
+    const LC_DELAY = 5000;
+
+    function lcGo(i) {
+        const slides = document.querySelectorAll('.lc-slide');
+        const dots   = document.querySelectorAll('.lc-dot');
+        if (!slides.length) return;
+        slides[_lcIdx].classList.remove('active');
+        dots[_lcIdx].classList.remove('active');
+        _lcIdx = (i + slides.length) % slides.length;
+        slides[_lcIdx].classList.add('active');
+        dots[_lcIdx].classList.add('active');
+        clearTimeout(_lcTimer);
+        _lcTimer = setTimeout(() => lcGo(_lcIdx + 1), LC_DELAY);
+    }
+
+    /* start auto-advance after landing is visible */
+    document.addEventListener('DOMContentLoaded', () => {
+        _lcTimer = setTimeout(() => lcGo(1), LC_DELAY);
+    });
+    </script>
 </body>
 </html>
