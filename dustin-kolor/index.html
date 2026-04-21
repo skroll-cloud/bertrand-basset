@@ -8,1726 +8,312 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-  <!-- Supabase JS -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:      #fafafa;
-      --text:    #0a0a0a;
-      --gray:    #666;
-      --dim:     #999;
-      --border:  #e0e0e0;
-      --font:    'IBM Plex Sans', sans-serif;
-      --header-h: 52px;
+      --black:      #0a0a0a;
+      --white:      #fafafa;
+      --gray:       #666;
+      --dim:        #999;
+      --border:     #e0e0e0;
+      --red:        #c41e1e;
+      --font:       'IBM Plex Sans', sans-serif;
     }
 
     html, body {
-      background: var(--bg);
-      color: var(--text);
+      height: 100%;
+      overflow: hidden;
       font-family: var(--font);
+      background: var(--white);
+      color: var(--black);
       font-weight: 300;
-      min-height: 100vh;
-      overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
     }
 
     a { color: inherit; text-decoration: none; }
     button { font-family: var(--font); cursor: pointer; border: none; background: none; }
 
-    /* ── HEADER ─────────────────────────────────────────── */
-    .dk-header {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      height: var(--header-h);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 1.5rem;
-      z-index: 100;
-      background: rgba(250,250,250,0.95);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .dk-header-brand {
-      display: flex;
-      align-items: center;
-      gap: 0.7rem;
-      font-size: 0.65rem;
-      letter-spacing: 0.12em;
-      font-weight: 400;
-      text-transform: uppercase;
-      color: var(--gray);
-    }
-
-    .dk-header-brand img { width: 16px; height: 16px; }
-
-    .dk-header-brand strong {
-      color: var(--text);
-      letter-spacing: 0.08em;
-    }
-
-    .dk-header-sep {
-      display: inline-block;
-      width: 1px;
-      height: 12px;
-      background: var(--border);
-      margin: 0 0.5rem;
-    }
-
-    .dk-header-expo {
-      font-size: 0.6rem;
-      letter-spacing: 0.15em;
-      color: var(--gray);
-      text-transform: uppercase;
-    }
-
-    .dk-header-right {
-      display: flex;
-      align-items: center;
-      gap: 1.2rem;
-      font-size: 0.6rem;
-      letter-spacing: 0.1em;
-    }
-
-    .dk-back-link {
-      color: var(--gray);
-      transition: color 0.2s;
-      text-transform: uppercase;
-    }
-    .dk-back-link:hover { color: var(--text); }
-
-    .dk-lang { color: var(--gray); }
-    .dk-lang a { transition: color 0.2s; }
-    .dk-lang a:hover, .dk-lang a.active { color: var(--text); }
-    .dk-lang span { margin: 0 0.25rem; color: var(--border); }
-
-    /* ── VIEWS ──────────────────────────────────────────── */
-    /* Hero visible par défaut */
-    #view-hero {
-      display: flex;
-      min-height: 100vh;
-      padding-top: var(--header-h);
-      flex-direction: column;
-    }
-    /* Autres vues cachées par défaut */
-    .dk-view:not(#view-hero) { display: none; padding-top: var(--header-h); min-height: 100vh; }
-
-    /* Navigation CSS :target — galerie et boutique fonctionnent sans JS */
-    #view-galerie:target,
-    #view-boutique:target { display: block; }
-
-    /* Vues gérées par JS (produit, merci) */
-    #view-produit.js-active,
-    #view-merci.js-active { display: block; }
-
-    /* Masquer le hero quand une autre vue est visible */
-    body:has(#view-galerie:target) #view-hero,
-    body:has(#view-boutique:target) #view-hero,
-    body:has(#view-produit.js-active) #view-hero,
-    body:has(#view-merci.js-active) #view-hero { display: none; }
-
-    .hero-full {
-      flex: 1;
+    /* ── LAYOUT ── */
+    .site {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      min-height: calc(100vh - var(--header-h));
-    }
-
-    /* Left: image side */
-    .hero-image-side {
-      position: relative;
+      grid-template-columns: 220px 1fr;
+      height: 100vh;
       overflow: hidden;
-      min-height: calc(100vh - var(--header-h));
     }
 
-    .hero-bg {
-      position: absolute;
-      inset: 0;
-      background-image: url('../images/dustin-kolor/04.jpg');
-      background-size: cover;
-      background-position: center;
-    }
-
-    /* Color swatches strip — shown when no image */
-    .hero-bg-fallback {
-      position: absolute;
-      inset: 0;
+    /* ── SIDEBAR ── */
+    .sidebar {
+      background: var(--white);
+      padding: 2rem 1.5rem;
       display: flex;
       flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+      border-right: 1px solid var(--border);
     }
 
-    .hero-swatch {
-      flex: 1;
-    }
-
-    /* Right: text side */
-    .hero-content {
+    .sidebar-brand {
       display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 4rem 3rem;
-      background: var(--bg);
-    }
-
-    .hero-label {
-      font-size: 0.55rem;
-      letter-spacing: 0.22em;
-      color: var(--dim);
-      text-transform: uppercase;
+      align-items: center;
+      gap: 0.6rem;
+      text-decoration: none;
+      color: var(--black);
       margin-bottom: 2rem;
     }
 
-    .hero-title {
-      font-size: clamp(2.4rem, 6vw, 5rem);
-      font-weight: 300;
+    .sidebar-logo { width: 24px; height: 24px; }
+
+    .sidebar-brand-name {
+      font-size: 0.8rem;
+      font-weight: 500;
       letter-spacing: 0.04em;
-      line-height: 1;
-      margin-bottom: 0.4em;
-    }
-
-    .hero-subtitle {
-      font-size: 0.6rem;
-      letter-spacing: 0.18em;
-      color: var(--gray);
       text-transform: uppercase;
-      margin-bottom: 3rem;
     }
 
-    .hero-quote {
-      font-size: clamp(0.8rem, 1.5vw, 0.95rem);
-      font-weight: 300;
-      line-height: 1.8;
-      color: #444;
-      margin-bottom: 0.8rem;
-      font-style: italic;
-      border-left: 2px solid var(--border);
-      padding-left: 1.2rem;
-    }
-
-    .hero-signature {
-      font-size: 0.6rem;
-      letter-spacing: 0.08em;
-      color: var(--dim);
-      margin-bottom: 3rem;
-      margin-left: calc(1.2rem + 2px);
-    }
-
-    .hero-cta-group {
-      display: flex;
-      gap: 0.8rem;
-      flex-wrap: wrap;
-    }
-
-    .btn-primary {
-      padding: 0.7rem 1.8rem;
-      border: 1px solid var(--text);
-      color: var(--text);
-      font-size: 0.6rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      transition: background 0.2s, color 0.2s;
-      background: var(--text);
-      color: var(--bg);
-    }
-    .btn-primary:hover { opacity: 0.8; }
-
-    .btn-ghost {
-      padding: 0.7rem 1.8rem;
-      border: 1px solid var(--border);
-      color: var(--gray);
-      font-size: 0.6rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      transition: border-color 0.2s, color 0.2s;
-    }
-    .btn-ghost:hover { border-color: var(--text); color: var(--text); }
-
-    /* ── GALERIE ─────────────────────────────────────────── */
-    #view-galerie { background: var(--bg); }
-
-    .section-header {
-      padding: 2.5rem 2rem 1.5rem;
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .section-title {
-      font-size: 0.58rem;
+    /* Série title */
+    .serie-label {
+      font-size: 0.55rem;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: var(--gray);
-    }
-
-    .section-count {
-      font-size: 0.58rem;
-      letter-spacing: 0.1em;
       color: var(--dim);
-    }
-
-    /* ── GALERIE ────────────────────────────────────────── */
-    .galerie-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 0;
-    }
-
-    .galerie-card {
-      display: block;
-      text-decoration: none;
-      color: inherit;
-      border-bottom: 1px solid var(--border);
-    }
-    .galerie-card:nth-child(odd) { border-right: 1px solid var(--border); }
-
-    .galerie-card-photo {
-      aspect-ratio: 3/2;
-      overflow: hidden;
-      background: #f5f5f5;
-    }
-
-    .galerie-card-photo img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-      transition: opacity 0.3s;
-    }
-    .galerie-card:hover .galerie-card-photo img { opacity: 0.88; }
-
-    .galerie-card-caption {
-      padding: 1rem 1.5rem 1.4rem;
-      display: flex;
-      align-items: baseline;
-      gap: 1rem;
-      border-top: 1px solid var(--border);
-    }
-
-    .galerie-card-num {
-      font-size: 0.48rem;
-      letter-spacing: 0.18em;
-      color: var(--dim);
-      text-transform: uppercase;
-      flex-shrink: 0;
-    }
-
-    .galerie-card-title {
-      font-size: 0.72rem;
-      font-weight: 300;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--text);
-    }
-
-    .galerie-card-acheter {
-      margin-left: auto;
-      font-size: 0.48rem;
-      letter-spacing: 0.12em;
-      color: var(--dim);
-      text-transform: uppercase;
-      border-bottom: 1px solid transparent;
-      transition: color 0.2s, border-color 0.2s;
-      flex-shrink: 0;
-    }
-    .galerie-card:hover .galerie-card-acheter {
-      color: var(--text);
-      border-bottom-color: var(--text);
-    }
-
-    /* ── PAGE PRODUIT (statique, 7 sections) ─────────────── */
-    .product-page { background: var(--bg); }
-    .product-page:target { display: block; }
-    body:has(.product-page:target) #view-hero,
-    body:has(.product-page:target) #view-galerie,
-    body:has(.product-page:target) #view-boutique { display: none; }
-
-    .pp-back {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 1rem 1.5rem;
-      font-size: 0.52rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--gray);
-      text-decoration: none;
-      border-bottom: 1px solid var(--border);
-      width: 100%;
-      transition: color 0.2s;
-    }
-    /* ── BOUTIQUE ────────────────────────────────────────── */
-    #view-boutique { background: var(--bg); }
-
-    .boutique-filters {
-      padding: 1.5rem 2rem;
-      display: flex;
-      gap: 0.5rem;
-      border-bottom: 1px solid var(--border);
-      flex-wrap: wrap;
-    }
-
-    .filter-btn {
-      padding: 0.4rem 1rem;
-      border: 1px solid var(--border);
-      color: var(--gray);
-      font-size: 0.58rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      transition: all 0.2s;
-    }
-    .filter-btn.active, .filter-btn:hover {
-      border-color: var(--text);
-      color: var(--text);
-    }
-
-    .boutique-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 1px;
-      background: var(--border);
-    }
-
-    .boutique-card {
-      background: var(--bg);
-      cursor: pointer;
-      padding: 2rem;
-      display: flex;
-      gap: 1.5rem;
-      transition: background 0.2s;
-      position: relative;
-    }
-    .boutique-card:hover { background: #f2f2f2; }
-
-    .boutique-card-thumb {
-      width: 90px;
-      height: 90px;
-      flex-shrink: 0;
-      object-fit: cover;
-    }
-
-    .boutique-card-color-thumb {
-      width: 90px;
-      height: 90px;
-      flex-shrink: 0;
-    }
-
-    .boutique-card-body { flex: 1; min-width: 0; }
-
-    .boutique-card-num {
-      font-size: 0.48rem;
-      letter-spacing: 0.15em;
-      color: var(--dim);
-      margin-bottom: 0.3rem;
-    }
-
-    .boutique-card-title {
-      font-size: 0.9rem;
-      font-weight: 400;
-      letter-spacing: 0.04em;
-      margin-bottom: 0.8rem;
-    }
-
-    .boutique-card-formats { display: flex; flex-direction: column; gap: 0.4rem; }
-
-    .boutique-format-line {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.58rem;
-      letter-spacing: 0.05em;
-    }
-
-    .boutique-format-name { color: var(--gray); }
-
-    .boutique-format-right {
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-    }
-
-    .boutique-price { color: var(--text); font-weight: 400; }
-
-    .boutique-stock {
-      font-size: 0.48rem;
-      letter-spacing: 0.05em;
-      padding: 0.2rem 0.5rem;
-      border-radius: 2px;
-    }
-
-    .stock-available {
-      color: var(--gray);
-      border: 1px solid var(--border);
-    }
-
-    .stock-low {
-      color: #b57800;
-      border: 1px solid #f0d080;
-    }
-
-    .stock-out {
-      color: var(--dim);
-      border: 1px solid var(--border);
-      text-decoration: line-through;
-    }
-
-    .boutique-card-color-dot {
-      position: absolute;
-      top: 2rem;
-      right: 1.5rem;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-    }
-
-    /* ── PAGES PRODUIT — sidebar gauche + photo plein écran ── */
-
-    /* layout: sidebar fixe gauche + photo plein écran droite */
-    .product-page { background: var(--bg); }
-    .product-page:target { display: flex; flex-direction: column; }
-    body:has(.product-page:target) #view-hero,
-    body:has(.product-page:target) #view-galerie,
-    body:has(.product-page:target) #view-boutique { display: none; }
-
-    .pp-inner {
-      display: flex;
-      height: calc(100vh - var(--header-h));
-    }
-
-    .pp-sidebar {
-      width: 280px;
-      flex-shrink: 0;
-      border-right: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      overflow-y: auto;
-    }
-
-    .pp-back {
-      display: flex;
-      align-items: center;
-      padding: 1.2rem 1.5rem;
-      font-size: 0.5rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--gray);
-      text-decoration: none;
-      border-bottom: 1px solid var(--border);
-      transition: color 0.2s;
-      flex-shrink: 0;
-    }
-    .pp-back:hover { color: var(--text); }
-
-    .pp-info {
-      padding: 2rem 1.5rem 1.5rem;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .pp-num {
-      font-size: 0.48rem;
-      letter-spacing: 0.2em;
-      color: var(--dim);
-      text-transform: uppercase;
       margin-bottom: 0.5rem;
     }
 
-    .pp-title {
-      font-size: 1.3rem;
-      font-weight: 300;
+    .serie-title {
+      font-size: 1rem;
+      font-weight: 400;
       letter-spacing: 0.06em;
       text-transform: uppercase;
-      line-height: 1.1;
-      margin-bottom: 0.4rem;
+      margin-bottom: 1.8rem;
+      font-style: italic;
     }
 
-    .pp-location {
-      font-size: 0.5rem;
+    /* Nav — liste des photos */
+    .photo-nav {
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .photo-nav-item {
+      display: flex;
+      align-items: baseline;
+      gap: 0.6rem;
+      padding: 0.3rem 0;
+      cursor: pointer;
+      transition: color 0.15s;
+    }
+
+    .photo-nav-item:hover { color: var(--red); }
+    .photo-nav-item.active { color: var(--red); }
+
+    .photo-nav-num {
+      font-size: 0.55rem;
       letter-spacing: 0.12em;
       color: var(--dim);
-      text-transform: uppercase;
-      margin-bottom: 2rem;
+      flex-shrink: 0;
+      width: 1.4rem;
     }
+    .photo-nav-item.active .photo-nav-num { color: var(--red); }
 
-    .pp-sep { height: 1px; background: var(--border); margin: 1.5rem 0; }
-
-    .pp-format-label {
-      font-size: 0.45rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--dim);
-      margin-bottom: 1rem;
-    }
-
-    .pp-format {
-      padding: 1rem 0;
-      border-bottom: 1px solid var(--border);
-    }
-    .pp-format:first-of-type { border-top: 1px solid var(--border); }
-
-    .pp-format-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 0.5rem;
-    }
-
-    .pp-format-name {
-      font-size: 0.65rem;
-      font-weight: 400;
-      letter-spacing: 0.04em;
-      margin-bottom: 0.25rem;
-    }
-
-    .pp-format-desc {
-      font-size: 0.48rem;
-      letter-spacing: 0.05em;
-      color: var(--gray);
-      line-height: 1.6;
-    }
-
-    .pp-format-prix { text-align: right; flex-shrink: 0; }
-
-    .pp-prix-val {
-      font-size: 0.9rem;
-      font-weight: 400;
+    .photo-nav-title {
+      font-size: 0.78rem;
+      font-weight: 300;
       letter-spacing: 0.02em;
     }
 
-    .pp-stock {
-      font-size: 0.42rem;
-      letter-spacing: 0.06em;
-      color: var(--dim);
-      margin-top: 0.15rem;
-    }
-
-    .pp-buy {
-      width: 100%;
+    /* Sidebar footer */
+    .sidebar-footer {
       margin-top: auto;
-      padding: 0.9rem 1rem;
-      background: var(--text);
-      color: var(--bg);
-      font-family: var(--font);
-      font-size: 0.52rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      border: none;
-      cursor: pointer;
-      transition: opacity 0.2s;
-      margin-top: 1.5rem;
-    }
-    .pp-buy:hover { opacity: 0.75; }
-    .pp-buy:disabled { opacity: 0.3; cursor: not-allowed; }
-
-    .pp-inclus {
-      margin-top: 1.5rem;
       padding-top: 1.5rem;
       border-top: 1px solid var(--border);
     }
 
-    .pp-inclus-label {
-      font-size: 0.42rem;
-      letter-spacing: 0.15em;
+    .photo-caption {
+      font-size: 0.68rem;
+      color: var(--gray);
+      line-height: 1.5;
+      margin-bottom: 1.2rem;
+    }
+
+    .nav-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-counter {
+      font-size: 0.68rem;
+      color: var(--dim);
+    }
+
+    .nav-arrows {
+      display: flex;
+      gap: 1rem;
+      font-size: 0.72rem;
+      color: var(--gray);
+    }
+
+    .nav-arrows a {
+      transition: color 0.15s;
+      letter-spacing: 0.05em;
+    }
+    .nav-arrows a:hover { color: var(--black); }
+
+    .back-link {
+      display: block;
+      margin-top: 1.2rem;
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
       color: var(--dim);
-      margin-bottom: 0.7rem;
+      transition: color 0.15s;
     }
+    .back-link:hover { color: var(--black); }
 
-    .pp-inclus-item {
-      font-size: 0.52rem;
-      letter-spacing: 0.03em;
-      color: var(--gray);
-      padding: 0.3rem 0;
-      border-bottom: 1px solid var(--border);
-      line-height: 1.4;
-    }
-
-    .pp-photo-area {
-      flex: 1;
+    /* ── MAIN PHOTO ── */
+    .site-main {
+      position: relative;
       overflow: hidden;
-      background: #f5f5f5;
+      background: #111;
     }
 
-    .pp-photo-area img {
+    .gallery-image {
+      position: absolute;
+      inset: 0;
       width: 100%;
       height: 100%;
       object-fit: contain;
-      display: block;
+      opacity: 0;
+      transition: opacity 0.4s ease;
     }
 
-    /* ── PAGE MERCI ──────────────────────────────────────── */
-    #view-merci {
-      display: none;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      padding-top: 0;
-    }
-    #view-merci.active { display: flex; }
-
-    .merci-content {
-      text-align: center;
-      max-width: 500px;
-      padding: 3rem 2rem;
+    .gallery-image.active {
+      opacity: 1;
     }
 
-    .merci-icon { font-size: 2rem; margin-bottom: 2rem; }
-
-    .merci-title {
-      font-size: 1.2rem;
-      font-weight: 300;
-      letter-spacing: 0.06em;
-      margin-bottom: 1rem;
-    }
-
-    .merci-text {
-      font-size: 0.75rem;
-      color: var(--gray);
-      line-height: 1.8;
-      letter-spacing: 0.04em;
-      margin-bottom: 2rem;
-    }
-
-    .merci-order-recap {
-      background: #f5f5f5;
-      border: 1px solid var(--border);
-      padding: 1.5rem;
-      margin-bottom: 2rem;
-      text-align: left;
-    }
-
-    .merci-order-label {
-      font-size: 0.48rem;
-      letter-spacing: 0.15em;
-      color: var(--dim);
-      text-transform: uppercase;
-      margin-bottom: 0.8rem;
-    }
-
-    .merci-order-row {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.65rem;
-      letter-spacing: 0.04em;
-      color: var(--gray);
-      padding: 0.25rem 0;
-    }
-
-    .merci-order-row strong { color: var(--text); }
-
-    /* ── TOAST ───────────────────────────────────────────── */
-    .dk-toast {
+    /* Lang toggle */
+    .lang-toggle {
       position: fixed;
-      bottom: 1.5rem;
-      left: 50%;
-      transform: translateX(-50%) translateY(80px);
-      background: var(--text);
-      border: 1px solid var(--text);
-      color: var(--bg);
-      padding: 0.7rem 1.5rem;
-      font-size: 0.62rem;
-      letter-spacing: 0.06em;
-      z-index: 9999;
-      transition: transform 0.3s ease;
-      white-space: nowrap;
+      top: 1.2rem;
+      right: 1.5rem;
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      color: var(--dim);
+      z-index: 50;
     }
-    .dk-toast.show { transform: translateX(-50%) translateY(0); }
-
-    /* ── SPINNER ─────────────────────────────────────────── */
-    .dk-spinner {
-      display: inline-block;
-      width: 12px;
-      height: 12px;
-      border: 1px solid var(--border);
-      border-top-color: var(--gray);
-      border-radius: 50%;
-      animation: spin 0.6s linear infinite;
-      margin-right: 0.5rem;
-    }
-
-    @keyframes spin { to { transform: rotate(360deg); } }
-    @keyframes fadeInUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
-
-    /* ── RESPONSIVE ──────────────────────────────────────── */
-    @media (max-width: 900px) {
-      .hero-full { grid-template-columns: 1fr; }
-      .hero-image-side { min-height: 55vw; }
-      .galerie-grid { grid-template-columns: repeat(2, 1fr); }
-      .boutique-grid { grid-template-columns: 1fr; }
-      .produit-layout { grid-template-columns: 1fr; }
-      .produit-panel { border-left: none; border-top: 1px solid var(--border); padding: 2rem 1.5rem; }
-      .produit-image-zone { min-height: 50vw; }
-    }
-
-    @media (max-width: 580px) {
-      .galerie-grid { grid-template-columns: 1fr; }
-      .dk-header-expo { display: none; }
-      .dk-header-sep { display: none; }
-      .hero-content { padding: 2.5rem 1.5rem; }
-      .hero-cta-group { flex-direction: column; }
-      .boutique-card { padding: 1.5rem 1rem; }
-      .boutique-card-thumb, .boutique-card-color-thumb { width: 70px; height: 70px; }
-      .section-header { padding: 2rem 1rem 1.5rem; }
-      .boutique-filters { padding: 1rem; }
-    }
+    .lang-toggle a { color: var(--dim); transition: color 0.15s; }
+    .lang-toggle a:hover, .lang-toggle a.active { color: var(--white); }
+    .lang-toggle span { margin: 0 0.2rem; }
   </style>
 </head>
 <body>
 
-  <!-- ── HEADER ── -->
-  <header class="dk-header">
-    <div class="dk-header-brand">
-      <img src="../assets/logo-b.svg" alt="B">
-      <strong>Bertrand Basset</strong>
-      <span class="dk-header-sep"></span>
-      <span class="dk-header-expo">Dust'in Kolor</span>
-    </div>
-    <div class="dk-header-right">
-      <div class="dk-lang">
-        <a href="#" data-lang="fr" class="active">FR</a>
-        <span>/</span>
-        <a href="#" data-lang="en">EN</a>
-      </div>
-      <a href="../" class="dk-back-link">← Retour au site</a>
-    </div>
-  </header>
-
-  <!-- ── VUE : HERO ── -->
-  <div id="view-hero" class="dk-view active">
-    <div class="hero-full">
-      <!-- Photo côté gauche -->
-      <div class="hero-image-side">
-        <div class="hero-bg"></div>
-      </div>
-      <!-- Texte côté droit -->
-      <div class="hero-content">
-        <p class="hero-label">Désert du Nevada — Août 2016</p>
-        <h1 class="hero-title">DUST'IN<br>KOLOR</h1>
-        <p class="hero-subtitle">Bertrand Basset — Photographie 2016</p>
-        <p class="hero-quote">
-          En pleine tempête de sable, la visibilité est proche de zéro,
-          tout devient gris, flou. On enfile alors les goggles, ces lunettes
-          de protection aux verres colorés.<br><br>
-          Le monde devient alors rouge, bleu, orange, rose…
-        </p>
-        <p class="hero-signature">Dust'in Kolor n'est pas une série colorisée. C'est ce que j'ai vu.</p>
-        <div class="hero-cta-group">
-          <a class="btn-primary" href="#view-galerie">Découvrir la série</a>
-          <a class="btn-ghost" href="#view-boutique">Voir les tirages</a>
-        </div>
-      </div>
-    </div>
+  <div class="lang-toggle">
+    <a href="#" class="active">FR</a><span>/</span><a href="#">EN</a>
   </div>
 
-  <!-- ── VUE : GALERIE ── -->
-  <div id="view-galerie" class="dk-view">
-    <div class="section-header">
-      <span class="section-title">La Série — 7 Œuvres</span>
-      <a class="btn-ghost" href="#view-boutique" style="padding:0.4rem 1rem;font-size:0.6rem;letter-spacing:0.1em;text-decoration:none;">Voir les tirages →</a>
-    </div>
-    <div class="galerie-grid" id="galerieGrid">
-      <a class="galerie-card" href="#sandstorm-feu">
-        <div class="galerie-card-photo"><img src="../images/dustin-kolor/01.jpg" alt="Sandstorm"></div>
-        <div class="galerie-card-caption">
-          <span class="galerie-card-num">01</span>
-          <span class="galerie-card-title">Sandstorm</span>
-          <span class="galerie-card-acheter">Commander →</span>
-        </div>
+  <div class="site">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+      <a href="../" class="sidebar-brand">
+        <img src="../assets/logo-b.svg" alt="B" class="sidebar-logo">
+        <span class="sidebar-brand-name">Bertrand Basset</span>
       </a>
-      <a class="galerie-card" href="#flying-car-orange">
-        <div class="galerie-card-photo"><img src="../images/dustin-kolor/02.jpg" alt="Flying Car"></div>
-        <div class="galerie-card-caption">
-          <span class="galerie-card-num">02</span>
-          <span class="galerie-card-title">Flying Car</span>
-          <span class="galerie-card-acheter">Commander →</span>
+
+      <div class="serie-label">Série — 2016</div>
+      <div class="serie-title">Dust'in Kolor</div>
+
+      <nav class="photo-nav" id="photoNav">
+        <div class="photo-nav-item active" data-index="0" onclick="showPhoto(0)">
+          <span class="photo-nav-num">01</span>
+          <span class="photo-nav-title">Sandstorm</span>
         </div>
-      </a>
-      <a class="galerie-card" href="#after-the-storm-vert">
-        <div class="galerie-card-photo"><img src="../images/dustin-kolor/03.jpg" alt="After the Storm"></div>
-        <div class="galerie-card-caption">
-          <span class="galerie-card-num">03</span>
-          <span class="galerie-card-title">After the Storm</span>
-          <span class="galerie-card-acheter">Commander →</span>
+        <div class="photo-nav-item" data-index="1" onclick="showPhoto(1)">
+          <span class="photo-nav-num">02</span>
+          <span class="photo-nav-title">Flying Car</span>
         </div>
-      </a>
-      <a class="galerie-card" href="#lost-in-the-dust-rouge">
-        <div class="galerie-card-photo"><img src="../images/dustin-kolor/04.jpg" alt="Lost in the Dust"></div>
-        <div class="galerie-card-caption">
-          <span class="galerie-card-num">04</span>
-          <span class="galerie-card-title">Lost in the Dust</span>
-          <span class="galerie-card-acheter">Commander →</span>
+        <div class="photo-nav-item" data-index="2" onclick="showPhoto(2)">
+          <span class="photo-nav-num">03</span>
+          <span class="photo-nav-title">After the Storm</span>
         </div>
-      </a>
-      <a class="galerie-card" href="#camp-lighters-jaune">
-        <div class="galerie-card-photo"><img src="../images/dustin-kolor/05.jpg" alt="Camp Lighters"></div>
-        <div class="galerie-card-caption">
-          <span class="galerie-card-num">05</span>
-          <span class="galerie-card-title">Camp Lighters</span>
-          <span class="galerie-card-acheter">Commander →</span>
+        <div class="photo-nav-item" data-index="3" onclick="showPhoto(3)">
+          <span class="photo-nav-num">04</span>
+          <span class="photo-nav-title">Lost in the Dust</span>
         </div>
-      </a>
-      <a class="galerie-card" href="#im-here-bleu">
-        <div class="galerie-card-photo"><img src="../images/dustin-kolor/06.jpg" alt="I'm Here"></div>
-        <div class="galerie-card-caption">
-          <span class="galerie-card-num">06</span>
-          <span class="galerie-card-title">I'm Here</span>
-          <span class="galerie-card-acheter">Commander →</span>
+        <div class="photo-nav-item" data-index="4" onclick="showPhoto(4)">
+          <span class="photo-nav-num">05</span>
+          <span class="photo-nav-title">Camp Lighters</span>
         </div>
-      </a>
-      <a class="galerie-card" href="#umbrellas-way-rose">
-        <div class="galerie-card-photo"><img src="../images/dustin-kolor/08.jpg" alt="Umbrellas Way"></div>
-        <div class="galerie-card-caption">
-          <span class="galerie-card-num">08</span>
-          <span class="galerie-card-title">Umbrellas Way</span>
-          <span class="galerie-card-acheter">Commander →</span>
+        <div class="photo-nav-item" data-index="5" onclick="showPhoto(5)">
+          <span class="photo-nav-num">06</span>
+          <span class="photo-nav-title">I'm Here</span>
         </div>
-      </a>
-    </div>
+        <div class="photo-nav-item" data-index="6" onclick="showPhoto(6)">
+          <span class="photo-nav-num">08</span>
+          <span class="photo-nav-title">Umbrellas Way</span>
+        </div>
+      </nav>
+
+      <footer class="sidebar-footer">
+        <div class="photo-caption" id="caption">Désert du Nevada — Août 2016</div>
+        <div class="nav-controls">
+          <span class="nav-counter" id="counter">1 / 7</span>
+          <div class="nav-arrows">
+            <a href="#" id="prevBtn" onclick="prev(); return false;">prev</a>
+            <span>/</span>
+            <a href="#" id="nextBtn" onclick="next(); return false;">next</a>
+          </div>
+        </div>
+        <a href="../" class="back-link">← Retour au site</a>
+      </footer>
+
+    </aside>
+
+    <!-- MAIN PHOTO -->
+    <main class="site-main" id="siteMain">
+      <img class="gallery-image active" src="../images/dustin-kolor/01.jpg" alt="Sandstorm" data-index="0">
+      <img class="gallery-image" src="../images/dustin-kolor/02.jpg" alt="Flying Car" data-index="1">
+      <img class="gallery-image" src="../images/dustin-kolor/03.jpg" alt="After the Storm" data-index="2">
+      <img class="gallery-image" src="../images/dustin-kolor/04.jpg" alt="Lost in the Dust" data-index="3">
+      <img class="gallery-image" src="../images/dustin-kolor/05.jpg" alt="Camp Lighters" data-index="4">
+      <img class="gallery-image" src="../images/dustin-kolor/06.jpg" alt="I'm Here" data-index="5">
+      <img class="gallery-image" src="../images/dustin-kolor/08.jpg" alt="Umbrellas Way" data-index="6">
+    </main>
+
   </div>
 
-  <!-- ── VUE : BOUTIQUE ── -->
-  <div id="view-boutique" class="dk-view">
-    <div class="section-header">
-      <span class="section-title">Tirages d'Art — Éditions limitées</span>
-      <span class="section-count">7 œuvres</span>
-    </div>
-    <div class="boutique-filters">
-      <button class="filter-btn active" data-filter="all" onclick="setBoutiqueFilter('all',this)">Tous</button>
-      <button class="filter-btn" data-filter="dibond" onclick="setBoutiqueFilter('dibond',this)">Dibond — 10 ex.</button>
-      <button class="filter-btn" data-filter="a4" onclick="setBoutiqueFilter('a4',this)">A4 Hahnemühle — 30 ex.</button>
-    </div>
-    <div class="boutique-grid" id="boutiqueGrid">
-      <a class="boutique-card" href="#sandstorm-feu" style="display:block;text-decoration:none;color:inherit;cursor:pointer;">
-        <img class="boutique-card-thumb" src="../images/dustin-kolor/01.jpg" alt="Sandstorm" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
-        <div class="boutique-card-color-thumb" style="background:#FF4500;display:none;"></div>
-        <div class="boutique-card-body">
-          <div class="boutique-card-num">01</div><div class="boutique-card-title">Sandstorm</div>
-          <div class="boutique-card-formats">
-            <div class="boutique-format-line"><span class="boutique-format-name">Dibond 60×90 cm</span><div class="boutique-format-right"><span class="boutique-price">820€</span><span class="boutique-stock stock-available">10/10</span></div></div>
-            <div class="boutique-format-line"><span class="boutique-format-name">A4 Hahnemühle</span><div class="boutique-format-right"><span class="boutique-price">180€</span><span class="boutique-stock stock-available">30/30</span></div></div>
-          </div>
-        </div>
-        <div class="boutique-card-color-dot" style="background:#FF4500;"></div>
-      </a>
-      <a class="boutique-card" href="#flying-car-orange" style="display:block;text-decoration:none;color:inherit;cursor:pointer;">
-        <img class="boutique-card-thumb" src="../images/dustin-kolor/02.jpg" alt="Flying Car" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
-        <div class="boutique-card-color-thumb" style="background:#FF6600;display:none;"></div>
-        <div class="boutique-card-body">
-          <div class="boutique-card-num">02</div><div class="boutique-card-title">Flying Car</div>
-          <div class="boutique-card-formats">
-            <div class="boutique-format-line"><span class="boutique-format-name">Dibond 70×124 cm</span><div class="boutique-format-right"><span class="boutique-price">1290€</span><span class="boutique-stock stock-available">10/10</span></div></div>
-            <div class="boutique-format-line"><span class="boutique-format-name">A4 Hahnemühle</span><div class="boutique-format-right"><span class="boutique-price">180€</span><span class="boutique-stock stock-available">30/30</span></div></div>
-          </div>
-        </div>
-        <div class="boutique-card-color-dot" style="background:#FF6600;"></div>
-      </a>
-      <a class="boutique-card" href="#after-the-storm-vert" style="display:block;text-decoration:none;color:inherit;cursor:pointer;">
-        <img class="boutique-card-thumb" src="../images/dustin-kolor/03.jpg" alt="After the Storm" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
-        <div class="boutique-card-color-thumb" style="background:#7BC043;display:none;"></div>
-        <div class="boutique-card-body">
-          <div class="boutique-card-num">03</div><div class="boutique-card-title">After the Storm</div>
-          <div class="boutique-card-formats">
-            <div class="boutique-format-line"><span class="boutique-format-name">Dibond 70×124 cm</span><div class="boutique-format-right"><span class="boutique-price">1290€</span><span class="boutique-stock stock-available">10/10</span></div></div>
-            <div class="boutique-format-line"><span class="boutique-format-name">A4 Hahnemühle</span><div class="boutique-format-right"><span class="boutique-price">180€</span><span class="boutique-stock stock-available">30/30</span></div></div>
-          </div>
-        </div>
-        <div class="boutique-card-color-dot" style="background:#7BC043;"></div>
-      </a>
-      <a class="boutique-card" href="#lost-in-the-dust-rouge" style="display:block;text-decoration:none;color:inherit;cursor:pointer;">
-        <img class="boutique-card-thumb" src="../images/dustin-kolor/04.jpg" alt="Lost in the Dust" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
-        <div class="boutique-card-color-thumb" style="background:#CC0000;display:none;"></div>
-        <div class="boutique-card-body">
-          <div class="boutique-card-num">04</div><div class="boutique-card-title">Lost in the Dust</div>
-          <div class="boutique-card-formats">
-            <div class="boutique-format-line"><span class="boutique-format-name">Dibond 60×80 cm</span><div class="boutique-format-right"><span class="boutique-price">890€</span><span class="boutique-stock stock-available">10/10</span></div></div>
-            <div class="boutique-format-line"><span class="boutique-format-name">A4 Hahnemühle</span><div class="boutique-format-right"><span class="boutique-price">180€</span><span class="boutique-stock stock-available">30/30</span></div></div>
-          </div>
-        </div>
-        <div class="boutique-card-color-dot" style="background:#CC0000;"></div>
-      </a>
-      <a class="boutique-card" href="#camp-lighters-jaune" style="display:block;text-decoration:none;color:inherit;cursor:pointer;">
-        <img class="boutique-card-thumb" src="../images/dustin-kolor/05.jpg" alt="Camp Lighters" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
-        <div class="boutique-card-color-thumb" style="background:#FFB300;display:none;"></div>
-        <div class="boutique-card-body">
-          <div class="boutique-card-num">05</div><div class="boutique-card-title">Camp Lighters</div>
-          <div class="boutique-card-formats">
-            <div class="boutique-format-line"><span class="boutique-format-name">Dibond 40×100 cm</span><div class="boutique-format-right"><span class="boutique-price">790€</span><span class="boutique-stock stock-available">10/10</span></div></div>
-            <div class="boutique-format-line"><span class="boutique-format-name">A4 Hahnemühle</span><div class="boutique-format-right"><span class="boutique-price">180€</span><span class="boutique-stock stock-available">30/30</span></div></div>
-          </div>
-        </div>
-        <div class="boutique-card-color-dot" style="background:#FFB300;"></div>
-      </a>
-      <a class="boutique-card" href="#im-here-bleu" style="display:block;text-decoration:none;color:inherit;cursor:pointer;">
-        <img class="boutique-card-thumb" src="../images/dustin-kolor/06.jpg" alt="I'm Here" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
-        <div class="boutique-card-color-thumb" style="background:#0066CC;display:none;"></div>
-        <div class="boutique-card-body">
-          <div class="boutique-card-num">06</div><div class="boutique-card-title">I'm Here</div>
-          <div class="boutique-card-formats">
-            <div class="boutique-format-line"><span class="boutique-format-name">Dibond 60×80 cm</span><div class="boutique-format-right"><span class="boutique-price">890€</span><span class="boutique-stock stock-available">10/10</span></div></div>
-            <div class="boutique-format-line"><span class="boutique-format-name">A4 Hahnemühle</span><div class="boutique-format-right"><span class="boutique-price">180€</span><span class="boutique-stock stock-available">30/30</span></div></div>
-          </div>
-        </div>
-        <div class="boutique-card-color-dot" style="background:#0066CC;"></div>
-      </a>
-      <a class="boutique-card" href="#umbrellas-way-rose" style="display:block;text-decoration:none;color:inherit;cursor:pointer;">
-        <img class="boutique-card-thumb" src="../images/dustin-kolor/08.jpg" alt="Umbrellas Way" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
-        <div class="boutique-card-color-thumb" style="background:#FF1493;display:none;"></div>
-        <div class="boutique-card-body">
-          <div class="boutique-card-num">08</div><div class="boutique-card-title">Umbrellas Way</div>
-          <div class="boutique-card-formats">
-            <div class="boutique-format-line"><span class="boutique-format-name">Dibond 60×80 cm</span><div class="boutique-format-right"><span class="boutique-price">890€</span><span class="boutique-stock stock-available">10/10</span></div></div>
-            <div class="boutique-format-line"><span class="boutique-format-name">A4 Hahnemühle</span><div class="boutique-format-right"><span class="boutique-price">180€</span><span class="boutique-stock stock-available">30/30</span></div></div>
-          </div>
-        </div>
-        <div class="boutique-card-color-dot" style="background:#FF1493;"></div>
-      </a>
-    </div>
-  </div>
+  <script>
+    const TOTAL = 7;
+    let current = 0;
 
-  <!-- ── PAGES PRODUIT (7 statiques, CSS :target) ── -->
+    function showPhoto(i) {
+      current = i;
 
-  <div id="sandstorm-feu" class="dk-view product-page">
-  <div class="pp-inner">
-    <div class="pp-sidebar">
-      <a class="pp-back" href="#view-galerie">← La Série</a>
-      <div class="pp-info">
-        <div class="pp-num">01</div>
-        <div class="pp-title">Sandstorm</div>
-        <div class="pp-location">Désert du Nevada — Août 2016</div>
-        <div class="pp-sep"></div>
-        <div class="pp-format-label">Tirages disponibles</div>
-        <div class="pp-format">
-          <div class="pp-format-row">
-            <div><div class="pp-format-name">Dibond aluminium</div><div class="pp-format-desc">60 × 90 cm · Signé, numéroté<br>Museum Etching · 10 exemplaires</div></div>
-            <div class="pp-format-prix"><div class="pp-prix-val">820€</div><div class="pp-stock">10 / 10 disponibles</div></div>
-          </div>
-        </div>
-        <div class="pp-format">
-          <div class="pp-format-row">
-            <div><div class="pp-format-name">A4 Hahnemühle Fine Art</div><div class="pp-format-desc">21 × 29,7 cm · Signé, numéroté<br>Papier Fine Art · 30 exemplaires</div></div>
-            <div class="pp-format-prix"><div class="pp-prix-val">180€</div><div class="pp-stock">30 / 30 disponibles</div></div>
-          </div>
-        </div>
-        <button class="pp-buy" onclick="startCheckout('sandstorm-feu',this)">Commander un tirage</button>
-        <div class="pp-inclus">
-          <div class="pp-inclus-label">Inclus</div>
-          <div class="pp-inclus-item">Tirage signé et numéroté par Bertrand Basset</div>
-          <div class="pp-inclus-item">Certificat d'authenticité</div>
-          <div class="pp-inclus-item">Livraison soigneusement emballée</div>
-        </div>
-      </div>
-    </div>
-    <div class="pp-photo-area"><img src="../images/dustin-kolor/01.jpg" alt="Sandstorm"></div>
-  </div>
-  </div><!-- /sandstorm-feu -->
-
-  <div id="flying-car-orange" class="dk-view product-page">
-  <div class="pp-inner">
-    <div class="pp-sidebar">
-      <a class="pp-back" href="#view-galerie">← La Série</a>
-      <div class="pp-info">
-        <div class="pp-num">02</div>
-        <div class="pp-title">Flying Car</div>
-        <div class="pp-location">Désert du Nevada — Août 2016</div>
-        <div class="pp-sep"></div>
-        <div class="pp-format-label">Tirages disponibles</div>
-        <div class="pp-format">
-          <div class="pp-format-row">
-            <div><div class="pp-format-name">Dibond aluminium</div><div class="pp-format-desc">70 × 124 cm · Signé, numéroté<br>Museum Etching · 10 exemplaires</div></div>
-            <div class="pp-format-prix"><div class="pp-prix-val">1290€</div><div class="pp-stock">10 / 10 disponibles</div></div>
-          </div>
-        </div>
-        <div class="pp-format">
-          <div class="pp-format-row">
-            <div><div class="pp-format-name">A4 Hahnemühle Fine Art</div><div class="pp-format-desc">21 × 29,7 cm · Signé, numéroté<br>Papier Fine Art · 30 exemplaires</div></div>
-            <div class="pp-format-prix"><div class="pp-prix-val">180€</div><div class="pp-stock">30 / 30 disponibles</div></div>
-          </div>
-        </div>
-        <button class="pp-buy" onclick="startCheckout('flying-car-orange',this)">Commander un tirage</button>
-        <div class="pp-inclus">
-          <div class="pp-inclus-label">Inclus</div>
-          <div class="pp-inclus-item">Tirage signé et numéroté par Bertrand Basset</div>
-          <div class="pp-inclus-item">Certificat d'authenticité</div>
-          <div class="pp-inclus-item">Livraison soigneusement emballée</div>
-        </div>
-      </div>
-    </div>
-    <div class="pp-photo-area"><img src="../images/dustin-kolor/02.jpg" alt="Flying Car"></div>
-  </div>
-  </div><!-- /flying-car-orange -->
-
-  <div id="after-the-storm-vert" class="dk-view product-page">
-  <div class="pp-inner">
-    <div class="pp-sidebar">
-      <a class="pp-back" href="#view-galerie">← La Série</a>
-      <div class="pp-info">
-        <div class="pp-num">03</div>
-        <div class="pp-title">After the Storm</div>
-        <div class="pp-location">Désert du Nevada — Août 2016</div>
-        <div class="pp-sep"></div>
-        <div class="pp-format-label">Tirages disponibles</div>
-        <div class="pp-format">
-          <div class="pp-format-row">
-            <div><div class="pp-format-name">Dibond aluminium</div><div class="pp-format-desc">70 × 124 cm · Signé, numéroté<br>Museum Etching · 10 exemplaires</div></div>
-            <div class="pp-format-prix"><div class="pp-prix-val">1290€</div><div class="pp-stock">10 / 10 disponibles</div></div>
-          </div>
-        </div>
-        <div class="pp-format">
-          <div class="pp-format-row">
-            <div><div class="pp-format-name">A4 Hahnemühle Fine Art</div><div class="pp-format-desc">21 × 29,7 cm · Signé, numéroté<br>Papier Fine Art · 30 exemplaires</div></div>
-            <div class="pp-format-prix"><div class="pp-prix-val">180€</div><div class="pp-stock">30 / 30 disponibles</div></div>
-          </div>
-        </div>
-        <button class="pp-buy" onclick="startCheckout('after-the-storm-vert',this)">Commander un tirage</button>
-        <div class="pp-inclus">
-          <div class="pp-inclus-label">Inclus</div>
-          <div class="pp-inclus-item">Tirage signé et numéroté par Bertrand Basset</div>
-          <div class="pp-inclus-item">Certificat d'authenticité</div>
-          <div class="pp-inclus-item">Livraison soigneusement emballée</div>
-        </div>
-      </div>
-    </div>
-    <div class="pp-photo-area"><img src="../images/dustin-kolor/03.jpg" alt="After the Storm"></div>
-  </div>
-  </div><!-- /after-the-storm-vert -->
-
-  <div id="lost-in-the-dust-rouge" class="dk-view product-page">
-  <div class="pp-inner">
-    <div class="pp-sidebar">
-      <a class="pp-back" href="#view-galerie">← La Série</a>
-      <div class="pp-info">
-        <div class="pp-num">04</div>
-        <div class="pp-title">Lost in the Dust</div>
-        <div class="pp-location">Désert du Nevada — Août 2016</div>
-        <div class="pp-sep"></div>
-        <div class="pp-format-label">Tirages disponibles</div>
-        <div class="pp-format">
-          <div class="pp-format-row">
-            <div><div class="pp-format-name">Dibond aluminium</div><div class="pp-format-desc">60 × 80 cm · Signé, numéroté<br>Museum Etching · 10 exemplaires</div></div>
-            <div class="pp-format-prix"><div class="pp-prix-val">890€</div><div class="pp-stock">10 / 10 disponibles</div></div>
-          </div>
-        </div>
-        <div class="pp-format">
-          <div class="pp-format-row">
-            <div><div class="pp-format-name">A4 Hahnemühle Fine Art</div><div class="pp-format-desc">21 × 29,7 cm · Signé, numéroté<br>Papier Fine Art · 30 exemplaires</div></div>
-            <div class="pp-format-prix"><div class="pp-prix-val">180€</div><div class="pp-stock">30 / 30 disponibles</div></div>
-          </div>
-        </div>
-        <button class="pp-buy" onclick="startCheckout('lost-in-the-dust-rouge',this)">Commander un tirage</button>
-        <div class="pp-inclus">
-          <div class="pp-inclus-label">Inclus</div>
-          <div class="pp-inclus-item">Tirage signé et numéroté par Bertrand Basset</div>
-          <div class="pp-inclus-item">Certificat d'authenticité</div>
-          <div class="pp-inclus-item">Livraison soigneusement emballée</div>
-        </div>
-      </div>
-    </div>
-    <div class="pp-photo-area"><img src="../images/dustin-kolor/04.jpg" alt="Lost in the Dust"></div>
-  </div>
-  </div><!-- /lost-in-the-dust-rouge -->
-
-  <div id="camp-lighters-jaune" class="dk-view product-page">
-  <div class="pp-inner">
-    <div class="pp-sidebar">
-      <a class="pp-back" href="#view-galerie">← La Série</a>
-      <div class="pp-info">
-        <div class="pp-num">05</div>
-        <div class="pp-title">Camp Lighters</div>
-        <div class="pp-location">Désert du Nevada — Août 2016</div>
-        <div class="pp-sep"></div>
-        <div class="pp-format-label">Tirages disponibles</div>
-        <div class="pp-format">
-          <div class="pp-format-row">
-            <div><div class="pp-format-name">Dibond aluminium</div><div class="pp-format-desc">40 × 100 cm · Signé, numéroté<br>Museum Etching · 10 exemplaires</div></div>
-            <div class="pp-format-prix"><div class="pp-prix-val">790€</div><div class="pp-stock">10 / 10 disponibles</div></div>
-          </div>
-        </div>
-        <div class="pp-format">
-          <div class="pp-format-row">
-            <div><div class="pp-format-name">A4 Hahnemühle Fine Art</div><div class="pp-format-desc">21 × 29,7 cm · Signé, numéroté<br>Papier Fine Art · 30 exemplaires</div></div>
-            <div class="pp-format-prix"><div class="pp-prix-val">180€</div><div class="pp-stock">30 / 30 disponibles</div></div>
-          </div>
-        </div>
-        <button class="pp-buy" onclick="startCheckout('camp-lighters-jaune',this)">Commander un tirage</button>
-        <div class="pp-inclus">
-          <div class="pp-inclus-label">Inclus</div>
-          <div class="pp-inclus-item">Tirage signé et numéroté par Bertrand Basset</div>
-          <div class="pp-inclus-item">Certificat d'authenticité</div>
-          <div class="pp-inclus-item">Livraison soigneusement emballée</div>
-        </div>
-      </div>
-    </div>
-    <div class="pp-photo-area"><img src="../images/dustin-kolor/05.jpg" alt="Camp Lighters"></div>
-  </div>
-  </div><!-- /camp-lighters-jaune -->
-
-  <div id="im-here-bleu" class="dk-view product-page">
-  <div class="pp-inner">
-    <div class="pp-sidebar">
-      <a class="pp-back" href="#view-galerie">← La Série</a>
-      <div class="pp-info">
-        <div class="pp-num">06</div>
-        <div class="pp-title">I'm Here</div>
-        <div class="pp-location">Désert du Nevada — Août 2016</div>
-        <div class="pp-sep"></div>
-        <div class="pp-format-label">Tirages disponibles</div>
-        <div class="pp-format">
-          <div class="pp-format-row">
-            <div><div class="pp-format-name">Dibond aluminium</div><div class="pp-format-desc">60 × 80 cm · Signé, numéroté<br>Museum Etching · 10 exemplaires</div></div>
-            <div class="pp-format-prix"><div class="pp-prix-val">890€</div><div class="pp-stock">10 / 10 disponibles</div></div>
-          </div>
-        </div>
-        <div class="pp-format">
-          <div class="pp-format-row">
-            <div><div class="pp-format-name">A4 Hahnemühle Fine Art</div><div class="pp-format-desc">21 × 29,7 cm · Signé, numéroté<br>Papier Fine Art · 30 exemplaires</div></div>
-            <div class="pp-format-prix"><div class="pp-prix-val">180€</div><div class="pp-stock">30 / 30 disponibles</div></div>
-          </div>
-        </div>
-        <button class="pp-buy" onclick="startCheckout('im-here-bleu',this)">Commander un tirage</button>
-        <div class="pp-inclus">
-          <div class="pp-inclus-label">Inclus</div>
-          <div class="pp-inclus-item">Tirage signé et numéroté par Bertrand Basset</div>
-          <div class="pp-inclus-item">Certificat d'authenticité</div>
-          <div class="pp-inclus-item">Livraison soigneusement emballée</div>
-        </div>
-      </div>
-    </div>
-    <div class="pp-photo-area"><img src="../images/dustin-kolor/06.jpg" alt="I'm Here"></div>
-  </div>
-  </div><!-- /im-here-bleu -->
-
-  <div id="umbrellas-way-rose" class="dk-view product-page">
-  <div class="pp-inner">
-    <div class="pp-sidebar">
-      <a class="pp-back" href="#view-galerie">← La Série</a>
-      <div class="pp-info">
-        <div class="pp-num">08</div>
-        <div class="pp-title">Umbrellas Way</div>
-        <div class="pp-location">Désert du Nevada — Août 2016</div>
-        <div class="pp-sep"></div>
-        <div class="pp-format-label">Tirages disponibles</div>
-        <div class="pp-format">
-          <div class="pp-format-row">
-            <div><div class="pp-format-name">Dibond aluminium</div><div class="pp-format-desc">60 × 80 cm · Signé, numéroté<br>Museum Etching · 10 exemplaires</div></div>
-            <div class="pp-format-prix"><div class="pp-prix-val">890€</div><div class="pp-stock">10 / 10 disponibles</div></div>
-          </div>
-        </div>
-        <div class="pp-format">
-          <div class="pp-format-row">
-            <div><div class="pp-format-name">A4 Hahnemühle Fine Art</div><div class="pp-format-desc">21 × 29,7 cm · Signé, numéroté<br>Papier Fine Art · 30 exemplaires</div></div>
-            <div class="pp-format-prix"><div class="pp-prix-val">180€</div><div class="pp-stock">30 / 30 disponibles</div></div>
-          </div>
-        </div>
-        <button class="pp-buy" onclick="startCheckout('umbrellas-way-rose',this)">Commander un tirage</button>
-        <div class="pp-inclus">
-          <div class="pp-inclus-label">Inclus</div>
-          <div class="pp-inclus-item">Tirage signé et numéroté par Bertrand Basset</div>
-          <div class="pp-inclus-item">Certificat d'authenticité</div>
-          <div class="pp-inclus-item">Livraison soigneusement emballée</div>
-        </div>
-      </div>
-    </div>
-    <div class="pp-photo-area"><img src="../images/dustin-kolor/08.jpg" alt="Umbrellas Way"></div>
-  </div>
-  </div><!-- /umbrellas-way-rose -->
-
-  <!-- ── VUE : MERCI ── -->
-  <div id="view-merci" class="dk-view">
-    <div class="merci-content">
-      <div class="merci-icon">✦</div>
-      <h2 class="merci-title">Commande confirmée</h2>
-      <p class="merci-text">
-        Merci pour votre achat. Un email de confirmation vous a été envoyé
-        avec les détails de votre tirage numéroté.<br><br>
-        La livraison est soigneusement préparée et vous contactera
-        dans les 7 à 10 jours ouvrés.
-      </p>
-      <div class="merci-order-recap" id="merciRecap">
-        <div class="merci-order-label">Récapitulatif</div>
-        <!-- Rempli par JS -->
-      </div>
-      <a class="btn-ghost" href="#view-galerie" style="text-decoration:none;">Voir les autres œuvres</a>
-    </div>
-  </div>
-
-  <div class="dk-toast" id="toast"></div>
-
-  <script data-cfasync="false">
-  /* ═══════════════════════════════════════════════════════
-     CONFIG — remplacer par vos valeurs Supabase + Stripe
-  ═══════════════════════════════════════════════════════ */
-  const SUPABASE_URL  = 'https://suecslynruuputmujudg.supabase.co';
-  const SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN1ZWNzbHlucnV1cHV0bXVqdWRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY1MTYyODcsImV4cCI6MjA5MjA5MjI4N30.c9Pa_x6MEcJdqVekBodSYpu3it-riVU1hYhC-m5iCsU';
-  const CHECKOUT_URL  = `${SUPABASE_URL}/functions/v1/stripe-checkout`;
-  const IMG_BASE      = '../images/dustin-kolor/';
-
-  /* ═══════════════════════════════════════════════════════
-     CATALOGUE DES 7 ŒUVRES
-  ═══════════════════════════════════════════════════════ */
-  const WORKS = [
-    {
-      num: '01', slug: 'sandstorm-feu',
-      titre: 'Sandstorm', couleur: '#FF4500',
-      format_dibond: '60×90 cm', achat_ttc: 214.30,
-      prix: [820, 960, 1100], prix_a4: 180,
-      img: '01.jpg'
-    },
-    {
-      num: '02', slug: 'flying-car-orange',
-      titre: 'Flying Car', couleur: '#FF6600',
-      format_dibond: '70×124 cm', achat_ttc: 317.60,
-      prix: [1290, 1490, 1690], prix_a4: 180,
-      img: '02.jpg'
-    },
-    {
-      num: '03', slug: 'after-the-storm-vert',
-      titre: 'After the Storm', couleur: '#7BC043',
-      format_dibond: '70×124 cm', achat_ttc: 317.60,
-      prix: [1290, 1490, 1690], prix_a4: 180,
-      img: '03.jpg'
-    },
-    {
-      num: '04', slug: 'lost-in-the-dust-rouge',
-      titre: 'Lost in the Dust', couleur: '#CC0000',
-      format_dibond: '60×80 cm', achat_ttc: 186.00,
-      prix: [890, 1020, 1150], prix_a4: 180,
-      img: '04.jpg'
-    },
-    {
-      num: '05', slug: 'camp-lighters-jaune',
-      titre: 'Camp Lighters', couleur: '#FFB300',
-      format_dibond: '40×100 cm', achat_ttc: 188.00,
-      prix: [790, 910, 1030], prix_a4: 180,
-      img: '05.jpg'
-    },
-    {
-      num: '06', slug: 'im-here-bleu',
-      titre: "I'm Here", couleur: '#0066CC',
-      format_dibond: '60×80 cm', achat_ttc: 186.00,
-      prix: [890, 1020, 1150], prix_a4: 180,
-      img: '06.jpg'
-    },
-    {
-      num: '08', slug: 'umbrellas-way-rose',
-      titre: 'Umbrellas Way', couleur: '#FF1493',
-      format_dibond: '60×80 cm', achat_ttc: 186.00,
-      prix: [890, 1020, 1150], prix_a4: 180,
-      img: '08.jpg'
-    }
-  ];
-
-  /* ═══════════════════════════════════════════════════════
-     ÉTAT
-  ═══════════════════════════════════════════════════════ */
-  let supabase = null;
-  let stockData = {};       // { slug: { vendus_dibond, vendus_a4 } }
-  let currentFilter = 'all';
-  let currentWork = null;
-  let selectedFormat = 'dibond';
-  let lang = 'fr';
-
-  /* ═══════════════════════════════════════════════════════
-     INIT SUPABASE
-  ═══════════════════════════════════════════════════════ */
-  function initSupabase() {
-    if (SUPABASE_URL === 'YOUR_SUPABASE_URL') return; // pas encore configuré
-    try {
-      supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-      loadStock();
-      subscribeStock();
-    } catch(e) { console.warn('Supabase non configuré', e); }
-  }
-
-  async function loadStock() {
-    if (!supabase) return;
-    const { data, error } = await supabase
-      .from('kolor_editions')
-      .select('slug, vendus_dibond, vendus_a4');
-    if (error) { console.warn('Supabase error:', error); return; }
-    stockData = {};
-    (data || []).forEach(r => { stockData[r.slug] = r; });
-    renderAll();
-  }
-
-  function subscribeStock() {
-    if (!supabase) return;
-    supabase.channel('kolor-stock')
-      .on('postgres_changes', {
-        event: 'UPDATE',
-        schema: 'public',
-        table: 'kolor_editions'
-      }, payload => {
-        const r = payload.new;
-        stockData[r.slug] = r;
-        renderAll();
-      })
-      .subscribe();
-  }
-
-  function getStock(slug) {
-    return stockData[slug] || { vendus_dibond: 0, vendus_a4: 0 };
-  }
-
-  function getPrixDibond(work, vendus) {
-    if (vendus <= 3) return work.prix[0];
-    if (vendus <= 7) return work.prix[1];
-    return work.prix[2];
-  }
-
-  /* ═══════════════════════════════════════════════════════
-     ROUTING
-  ═══════════════════════════════════════════════════════ */
-  // showView : uniquement pour produit et merci (galerie/boutique/hero gérés par CSS :target)
-  function showView(name, slug) {
-    // Masquer les vues JS
-    document.querySelectorAll('.js-active').forEach(v => v.classList.remove('js-active'));
-    window.scrollTo(0, 0);
-
-    if (name === 'produit' && slug) {
-      const work = WORKS.find(w => w.slug === slug);
-      if (work) {
-        currentWork = work;
-        selectedFormat = 'dibond';
-        document.getElementById('view-produit').classList.add('js-active');
-        renderProduit();
-        try { history.pushState(null, '', location.pathname + '#' + slug); } catch(e) {}
-      }
-    }
-    if (name === 'merci') {
-      document.getElementById('view-merci').classList.add('js-active');
-      renderMerci();
-      try { history.pushState(null, '', location.pathname + '#view-merci'); } catch(e) {}
-    }
-  }
-
-  function routeFromHash() {
-    const hash = location.hash.slice(1);
-    // Slug direct → page produit
-    const work = WORKS.find(w => w.slug === hash);
-    if (work) { showView('produit', hash); return; }
-    // Sinon : retirer les vues JS-actives (galerie/boutique/hero gérés par CSS :target)
-    document.querySelectorAll('.js-active').forEach(v => v.classList.remove('js-active'));
-  }
-
-  window.addEventListener('popstate', routeFromHash);
-  window.addEventListener('hashchange', routeFromHash);
-
-  // Aussi retirer les boutons addEventListener qu'on avait ajoutés
-  // (plus nécessaires, les <a href="..."> suffisent)
-
-  /* ═══════════════════════════════════════════════════════
-     RENDER : GALERIE
-  ═══════════════════════════════════════════════════════ */
-  function renderGalerie() {
-    const grid = document.getElementById('galerieGrid');
-    grid.innerHTML = WORKS.map(w => `
-      <a class="galerie-card" href="#${w.slug}" style="display:block;text-decoration:none;color:inherit;">
-        <div class="galerie-card-color" style="background:${w.couleur};"></div>
-        <img class="galerie-card-img" src="${IMG_BASE}${w.img}"
-             alt="${w.titre}"
-             onerror="this.style.display='none'">
-        <div class="galerie-card-info">
-          <div class="galerie-card-num-visible">${w.num}</div>
-          <div class="galerie-card-title-visible">${w.titre}</div>
-        </div>
-        <div class="galerie-card-overlay">
-          <div class="galerie-card-num">${w.num}</div>
-          <div class="galerie-card-title">${w.titre}</div>
-        </div>
-      </a>
-    `).join('');
-  }
-
-  /* ═══════════════════════════════════════════════════════
-     RENDER : BOUTIQUE
-  ═══════════════════════════════════════════════════════ */
-  function setBoutiqueFilter(f, btn) {
-    currentFilter = f;
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    renderBoutique();
-  }
-
-  function renderBoutique() {
-    const grid = document.getElementById('boutiqueGrid');
-    grid.innerHTML = WORKS.map(w => {
-      const s = getStock(w.slug);
-      const dispD = 10 - s.vendus_dibond;
-      const dispA4 = 30 - s.vendus_a4;
-      const prixD = getPrixDibond(w, s.vendus_dibond);
-
-      const stockD = stockBadge(dispD, 10);
-      const stockA4 = stockBadge(dispA4, 30);
-
-      const showDibond = currentFilter !== 'a4';
-      const showA4     = currentFilter !== 'dibond';
-
-      return `
-      <a class="boutique-card" href="#${w.slug}" style="display:block;text-decoration:none;color:inherit;cursor:pointer;">
-        <img class="boutique-card-thumb"
-             src="${IMG_BASE}${w.img}" alt="${w.titre}"
-             onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
-        <div class="boutique-card-color-thumb" style="background:${w.couleur};display:none;"></div>
-        <div class="boutique-card-body">
-          <div class="boutique-card-num">${w.num}</div>
-          <div class="boutique-card-title">${w.titre}</div>
-          <div class="boutique-card-formats">
-            ${showDibond ? `
-            <div class="boutique-format-line">
-              <span class="boutique-format-name">Dibond ${w.format_dibond}</span>
-              <div class="boutique-format-right">
-                <span class="boutique-price">${prixD}€</span>
-                <span class="boutique-stock ${stockD.cls}">${dispD > 0 ? dispD + '/10' : 'Épuisé'}</span>
-              </div>
-            </div>` : ''}
-            ${showA4 ? `
-            <div class="boutique-format-line">
-              <span class="boutique-format-name">A4 Hahnemühle</span>
-              <div class="boutique-format-right">
-                <span class="boutique-price">180€</span>
-                <span class="boutique-stock ${stockA4.cls}">${dispA4 > 0 ? dispA4 + '/30' : 'Épuisé'}</span>
-              </div>
-            </div>` : ''}
-          </div>
-        </div>
-        <div class="boutique-card-color-dot" style="background:${w.couleur};"></div>
-      </a>`;
-    }).join('');
-  }
-
-  function stockBadge(restants, total) {
-    if (restants <= 0)           return { cls: 'stock-out',       label: 'Épuisé' };
-    if (restants <= total * 0.3) return { cls: 'stock-low',       label: `${restants}/${total}` };
-    return                              { cls: 'stock-available',  label: `${restants}/${total}` };
-  }
-
-  /* ═══════════════════════════════════════════════════════
-     RENDER : PAGE PRODUIT
-  ═══════════════════════════════════════════════════════ */
-  function renderProduit() {
-    const w = currentWork;
-    if (!w) return;
-    const s = getStock(w.slug);
-
-    // Image + bg couleur
-    const img = document.getElementById('produitImg');
-    img.src = IMG_BASE + w.img;
-    img.alt = w.titre;
-    document.getElementById('produitColorBg').style.background = w.couleur;
-
-    const panel = document.getElementById('produitPanel');
-    const dispD  = 10 - s.vendus_dibond;
-    const dispA4 = 30 - s.vendus_a4;
-    const prixD  = getPrixDibond(w, s.vendus_dibond);
-    const dispo  = selectedFormat === 'dibond' ? dispD : dispA4;
-    const prix   = selectedFormat === 'dibond' ? prixD : 180;
-    const total  = selectedFormat === 'dibond' ? 10 : 30;
-    const fillPct = ((total - dispo) / total * 100).toFixed(0);
-    const tierLabel = s.vendus_dibond <= 3 ? 'ex. 1–3' : s.vendus_dibond <= 7 ? 'ex. 4–7' : 'ex. 8–10';
-
-    panel.innerHTML = `
-      <div>
-        <div class="produit-num">№ ${w.num}</div>
-        <h2 class="produit-titre">${w.titre}</h2>
-        <div class="produit-couleur">
-          <div class="produit-couleur-dot" style="background:${w.couleur};"></div>
-          <span>${w.couleur}</span>
-        </div>
-      </div>
-
-      <div class="produit-sep"></div>
-
-      <div class="format-selector">
-        <div class="format-label">Format</div>
-        <div class="format-options">
-          <div class="format-option ${selectedFormat==='dibond'?'selected':''}"
-               onclick="selectFormat('dibond')" style="border-color:${selectedFormat==='dibond'?'#f0f0ee':''}">
-            <div>
-              <div class="format-option-name">Dibond Museum Etching</div>
-              <div class="format-option-desc">${w.format_dibond} · Museum Etching 350g<br>contrecollé Dibond 2mm · Châssis alu</div>
-              <span class="format-option-stock ${stockBadge(dispD,10).cls}">
-                ${dispD > 0 ? dispD + ' / 10 disponibles' : 'Édition complète'}
-              </span>
-            </div>
-            <div class="format-option-price-zone">
-              <div class="format-option-price">${prixD}€</div>
-              <div class="format-option-tiers">
-                ${w.prix[0]}€ · ex. 1–3<br>
-                ${w.prix[1]}€ · ex. 4–7<br>
-                ${w.prix[2]}€ · ex. 8–10
-              </div>
-            </div>
-          </div>
-
-          <div class="format-option ${selectedFormat==='a4'?'selected':''}"
-               onclick="selectFormat('a4')" style="border-color:${selectedFormat==='a4'?'#f0f0ee':''}">
-            <div>
-              <div class="format-option-name">A4 Hahnemühle</div>
-              <div class="format-option-desc">21×29,7 cm · Papier Fine Art<br>Signé, numéroté · 30 exemplaires</div>
-              <span class="format-option-stock ${stockBadge(dispA4,30).cls}">
-                ${dispA4 > 0 ? dispA4 + ' / 30 disponibles' : 'Édition complète'}
-              </span>
-            </div>
-            <div class="format-option-price-zone">
-              <div class="format-option-price">180€</div>
-              <div class="format-option-tiers">Prix fixe</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="produit-sep"></div>
-
-      <div class="produit-stock-zone">
-        <div class="produit-stock-bar">
-          <div class="produit-stock-fill"
-               style="width:${fillPct}%;background:${w.couleur};"></div>
-        </div>
-        <div class="produit-stock-text">
-          ${dispo > 0 ? `${dispo} / ${total} disponibles` : 'Édition complète'}
-        </div>
-      </div>
-
-      <div>
-        <button class="btn-acheter" id="acheterBtn"
-                onclick="startCheckout('${w.slug}')"
-                ${dispo <= 0 ? 'disabled' : ''}>
-          ${dispo > 0 ? 'Commander — ' + prix + '€' : 'Édition complète'}
-        </button>
-      </div>
-
-      <div class="produit-sep"></div>
-
-      <div class="produit-inclus">
-        <div class="produit-inclus-label">Inclus dans chaque tirage</div>
-        <div class="produit-inclus-item">Tirage signé et numéroté par Bertrand Basset</div>
-        <div class="produit-inclus-item">Certificat d'authenticité</div>
-        <div class="produit-inclus-item">
-          ${selectedFormat === 'dibond'
-            ? 'Museum Etching 350g contrecollé Dibond 2mm + châssis rentrant aluminium'
-            : 'Papier Hahnemühle Fine Art A4'}
-        </div>
-        <div class="produit-inclus-item">Livraison soigneusement emballée</div>
-      </div>
-    `;
-  }
-
-  function selectFormat(fmt) {
-    selectedFormat = fmt;
-    renderProduit();
-  }
-
-  /* ═══════════════════════════════════════════════════════
-     CHECKOUT STRIPE
-  ═══════════════════════════════════════════════════════ */
-  async function startCheckout(slug, btn) {
-    if (!btn) btn = document.getElementById('acheterBtn');
-    if (!btn || btn.disabled) return;
-
-    const w = WORKS.find(x => x.slug === slug);
-    if (!w) return;
-
-    const s = getStock(w.slug);
-    const dispD  = 10 - s.vendus_dibond;
-    const dispA4 = 30 - s.vendus_a4;
-    if (selectedFormat === 'dibond' && dispD <= 0) { showToast('Cette édition est complète.'); return; }
-    if (selectedFormat === 'a4' && dispA4 <= 0) { showToast('Cette édition est complète.'); return; }
-
-    btn.disabled = true;
-    btn.innerHTML = '<span class="dk-spinner"></span>Redirection…';
-
-    try {
-      if (CHECKOUT_URL.includes('YOUR_SUPABASE')) {
-        // Mode démo sans Supabase configuré
-        showToast('⚙️ Stripe non configuré — mode démo');
-        setTimeout(() => { btn.disabled=false; btn.textContent='Commander'; }, 2000);
-        return;
-      }
-
-      const prix = selectedFormat === 'dibond'
-        ? getPrixDibond(w, s.vendus_dibond) : 180;
-
-      const resp = await fetch(CHECKOUT_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${SUPABASE_KEY}`
-        },
-        body: JSON.stringify({
-          slug,
-          format: selectedFormat,
-          prix,
-          titre: w.titre,
-          success_url: `${location.origin}/dustin-kolor/#merci`,
-          cancel_url:  `${location.origin}/dustin-kolor/#${slug}`
-        })
+      // Images
+      document.querySelectorAll('.gallery-image').forEach(img => {
+        img.classList.toggle('active', +img.dataset.index === i);
       });
 
-      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-      const { url, error } = await resp.json();
-      if (error) throw new Error(error);
-      window.location.href = url;
+      // Nav items
+      document.querySelectorAll('.photo-nav-item').forEach(item => {
+        item.classList.toggle('active', +item.dataset.index === i);
+      });
 
-    } catch(e) {
-      console.error('Checkout error:', e);
-      showToast('Erreur — ' + e.message);
-      btn.disabled = false;
-      btn.textContent = 'Commander';
+      // Counter
+      document.getElementById('counter').textContent = (i + 1) + ' / ' + TOTAL;
     }
-  }
 
-  /* ═══════════════════════════════════════════════════════
-     RENDER : MERCI
-  ═══════════════════════════════════════════════════════ */
-  function renderMerci() {
-    const recap = document.getElementById('merciRecap');
-    // Récupère les params depuis l'URL après redirect Stripe
-    const params = new URLSearchParams(location.search);
-    const session = params.get('session_id');
-    recap.innerHTML = `
-      <div class="merci-order-label">Commande confirmée</div>
-      ${session ? `<div class="merci-order-row"><span>Référence</span><strong>${session.slice(0,20)}…</strong></div>` : ''}
-      <div class="merci-order-row">
-        <span>Un email de confirmation vous a été envoyé avec tous les détails de votre tirage.</span>
-      </div>
-    `;
-  }
+    function prev() { showPhoto((current - 1 + TOTAL) % TOTAL); }
+    function next() { showPhoto((current + 1) % TOTAL); }
 
-  /* ═══════════════════════════════════════════════════════
-     UTILS
-  ═══════════════════════════════════════════════════════ */
-  function renderAll() {
-    renderGalerie();
-    renderBoutique();
-    if (currentWork && document.getElementById('view-produit').classList.contains('active')) {
-      renderProduit();
-    }
-  }
-
-  function showToast(msg, duration=3000) {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), duration);
-  }
-
-  /* ═══════════════════════════════════════════════════════
-     BOOT
-  ═══════════════════════════════════════════════════════ */
-  document.addEventListener('DOMContentLoaded', () => {
-    renderGalerie();
-    renderBoutique();
-    initSupabase();
-    routeFromHash();
-
-    // Navigation hero : CSS :target (href="#view-galerie" / "#view-boutique")
-  });
+    // Keyboard navigation
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp')   prev();
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next();
+    });
   </script>
 </body>
 </html>
