@@ -789,7 +789,7 @@ class Portfolio {
     }
 
     openHomeGallery() {
-        this.openGallery('portrait');
+        this.openGallery(SITE_CONFIG.defaultGallery || 'portrait');
     }
 
     toggleAutoplay() {
