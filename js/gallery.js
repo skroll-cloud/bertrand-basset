@@ -1,6 +1,6 @@
 /**
  * Bertrand Basset Portfolio — gallery.js
- * Généré par Admin V4 — 22/04/2026 11:10:48
+ * Généré par Admin V4 — 22/04/2026 11:33:56
  */
 
 const SITE_CONFIG = {
@@ -472,12 +472,10 @@ const GALLERIES_CONFIG = {
         autoplay:      false,
         autoplayDelay: 4,
         images: [
-            {"filename":"images/portrait/conversation-02.jpg"},
-            {"filename":"images/portrait/L1060508.jpg"},
-            {"filename":"images/dustin-kolor/02.jpg"},
-            {"filename":"images/cinema/2.jpg"},
-            {"filename":"images/gem/Theo.jpg","title":"Théo"},
-            {"filename":"images/portrait/portrait-02.jpg"}
+            {"filename":"images/portrait/conversation-02.jpg","title":"Antoine Asnar","subtitle":"Portrait Studio"},
+            {"filename":"images/dustin-kolor/04.jpg","title":"Lost in the dust","subtitle":"Exposition"},
+            {"filename":"images/portrait/L1060508.jpg","title":"Ange-Marine","subtitle":"Portrait nature"},
+            {"filename":"images/cinema/1.jpg","title":"J'arrive","subtitle":"Réalisateur cinéma"}
         ],
         captions: {}
     },
