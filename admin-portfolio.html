@@ -750,6 +750,7 @@ details.image-card-fields[open] > summary::before {
         <input type="checkbox" id="autoPushToggle"> Auto-push
     </label>
     <button class="btn btn-img-sync" id="imgSyncBtn" onclick="syncImagesToGitHub()" title="Envoyer les images manquantes sur GitHub (images déjà présentes sont ignorées)">📸 Images</button>
+    <button class="btn btn-ghost" id="ghConfigBtn" onclick="openGhSettings()" title="Paramètres GitHub (token, repo…)">🔑</button>
     <button class="btn btn-publish" id="publishBtn" onclick="publishToGitHub()" title="Publier tout le site sur GitHub → Cloudflare déploie automatiquement">🚀 Publier</button>
 </div>
 
@@ -3805,33 +3806,65 @@ async function tryRestoreSiteRoot() {
 const GH_STORAGE_KEY = 'bertrandGithubV1';
 
 function loadGhConfig() {
-    /* Try localStorage first, IDB is async so only used for saving */
-    try { return JSON.parse(localStorage.getItem(GH_STORAGE_KEY)) || {}; } catch(e) { return {}; }
+    /* Try localStorage → sessionStorage fallback */
+    try {
+        const ls = JSON.parse(localStorage.getItem(GH_STORAGE_KEY));
+        if (ls?.token) return ls;
+    } catch(e) {}
+    try {
+        const ss = JSON.parse(sessionStorage.getItem(GH_STORAGE_KEY));
+        if (ss?.token) return ss;
+    } catch(e) {}
+    return {};
 }
 async function saveGhConfig(cfg) {
-    localStorage.setItem(GH_STORAGE_KEY, JSON.stringify(cfg));
-    await idbSet('ghConfig', cfg);   /* also persist in IDB for Safari */
+    const json = JSON.stringify(cfg);
+    localStorage.setItem(GH_STORAGE_KEY, json);
+    sessionStorage.setItem(GH_STORAGE_KEY, json);  /* survit aux rechargements de page */
+    await idbSet('ghConfig', cfg);   /* persist en IDB = survit aux fermetures Chrome */
+    updateGhStatus();
 }
 
-/* Restore GitHub config from IDB into localStorage if localStorage is empty */
+/* Met à jour l'icône 🔑 selon que le token est configuré ou non */
+function updateGhStatus() {
+    const btn = document.getElementById('ghConfigBtn');
+    if (!btn) return;
+    const cfg = loadGhConfig();
+    if (cfg.token) {
+        btn.title = `GitHub configuré : ${cfg.owner}/${cfg.repo} (${cfg.branch}) — cliquer pour modifier`;
+        btn.style.color = '#4caf50';
+        btn.style.opacity = '1';
+    } else {
+        btn.title = 'GitHub non configuré — cliquer pour entrer le token';
+        btn.style.color = '';
+        btn.style.opacity = '0.5';
+    }
+}
+
+/* Restore GitHub config from IDB into localStorage/sessionStorage if missing */
 async function tryRestoreGhConfig() {
     try {
-        if (loadGhConfig().token) return;   /* already in localStorage */
+        if (loadGhConfig().token) { updateGhStatus(); return; }
         const cfg = await idbGet('ghConfig');
         if (cfg?.token) {
-            localStorage.setItem(GH_STORAGE_KEY, JSON.stringify(cfg));
+            const json = JSON.stringify(cfg);
+            localStorage.setItem(GH_STORAGE_KEY, json);
+            sessionStorage.setItem(GH_STORAGE_KEY, json);
         }
     } catch(e) { /* ignore */ }
+    updateGhStatus();
 }
 
 function openGhSettings(callback) {
     const cfg = loadGhConfig();
+    const hasToken = !!cfg.token;
     const inp = `background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:0.35rem 0.6rem;font-size:0.75rem;font-family:inherit;border-radius:3px;width:100%;`;
     openModal('GitHub \u2014 Param\u00e8tres', `
     <div style="display:grid;gap:0.75rem;">
-        <p style="font-size:0.68rem;color:var(--dim);margin:0;">
-            Ces infos sont stock\u00e9es <strong>uniquement</strong> sur ton ordinateur (localStorage).
-        </p>
+        ${hasToken
+            ? `<p style="font-size:0.72rem;color:#4caf50;margin:0;">✅ Token configuré et sauvegardé</p>`
+            : `<p style="font-size:0.68rem;color:var(--dim);margin:0;">Ces infos sont stockées <strong>uniquement</strong> sur ton ordinateur.</p>`
+        }
         <div><label style="font-size:0.65rem;color:var(--dim);display:block;margin-bottom:0.3rem;">Owner (compte GitHub)</label>
             <input id="gh_owner" style="${inp}" value="${cfg.owner||'skroll-cloud'}"></div>
         <div><label style="font-size:0.65rem;color:var(--dim);display:block;margin-bottom:0.3rem;">Repo</label>
@@ -3840,23 +3873,27 @@ function openGhSettings(callback) {
             <input id="gh_branch" style="${inp}" value="${cfg.branch||'main'}"></div>
         <div><label style="font-size:0.65rem;color:var(--dim);display:block;margin-bottom:0.3rem;">
             Personal Access Token
-            <a href="https://github.com/settings/tokens/new?scopes=repo&description=BertrandBassetAdmin" target="_blank"
-               style="color:#64b5f6;margin-left:0.4rem;font-size:0.6rem;">\u2192 Cr\u00e9er un token</a>
+            ${hasToken
+                ? `<span style="color:#4caf50;margin-left:0.4rem;font-size:0.6rem;">✓ sauvegardé — laisser vide pour conserver</span>`
+                : `<a href="https://github.com/settings/tokens/new?scopes=repo&description=BertrandBassetAdmin" target="_blank" style="color:#64b5f6;margin-left:0.4rem;font-size:0.6rem;">\u2192 Créer un token</a>`
+            }
             </label>
-            <input id="gh_token" type="password" style="${inp}" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" value="${cfg.token||''}">
+            <input id="gh_token" type="password" style="${inp}" placeholder="${hasToken ? '(inchangé)' : 'ghp_xxxxxxxxxxxxxxxxxxxx'}" value="">
             <div style="font-size:0.6rem;color:var(--dim);margin-top:0.3rem;">Scope requis\u00a0: <code>repo</code> (ou <code>contents:write</code> pour fine-grained)</div>
         </div>
     </div>`, `
         <button class="btn btn-ghost" onclick="closeModal()">Annuler</button>
         <button class="btn btn-green" onclick="
+            const existing = loadGhConfig();
+            const newTok = document.getElementById('gh_token').value.trim();
             const c={
                 owner: document.getElementById('gh_owner').value.trim(),
                 repo:  document.getElementById('gh_repo').value.trim(),
                 branch:document.getElementById('gh_branch').value.trim()||'main',
-                token: document.getElementById('gh_token').value.trim()
+                token: newTok || existing.token || ''
             };
-            if(!c.owner||!c.repo||!c.token){showToast('\u26a0\ufe0f Remplis tous les champs');return;}
-            saveGhConfig(c).then(()=>showToast('\u2705 Config GitHub sauvegard\u00e9e (persist\u00e9e)'));closeModal();
+            if(!c.owner||!c.repo||!c.token){showToast('\u26a0\ufe0f Token manquant');return;}
+            saveGhConfig(c).then(()=>showToast('\u2705 Config GitHub sauvegardée'));closeModal();
             if(typeof ${callback||'undefined'}==='function') ${callback||''}();
         ">\uD83D\uDCBE Enregistrer</button>
     `);
