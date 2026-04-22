@@ -3137,8 +3137,14 @@ function renderSettingsEditor() {
         </label>
         <div><label class="field-label">Image de landing (chemin)</label>
             <div style="display:flex;gap:0.5rem;align-items:center;">
-                <input style="${inp}" type="text" value="${escHtml(s.landingImage||'images/landing/landing-01.jpg')}"
-                    id="landingImgInput" oninput="state.settings.landingImage=this.value;saveState();document.getElementById('landingPreview').src=this.value;">
+                <input style="${inp}" type="text" value="${escHtml((s.landingImage||'images/landing/landing-01.jpg').replace(/\?v=\d+/,''))}"
+                    id="landingImgInput" oninput="
+                        const raw=this.value.replace(/\\?v=\\d+/,'');
+                        const stamped=raw+(raw?'?v='+new Date().toISOString().slice(0,10).replace(/-/g,''):'');
+                        state.settings.landingImage=stamped;
+                        saveState();
+                        document.getElementById('landingPreview').src=stamped;
+                    ">
                 <img id="landingPreview" src="${escHtml(s.landingImage||'images/landing/landing-01.jpg')}"
                     style="height:52px;width:78px;object-fit:cover;border-radius:2px;border:1px solid var(--border);flex-shrink:0;"
                     onerror="this.style.opacity='0.2'">
