@@ -1,6 +1,6 @@
 /**
  * Bertrand Basset Portfolio — gallery.js
- * Généré par Admin V4 — 22/04/2026 09:30:52
+ * Généré par Admin V4 — 22/04/2026 11:09:24
  */
 
 const SITE_CONFIG = {
@@ -9,7 +9,7 @@ const SITE_CONFIG = {
     defaultLang:    "fr",
     showLanding:    true,
     landingImage:   "images/accueil/accueil-01.jpg?v=20260422",
-    defaultGallery: "dustin-kolor",
+    defaultGallery: "best-of",
     social: {
         instagram: "https://www.instagram.com/bassetbertrand/",
         facebook:  "https://www.facebook.com/BertrandBassetPhotographie",
@@ -463,6 +463,19 @@ const GALLERIES_CONFIG = {
             {"filename":"08.jpg"},
             {"filename":"09.jpg"},
             {"filename":"10.jpg"}
+        ],
+        captions: {}
+    },
+
+    "best-of": {
+        path:          ".",
+        autoplay:      false,
+        autoplayDelay: 4,
+        images: [
+            {"filename":"images/portrait/conversation-02.jpg"},
+            {"filename":"images/cinema/2.jpg"},
+            {"filename":"images/dustin-kolor/02.jpg"},
+            {"filename":"images/gem/Theo.jpg","title":"Théo"}
         ],
         captions: {}
     },
