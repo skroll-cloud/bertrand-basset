@@ -1,6 +1,6 @@
 /**
  * Bertrand Basset Portfolio — gallery.js
- * Généré par Admin V4 — 22/04/2026 08:26:06
+ * Généré par Admin V4 — 22/04/2026 09:03:28
  */
 
 const SITE_CONFIG = {
@@ -356,7 +356,7 @@ const GALLERIES_CONFIG = {
                 "titleEn": "",
                 "subtitleFr": "",
                 "subtitleEn": "",
-                "descFr": "En pleine tempête de sable, la visibilité est proche de zéro. On enfile les goggles — ces lunettes de protection aux verres colorés. Le monde devient rouge, bleu, orange, rose…\n\nDust'in Kolor n'est pas une série colorisée. C'est ce que j'ai vu.\n\nDésert du Nevada — Burning Man, août 2016.",
+                "descFr": "Désert du Nevada — Burning Man, août 2016.\n\nSans vraiment prévenir, le vent se met à souffler, le sable très fin du désert qu'on appelle la Dust se soulève et en quelques minutes on ne distingue plus que des formes grises dans le brouillard.\n\nOn enfile alors ses Goggles, ces grosses lunettes de protection aux verres colorés et le monde devient rouge, bleu, orange, rose…\n\nC'est cette vision pendant les tempêtes de sable que j'ai voulu retranscrire avec ce travail chormatique.\n\n",
                 "descEn": "In the middle of a sandstorm, visibility drops to near zero. You put on goggles — those coloured protective lenses. The world turns red, blue, orange, pink…\n\nDust'in Kolor is not a colorised series. It's what I saw.\n\nNevada Desert — Burning Man, August 2016.",
                 "ctaLabel": "",
                 "ctaUrl": "",
@@ -373,7 +373,7 @@ const GALLERIES_CONFIG = {
             {"filename":"04.jpg","caption":{"en":"Lost in the Dust","fr":"Lost in the Dust"}},
             {"filename":"05.jpg","caption":{"en":"Camp Lighters","fr":"Camp Lighters"}},
             {"filename":"06.jpg","caption":{"en":"I'm Here","fr":"I'm Here"}},
-            {"filename":"08.jpg","caption":{"en":"Umbrellas Way","fr":"Umbrellas Way"}}
+            {"filename":"08.jpg","caption":{"en":"Umbrella's Way","fr":"Umbrella's Way"}}
         ],
         captions: {}
     },
