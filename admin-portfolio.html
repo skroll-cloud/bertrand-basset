@@ -745,16 +745,12 @@ details.image-card-fields[open] > summary::before {
     <span class="topbar-spacer"></span>
     <span class="topbar-saved" id="savedLabel"></span>
     <button class="btn btn-ghost" onclick="window.open('index.html','_blank')" title="Ouvrir le site dans un nouvel onglet">👁 Aperçu</button>
-    <button class="btn btn-ghost" onclick="importConfig()">↑ Importer</button>
-    <button class="btn btn-ghost" onclick="exportGalleryImages()" title="Exporter gallery-images.js">↓ gallery-images.js</button>
-    <button class="btn btn-green" onclick="exportConfig()">↓ gallery.js</button>
     <button class="btn btn-sync" id="syncBtn" onclick="linkJsFolder()" title="Sélectionne la RACINE du site (site-v1/) pour activer auto-sync + publication complète">🔴 Lier site/</button>
     <label class="autopush-label" title="Publier automatiquement sur GitHub après chaque modification (délai 8s)">
         <input type="checkbox" id="autoPushToggle"> Auto-push
     </label>
+    <button class="btn btn-img-sync" id="imgSyncBtn" onclick="syncImagesToGitHub()" title="Envoyer les images manquantes sur GitHub (images déjà présentes sont ignorées)">📸 Images</button>
     <button class="btn btn-publish" id="publishBtn" onclick="publishToGitHub()" title="Publier tout le site sur GitHub → Cloudflare déploie automatiquement">🚀 Publier</button>
-    <button class="btn btn-img-sync" id="imgSyncBtn" onclick="syncImagesToGitHub()" title="Envoyer les images manquantes sur GitHub (images déjà présentes sont ignorées)">📸 Images →</button>
-    <button class="btn btn-ghost" onclick="syncImagesToGitHub(true)" title="Re-envoyer TOUTES les images (corrige les fichiers corrompus sur GitHub — lent)">🔁</button>
 </div>
 
 <!-- ─── APP ────────────────────────────────────────── -->

@@ -1,6 +1,6 @@
 /**
  * Bertrand Basset Portfolio — gallery.js
- * Généré par Admin V4 — 19/04/2026 00:20:54
+ * Généré par Admin V4 — 22/04/2026 08:26:06
  */
 
 const SITE_CONFIG = {
@@ -9,7 +9,7 @@ const SITE_CONFIG = {
     defaultLang:    "fr",
     showLanding:    true,
     landingImage:   "images/accueil/accueil-01.jpg",
-    defaultGallery: "portrait",
+    defaultGallery: "dustin-kolor",
     social: {
         instagram: "https://www.instagram.com/bassetbertrand/",
         facebook:  "https://www.facebook.com/BertrandBassetPhotographie",
@@ -42,9 +42,8 @@ const MENU_CONFIG = [
   {
     "id": "dustin-kolor-link",
     "name": "DUST'IN KOLOR",
-    "type": "external",
-    "url": "dustin-kolor/index.html",
-    "highlight": true
+    "type": "gallery",
+    "galleryId": "dustin-kolor"
   },
   {
     "id": "item-1773174917949",
@@ -197,7 +196,7 @@ const GALLERIES_CONFIG = {
 
     "portrait": {
         path:          "images/portrait",
-        autoplay:      false,
+        autoplay:      true,
         autoplayDelay: 4,
         cartons: [
         {
@@ -217,7 +216,7 @@ const GALLERIES_CONFIG = {
                 "sidebarEn": ""
         }
 ],
-        captions: {"02.jpg":{"en":"","fr":"Jean-Philippe Davodeau\nActeur"},"L1060508.jpg":{"en":"","fr":"Ange-Marine Chénevat\nActrice"},"conversation-02.jpg":{"en":"","fr":"Antoine Asnar\nActeur"},"Atelier_Plougasnou.jpg":{"en":"","fr":"Cuisinier "},"Imane02@bertrandbasset 2.jpg":{"en":"","fr":"Imene\nActrice"},"portrait-02.jpg":{"en":"","fr":"Ange-Marine Chénevat\nActrice"},"JF.jpg":{"en":"","fr":"Jean-François\nSerie GEM"},"L1020630.jpg":{"en":"","fr":"Patrick Ewen\nConteur"}},
+        captions: {"02.jpg":{"en":"","fr":"Jean-Philippe Davodeau\nActeur"},"conversation-02.jpg":{"en":"","fr":"Antoine Asnar\nActeur"},"Imane02@bertrandbasset 2.jpg":{"en":"","fr":"Imene\nActrice"},"JF.jpg":{"en":"","fr":"Jean-François\nSerie GEM"},"L1020630.jpg":{"en":"","fr":"Patrick Ewen\nConteur"},"portrait-02.jpg":{"en":"","fr":"Ange-Marine Chénevat\nActrice"},"L1060508.jpg":{"en":"","fr":"Ange-Marine Chénevat\nActrice"},"Atelier_Plougasnou.jpg":{"en":"","fr":"Cuisinier "}},
     },
 
     "conversation-s-": {
@@ -345,12 +344,64 @@ const GALLERIES_CONFIG = {
         captions: {}
     },
 
+    "dustin-kolor": {
+        path:          "images/dustin-kolor",
+        autoplay:      false,
+        autoplayDelay: 5,
+        cartons: [
+        {
+                "cid": "cmo8dyt3gkpc",
+                "position": 0,
+                "titleFr": "",
+                "titleEn": "",
+                "subtitleFr": "",
+                "subtitleEn": "",
+                "descFr": "En pleine tempête de sable, la visibilité est proche de zéro. On enfile les goggles — ces lunettes de protection aux verres colorés. Le monde devient rouge, bleu, orange, rose…\n\nDust'in Kolor n'est pas une série colorisée. C'est ce que j'ai vu.\n\nDésert du Nevada — Burning Man, août 2016.",
+                "descEn": "In the middle of a sandstorm, visibility drops to near zero. You put on goggles — those coloured protective lenses. The world turns red, blue, orange, pink…\n\nDust'in Kolor is not a colorised series. It's what I saw.\n\nNevada Desert — Burning Man, August 2016.",
+                "ctaLabel": "",
+                "ctaUrl": "",
+                "categoryFr": "",
+                "categoryEn": "",
+                "sidebarFr": "",
+                "sidebarEn": ""
+        }
+],
+        images: [
+            {"filename":"01.jpg","caption":{"en":"Sandstorm","fr":"Sandstorm"}},
+            {"filename":"02.jpg","caption":{"en":"Flying Car","fr":"Flying Car"}},
+            {"filename":"03.jpg","caption":{"en":"After the Storm","fr":"After the Storm"}},
+            {"filename":"04.jpg","caption":{"en":"Lost in the Dust","fr":"Lost in the Dust"}},
+            {"filename":"05.jpg","caption":{"en":"Camp Lighters","fr":"Camp Lighters"}},
+            {"filename":"06.jpg","caption":{"en":"I'm Here","fr":"I'm Here"}},
+            {"filename":"08.jpg","caption":{"en":"Umbrellas Way","fr":"Umbrellas Way"}}
+        ],
+        captions: {}
+    },
+
     "gem": {
         path:          "images/gem",
         autoplay:      false,
         autoplayDelay: 4,
+        autoplayAudio: true,
+        cartons: [
+        {
+                "cid": "cmo8dyt3hdp8",
+                "position": 0,
+                "titleFr": "",
+                "titleEn": "",
+                "subtitleFr": "",
+                "subtitleEn": "",
+                "descFr": "Série de portraits réalisée au GEM de Morlaix.\nChaque portrait est accompagné d’un témoignage audio.",
+                "descEn": "Portrait series made at the GEM in Morlaix.\nEach portrait comes with an audio testimony.",
+                "ctaLabel": "",
+                "ctaUrl": "",
+                "categoryFr": "",
+                "categoryEn": "",
+                "sidebarFr": "",
+                "sidebarEn": ""
+        }
+],
         images: [
-            {"filename":"JeanFrancois.jpg","audio":"JeanFrancois.mp3","caption":{"en":"","fr":"Jean-François"}},
             {"filename":"ALain.jpg","audio":"ALain.mp3","caption":{"en":"","fr":"Alain"}},
             {"filename":"Beatrice.jpg","audio":"Beatrice.mp3","caption":{"en":"","fr":"Béatrice"}},
             {"filename":"Bernard.jpg","audio":"Bernard.mp3","title":"Bernard"},
@@ -358,6 +409,7 @@ const GALLERIES_CONFIG = {
             {"filename":"GUY.jpg","title":"Guy"},
             {"filename":"Helene.jpg","audio":"Helene.mp3","title":"Hélène"},
             {"filename":"Jean-Pierre.jpg","title":"Jean-Pierre"},
+            {"filename":"JeanFrancois.jpg","audio":"JeanFrancois.mp3","caption":{"en":"","fr":"Jean-François"}},
             {"filename":"Laurence.jpg","title":"Laurence"},
             {"filename":"Patricia.jpg","audio":"Patricia.mp3","title":"Patricia"},
             {"filename":"Theo.jpg","audio":"Theo.mp3","title":"Théo"},
@@ -737,7 +789,7 @@ class Portfolio {
     }
 
     openHomeGallery() {
-        this.openGallery(SITE_CONFIG.defaultGallery || 'portrait');
+        this.openGallery('portrait');
     }
 
     toggleAutoplay() {

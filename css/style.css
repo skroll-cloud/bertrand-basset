@@ -1593,12 +1593,13 @@ body {
 /* ================================== */
 .carton-slide {
     display: flex;
-    align-items: center;
-    justify-content: center;
+    align-items: flex-end;
+    justify-content: flex-start;
     width: 100%;
     height: 100%;
     opacity: 0;
     transition: opacity 0.4s ease;
+    padding: 0 0 5rem 4rem;
 }
 
 .carton-slide.loaded {
@@ -1606,35 +1607,36 @@ body {
 }
 
 .carton-slide-inner {
-    max-width: 560px;
-    padding: 3rem 2.5rem;
-    text-align: left;
+    max-width: 480px;
+    border-left: 1px solid var(--light-gray);
+    padding-left: 2rem;
 }
 
 .carton-slide-title {
-    font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+    font-size: clamp(1rem, 2vw, 1.4rem);
     font-weight: 300;
-    letter-spacing: -0.01em;
-    line-height: 1.15;
+    letter-spacing: 0.02em;
+    line-height: 1.2;
     color: var(--black);
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
 }
 
 .carton-slide-subtitle {
-    font-size: 0.72rem;
+    font-size: 0.62rem;
     font-weight: 400;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--gray);
-    margin-bottom: 1.2rem;
+    color: var(--dim);
+    margin-bottom: 0.8rem;
 }
 
 .carton-slide-desc {
-    font-size: 0.82rem;
+    font-size: 0.78rem;
     font-weight: 300;
-    line-height: 1.75;
+    line-height: 1.8;
     color: var(--gray);
-    margin-bottom: 1.4rem;
+    margin-bottom: 1.2rem;
 }
 
 .carton-cta-btn {
