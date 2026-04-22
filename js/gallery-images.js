@@ -1,6 +1,6 @@
 /**
  * gallery-images.js
- * Généré par Admin V4 — 22/04/2026 11:10:49
+ * Généré par Admin V4 — 22/04/2026 11:33:56
  * Ne pas éditer manuellement.
  */
 const GALLERY_IMAGES = {
