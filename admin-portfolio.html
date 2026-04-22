@@ -4323,7 +4323,7 @@ const SITE_CONFIG = {
     email:          ${JSON.stringify(s.email||'bertrand.basset@gmail.com')},
     defaultLang:    ${JSON.stringify(s.defaultLang||'en')},
     showLanding:    ${s.showLanding!==false?'true':'false'},
-    landingImage:   ${JSON.stringify(s.landingImage||'images/landing/landing-01.jpg')},
+    landingImage:   ${JSON.stringify((()=>{ const raw=(s.landingImage||'images/landing/landing-01.jpg').replace(/\?v=\d+/,''); return raw+'?v='+new Date().toISOString().slice(0,10).replace(/-/g,''); })())},
     defaultGallery: ${JSON.stringify(s.defaultGallery||'portrait')},
     social: {
         instagram: ${JSON.stringify(s.instagram)},
