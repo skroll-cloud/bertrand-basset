@@ -4220,16 +4220,18 @@ async function publishToGitHub() {
         const now = new Date().toLocaleString('fr-FR', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
         const msg = `Admin: update \u2014 ${now}`;
 
-        /* Auto cache-busting: replace ?v=YYYYMMDD in index.html with today's date */
+        /* Auto cache-busting: replace ?v=YYYYMMDD everywhere with today’s date */
         const d = new Date();
-        const vTag = `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
+        const vTag = `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,’0’)}${String(d.getDate()).padStart(2,’0’)}`;
         const indexWithVersion = indexContent.replace(/\?v=\d{8}/g, `?v=${vTag}`);
 
+        /* gallery.js : toujours regénéré depuis l’état admin (inclut le cache-buster sur landingImage) */
+        const galleryJsFinal = generateGalleryJS();
+
         const files = [
-            { path: 'index.html',                content: indexWithVersion },
-            { path: 'css/style.css',             content: cssContent || '' },
-            /* Lit depuis le disque — évite d’écraser avec l’état interne de l’admin */
-            { path: 'js/gallery.js',             content: galleryJsContent   || generateGalleryJS() },
+            { path: ‘index.html’,                content: indexWithVersion },
+            { path: ‘css/style.css’,             content: cssContent || ‘’ },
+            { path: ‘js/gallery.js’,             content: galleryJsFinal },
             { path: 'js/gallery-images.js',      content: galleryImgContent  || generateGalleryImagesJS() },
             /* Page expo Dust'in Kolor */
             ...(dustinKolorContent ? [{ path: 'dustin-kolor/index.html', content: dustinKolorContent }] : [])
