@@ -627,6 +627,9 @@ details.image-card-fields[open] > summary::before {
 }
 .btn-icon:hover { background: var(--surface2); color: var(--text); }
 .btn-icon.danger:hover { color: #e57373; }
+.btn-icon.bestof { font-size: 0.8rem; }
+.btn-icon.bestof:hover { color: #ffd700; background: none; }
+.btn-icon.bestof.active { color: #ffd700; }
 .drag-handle { cursor: grab; }
 .drag-handle:active { cursor: grabbing; }
 
@@ -1923,7 +1926,8 @@ const GALLERY_META = {
     cinema:            { icon: '\uD83C\uDFAC', label: 'Cin\u00E9ma',    autoScan: false, hasDesc: false, hasCta: false, hidden: true },
     television:        { icon: '\uD83D\uDCFA', label: 'T\u00E9l\u00E9vision', autoScan: false, hasDesc: false, hasCta: false, hidden: true },
     accueil:           { icon: '\uD83C\uDFE0', label: 'Accueil',        autoScan: false, hasDesc: false, hasCta: false, special: true },
-    'dustin-kolor':    { icon: '\uD83C\uDFA8', label: "Dust'in Kolor", autoScan: false, hasDesc: true,  hasCta: false }
+    'dustin-kolor':    { icon: '\uD83C\uDFA8', label: "Dust'in Kolor", autoScan: false, hasDesc: true,  hasCta: false },
+    'best-of':         { icon: '\u2B50',       label: 'Best Of',       autoScan: false, hasDesc: true,  hasCta: false, bestOf: true }
 };
 
 /* ═══════════════════════════════════════════════════════
@@ -2976,6 +2980,14 @@ function renderImageCard(galleryId, img, idx, meta) {
         html += `<span style="font-size:0.58rem;color:#444;">${idx+1} / ${(state.galleriesConfig[galleryId].images||[]).length}</span>
                  <span style="flex:1"></span>`;
     }
+    /* Best Of toggle — sauf pour accueil et best-of lui-même */
+    if (!isAccueil && galleryId !== 'best-of') {
+        const fullPath   = getBestOfFullPath(galleryId, img);
+        const inBestOf   = isInBestOf(fullPath);
+        html += `<button class="btn-icon bestof${inBestOf?' active':''}" id="bestof_${galleryId}_${idx}"
+                    onclick="toggleBestOf('${galleryId}',${idx})"
+                    title="${inBestOf ? 'Retirer du Best Of' : 'Ajouter au Best Of'}">${inBestOf ? '\u2B50' : '\u2606'}</button>`;
+    }
     html += `<button class="btn-icon danger" onclick="removeImage('${galleryId}',${idx})" title="Retirer de la galerie (ne supprime pas le fichier)">\uD83D\uDDD1</button>`;
     html += `</div></div>`;
     return html;
@@ -3405,6 +3417,49 @@ function removeImage(galleryId, idx) {
     saveState();
     renderGalleryEditor(galleryId);
     showToast('Image supprim\u00E9e');
+}
+
+/* ── Best Of ── */
+function ensureBestOf() {
+    if (!state.galleriesConfig['best-of']) {
+        state.galleriesConfig['best-of'] = {
+            path:   '.',
+            images: [],
+            descFr: 'Sélection — Best Of',
+            descEn: 'Selection — Best Of'
+        };
+        GALLERY_META['best-of'] = { icon: '\u2B50', label: 'Best Of', autoScan: false, hasDesc: true, hasCta: false, bestOf: true, custom: true };
+    }
+}
+
+function getBestOfFullPath(galleryId, img) {
+    const path = state.galleriesConfig[galleryId]?.path || '';
+    return path ? `${path}/${img.filename}` : img.filename;
+}
+
+function isInBestOf(fullPath) {
+    return (state.galleriesConfig['best-of']?.images || []).some(i => i.filename === fullPath);
+}
+
+function toggleBestOf(galleryId, idx) {
+    const img      = state.galleriesConfig[galleryId].images[idx];
+    const fullPath = getBestOfFullPath(galleryId, img);
+    ensureBestOf();
+    const list = state.galleriesConfig['best-of'].images;
+    const pos  = list.findIndex(i => i.filename === fullPath);
+    if (pos >= 0) {
+        list.splice(pos, 1);
+        showToast('Retiré du Best Of');
+    } else {
+        list.push({ filename: fullPath, title: img.title || '', subtitle: img.subtitle || '' });
+        showToast('\u2B50 Ajouté au Best Of');
+    }
+    saveState();
+    /* Refresh only the affected card button */
+    const btn = document.getElementById(`bestof_${galleryId}_${idx}`);
+    if (btn) btn.textContent = isInBestOf(fullPath) ? '\u2B50' : '\u2606';
+    /* Also refresh sidebar list if best-of is visible */
+    if (state.activeGallery === 'best-of') renderGalleryEditor('best-of');
 }
 
 function addFeatured() {
