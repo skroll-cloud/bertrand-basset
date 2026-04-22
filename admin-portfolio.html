@@ -3744,6 +3744,7 @@ async function linkJsFolder() {
         } catch(e) { /* gallery.js introuvable — skip import */
             showToast('✅ Racine liée ! Mémorisée pour les prochaines fois.');
         }
+        await loadGhConfigFromFile();   /* restaure le token depuis _admin-private.json */
     } catch(e) {
         if (e.name !== 'AbortError') showToast('Erreur : ' + e.message);
     }
@@ -3858,6 +3859,7 @@ async function tryRestoreSiteRoot() {
             } catch(e) { /* gallery.js missing or unreadable — skip */ }
         }
         updateSyncBtn(true);
+        await loadGhConfigFromFile();   /* restaure le token depuis _admin-private.json */
         showToast('\uD83D\uDCC2 Dossier site/ restaur\u00e9 — galeries synchronis\u00e9es');
     } catch(e) { /* ignore — user will link manually */ }
 }
@@ -3865,7 +3867,8 @@ async function tryRestoreSiteRoot() {
 /* ═══════════════════════════════════════════════════════
    GITHUB PUBLISH
 ═══════════════════════════════════════════════════════ */
-const GH_STORAGE_KEY = 'bertrandGithubV1';
+const GH_STORAGE_KEY     = 'bertrandGithubV1';
+const GH_PRIVATE_FILE    = '_admin-private.json';  /* fichier local, jamais uploadé sur GitHub */
 
 function loadGhConfig() {
     /* Try localStorage → sessionStorage fallback */
@@ -3879,11 +3882,40 @@ function loadGhConfig() {
     } catch(e) {}
     return {};
 }
+
+/* Lit _admin-private.json depuis le dossier site/ si disponible */
+async function loadGhConfigFromFile() {
+    if (!window._siteRootHandle) return;
+    try {
+        const fh   = await window._siteRootHandle.getFileHandle(GH_PRIVATE_FILE);
+        const file = await fh.getFile();
+        const cfg  = JSON.parse(await file.text());
+        if (cfg?.token) {
+            const json = JSON.stringify(cfg);
+            localStorage.setItem(GH_STORAGE_KEY, json);
+            sessionStorage.setItem(GH_STORAGE_KEY, json);
+            updateGhStatus();
+        }
+    } catch(e) { /* fichier absent — pas d'erreur */ }
+}
+
+/* Écrit _admin-private.json dans le dossier site/ si disponible */
+async function saveGhConfigToFile(cfg) {
+    if (!window._siteRootHandle) return;
+    try {
+        const fh  = await window._siteRootHandle.getFileHandle(GH_PRIVATE_FILE, { create: true });
+        const w   = await fh.createWritable();
+        await w.write(JSON.stringify(cfg, null, 2));
+        await w.close();
+    } catch(e) { /* silencieux */ }
+}
+
 async function saveGhConfig(cfg) {
     const json = JSON.stringify(cfg);
     localStorage.setItem(GH_STORAGE_KEY, json);
-    sessionStorage.setItem(GH_STORAGE_KEY, json);  /* survit aux rechargements de page */
-    await idbSet('ghConfig', cfg);   /* persist en IDB = survit aux fermetures Chrome */
+    sessionStorage.setItem(GH_STORAGE_KEY, json);
+    await idbSet('ghConfig', cfg);
+    await saveGhConfigToFile(cfg);   /* 💾 fichier local = persistance garantie */
     updateGhStatus();
 }
 
