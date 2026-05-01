@@ -2356,3 +2356,171 @@ body {
 .featured-blank.loaded {
     opacity: 1;
 }
+
+/* ══════════════════════════════════════════════════════
+   BOUTIQUE PANEL — slide from right (Dust'in Kolor)
+══════════════════════════════════════════════════════ */
+.boutique-panel {
+    position: fixed;
+    top: 0; right: -380px;
+    width: 340px;
+    height: 100vh;
+    background: #111;
+    color: #ddd;
+    z-index: 600;
+    transition: right 0.38s cubic-bezier(0.4,0,0.2,1);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+.boutique-panel.open { right: 0; }
+
+.boutique-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 599;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.38s;
+}
+.boutique-overlay.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.boutique-close {
+    position: absolute;
+    top: 1rem; right: 1.2rem;
+    background: none;
+    border: none;
+    color: #888;
+    font-size: 1.4rem;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+    z-index: 2;
+}
+.boutique-close:hover { color: #fff; }
+
+.boutique-panel-content {
+    padding: 2.5rem 1.6rem 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+/* Header */
+.bq-kicker {
+    font-size: 0.55rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #666;
+    margin-bottom: 0.35rem;
+}
+.bq-title {
+    font-size: 1.4rem;
+    font-weight: 300;
+    letter-spacing: 0.04em;
+    color: #fff;
+    margin-bottom: 0.2rem;
+    line-height: 1.2;
+}
+.bq-edition {
+    font-size: 0.65rem;
+    color: #888;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+}
+
+/* Separator */
+.bq-sep {
+    height: 1px;
+    background: #2a2a2a;
+    margin: 1.1rem 0;
+}
+
+/* Info rows */
+.bq-info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 0.72rem;
+    padding: 0.4rem 0;
+}
+.bq-info-label { color: #666; font-weight: 300; }
+.bq-info-value { color: #ccc; text-align: right; }
+
+/* Price block */
+.bq-price-block {
+    margin: 1.2rem 0 1.5rem;
+    background: #1a1a1a;
+    border-radius: 4px;
+    padding: 1rem 1.1rem;
+}
+.bq-price-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.35rem 0;
+    font-size: 0.72rem;
+}
+.bq-price-row + .bq-price-row {
+    border-top: 1px solid #242424;
+}
+.bq-price-tier { color: #666; }
+.bq-price-amount { color: #fff; font-size: 0.9rem; }
+.bq-price-amount.main { font-size: 1.15rem; color: #fff; }
+
+/* CTA button */
+.bq-cta {
+    display: block;
+    width: 100%;
+    padding: 0.8rem 1rem;
+    background: #fff;
+    color: #111;
+    border: none;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 0.2s, color 0.2s;
+    margin-top: 0.5rem;
+}
+.bq-cta:hover { background: #eee; }
+
+.bq-note {
+    font-size: 0.6rem;
+    color: #555;
+    line-height: 1.6;
+    margin-top: 1.4rem;
+    text-align: center;
+}
+
+/* Achat button in sidebar */
+.dk-buy-btn {
+    display: inline-block;
+    margin-top: 1.2rem;
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: var(--black);
+    background: none;
+    border: none;
+    border-bottom: 1px solid var(--black);
+    padding: 0 0 1px 0;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+    font-family: inherit;
+    transition: opacity 0.2s;
+}
+.dk-buy-btn:hover { opacity: 0.5; }
+
+@media (max-width: 767px) {
+    .boutique-panel { width: 100vw; right: -100vw; }
+    .boutique-panel.open { right: 0; }
+}
