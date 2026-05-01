@@ -208,8 +208,7 @@ body {
 }
 
 .site.active {
-    display: grid;
-    grid-template-columns: 220px 1fr;
+    display: flex;
 }
 
 .landing.hidden {
@@ -221,13 +220,111 @@ body {
 /* SIDEBAR                            */
 /* ================================== */
 .sidebar {
+    width: 220px;
+    flex-shrink: 0;
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border-right: 1px solid var(--light-gray);
+}
+
+.sidebar.collapsed {
+    width: 4px;
+    border-right-color: transparent;
+}
+
+/* Rail de survol visible quand la sidebar est réduite */
+.sidebar-rail {
+    position: absolute;
+    left: 0; top: 0;
+    width: 4px; height: 100%;
+    z-index: 10;
+    cursor: pointer;
+}
+.sidebar.collapsed .sidebar-rail::after {
+    content: '';
+    position: absolute;
+    left: 0; top: 50%;
+    transform: translateY(-50%);
+    width: 3px; height: 48px;
+    background: var(--light-gray);
+    border-radius: 0 2px 2px 0;
+    transition: background 0.2s;
+}
+.sidebar.collapsed .sidebar-rail:hover::after {
+    background: var(--dim);
+}
+
+/* Contenu interne — reste à 220px pour ne pas se comprimer */
+.sidebar-inner {
+    width: 220px;
+    height: 100%;
     background: var(--white);
     padding: 2rem 1.5rem;
     display: flex;
     flex-direction: column;
-    height: 100vh;
     overflow: hidden;
-    border-right: 1px solid var(--light-gray);
+}
+
+/* ── UNIVERSE NAV ── */
+.universe-nav {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.universe-back {
+    font-size: 0.55rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--dim);
+    margin-bottom: 1.4rem;
+    cursor: pointer;
+    transition: color 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: none;
+    border: none;
+    font-family: inherit;
+    padding: 0;
+    text-align: left;
+}
+.universe-back:hover { color: var(--black); }
+
+.universe-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.universe-item {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 0.35rem 0;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+    transition: color 0.15s;
+    gap: 0.5rem;
+}
+.universe-item:hover { color: var(--red); }
+.universe-item.active { color: var(--black); }
+.universe-item.active .universe-item-num { color: var(--red); }
+
+.universe-item-title {
+    font-size: 0.78rem;
+    font-weight: 300;
+    letter-spacing: 0.02em;
+    flex: 1;
+}
+.universe-item-num {
+    font-size: 0.52rem;
+    color: var(--dim);
+    letter-spacing: 0.1em;
+    flex-shrink: 0;
 }
 
 .sidebar-header {
@@ -586,6 +683,8 @@ body {
 /* MAIN CONTENT - GALLERY             */
 /* ================================== */
 .site-main {
+    flex: 1;
+    min-width: 0;
     height: 100vh;
     overflow: hidden;
     background: var(--white);

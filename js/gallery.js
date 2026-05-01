@@ -639,6 +639,7 @@ class Portfolio {
         this.buildMenu();
         this.bindEvents();
         this.initCursor();
+        this.initSidebarBehavior();
         this.applyLangUI(this.currentLang);
         if (SITE_CONFIG.showLanding === false) this.openHomeGallery();
     }
@@ -687,11 +688,102 @@ class Portfolio {
         this.bindNavEvents();
     }
 
+    /* ── Sidebar auto-hide ── */
+    initSidebarBehavior() {
+        const sidebar  = document.getElementById('sidebar');
+        const rail     = document.getElementById('sidebarRail');
+        const siteMain = document.querySelector('.site-main');
+        if (!sidebar) return;
+
+        let hideTimer = null;
+
+        const show = () => {
+            clearTimeout(hideTimer);
+            sidebar.classList.remove('collapsed');
+        };
+        const scheduleHide = () => {
+            clearTimeout(hideTimer);
+            hideTimer = setTimeout(() => sidebar.classList.add('collapsed'), 1800);
+        };
+
+        sidebar.addEventListener('mouseenter', show);
+        sidebar.addEventListener('mouseleave', scheduleHide);
+        rail?.addEventListener('mouseenter', show);
+        /* Left edge of main area triggers show */
+        siteMain?.addEventListener('mousemove', e => {
+            if (e.clientX - siteMain.getBoundingClientRect().left < 24) show();
+        });
+        siteMain?.addEventListener('mouseleave', scheduleHide);
+    }
+
+    /* ── Universe mode ── */
+    enterUniverseMode(galleryId) {
+        const mainNav     = document.getElementById('mainNav');
+        const universeNav = document.getElementById('universeNav');
+        if (!mainNav || !universeNav) return;
+
+        /* Find parent label for back button */
+        const menuItem  = MENU_CONFIG.find(i => i.galleryId === galleryId);
+        const parentId  = menuItem?.parent;
+        const parent    = parentId ? MENU_CONFIG.find(i => i.id === parentId) : null;
+        const backLabel = parent ? parent.name : (this.currentLang === 'fr' ? 'Menu' : 'Menu');
+
+        /* Get carton items from this gallery */
+        const g      = this.galleries[galleryId];
+        const items  = g?.items || [];
+        const cartons = items.reduce((acc, item, idx) => {
+            if (item.type === 'carton') {
+                const title = item.titleFr || item.titleEn || `— ${idx + 1}`;
+                acc.push({ title, idx });
+            }
+            return acc;
+        }, []);
+
+        if (cartons.length === 0) {
+            /* No cartons — just hide menu, no universe list */
+            mainNav.style.display = 'none';
+            universeNav.style.display = 'none';
+            return;
+        }
+
+        const itemsHtml = cartons.map((c, i) => `
+            <div class="universe-item${i === 0 ? ' active' : ''}" data-idx="${c.idx}" onclick="portfolio.goToCarton(${c.idx}, this)">
+                <span class="universe-item-title">${c.title}</span>
+                <span class="universe-item-num">${String(i + 1).padStart(2, '0')}</span>
+            </div>`).join('');
+
+        universeNav.innerHTML = `
+            <button class="universe-back" onclick="portfolio.exitUniverseMode()">← ${backLabel}</button>
+            <div class="universe-items">${itemsHtml}</div>`;
+
+        mainNav.style.display    = 'none';
+        universeNav.style.display = 'flex';
+    }
+
+    exitUniverseMode() {
+        document.getElementById('mainNav').style.display    = '';
+        document.getElementById('universeNav').style.display = 'none';
+        document.getElementById('universeNav').innerHTML     = '';
+        this.openHomeGallery();
+        this.setActiveLink(null);
+    }
+
+    goToCarton(idx, el) {
+        this.showItem(idx);
+        document.querySelectorAll('.universe-item').forEach(i => i.classList.remove('active'));
+        el?.classList.add('active');
+    }
+
+    updateUniverseActive(idx) {
+        const items = document.querySelectorAll('.universe-item');
+        items.forEach(i => i.classList.toggle('active', +i.dataset.idx === idx));
+    }
+
     bindEvents() {
         document.getElementById('enterBtn')?.addEventListener('click', () => this.enterSite());
         document.getElementById('homeLink')?.addEventListener('click', e => {
             e.preventDefault();
-            this.openHomeGallery();
+            this.exitUniverseMode();
             this.setActiveLink(null);
             this.closeMenu();
         });
@@ -830,6 +922,9 @@ class Portfolio {
         document.getElementById('site')?.classList.remove('grid-active');
         this.showItem(0);
         if (g.autoplay && this.autoplaying) this.startSlideshow();
+        /* Universe mode — uniquement pour les galeries avec des cartons titrés */
+        const hasCartons = g.items.some(i => i.type === 'carton' && (i.titleFr || i.titleEn));
+        if (hasCartons) this.enterUniverseMode(id);
     }
 
     openGalleryFromAccueil(galleryId) {
@@ -872,6 +967,7 @@ class Portfolio {
         if (index < 0 || index >= items.length) return;
 
         this.currentIndex = index;
+        this.updateUniverseActive(index);
         const item        = items[index];
         const container   = document.getElementById('galleryContainer');
         const galleryDesc = document.getElementById('galleryDesc');

@@ -14,7 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 
     <!-- Styles -->
-    <link rel="stylesheet" href="css/style.css?v=20260422">
+    <link rel="stylesheet" href="css/style.css?v=20260311">
 
     <!-- Open Graph -->
     <meta property="og:title" content="Bertrand Basset — Photographer & Filmmaker">
@@ -53,26 +53,33 @@
 
     <!-- MAIN SITE -->
     <div class="site" id="site">
-        <aside class="sidebar">
-            <header class="sidebar-header">
-                <a href="#" class="sidebar-brand" id="homeLink">
-                    <img src="assets/logo-b.svg" alt="B" class="sidebar-logo">
-                    <span class="sidebar-brand-name">Bertrand Basset</span>
-                </a>
-            </header>
+        <aside class="sidebar" id="sidebar">
+            <!-- Rail de survol (4px visible quand sidebar cachée) -->
+            <div class="sidebar-rail" id="sidebarRail"></div>
 
-            <!-- Mobile menu toggle -->
-            <button class="menu-toggle" id="menuToggle" aria-label="Menu">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
+            <div class="sidebar-inner">
+                <header class="sidebar-header">
+                    <a href="#" class="sidebar-brand" id="homeLink">
+                        <img src="assets/logo-b.svg" alt="B" class="sidebar-logo">
+                        <span class="sidebar-brand-name">Bertrand Basset</span>
+                    </a>
+                </header>
 
-            <!-- Nav — built dynamically by gallery.js -->
-            <nav class="main-nav" id="mainNav"></nav>
+                <!-- Mobile menu toggle -->
+                <button class="menu-toggle" id="menuToggle" aria-label="Menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
 
-            <!-- Gallery description zone -->
-            <div id="galleryDesc" class="gallery-desc"></div>
+                <!-- Nav principale (menu global) -->
+                <nav class="main-nav" id="mainNav"></nav>
+
+                <!-- Nav univers (remplace mainNav quand on entre dans une galerie) -->
+                <nav class="universe-nav" id="universeNav" style="display:none"></nav>
+
+                <!-- Gallery description zone -->
+                <div id="galleryDesc" class="gallery-desc"></div>
 
             <footer class="sidebar-footer" id="sidebarFooter">
                 <!-- Breadcrumb mobile : GALLERY / RÔLE / NOM — masqué sur desktop -->
@@ -107,6 +114,7 @@
                     </div>
                 </div>
             </footer>
+            </div><!-- /.sidebar-inner -->
         </aside>
 
         <main class="site-main">
@@ -130,8 +138,8 @@
     </div>
 
     <!-- Auto-generated image lists — run: node scan-galleries.js to refresh -->
-    <script src="js/gallery-images.js?v=20260422"></script>
-    <script src="js/gallery.js?v=20260422"></script>
+    <script src="js/gallery-images.js?v=20260311"></script>
+    <script src="js/gallery.js?v=20260311"></script>
 
 
 </body>
