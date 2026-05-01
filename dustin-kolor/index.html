@@ -12,13 +12,13 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --black:      #0a0a0a;
-      --white:      #fafafa;
-      --gray:       #666;
-      --dim:        #999;
-      --border:     #e0e0e0;
-      --red:        #c41e1e;
-      --font:       'IBM Plex Sans', sans-serif;
+      --black:  #0a0a0a;
+      --white:  #fafafa;
+      --gray:   #555;
+      --dim:    #888;
+      --border: #e0e0e0;
+      --panel:  #0f0f0f;
+      --font:   'IBM Plex Sans', sans-serif;
     }
 
     html, body {
@@ -34,24 +34,69 @@
     a { color: inherit; text-decoration: none; }
     button { font-family: var(--font); cursor: pointer; border: none; background: none; }
 
-    /* ── LAYOUT ── */
+    /* ══════════════════════════════════
+       LAYOUT : sidebar | main
+    ══════════════════════════════════ */
     .site {
-      display: grid;
-      grid-template-columns: 220px 1fr;
+      display: flex;
       height: 100vh;
       overflow: hidden;
     }
 
-    /* ── SIDEBAR ── */
+    /* ══════════════════════════════════
+       SIDEBAR GAUCHE — auto-hide
+    ══════════════════════════════════ */
     .sidebar {
+      width: 200px;
+      flex-shrink: 0;
+      height: 100vh;
+      overflow: hidden;
+      border-right: 1px solid var(--border);
+      transition: width 0.4s cubic-bezier(0.4,0,0.2,1);
+      position: relative;
+    }
+    .sidebar.collapsed { width: 52px; }
+
+    /* Quand réduite : seul le logo B reste visible */
+    .sidebar.collapsed .photo-nav,
+    .sidebar.collapsed .sidebar-footer,
+    .sidebar.collapsed .serie-label,
+    .sidebar.collapsed .serie-title {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .photo-nav, .sidebar-footer, .serie-label, .serie-title {
+      transition: opacity 0.2s ease;
+    }
+
+    /* Inner : reste à 200px, le sidebar clip */
+    .sidebar-inner {
+      width: 200px;
+      height: 100%;
       background: var(--white);
       padding: 2rem 1.5rem;
       display: flex;
       flex-direction: column;
-      height: 100vh;
       overflow: hidden;
-      border-right: 1px solid var(--border);
     }
+
+    /* Hint flèche sous le logo B quand réduite */
+    .sidebar-hint {
+      position: fixed;
+      left: 24px;
+      top: 62px;
+      width: 24px;
+      text-align: center;
+      font-size: 0.55rem;
+      color: var(--dim);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s;
+      user-select: none;
+      z-index: 200;
+      cursor: pointer;
+    }
+    .sidebar-hint.visible { opacity: 1; pointer-events: auto; }
 
     .sidebar-brand {
       display: flex;
@@ -61,109 +106,76 @@
       color: var(--black);
       margin-bottom: 2rem;
     }
-
     .sidebar-logo { width: 24px; height: 24px; }
-
     .sidebar-brand-name {
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 500;
       letter-spacing: 0.04em;
       text-transform: uppercase;
     }
 
-    /* Série title */
     .serie-label {
-      font-size: 0.55rem;
+      font-size: 0.5rem;
       letter-spacing: 0.2em;
       text-transform: uppercase;
       color: var(--dim);
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.4rem;
     }
-
     .serie-title {
-      font-size: 1rem;
+      font-size: 0.88rem;
       font-weight: 400;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
-      margin-bottom: 1.8rem;
       font-style: italic;
+      margin-bottom: 1.8rem;
     }
 
-    /* Nav — liste des photos */
-    .photo-nav {
-      flex: 1;
-      overflow-y: auto;
-    }
+    /* Nav liste photos */
+    .photo-nav { flex: 1; overflow-y: auto; }
 
     .photo-nav-item {
       display: flex;
       align-items: baseline;
-      gap: 0.6rem;
-      padding: 0.3rem 0;
+      gap: 0.5rem;
+      padding: 0.38rem 0 0.38rem 0.6rem;
       cursor: pointer;
       transition: color 0.15s;
+      border-left: 2px solid transparent;
+      color: var(--black);
     }
-
-    .photo-nav-item:hover { color: var(--red); }
-    .photo-nav-item.active { color: var(--red); }
+    .photo-nav-item:hover { color: var(--gray); }
+    .photo-nav-item.active { border-left-color: var(--black); }
 
     .photo-nav-num {
-      font-size: 0.55rem;
+      font-size: 0.5rem;
       letter-spacing: 0.12em;
       color: var(--dim);
       flex-shrink: 0;
-      width: 1.4rem;
+      width: 1.2rem;
     }
-    .photo-nav-item.active .photo-nav-num { color: var(--red); }
+    .photo-nav-item.active .photo-nav-num { color: var(--black); }
+    .photo-nav-title { font-size: 0.78rem; font-weight: 300; }
 
-    .photo-nav-title {
-      font-size: 0.78rem;
-      font-weight: 300;
-      letter-spacing: 0.02em;
-    }
-
-    /* Sidebar footer */
+    /* Footer sidebar */
     .sidebar-footer {
       margin-top: auto;
-      padding-top: 1.5rem;
+      padding-top: 1.2rem;
       border-top: 1px solid var(--border);
     }
-
-    .photo-caption {
-      font-size: 0.68rem;
-      color: var(--gray);
-      line-height: 1.5;
-      margin-bottom: 1.2rem;
-    }
-
     .nav-controls {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      margin-bottom: 1rem;
     }
-
-    .nav-counter {
-      font-size: 0.68rem;
-      color: var(--dim);
-    }
-
-    .nav-arrows {
-      display: flex;
-      gap: 1rem;
-      font-size: 0.72rem;
-      color: var(--gray);
-    }
-
-    .nav-arrows a {
-      transition: color 0.15s;
-      letter-spacing: 0.05em;
-    }
+    .nav-counter { font-size: 0.65rem; color: var(--dim); }
+    .nav-arrows { display: flex; gap: 0.8rem; font-size: 0.72rem; color: var(--gray); }
+    .nav-arrows a { transition: color 0.15s; letter-spacing: 0.04em; }
     .nav-arrows a:hover { color: var(--black); }
 
     .back-link {
       display: block;
-      margin-top: 1.2rem;
-      font-size: 0.6rem;
+      font-size: 0.58rem;
       letter-spacing: 0.1em;
       text-transform: uppercase;
       color: var(--dim);
@@ -171,11 +183,98 @@
     }
     .back-link:hover { color: var(--black); }
 
-    /* ── MAIN PHOTO ── */
-    .site-main {
+    /* ══════════════════════════════════
+       ZONE PRINCIPALE
+    ══════════════════════════════════ */
+    .main-wrapper {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      height: 100vh;
+    }
+
+    /* Barre d'onglets */
+    .topbar {
+      height: 40px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: stretch;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      background: var(--white);
+    }
+    .topbar-left { display: flex; align-items: stretch; }
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0 1.2rem;
+    }
+
+    .tab-btn {
+      padding: 0 1.4rem;
+      font-size: 0.58rem;
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--dim);
+      cursor: pointer;
+      border: none;
+      background: none;
+      border-bottom: 2px solid transparent;
+      transition: color 0.15s, border-color 0.15s;
+      font-family: var(--font);
+      height: 100%;
+    }
+    .tab-btn.active {
+      color: var(--black);
+      border-bottom-color: var(--black);
+    }
+    .tab-btn:hover:not(.active) { color: var(--gray); }
+
+    /* Panier dans topbar */
+    .cart-btn {
+      font-size: 0.58rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--dim);
+      cursor: pointer;
+      transition: color 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .cart-btn:hover { color: var(--black); }
+    .cart-count {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      background: var(--black);
+      color: var(--white);
+      font-size: 0.45rem;
+      border-radius: 50%;
+      font-weight: 500;
+    }
+    .cart-count.hidden { display: none; }
+
+    /* Contenu = photo + panel */
+    .content-area {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* ══════════════════════════════════
+       ZONE PHOTO
+    ══════════════════════════════════ */
+    .photo-area {
+      flex: 1;
       position: relative;
       overflow: hidden;
       background: #111;
+      transition: flex 0.4s cubic-bezier(0.4,0,0.2,1);
     }
 
     .gallery-image {
@@ -187,133 +286,707 @@
       opacity: 0;
       transition: opacity 0.4s ease;
     }
+    .gallery-image.active { opacity: 1; }
 
-    .gallery-image.active {
-      opacity: 1;
+    /* ══════════════════════════════════
+       PANNEAU PRODUIT (drawer droit)
+    ══════════════════════════════════ */
+    .product-panel {
+      width: 0;
+      overflow: hidden;
+      transition: width 0.4s cubic-bezier(0.4,0,0.2,1);
+      background: var(--panel);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+    .product-panel.visible {
+      width: 320px;
+      overflow-y: auto;
     }
 
-    /* Lang toggle */
-    .lang-toggle {
-      position: fixed;
-      top: 1.2rem;
-      right: 1.5rem;
-      font-size: 0.65rem;
+    /* Cartes blanches dans le panneau noir */
+    .panel-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      flex: 1;
+    }
+
+    .panel-card {
+      background: #fff;
+      padding: 1.3rem 1.5rem;
+      flex-shrink: 0;
+    }
+
+    /* Card 1 — Titre */
+    .card-title .work-num {
+      font-size: 0.48rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #bbb;
+      margin-bottom: 0.5rem;
+    }
+    .card-title .work-title {
+      font-size: 1.4rem;
+      font-weight: 300;
+      letter-spacing: -0.01em;
+      line-height: 1.1;
+      color: var(--black);
+    }
+
+    /* Card 2 — Infos édition */
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.35rem 0;
+      border-bottom: 1px solid #f0f0f0;
+      gap: 1rem;
+    }
+    .info-row:last-child { border-bottom: none; }
+    .info-key {
+      font-size: 0.55rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #aaa;
+      flex-shrink: 0;
+    }
+    .info-val {
+      font-size: 0.72rem;
+      text-align: right;
+      color: var(--black);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      justify-content: flex-end;
+    }
+    .color-dot {
+      width: 9px; height: 9px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* Card 3 — Support + stock */
+    .card-support .support-name {
+      font-size: 0.78rem;
+      font-weight: 400;
+      color: var(--black);
+      margin-bottom: 0.2rem;
+      line-height: 1.4;
+    }
+    .card-support .support-detail {
+      font-size: 0.62rem;
+      color: #aaa;
+      margin-bottom: 1rem;
+      line-height: 1.5;
+    }
+    .stock-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 0.4rem;
+    }
+    .stock-available-big {
+      font-size: 1.1rem;
+      font-weight: 300;
+      color: var(--black);
+    }
+    .stock-fraction {
+      font-size: 0.6rem;
+      color: #aaa;
+    }
+    .stock-bar {
+      height: 2px;
+      background: #e8e8e8;
+      border-radius: 1px;
+      overflow: hidden;
+      margin-bottom: 0.3rem;
+    }
+    .stock-bar-fill {
+      height: 100%;
+      background: var(--black);
+      border-radius: 1px;
+    }
+    .stock-label-small {
+      font-size: 0.55rem;
+      color: #aaa;
+      letter-spacing: 0.04em;
+    }
+
+    /* Card 4 — Prix */
+    .card-price .price-big {
+      font-size: 1.6rem;
+      font-weight: 300;
+      letter-spacing: -0.02em;
+      color: var(--black);
+      margin-bottom: 0.2rem;
+    }
+    .card-price .price-tier-label {
+      font-size: 0.55rem;
+      color: #aaa;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 0.9rem;
+    }
+    .tier-list { display: flex; flex-direction: column; gap: 0; }
+    .tier-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 0.28rem 0;
+      font-size: 0.62rem;
+      color: #bbb;
+      border-bottom: 1px solid #f5f5f5;
+    }
+    .tier-row:last-child { border-bottom: none; }
+    .tier-row.active-tier {
+      color: var(--black);
+      font-weight: 400;
+    }
+    .tier-row.active-tier .tier-price { font-weight: 500; }
+    .tier-tag {
+      font-size: 0.44rem;
       letter-spacing: 0.08em;
-      color: var(--dim);
-      z-index: 50;
+      text-transform: uppercase;
+      color: #bbb;
+      background: #f5f5f5;
+      padding: 2px 5px;
+      margin-left: 0.4rem;
+      vertical-align: middle;
     }
-    .lang-toggle a { color: var(--dim); transition: color 0.15s; }
-    .lang-toggle a:hover, .lang-toggle a.active { color: var(--white); }
-    .lang-toggle span { margin: 0 0.2rem; }
+    .active-tier .tier-tag {
+      background: var(--black);
+      color: #fff;
+    }
+
+    /* Bouton panier */
+    .panel-card-btn {
+      background: var(--panel);
+      padding: 0;
+    }
+    .btn-panier {
+      display: block;
+      width: 100%;
+      padding: 1.1rem 1.5rem;
+      background: #fff;
+      color: var(--black);
+      font-family: var(--font);
+      font-size: 0.6rem;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      text-align: center;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      border: none;
+      border-bottom: 2px solid var(--black);
+    }
+    .btn-panier:hover {
+      background: var(--black);
+      color: #fff;
+    }
+    .btn-panier:disabled {
+      background: #f0f0f0;
+      color: #bbb;
+      border-bottom-color: transparent;
+      cursor: not-allowed;
+    }
+
+    /* Certificat note en bas du panel */
+    .panel-note {
+      padding: 1rem 1.5rem;
+      font-size: 0.55rem;
+      color: #555;
+      line-height: 1.7;
+      letter-spacing: 0.02em;
+    }
+
+    /* FR/EN dans la topbar — géré inline */
   </style>
 </head>
 <body>
 
-  <div class="lang-toggle">
-    <a href="#" class="active">FR</a><span>/</span><a href="#">EN</a>
-  </div>
+  <!-- Hint flèche sous logo B (desktop) -->
+  <div id="sidebarHint" class="sidebar-hint">›</div>
 
   <div class="site">
 
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
+    <!-- ══ SIDEBAR GAUCHE ══ -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-inner">
+        <a href="../index.html" class="sidebar-brand">
+          <img src="../assets/logo-b.svg" alt="B" class="sidebar-logo">
+          <span class="sidebar-brand-name">Bertrand Basset</span>
+        </a>
 
-      <a href="../index.html" class="sidebar-brand">
-        <img src="../assets/logo-b.svg" alt="B" class="sidebar-logo">
-        <span class="sidebar-brand-name">Bertrand Basset</span>
-      </a>
+        <div class="serie-label" id="lblSerie">Série — 2016</div>
+        <div class="serie-title">Dust'in Kolor</div>
 
-      <div class="serie-label">Série — 2016</div>
-      <div class="serie-title">Dust'in Kolor</div>
+        <nav class="photo-nav" id="photoNav"></nav>
 
-      <nav class="photo-nav" id="photoNav">
-        <div class="photo-nav-item active" data-index="0" onclick="showPhoto(0)">
-          <span class="photo-nav-num">01</span>
-          <span class="photo-nav-title">Sandstorm</span>
-        </div>
-        <div class="photo-nav-item" data-index="1" onclick="showPhoto(1)">
-          <span class="photo-nav-num">02</span>
-          <span class="photo-nav-title">Flying Car</span>
-        </div>
-        <div class="photo-nav-item" data-index="2" onclick="showPhoto(2)">
-          <span class="photo-nav-num">03</span>
-          <span class="photo-nav-title">After the Storm</span>
-        </div>
-        <div class="photo-nav-item" data-index="3" onclick="showPhoto(3)">
-          <span class="photo-nav-num">04</span>
-          <span class="photo-nav-title">Lost in the Dust</span>
-        </div>
-        <div class="photo-nav-item" data-index="4" onclick="showPhoto(4)">
-          <span class="photo-nav-num">05</span>
-          <span class="photo-nav-title">Camp Lighters</span>
-        </div>
-        <div class="photo-nav-item" data-index="5" onclick="showPhoto(5)">
-          <span class="photo-nav-num">06</span>
-          <span class="photo-nav-title">I'm Here</span>
-        </div>
-        <div class="photo-nav-item" data-index="6" onclick="showPhoto(6)">
-          <span class="photo-nav-num">08</span>
-          <span class="photo-nav-title">Umbrellas Way</span>
-        </div>
-      </nav>
-
-      <footer class="sidebar-footer">
-        <div class="photo-caption" id="caption">Désert du Nevada — Août 2016</div>
-        <div class="nav-controls">
-          <span class="nav-counter" id="counter">1 / 7</span>
-          <div class="nav-arrows">
-            <a href="#" id="prevBtn" onclick="prev(); return false;">prev</a>
-            <span>/</span>
-            <a href="#" id="nextBtn" onclick="next(); return false;">next</a>
+        <footer class="sidebar-footer">
+          <div class="nav-controls">
+            <span class="nav-counter" id="counter">1 / 7</span>
+            <div class="nav-arrows">
+              <a href="#" onclick="prev();return false;">prev</a>
+              <span>/</span>
+              <a href="#" onclick="next();return false;">next</a>
+            </div>
           </div>
-        </div>
-        <a href="../index.html" class="back-link">← Retour au site</a>
-      </footer>
-
+          <a href="../index.html" class="back-link" id="lblBack">← Retour au site</a>
+        </footer>
+      </div>
     </aside>
 
-    <!-- MAIN PHOTO -->
-    <main class="site-main" id="siteMain">
-      <img class="gallery-image active" src="../images/dustin-kolor/01.jpg" alt="Sandstorm" data-index="0">
-      <img class="gallery-image" src="../images/dustin-kolor/02.jpg" alt="Flying Car" data-index="1">
-      <img class="gallery-image" src="../images/dustin-kolor/03.jpg" alt="After the Storm" data-index="2">
-      <img class="gallery-image" src="../images/dustin-kolor/04.jpg" alt="Lost in the Dust" data-index="3">
-      <img class="gallery-image" src="../images/dustin-kolor/05.jpg" alt="Camp Lighters" data-index="4">
-      <img class="gallery-image" src="../images/dustin-kolor/06.jpg" alt="I'm Here" data-index="5">
-      <img class="gallery-image" src="../images/dustin-kolor/08.jpg" alt="Umbrellas Way" data-index="6">
-    </main>
+    <!-- ══ ZONE PRINCIPALE ══ -->
+    <div class="main-wrapper">
 
+      <!-- Barre onglets + FR/EN intégrés (plus de fixed overlay) -->
+      <div class="topbar">
+        <div class="topbar-left">
+          <button class="tab-btn active" data-tab="photo" onclick="setTab('photo')">Photo</button>
+          <button class="tab-btn" data-tab="acheter" onclick="setTab('acheter')">Acheter</button>
+        </div>
+        <div class="topbar-right">
+          <a href="panier.html" class="cart-btn">
+            <span id="lblPanier">Panier</span>
+            <span class="cart-count hidden" id="cartCount">0</span>
+          </a>
+          <span style="color:var(--border);font-size:0.6rem">|</span>
+          <div style="display:flex;gap:0.3rem;font-size:0.58rem;letter-spacing:0.08em">
+            <a href="#" data-lang="fr" onclick="setLang('fr');return false;" style="color:var(--black)">FR</a>
+            <span style="color:var(--border)">/</span>
+            <a href="#" data-lang="en" onclick="setLang('en');return false;" style="color:var(--dim)">EN</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contenu -->
+      <div class="content-area">
+
+        <!-- Photo -->
+        <div class="photo-area" id="photoArea"></div>
+
+        <!-- Panneau produit (drawer) -->
+        <div class="product-panel" id="productPanel"></div>
+
+      </div>
+    </div>
   </div>
 
   <script>
-    const TOTAL = 7;
-    let current = 0;
-
-    function showPhoto(i) {
-      current = i;
-
-      // Images
-      document.querySelectorAll('.gallery-image').forEach(img => {
-        img.classList.toggle('active', +img.dataset.index === i);
-      });
-
-      // Nav items
-      document.querySelectorAll('.photo-nav-item').forEach(item => {
-        item.classList.toggle('active', +item.dataset.index === i);
-      });
-
-      // Counter
-      document.getElementById('counter').textContent = (i + 1) + ' / ' + TOTAL;
+  /* ══════════════════════════════════════════════
+     DATA — 7 éditions Dust'in Kolor
+  ══════════════════════════════════════════════ */
+  const EDITIONS = [
+    {
+      slug: 'sandstorm-feu',
+      num: '01', img: '01.jpg',
+      titre_fr: 'Sandstorm',
+      couleur_fr: 'Feu',         couleur_en: 'Fire',
+      hex: '#FF4500',
+      format: '60 × 90 cm',
+      support_fr: 'Museum Etching 350g',
+      support_en: 'Museum Etching 350g',
+      detail_fr: 'contrecollé Dibond 2mm',
+      detail_en: 'mounted on Dibond 2mm',
+      total: 10, vendus: 2,
+      prix: [820, 960, 1100]
+    },
+    {
+      slug: 'flying-car-orange',
+      num: '02', img: '02.jpg',
+      titre_fr: 'Flying Car',
+      couleur_fr: 'Orange',      couleur_en: 'Orange',
+      hex: '#FF6600',
+      format: '70 × 124 cm',
+      support_fr: 'Museum Etching 350g',
+      support_en: 'Museum Etching 350g',
+      detail_fr: 'contrecollé Dibond 2mm',
+      detail_en: 'mounted on Dibond 2mm',
+      total: 10, vendus: 0,
+      prix: [1290, 1490, 1690]
+    },
+    {
+      slug: 'after-the-storm-vert',
+      num: '03', img: '03.jpg',
+      titre_fr: 'After the Storm',
+      couleur_fr: 'Vert',        couleur_en: 'Green',
+      hex: '#7BC043',
+      format: '70 × 124 cm',
+      support_fr: 'Museum Etching 350g',
+      support_en: 'Museum Etching 350g',
+      detail_fr: 'contrecollé Dibond 2mm',
+      detail_en: 'mounted on Dibond 2mm',
+      total: 10, vendus: 5,
+      prix: [1290, 1490, 1690]
+    },
+    {
+      slug: 'lost-in-the-dust-rouge',
+      num: '04', img: '04.jpg',
+      titre_fr: 'Lost in the Dust',
+      couleur_fr: 'Rouge',       couleur_en: 'Red',
+      hex: '#CC0000',
+      format: '60 × 80 cm',
+      support_fr: 'Museum Etching 350g',
+      support_en: 'Museum Etching 350g',
+      detail_fr: 'contrecollé Dibond 2mm',
+      detail_en: 'mounted on Dibond 2mm',
+      total: 10, vendus: 0,
+      prix: [890, 1020, 1150]
+    },
+    {
+      slug: 'camp-lighters-jaune',
+      num: '05', img: '05.jpg',
+      titre_fr: 'Camp Lighters',
+      couleur_fr: 'Jaune',       couleur_en: 'Yellow',
+      hex: '#FFB300',
+      format: '40 × 100 cm',
+      support_fr: 'Museum Etching 350g',
+      support_en: 'Museum Etching 350g',
+      detail_fr: 'contrecollé Dibond 2mm',
+      detail_en: 'mounted on Dibond 2mm',
+      total: 10, vendus: 0,
+      prix: [790, 910, 1030]
+    },
+    {
+      slug: 'im-here-bleu',
+      num: '06', img: '06.jpg',
+      titre_fr: 'I\'m Here',
+      couleur_fr: 'Bleu',        couleur_en: 'Blue',
+      hex: '#0066CC',
+      format: '60 × 80 cm',
+      support_fr: 'Museum Etching 350g',
+      support_en: 'Museum Etching 350g',
+      detail_fr: 'contrecollé Dibond 2mm',
+      detail_en: 'mounted on Dibond 2mm',
+      total: 10, vendus: 1,
+      prix: [890, 1020, 1150]
+    },
+    {
+      slug: 'umbrellas-way-rose',
+      num: '08', img: '08.jpg',
+      titre_fr: 'Umbrellas Way',
+      couleur_fr: 'Rose',        couleur_en: 'Pink',
+      hex: '#FF1493',
+      format: '60 × 80 cm',
+      support_fr: 'Museum Etching 350g',
+      support_en: 'Museum Etching 350g',
+      detail_fr: 'contrecollé Dibond 2mm',
+      detail_en: 'mounted on Dibond 2mm',
+      total: 10, vendus: 0,
+      prix: [890, 1020, 1150]
     }
+  ];
 
-    function prev() { showPhoto((current - 1 + TOTAL) % TOTAL); }
-    function next() { showPhoto((current + 1) % TOTAL); }
+  /* ══════════════════════════════════════════════
+     I18N
+  ══════════════════════════════════════════════ */
+  const T = {
+    fr: {
+      serie: 'Série — 2016',
+      back: '← Retour au site',
+      panier: 'Panier',
+      edition_label: 'Édition',
+      couleur_label: 'Couleur',
+      format_label: 'Format',
+      disponibles: 'disponibles',
+      vendus: 'vendus',
+      paliers: ['Ex. 1–3', 'Ex. 4–7', 'Ex. 8–10'],
+      palier_actuel: 'actuel',
+      epuise: 'Épuisé',
+      ajouter: 'Ajouter au panier',
+      certificat: 'Tirage numéroté, daté et signé par l\'artiste. Certificat d\'authenticité inclus.',
+    },
+    en: {
+      serie: 'Series — 2016',
+      back: '← Back to site',
+      panier: 'Cart',
+      edition_label: 'Edition',
+      couleur_label: 'Color',
+      format_label: 'Format',
+      disponibles: 'available',
+      vendus: 'sold',
+      paliers: ['No. 1–3', 'No. 4–7', 'No. 8–10'],
+      palier_actuel: 'current',
+      epuise: 'Sold out',
+      ajouter: 'Add to cart',
+      certificat: 'Numbered, dated and signed by the artist. Certificate of authenticity included.',
+    }
+  };
 
-    // Keyboard navigation
-    document.addEventListener('keydown', e => {
-      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp')   prev();
-      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next();
+  /* ══════════════════════════════════════════════
+     STATE
+  ══════════════════════════════════════════════ */
+  let lang    = 'fr';
+  let current = 0;
+  let activeTab = 'photo';
+
+  /* ── Helpers ── */
+  function dispo(e)    { return e.total - e.vendus; }
+  function palierIdx(e) {
+    if (e.vendus < 3) return 0;
+    if (e.vendus < 7) return 1;
+    return 2;
+  }
+  function prixActuel(e) { return e.prix[palierIdx(e)]; }
+
+  /* ══════════════════════════════════════════════
+     CART (localStorage)
+  ══════════════════════════════════════════════ */
+  function getCart() {
+    try { return JSON.parse(localStorage.getItem('dk_cart') || '[]'); } catch(e) { return []; }
+  }
+  function saveCart(c) {
+    localStorage.setItem('dk_cart', JSON.stringify(c));
+    updateCartBadge();
+  }
+  function addToCart(slug) {
+    const e = EDITIONS.find(x => x.slug === slug);
+    if (!e || dispo(e) <= 0) return;
+    const cart = getCart();
+    const existing = cart.find(x => x.slug === slug);
+    if (existing) { existing.qty = (existing.qty || 1) + 1; }
+    else { cart.push({ slug, num: e.num, titre: e.titre_fr, format: e.format, prix: prixActuel(e), qty: 1 }); }
+    saveCart(cart);
+    // Feedback visuel
+    const btn = document.getElementById('btnPanier');
+    if (btn) {
+      const orig = btn.textContent;
+      btn.textContent = '✓ Ajouté';
+      setTimeout(() => btn.textContent = orig, 1400);
+    }
+  }
+  function updateCartBadge() {
+    const cart = getCart();
+    const total = cart.reduce((s, i) => s + (i.qty || 1), 0);
+    const badge = document.getElementById('cartCount');
+    if (badge) {
+      badge.textContent = total;
+      badge.classList.toggle('hidden', total === 0);
+    }
+  }
+
+  /* ══════════════════════════════════════════════
+     BUILD NAV
+  ══════════════════════════════════════════════ */
+  function buildNav() {
+    document.getElementById('photoNav').innerHTML = EDITIONS.map((e, i) => `
+      <div class="photo-nav-item${i === current ? ' active' : ''}" onclick="showPhoto(${i})">
+        <span class="photo-nav-num">${e.num}</span>
+        <span class="photo-nav-title">${e.titre_fr}</span>
+      </div>
+    `).join('');
+  }
+
+  /* ══════════════════════════════════════════════
+     BUILD PHOTOS
+  ══════════════════════════════════════════════ */
+  function buildPhotos() {
+    document.getElementById('photoArea').innerHTML = EDITIONS.map((e, i) => `
+      <img class="gallery-image${i === current ? ' active' : ''}"
+           src="../images/dustin-kolor/${e.img}"
+           alt="${e.titre_fr}" data-index="${i}">`
+    ).join('');
+  }
+
+  /* ══════════════════════════════════════════════
+     RENDER PRODUCT PANEL
+  ══════════════════════════════════════════════ */
+  function renderPanel(i) {
+    const e  = EDITIONS[i];
+    const t  = T[lang];
+    const d  = dispo(e);
+    const pi = palierIdx(e);
+    const px = prixActuel(e);
+    const pctDispo = Math.max(0, d / e.total);
+    const epuise = d <= 0;
+
+    const tiersHTML = e.prix.map((p, idx) => {
+      const isActive = idx === pi;
+      return `<div class="tier-row${isActive ? ' active-tier' : ''}">
+        <span>${t.paliers[idx]}${isActive ? `<span class="tier-tag">${t.palier_actuel}</span>` : ''}</span>
+        <span class="tier-price">${p.toLocaleString('fr-FR')} €</span>
+      </div>`;
+    }).join('');
+
+    document.getElementById('productPanel').innerHTML = `
+      <div class="panel-inner">
+
+        <!-- Titre -->
+        <div class="panel-card card-title">
+          <p class="work-num">Dust'in Kolor — ${e.num}</p>
+          <h2 class="work-title">${e.titre_fr}</h2>
+        </div>
+
+        <!-- Édition -->
+        <div class="panel-card">
+          <div class="info-row">
+            <span class="info-key">${t.edition_label}</span>
+            <span class="info-val">${e.total} ex. numérotés</span>
+          </div>
+          <div class="info-row">
+            <span class="info-key">${t.couleur_label}</span>
+            <span class="info-val">
+              <span class="color-dot" style="background:${e.hex}"></span>
+              ${lang === 'fr' ? e.couleur_fr : e.couleur_en} · ${e.hex}
+            </span>
+          </div>
+          <div class="info-row">
+            <span class="info-key">${t.format_label}</span>
+            <span class="info-val">${e.format}</span>
+          </div>
+        </div>
+
+        <!-- Support + stock -->
+        <div class="panel-card card-support">
+          <p class="support-name">${lang === 'fr' ? e.support_fr : e.support_en}</p>
+          <p class="support-detail">${lang === 'fr' ? e.detail_fr : e.detail_en}</p>
+          ${epuise
+            ? `<p style="font-size:.72rem;color:#bbb;font-weight:400">${t.epuise}</p>`
+            : `<div class="stock-row">
+                <span class="stock-available-big">${d}</span>
+                <span class="stock-fraction">${t.disponibles} / ${e.total}</span>
+               </div>
+               <div class="stock-bar">
+                 <div class="stock-bar-fill" style="width:${Math.round(pctDispo*100)}%"></div>
+               </div>
+               <p class="stock-label-small">${e.vendus} ${t.vendus}</p>`
+          }
+        </div>
+
+        <!-- Prix + paliers -->
+        <div class="panel-card card-price">
+          <div class="price-big">${epuise ? '—' : px.toLocaleString('fr-FR') + ' €'}</div>
+          <p class="price-tier-label">${t.paliers[pi]}</p>
+          <div class="tier-list">${tiersHTML}</div>
+        </div>
+
+        <!-- Bouton -->
+        <div class="panel-card panel-card-btn">
+          <button class="btn-panier" id="btnPanier"
+            ${epuise ? 'disabled' : ''}
+            onclick="addToCart('${e.slug}')">
+            ${epuise ? t.epuise : t.ajouter}
+          </button>
+        </div>
+
+        <!-- Note -->
+        <p class="panel-note">${t.certificat}</p>
+
+      </div>
+    `;
+  }
+
+  /* ══════════════════════════════════════════════
+     NAVIGATION
+  ══════════════════════════════════════════════ */
+  function showPhoto(i) {
+    current = i;
+    document.querySelectorAll('.gallery-image').forEach(img => {
+      img.classList.toggle('active', +img.dataset.index === i);
     });
+    document.querySelectorAll('.photo-nav-item').forEach((el, idx) => {
+      el.classList.toggle('active', idx === i);
+    });
+    document.getElementById('counter').textContent = `${i + 1} / ${EDITIONS.length}`;
+    history.replaceState(null, '', '#' + EDITIONS[i].slug);
+    if (activeTab === 'acheter') renderPanel(i);
+  }
+
+  function prev() { showPhoto((current - 1 + EDITIONS.length) % EDITIONS.length); }
+  function next() { showPhoto((current + 1) % EDITIONS.length); }
+
+  /* ══════════════════════════════════════════════
+     TABS
+  ══════════════════════════════════════════════ */
+  function setTab(tab) {
+    activeTab = tab;
+    document.querySelectorAll('.tab-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.tab === tab);
+    });
+    const panel = document.getElementById('productPanel');
+    if (tab === 'acheter') {
+      panel.classList.add('visible');
+      renderPanel(current);
+    } else {
+      panel.classList.remove('visible');
+    }
+  }
+
+  /* ══════════════════════════════════════════════
+     LANG
+  ══════════════════════════════════════════════ */
+  function setLang(l) {
+    lang = l;
+    document.querySelectorAll('[data-lang]').forEach(a => {
+      a.classList.toggle('active', a.dataset.lang === l);
+    });
+    document.getElementById('lblSerie').textContent = T[l].serie;
+    document.getElementById('lblBack').textContent  = T[l].back;
+    document.getElementById('lblPanier').textContent = T[l].panier;
+    buildNav();
+    if (activeTab === 'acheter') renderPanel(current);
+  }
+
+  /* ══════════════════════════════════════════════
+     SIDEBAR AUTO-HIDE (même comportement que le portfolio principal)
+  ══════════════════════════════════════════════ */
+  function initSidebarBehavior() {
+    const sidebar    = document.getElementById('sidebar');
+    const hint       = document.getElementById('sidebarHint');
+    const mainArea   = document.querySelector('.main-wrapper');
+    if (!sidebar || window.innerWidth < 768) return;
+
+    let timer = null;
+    const show = () => {
+      clearTimeout(timer);
+      sidebar.classList.remove('collapsed');
+      hint?.classList.remove('visible');
+    };
+    const hide = () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        sidebar.classList.add('collapsed');
+        hint?.classList.add('visible');
+      }, 1000);
+    };
+
+    sidebar.addEventListener('mouseenter', show);
+    sidebar.addEventListener('mouseleave', hide);
+    hint?.addEventListener('mouseenter', show);
+    mainArea?.addEventListener('mouseleave', hide);
+  }
+
+  /* ══════════════════════════════════════════════
+     INIT
+  ══════════════════════════════════════════════ */
+  function init() {
+    buildPhotos();
+    buildNav();
+    updateCartBadge();
+    initSidebarBehavior();
+
+    const hash = location.hash.replace('#', '');
+    if (hash) {
+      const idx = EDITIONS.findIndex(e => e.slug === hash);
+      if (idx >= 0) { current = idx; }
+    }
+    showPhoto(current);
+
+    // Si hash = #acheter ou querystring ?tab=acheter → ouvrir l'onglet
+    if (new URLSearchParams(location.search).get('tab') === 'acheter') {
+      setTab('acheter');
+    }
+  }
+
+  document.addEventListener('keydown', e => {
+    if (['ArrowLeft','ArrowUp'].includes(e.key))    prev();
+    if (['ArrowRight','ArrowDown'].includes(e.key)) next();
+  });
+
+  init();
   </script>
 </body>
 </html>
