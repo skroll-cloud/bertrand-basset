@@ -1,6 +1,6 @@
 /**
  * Bertrand Basset Portfolio — gallery.js
- * Généré par Admin V4 — 01/05/2026 16:11:01
+ * Généré par Admin V4 — 01/05/2026 21:37:41
  */
 
 const SITE_CONFIG = {
@@ -471,24 +471,6 @@ const GALLERIES_CONFIG = {
         path:          ".",
         autoplay:      false,
         autoplayDelay: 4,
-        cartons: [
-        {
-                "cid": "cmomzq68o7kw",
-                "position": 0,
-                "titleFr": "",
-                "titleEn": "",
-                "subtitleFr": "",
-                "subtitleEn": "",
-                "descFr": "Sélection — Best Of",
-                "descEn": "Selection — Best Of",
-                "ctaLabel": "",
-                "ctaUrl": "",
-                "categoryFr": "",
-                "categoryEn": "",
-                "sidebarFr": "",
-                "sidebarEn": ""
-        }
-],
         images: [
             {"filename":"images/portrait/conversation-02.jpg","title":"Antoine Asnar","subtitle":"Portrait Studio"},
             {"filename":"images/dustin-kolor/04.jpg","title":"Lost in the dust","subtitle":"Exposition"},
