@@ -830,8 +830,59 @@ class Portfolio {
         document.getElementById('galleryContainer')?.classList.remove('page-mode', 'grid-mode');
         document.getElementById('gridToggle')?.classList.remove('active');
         document.getElementById('site')?.classList.remove('grid-active');
+
+        /* Universe-nav: if gallery belongs to a group, switch sidebar to sub-menu */
+        const menuItem  = MENU_CONFIG.find(i => i.galleryId === id && i.type === 'gallery');
+        const parentId  = menuItem?.parent;
+        const parentGrp = parentId ? MENU_CONFIG.find(i => i.id === parentId && i.type === 'group') : null;
+        if (parentGrp) {
+            this.enterUniverseMode(parentGrp, id);
+        } else {
+            this.exitUniverseMode();
+        }
+
         this.showItem(0);
         if (g.autoplay && this.autoplaying) this.startSlideshow();
+    }
+
+    enterUniverseMode(group, activeGalleryId) {
+        const lang     = this.currentLang;
+        const siblings = MENU_CONFIG.filter(i => i.parent === group.id && i.type === 'gallery' && !i.hidden);
+        const uNav     = document.getElementById('universeNav');
+        const mNav     = document.getElementById('mainNav');
+        if (!uNav) return;
+
+        const items = siblings.map((s, idx) => {
+            const isActive = s.galleryId === activeGalleryId;
+            const count    = this.galleries[s.galleryId]?.items?.filter(i => i.type === 'image').length || '';
+            return `<div class="universe-item${isActive ? ' active' : ''}" data-gallery="${s.galleryId}">
+                <span class="universe-item-title">${s.name}</span>
+                ${count ? `<span class="universe-item-num">${String(count).padStart(2,'0')}</span>` : ''}
+            </div>`;
+        }).join('');
+
+        uNav.innerHTML = `
+            <button class="universe-back" id="universeBackBtn">‹ Menu</button>
+            <div class="universe-group-title">${group.name}</div>
+            <div class="universe-items">${items}</div>`;
+
+        /* bind clicks */
+        uNav.querySelector('#universeBackBtn').addEventListener('click', () => this.exitUniverseMode());
+        uNav.querySelectorAll('.universe-item[data-gallery]').forEach(el => {
+            el.addEventListener('click', () => {
+                this.openGallery(el.dataset.gallery);
+            });
+        });
+
+        if (mNav) mNav.style.display = 'none';
+        uNav.style.display = '';
+    }
+
+    exitUniverseMode() {
+        const uNav = document.getElementById('universeNav');
+        const mNav = document.getElementById('mainNav');
+        if (uNav) uNav.style.display = 'none';
+        if (mNav) mNav.style.display = '';
     }
 
     openGalleryFromAccueil(galleryId) {
