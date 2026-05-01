@@ -1,6 +1,6 @@
 /**
  * Bertrand Basset Portfolio — gallery.js
- * Généré par Admin V4 — 01/05/2026 21:37:41
+ * Généré par Admin V4 — 01/05/2026 21:51:55
  */
 
 const SITE_CONFIG = {
