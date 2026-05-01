@@ -703,7 +703,7 @@ class Portfolio {
         };
         const scheduleHide = () => {
             clearTimeout(hideTimer);
-            hideTimer = setTimeout(() => sidebar.classList.add('collapsed'), 1800);
+            hideTimer = setTimeout(() => sidebar.classList.add('collapsed'), 800);
         };
 
         sidebar.addEventListener('mouseenter', show);
@@ -1065,16 +1065,19 @@ class Portfolio {
                     : '';
             }
 
-            /* ── CARTON CENTRAL: titre + sous-titre + texte + bouton ── */
+            /* ── CARTON CENTRAL : layout éditorial ── */
             const ctaBtn = ctaUrl
-                ? `<a href="${ctaUrl}" target="_blank" rel="noopener" class="carton-cta-btn">${ctaLbl} \u2192</a>`
+                ? `<a href="${ctaUrl}" target="_blank" rel="noopener" class="carton-cta-btn">${ctaLbl} →</a>`
                 : '';
+            /* Le kicker affiche category ou subtitle au-dessus du titre */
+            const kicker = category || subtitle || '';
             container.innerHTML = `
                 <div class="carton-slide loaded">
                     <div class="carton-slide-inner">
-                        ${title    ? `<h2 class="carton-slide-title">${title}</h2>` : ''}
-                        ${subtitle ? `<p class="carton-slide-subtitle">${subtitle}</p>` : ''}
-                        ${desc     ? `<p class="carton-slide-desc">${desc.replace(/\n/g,'<br>')}</p>` : ''}
+                        ${kicker ? `<p class="carton-slide-kicker">${kicker}</p>` : ''}
+                        ${title  ? `<h2 class="carton-slide-title">${title}</h2>` : ''}
+                        ${(title && (desc || ctaBtn)) ? '<div class="carton-slide-rule"></div>' : ''}
+                        ${desc   ? `<p class="carton-slide-desc">${desc.replace(/\n/g,'<br>')}</p>` : ''}
                         ${ctaBtn}
                     </div>
                 </div>`;
