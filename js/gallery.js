@@ -1,6 +1,6 @@
 /**
  * Bertrand Basset Portfolio — gallery.js
- * Généré par Admin V4 — 01/05/2026 21:54:31
+ * Généré par Admin V4 — 01/05/2026 22:00:45
  */
 
 const SITE_CONFIG = {
@@ -42,8 +42,8 @@ const MENU_CONFIG = [
   {
     "id": "dustin-kolor-link",
     "name": "DUST'IN KOLOR",
-    "type": "gallery",
-    "galleryId": "dustin-kolor"
+    "type": "link",
+    "url": "dustin-kolor/index.html"
   },
   {
     "id": "item-1773174917949",
