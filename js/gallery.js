@@ -1,6 +1,6 @@
 /**
  * Bertrand Basset Portfolio — gallery.js
- * Généré par Admin V4 — 01/05/2026 22:00:45
+ * Généré par Admin V4 — 01/05/2026 20:44:31
  */
 
 const SITE_CONFIG = {
@@ -661,6 +661,7 @@ class Portfolio {
             const cls = isSub ? 'nav-item nav-sub-item' : 'nav-item';
             if (item.type === 'gallery')  return `<div class="${cls}"><a href="#" class="nav-link" data-gallery="${item.galleryId}">${item.name}</a></div>`;
             if (item.type === 'page')     return `<div class="${cls}"><a href="#" class="nav-link" data-page="${item.pageId}">${item.name}</a></div>`;
+            if (item.type === 'link')     return `<div class="${cls}"><a href="${item.url}" class="nav-link">${item.name}</a></div>`;
             if (item.type === 'external') return `<div class="${cls}"><a href="${item.url}" class="nav-link" target="_blank">${item.name}</a></div>`;
             return '';
         };
@@ -712,6 +713,7 @@ class Portfolio {
         document.addEventListener('keydown', e => {
             if (e.key === 'ArrowLeft')  this.prev();
             if (e.key === 'ArrowRight') this.next();
+            if (e.key === 'Escape')     this.closeBoutiquePanel();
         });
         /* Touch swipe for mobile */
         const gcEl = document.getElementById('galleryContainer');
@@ -1042,7 +1044,11 @@ class Portfolio {
             }
             /* footerCaption: bouton uniquement — pas de caption (déjà dans galleryDesc) */
             if (footerCap) {
-                if (item.button?.url) {
+                if (this.currentGalleryId === 'dustin-kolor') {
+                    const fname = (item.filename || '').split('/').pop();
+                    const lbl = lang === 'en' ? 'Buy this print' : 'Acheter un tirage';
+                    footerCap.innerHTML = `<button class="dk-buy-btn" onclick="window.portfolio.openBoutiquePanel('${fname}')">${lbl} \u2192</button>`;
+                } else if (item.button?.url) {
                     const lbl = item.button.label || (lang === 'en' ? 'See more' : 'En savoir plus');
                     footerCap.innerHTML = `<a class="accueil-sidebar-link" href="${item.button.url}" target="_blank" rel="noopener">${lbl} \u2192</a>`;
                 } else {
@@ -1275,6 +1281,108 @@ class Portfolio {
         const message = document.getElementById('contactMessage')?.value || '';
         const t       = T[this.currentLang];
         window.location.href = `mailto:bertrand.basset@gmail.com?subject=${encodeURIComponent(`${t.mailto_prefix} \u2014 ${type}`)}&body=${encodeURIComponent(message)}`;
+    }
+
+    // ─── BOUTIQUE PANEL ──────────────────────────────────────────────────────
+    openBoutiquePanel(filename) {
+        const DK_EDITIONS = {
+            '01.jpg': { titre: 'Sandstorm',       couleur: 'Feu',    formats: [{ size: '60 \u00D7 90 cm',  prix: [820,  1050, 1230] }] },
+            '02.jpg': { titre: 'Flying Car',       couleur: 'Orange', formats: [{ size: '70 \u00D7 124 cm', prix: [1290, 1550, 1800] }] },
+            '03.jpg': { titre: 'After the Storm',  couleur: 'Vert',   formats: [{ size: '70 \u00D7 124 cm', prix: [1290, 1550, 1800] }] },
+            '04.jpg': { titre: 'Lost in the Dust', couleur: 'Rouge',  formats: [{ size: '60 \u00D7 80 cm',  prix: [890,  1100, 1300] }] },
+            '05.jpg': { titre: 'Camp Lighters',    couleur: 'Jaune',  formats: [{ size: '40 \u00D7 100 cm', prix: [790,  980,  1180] }] },
+            '06.jpg': { titre: "I'm Here",         couleur: 'Bleu',   formats: [{ size: '60 \u00D7 80 cm',  prix: [890,  1100, 1300] }] },
+            '08.jpg': { titre: "Umbrellas Way",    couleur: 'Rose',   formats: [{ size: '60 \u00D7 80 cm',  prix: [890,  1100, 1300] }] },
+        };
+        const SUPPORT = 'Museum Etching 350g\ncollé sur Dibond 2mm';
+        const panel   = document.getElementById('boutiquePanel');
+        const content = document.getElementById('boutiquePanelContent');
+        const overlay = document.getElementById('boutiqueOverlay');
+        if (!panel || !content) return;
+
+        const lang = this.currentLang;
+        const ed   = filename ? DK_EDITIONS[filename] : null;
+
+        if (ed) {
+            const fmt      = ed.formats[0];
+            const prix     = fmt.prix;
+            const imgPath  = `images/dustin-kolor/${filename}`;
+            const suppLines = SUPPORT.split('\n');
+            content.innerHTML = `
+                <div class="bq-header">
+                    <div class="bq-img-wrap">
+                        <img src="${imgPath}" alt="${ed.titre}" class="bq-thumb">
+                    </div>
+                    <div class="bq-meta">
+                        <p class="bq-serie">Dust'in Kolor &mdash; \u00C9dition ${ed.couleur}</p>
+                        <h2 class="bq-title">${ed.titre}</h2>
+                        <p class="bq-format">${fmt.size}</p>
+                    </div>
+                </div>
+                <div class="bq-support">
+                    ${suppLines.map(l => `<span>${l}</span>`).join('')}
+                </div>
+                <div class="bq-editions">
+                    <p class="bq-editions-label">${lang === 'en' ? 'Edition of 10 — price by exemplar' : '\u00C9dition 10 ex. — prix par num\u00E9ro'}</p>
+                    <div class="bq-prix-grid">
+                        <span class="bq-px-range">${lang === 'en' ? 'ex. 1–3' : 'ex. 1\u20133'}</span><span class="bq-px-val">${prix[0].toLocaleString('fr-FR')}\u00A0\u20AC</span>
+                        <span class="bq-px-range">${lang === 'en' ? 'ex. 4–7' : 'ex. 4\u20137'}</span><span class="bq-px-val">${prix[1].toLocaleString('fr-FR')}\u00A0\u20AC</span>
+                        <span class="bq-px-range">${lang === 'en' ? 'ex. 8–10' : 'ex. 8\u201310'}</span><span class="bq-px-val">${prix[2].toLocaleString('fr-FR')}\u00A0\u20AC</span>
+                    </div>
+                </div>
+                <div class="bq-actions">
+                    <button class="bq-btn-add" onclick="window.portfolio.addToCart('${filename}', '${ed.titre}', '${fmt.size}', ${prix[0]})">
+                        ${lang === 'en' ? 'Add to cart' : 'Ajouter au panier'} &mdash; ${prix[0].toLocaleString('fr-FR')}\u00A0\u20AC
+                    </button>
+                    <p class="bq-note">${lang === 'en' ? 'Numbered & signed. Certificate of authenticity included.' : 'Num\u00E9rot\u00E9 & sign\u00E9. Certificat d\u2019authenticit\u00E9 inclus.'}</p>
+                    <p class="bq-contact"><a href="mailto:yellowshoesstudio@gmail.com">${lang === 'en' ? 'Contact for another size' : 'Demander un autre format'}</a></p>
+                </div>`;
+        } else {
+            // Generic panel — list all works
+            content.innerHTML = `
+                <h2 class="bq-title">${lang === 'en' ? "Dust'in Kolor — Editions" : "Dust'in Kolor — \u00C9ditions"}</h2>
+                <p class="bq-note" style="margin-bottom:1.5rem">${lang === 'en' ? 'Navigate to a photo and click the buy button to order a specific print.' : 'Naviguez jusqu\u2019\u00E0 une photo puis cliquez sur Acheter un tirage.'}</p>`;
+        }
+
+        panel.classList.add('open');
+        if (overlay) overlay.classList.add('visible');
+    }
+
+    closeBoutiquePanel() {
+        const panel   = document.getElementById('boutiquePanel');
+        const overlay = document.getElementById('boutiqueOverlay');
+        if (panel)   panel.classList.remove('open');
+        if (overlay) overlay.classList.remove('visible');
+    }
+
+    addToCart(filename, titre, format, prix) {
+        let cart = JSON.parse(localStorage.getItem('dk_cart') || '[]');
+        const existing = cart.find(i => i.filename === filename && i.format === format);
+        if (existing) {
+            existing.qty = (existing.qty || 1) + 1;
+        } else {
+            cart.push({ filename, titre, format, prix, qty: 1 });
+        }
+        localStorage.setItem('dk_cart', JSON.stringify(cart));
+        this.updateCartBadge();
+        // Visual feedback
+        const btn = document.querySelector('.bq-btn-add');
+        if (btn) {
+            const orig = btn.innerHTML;
+            btn.innerHTML = this.currentLang === 'en' ? '\u2714 Added!' : '\u2714 Ajout\u00E9\u00A0!';
+            btn.style.background = '#2a2a2a';
+            setTimeout(() => { btn.innerHTML = orig; btn.style.background = ''; }, 1800);
+        }
+    }
+
+    updateCartBadge() {
+        const cart  = JSON.parse(localStorage.getItem('dk_cart') || '[]');
+        const total = cart.reduce((s, i) => s + (i.qty || 1), 0);
+        const badge = document.getElementById('cartBadge');
+        if (badge) {
+            badge.textContent = total > 0 ? total : '';
+            badge.style.display = total > 0 ? 'inline-block' : 'none';
+        }
     }
 
     initCursor() {
