@@ -8,7 +8,12 @@
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *, *::before, *::after {
+      box-sizing: border-box; margin: 0; padding: 0;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      color-adjust: exact !important;
+    }
     html { font-family: 'IBM Plex Sans', Arial, sans-serif; -webkit-font-smoothing: antialiased; }
     body { background: #d0d0d0; padding: 20px; }
 
@@ -149,12 +154,6 @@
       @page { size: 329mm 483mm portrait; margin: 10mm; }
     }
 
-    /* Force l'impression des fonds colorés */
-    .c-head {
-      -webkit-print-color-adjust: exact !important;
-      print-color-adjust: exact !important;
-      color-adjust: exact !important;
-    }
   </style>
 </head>
 <body>
@@ -171,7 +170,7 @@ const BASE  = 'https://bertrandbasset.com/boutique.html?id=';
 const PAYER = 'https://bertrandbasset.com/payer.html';
 
 const EDITIONS = [
-  { slug:'sandstorm-feu',          num:'01', titre:'Sandstorm',        hex:'#FF4500', format:'60 × 90 cm',  prix:'850 €',  papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm' },
+  { slug:'sandstorm-feu',          num:'01', titre:'Sandstorm',        hex:'#FF4500', format:'60 × 90 cm',  prix:'950 €',  papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm' },
   { slug:'flying-car-orange',      num:'02', titre:'Flying Car',       hex:'#FF6600', format:'70 × 124 cm', prix:'1 290 €',papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm' },
   { slug:'lost-in-the-dust-rouge', num:'04', titre:'Lost in the Dust', hex:'#CC0000', format:'60 × 80 cm',  prix:'890 €',  papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm' },
   { slug:'camp-lighters-jaune',    num:'05', titre:'Lamp Lighters',    hex:'#FFB300', format:'40 × 100 cm', prix:'790 €',  papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm' },
