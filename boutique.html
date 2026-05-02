@@ -237,9 +237,16 @@
       padding-top: 0.9rem; border-top: 1px solid var(--line);
       font-size: 0.68rem; color: var(--gray);
     }
-    .stock-count { font-size: 1.7rem; font-weight: 300; color: var(--black); line-height: 1; }
-    .stock-bar-wrap { width: 70px; height: 2px; background: var(--line); border-radius: 1px; overflow: hidden; }
-    .stock-bar-fill { height: 100%; background: var(--black); border-radius: 1px; }
+    /* Dots de tirage */
+    .copies-wrap { padding-top: 0.9rem; border-top: 1px solid var(--line); }
+    .copies-dots { display: flex; gap: 5px; align-items: center; margin-bottom: 0.55rem; }
+    .copy-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; display: inline-block; }
+    .dot-sold    { background: var(--black); }
+    .dot-current { background: transparent; border: 1.5px solid var(--black); }
+    .dot-future  { background: transparent; border: 1px solid var(--line); }
+    .dot-sep { width: 1px; height: 14px; background: var(--line); flex-shrink: 0; margin: 0 3px; }
+    .copies-note { font-size: 0.68rem; color: var(--dim); line-height: 1.5; }
+    .copies-count { color: var(--black); font-weight: 500; }
 
     /* CTA */
     .btn-primary {
@@ -388,7 +395,7 @@
           <div class="price-main" id="priceMain"></div>
           <div class="price-tier-note" id="priceTierNote"></div>
         </div>
-        <div class="stock-line" id="stockLine"></div>
+        <div id="copiesWrap"></div>
         <button class="btn-primary" id="btnAdd" onclick="addToCart()"></button>
       </div>
     </div>
@@ -549,6 +556,34 @@
   });
 
   /* ══════════════════════════════════════════════════════════
+     DOTS DE TIRAGE
+  ══════════════════════════════════════════════════════════ */
+  function renderDots(ed) {
+    const t         = T[lang];
+    const pi        = palierIdx(ed);
+    const ep        = dispo(ed) <= 0;
+    const tierEnds  = [3, 7, 10];
+    const restants  = tierEnds[pi] - ed.vendus;
+
+    let dotsHTML = '<div class="copies-dots">';
+    for (let i = 0; i < ed.total; i++) {
+      let cls;
+      if      (i < ed.vendus)         cls = 'dot-sold';
+      else if (i < tierEnds[pi])      cls = 'dot-current';
+      else                            cls = 'dot-future';
+      dotsHTML += `<span class="copy-dot ${cls}"></span>`;
+      if (i === 2 || i === 6) dotsHTML += '<span class="dot-sep"></span>';
+    }
+    dotsHTML += '</div>';
+
+    const noteHTML = ep
+      ? `<div class="copies-note">${t.epuise}</div>`
+      : `<div class="copies-note"><span class="copies-count">${restants}</span> restant${restants > 1 ? 's' : ''} à ce prix · ${dispo(ed)} disponibles</div>`;
+
+    return `<div class="copies-wrap">${dotsHTML}${noteHTML}</div>`;
+  }
+
+  /* ══════════════════════════════════════════════════════════
      FORMAT SELECTOR
   ══════════════════════════════════════════════════════════ */
   function selectFormat(fmt) {
@@ -616,26 +651,17 @@
     noteEl.textContent  = isA4 ? '' : t.prix_progressif;
     noteEl.style.display = isA4 ? 'none' : '';
 
-    // Price
+    // Price & copies
     if (isA4) {
       document.getElementById('priceMain').textContent     = '160 €';
       document.getElementById('priceTierNote').textContent = t.prix_fixe;
-      // Structure identique au grand format pour hauteur fixe
-      document.getElementById('stockLine').innerHTML =
-        `<div><span class="stock-count">30</span><span style="font-size:0.6rem;color:var(--dim);margin-left:0.3rem">${t.ex_dispo}</span></div>
-         <div class="stock-bar-wrap" style="visibility:hidden"><div class="stock-bar-fill" style="width:100%"></div></div>
-         <span style="visibility:hidden">—</span>`;
+      document.getElementById('copiesWrap').innerHTML =
+        `<div class="copies-wrap"><div class="copies-note">30 ${t.ex_dispo}</div></div>`;
     } else {
       document.getElementById('priceMain').textContent =
         ep ? '—' : prixAct(ed).toLocaleString('fr-FR') + ' €';
       document.getElementById('priceTierNote').textContent = ep ? t.epuise : t.paliers[pi];
-
-      const d = dispo(ed);
-      document.getElementById('stockLine').innerHTML = ep
-        ? `<span style="color:#c00">${t.epuise}</span>`
-        : `<div><span class="stock-count">${d}</span><span style="font-size:0.6rem;color:var(--dim);margin-left:0.3rem">${t.disponibles} / ${ed.total}</span></div>
-           <div class="stock-bar-wrap"><div class="stock-bar-fill" style="width:${Math.round(d/ed.total*100)}%"></div></div>
-           <span>${ed.vendus} ${t.vendu}</span>`;
+      document.getElementById('copiesWrap').innerHTML = renderDots(ed);
     }
 
     // CTA
