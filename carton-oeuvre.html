@@ -148,6 +148,13 @@
       .carton { border: 0.3pt solid #bbb; }
       @page { size: 329mm 483mm portrait; margin: 10mm; }
     }
+
+    /* Force l'impression des fonds colorés */
+    .c-head {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      color-adjust: exact !important;
+    }
   </style>
 </head>
 <body>
@@ -167,7 +174,7 @@ const EDITIONS = [
   { slug:'sandstorm-feu',          num:'01', titre:'Sandstorm',        hex:'#FF4500', format:'60 × 90 cm',  prix:'850 €',  papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm' },
   { slug:'flying-car-orange',      num:'02', titre:'Flying Car',       hex:'#FF6600', format:'70 × 124 cm', prix:'1 290 €',papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm' },
   { slug:'lost-in-the-dust-rouge', num:'04', titre:'Lost in the Dust', hex:'#CC0000', format:'60 × 80 cm',  prix:'890 €',  papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm' },
-  { slug:'camp-lighters-jaune',    num:'05', titre:'Camp Lighters',    hex:'#FFB300', format:'40 × 100 cm', prix:'790 €',  papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm' },
+  { slug:'camp-lighters-jaune',    num:'05', titre:'Lamp Lighters',    hex:'#FFB300', format:'40 × 100 cm', prix:'790 €',  papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm' },
   { slug:'im-here-bleu',           num:'06', titre:"I'm Here",         hex:'#0066CC', format:'60 × 80 cm',  prix:'890 €',  papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm' },
   { slug:'umbrellas-way-rose',     num:'08', titre:'Umbrellas Way',    hex:'#FF1493', format:'60 × 80 cm',  prix:'890 €',  papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm' },
 ];
