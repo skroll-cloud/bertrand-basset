@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paiement confirmé — Bertrand Basset</title>
+  <link rel="icon" type="image/svg+xml" href="assets/logo-b.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --font: 'IBM Plex Sans', -apple-system, Arial, sans-serif;
+      --black: #111;
+      --gray: #555;
+      --dim: #999;
+      --line: #e8e8e8;
+    }
+    html, body {
+      font-family: var(--font);
+      color: var(--black);
+      background: #fff;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    .card {
+      max-width: 440px;
+      width: 100%;
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+
+    .check-circle {
+      width: 52px; height: 52px;
+      border: 1.5px solid var(--black);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 2rem;
+    }
+    .check-circle svg {
+      width: 22px; height: 22px;
+      fill: none; stroke: var(--black); stroke-width: 2;
+      stroke-linecap: round; stroke-linejoin: round;
+    }
+
+    .kicker {
+      font-size: 0.52rem; letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--dim); margin-bottom: 0.6rem;
+    }
+    .title {
+      font-size: 1.9rem; font-weight: 300;
+      letter-spacing: -0.02em; line-height: 1.15;
+      margin-bottom: 1.4rem;
+    }
+    .message {
+      font-size: 0.82rem; color: var(--gray);
+      line-height: 1.8; font-weight: 300;
+      margin-bottom: 2.5rem;
+    }
+    .message strong { font-weight: 400; color: var(--black); }
+
+    .sep { height: 1px; background: var(--line); margin: 2rem 0; }
+
+    .links {
+      display: flex; flex-direction: column; gap: 0.8rem;
+    }
+    .link-primary {
+      display: inline-block;
+      padding: 0.85rem 1.5rem;
+      background: var(--black); color: #fff;
+      font-size: 0.62rem; font-weight: 500; letter-spacing: 0.14em;
+      text-transform: uppercase; border-radius: 2px;
+      transition: background 0.2s;
+    }
+    .link-primary:hover { background: #333; }
+    .link-secondary {
+      font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--dim); transition: color 0.15s;
+    }
+    .link-secondary:hover { color: var(--black); }
+
+    .brand {
+      display: flex; align-items: center; justify-content: center;
+      gap: 0.45rem; margin-bottom: 2.5rem;
+    }
+    .brand img { width: 16px; height: 16px; opacity: 0.5; }
+    .brand-name {
+      font-size: 0.55rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--dim);
+    }
+
+    @media (max-width: 480px) {
+      .card { padding: 2.5rem 1.5rem; }
+      .title { font-size: 1.6rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="card">
+
+  <div class="brand">
+    <img src="assets/logo-b.svg" alt="B">
+    <span class="brand-name">Bertrand Basset</span>
+  </div>
+
+  <div class="check-circle">
+    <svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>
+  </div>
+
+  <p class="kicker">Paiement confirmé</p>
+  <h1 class="title">Merci pour<br>votre achat</h1>
+
+  <p class="message">
+    Votre paiement a bien été reçu.<br>
+    <strong>Vous pouvez prendre vos cartes postales.</strong><br><br>
+    Un reçu vous a été envoyé par email.<br>
+    Bonne route avec les images.
+  </p>
+
+  <div class="sep"></div>
+
+  <div class="links">
+    <a href="dustin-kolor/index.html" class="link-primary">Voir la série Dust'in Kolor</a>
+    <a href="index.html" class="link-secondary">← Retour au portfolio</a>
+  </div>
+
+</div>
+</body>
+</html>

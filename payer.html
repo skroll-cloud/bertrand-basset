@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payer mes cartes postales — Bertrand Basset</title>
+  <link rel="icon" type="image/svg+xml" href="assets/logo-b.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --font: 'IBM Plex Sans', -apple-system, Arial, sans-serif;
+      --black: #111;
+      --gray: #555;
+      --dim: #999;
+      --line: #e8e8e8;
+      --bg: #f9f9f9;
+    }
+    html, body {
+      font-family: var(--font);
+      color: var(--black);
+      background: #fff;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    /* ── LAYOUT ── */
+    .page {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    /* ── PHOTO SIDE ── */
+    .photo-side {
+      position: relative;
+      overflow: hidden;
+      background: #111;
+    }
+    .photo-side img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      opacity: 0.85;
+      display: block;
+    }
+    .photo-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to right, transparent 60%, rgba(0,0,0,0.25));
+    }
+    .photo-credit {
+      position: absolute; bottom: 1.5rem; left: 1.5rem;
+      font-size: 0.55rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: rgba(255,255,255,0.45);
+    }
+
+    /* ── CONTENT SIDE ── */
+    .content-side {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 3rem 3.5rem;
+    }
+
+    .brand {
+      display: flex; align-items: center; gap: 0.5rem;
+      margin-bottom: 3rem;
+    }
+    .brand img { width: 20px; height: 20px; opacity: 0.7; }
+    .brand-name {
+      font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--dim);
+    }
+
+    .kicker {
+      font-size: 0.52rem; letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--dim); margin-bottom: 0.7rem;
+    }
+    .title {
+      font-size: clamp(1.6rem, 2.5vw, 2.4rem);
+      font-weight: 300; letter-spacing: -0.02em; line-height: 1.1;
+      margin-bottom: 1.5rem;
+    }
+    .desc {
+      font-size: 0.78rem; color: var(--gray);
+      line-height: 1.8; font-weight: 300;
+      max-width: 360px;
+      margin-bottom: 2.2rem;
+    }
+    .desc strong { font-weight: 400; color: var(--black); }
+
+    /* ── PRIX INDICATIF ── */
+    .prix-grid {
+      display: flex; gap: 1rem;
+      margin-bottom: 2.5rem;
+    }
+    .prix-chip {
+      display: flex; flex-direction: column; align-items: center;
+      padding: 0.7rem 1rem;
+      border: 1px solid var(--line);
+      border-radius: 2px;
+      min-width: 70px;
+      cursor: default;
+    }
+    .prix-chip .montant {
+      font-size: 1.1rem; font-weight: 300; letter-spacing: -0.02em;
+      line-height: 1;
+    }
+    .prix-chip .label {
+      font-size: 0.52rem; color: var(--dim); letter-spacing: 0.1em;
+      text-transform: uppercase; margin-top: 0.3rem;
+    }
+
+    /* ── CTA ── */
+    .cta-block { display: flex; flex-direction: column; gap: 0.7rem; }
+    .btn-pay {
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 0.6rem;
+      padding: 1rem 2rem;
+      background: var(--black); color: #fff;
+      font-family: var(--font);
+      font-size: 0.65rem; font-weight: 500; letter-spacing: 0.14em;
+      text-transform: uppercase; border-radius: 2px;
+      cursor: pointer; border: none;
+      transition: background 0.2s;
+      text-decoration: none;
+    }
+    .btn-pay:hover { background: #333; }
+    .btn-pay svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; }
+
+    .secure-note {
+      font-size: 0.58rem; color: var(--dim); letter-spacing: 0.04em;
+      display: flex; align-items: center; gap: 0.35rem;
+    }
+    .secure-note svg { width: 11px; height: 11px; fill: none; stroke: var(--dim); stroke-width: 2; }
+
+    .sep { height: 1px; background: var(--line); margin: 2.2rem 0; }
+
+    .footer-link {
+      font-size: 0.58rem; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--dim); transition: color 0.15s;
+    }
+    .footer-link:hover { color: var(--black); }
+
+    /* ── MOBILE ── */
+    @media (max-width: 767px) {
+      .page { grid-template-columns: 1fr; }
+      .photo-side { height: 45vw; max-height: 280px; }
+      .photo-overlay { background: none; }
+      .content-side { padding: 2rem 1.5rem 3rem; }
+      .brand { margin-bottom: 2rem; }
+      .title { font-size: 1.8rem; }
+      .prix-grid { flex-wrap: wrap; }
+      .btn-pay { padding: 1rem 1.5rem; width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- Photo -->
+  <div class="photo-side">
+    <img src="images/dustin-kolor/01.jpg" alt="Dust'in Kolor — Bertrand Basset">
+    <div class="photo-overlay"></div>
+    <span class="photo-credit">Dust'in Kolor — Nevada 2016</span>
+  </div>
+
+  <!-- Contenu -->
+  <div class="content-side">
+
+    <div class="brand">
+      <img src="assets/logo-b.svg" alt="B">
+      <span class="brand-name">Bertrand Basset</span>
+    </div>
+
+    <p class="kicker">Exposition &amp; vente</p>
+    <h1 class="title">Payer mes<br>cartes postales</h1>
+
+    <p class="desc">
+      Merci de votre achat.<br>
+      Les cartes sont à <strong>3 € l'unité</strong> — composez votre sélection librement.
+      Le montant est à saisir sur la page de paiement sécurisé.
+    </p>
+
+    <!-- Prix indicatif -->
+    <div class="prix-grid">
+      <div class="prix-chip">
+        <span class="montant">3 €</span>
+        <span class="label">1 carte</span>
+      </div>
+      <div class="prix-chip">
+        <span class="montant">6 €</span>
+        <span class="label">2 cartes</span>
+      </div>
+      <div class="prix-chip">
+        <span class="montant">12 €</span>
+        <span class="label">4 cartes</span>
+      </div>
+      <div class="prix-chip">
+        <span class="montant">20 €</span>
+        <span class="label">pochette</span>
+      </div>
+    </div>
+
+    <div class="cta-block">
+      <!-- Remplacer VOTRE_LIEN_STRIPE par l'URL du Payment Link Stripe -->
+      <a href="VOTRE_LIEN_STRIPE" class="btn-pay" id="btnPay" target="_self">
+        <svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+        Payer par carte bancaire
+      </a>
+      <p class="secure-note">
+        <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        Paiement sécurisé par Stripe · Aucune donnée bancaire stockée
+      </p>
+    </div>
+
+    <div class="sep"></div>
+
+    <a href="dustin-kolor/index.html" class="footer-link">← Voir la série Dust'in Kolor</a>
+
+  </div>
+</div>
+
+</body>
+</html>
