@@ -115,7 +115,7 @@
   <p class="kicker">Paiement confirmé</p>
   <h1 class="title">Merci pour<br>votre achat</h1>
 
-  <p class="message">
+  <p class="message" id="msg">
     Votre paiement a bien été reçu.<br>
     <strong>Vous pouvez prendre vos cartes postales.</strong><br><br>
     Un reçu vous a été envoyé par email.<br>
@@ -130,5 +130,39 @@
   </div>
 
 </div>
+
+<script>
+  /* ── Notification automatique au bar — cartes postales uniquement ──
+     Déclenché seulement si l'URL contient ?type=carte ou ?type=pack3
+     (configuré dans les success_url des Payment Links Stripe)
+  ── */
+  const WEB3FORMS_KEY = 'VOTRE_CLE_WEB3FORMS'; // ← remplacer après inscription sur web3forms.com
+
+  const NOTIF_EMAIL   = 'team@labrasseriegraphique.com';
+
+  const PRODUITS = {
+    carte: { label: '1 carte postale', montant: '6 €' },
+    pack3: { label: 'Pack 3 cartes postales', montant: '15 €' }
+  };
+
+  (function () {
+    const params = new URLSearchParams(location.search);
+    const type   = params.get('type');
+    const produit = PRODUITS[type];
+    if (!produit || WEB3FORMS_KEY === 'VOTRE_CLE_WEB3FORMS') return;
+
+    // Envoyer la notification
+    fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({
+        access_key: WEB3FORMS_KEY,
+        to:         NOTIF_EMAIL,
+        subject:    `✅ Paiement reçu — ${produit.label} (${produit.montant})`,
+        message:    `Un client vient de payer ${produit.montant} pour : ${produit.label}.\n\nIl peut prendre ses cartes postales.\n\n— Bertrand Basset / bertrandbasset.com`
+      })
+    }).catch(() => {}); // silencieux si erreur réseau
+  })();
+</script>
 </body>
 </html>
