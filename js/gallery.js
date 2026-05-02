@@ -9,7 +9,7 @@ const SITE_CONFIG = {
     defaultLang:    "fr",
     showLanding:    true,
     landingImage:   "images/accueil/accueil-01.jpg?v=20260501",
-    defaultGallery: "portrait",
+    defaultGallery: "best-of",
     social: {
         instagram: "https://www.instagram.com/bassetbertrand/",
         facebook:  "https://www.facebook.com/BertrandBassetPhotographie",
@@ -702,6 +702,9 @@ class Portfolio {
 
     bindEvents() {
         document.getElementById('enterBtn')?.addEventListener('click', () => this.enterSite());
+        /* Logo [b] sur la landing → entre dans le site */
+        document.querySelector('.landing .logo-b')?.addEventListener('click', () => this.enterSite());
+        document.querySelector('.landing .brand-block')?.addEventListener('click', () => this.enterSite());
         document.getElementById('homeLink')?.addEventListener('click', e => {
             e.preventDefault();
             this.openHomeGallery();
