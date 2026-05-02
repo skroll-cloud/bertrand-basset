@@ -179,20 +179,19 @@
 
     /* ── FORMAT TABS ── */
     .format-tabs {
-      display: flex; margin-bottom: 1.6rem;
-      border: 1px solid var(--line); border-radius: 2px;
-      overflow: hidden;
+      display: flex; gap: 1.8rem; margin-bottom: 1.6rem;
+      border-bottom: 1px solid var(--line);
     }
     .format-tab {
-      flex: 1; padding: 0.65rem 0.8rem;
-      font-size: 0.6rem; font-weight: 400; letter-spacing: 0.08em; text-transform: uppercase;
-      color: var(--dim); background: #fff; border: none;
-      border-right: 1px solid var(--line); cursor: pointer;
-      transition: background 0.15s, color 0.15s;
+      padding: 0 0 0.7rem;
+      font-size: 0.6rem; font-weight: 400; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--dim); background: none; border: none;
+      border-bottom: 1.5px solid transparent; margin-bottom: -1px;
+      cursor: pointer; transition: color 0.15s, border-color 0.15s;
+      white-space: nowrap;
     }
-    .format-tab:last-child { border-right: none; }
-    .format-tab.active { background: var(--black); color: #fff; }
-    .format-tab:hover:not(.active) { background: var(--bg); color: var(--black); }
+    .format-tab.active { color: var(--black); border-bottom-color: var(--black); font-weight: 500; }
+    .format-tab:hover:not(.active) { color: var(--black); }
 
     .info-sep { height: 1px; background: var(--line); margin-bottom: 1.6rem; }
 
@@ -619,10 +618,13 @@
 
     // Price
     if (isA4) {
-      document.getElementById('priceMain').textContent    = '160 €';
+      document.getElementById('priceMain').textContent     = '160 €';
       document.getElementById('priceTierNote').textContent = t.prix_fixe;
+      // Structure identique au grand format pour hauteur fixe
       document.getElementById('stockLine').innerHTML =
-        `<span style="color:var(--dim);font-size:0.72rem">30 ${t.ex_dispo}</span>`;
+        `<div><span class="stock-count">30</span><span style="font-size:0.6rem;color:var(--dim);margin-left:0.3rem">${t.ex_dispo}</span></div>
+         <div class="stock-bar-wrap" style="visibility:hidden"><div class="stock-bar-fill" style="width:100%"></div></div>
+         <span style="visibility:hidden">—</span>`;
     } else {
       document.getElementById('priceMain').textContent =
         ep ? '—' : prixAct(ed).toLocaleString('fr-FR') + ' €';
