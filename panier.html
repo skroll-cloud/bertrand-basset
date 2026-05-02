@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panier — Bertrand Basset</title>
+  <link rel="icon" type="image/svg+xml" href="assets/logo-b.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --font: 'IBM Plex Sans', -apple-system, Arial, sans-serif;
+      --black: #111; --gray: #555; --dim: #999; --line: #e8e8e8; --bg: #f9f9f9;
+    }
+    html { font-family: var(--font); color: var(--black); background: #fff; -webkit-font-smoothing: antialiased; }
+    body { min-height: 100vh; }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: var(--font); cursor: pointer; border: none; background: none; }
+    img { display: block; max-width: 100%; }
+
+    /* ── HEADER ── */
+    .site-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.2rem 2rem; border-bottom: 1px solid var(--line);
+      position: sticky; top: 0; background: #fff; z-index: 100;
+    }
+    .header-logo { display: flex; align-items: center; gap: 0.5rem; }
+    .header-logo img { width: 18px; height: 18px; }
+    .header-logo-name { font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--black); }
+    .header-back { font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim); transition: color 0.15s; }
+    .header-back:hover { color: var(--black); }
+
+    /* ── LAYOUT ── */
+    .page-wrap { max-width: 680px; margin: 0 auto; padding: 3rem 2rem 5rem; }
+    .page-kicker { font-size: 0.52rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); margin-bottom: 0.5rem; }
+    .page-title { font-size: 2rem; font-weight: 300; letter-spacing: -0.02em; margin-bottom: 2.5rem; }
+
+    /* ── CART ITEMS ── */
+    .cart-empty { font-size: 0.82rem; color: var(--dim); text-align: center; padding: 4rem 0; }
+    .cart-items { display: flex; flex-direction: column; gap: 0; margin-bottom: 2rem; }
+    .cart-item {
+      display: grid; grid-template-columns: 80px 1fr auto;
+      gap: 1.2rem; align-items: center;
+      padding: 1.2rem 0; border-bottom: 1px solid var(--line);
+    }
+    .cart-item-img { aspect-ratio: 4/3; overflow: hidden; background: var(--bg); }
+    .cart-item-img img { width: 100%; height: 100%; object-fit: cover; }
+    .cart-item-name { font-size: 0.85rem; font-weight: 300; margin-bottom: 0.2rem; }
+    .cart-item-format { font-size: 0.65rem; color: var(--dim); margin-bottom: 0.6rem; }
+    .cart-item-qty {
+      display: flex; align-items: center; gap: 0.5rem;
+      font-size: 0.72rem; color: var(--gray);
+    }
+    .qty-btn {
+      width: 22px; height: 22px; border: 1px solid var(--line); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.9rem; color: var(--black); transition: border-color 0.15s;
+    }
+    .qty-btn:hover { border-color: var(--black); }
+    .cart-item-right { text-align: right; }
+    .cart-item-prix { font-size: 0.95rem; font-weight: 300; margin-bottom: 0.5rem; }
+    .cart-item-del { font-size: 0.55rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--dim); transition: color 0.15s; }
+    .cart-item-del:hover { color: #c00; }
+
+    /* ── TOTAUX ── */
+    .cart-summary { border-top: 1px solid var(--black); padding-top: 1.2rem; margin-bottom: 2rem; }
+    .cart-summary-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.5rem; }
+    .cart-summary-label { font-size: 0.68rem; color: var(--dim); letter-spacing: 0.06em; text-transform: uppercase; }
+    .cart-summary-total { font-size: 1.8rem; font-weight: 300; letter-spacing: -0.02em; }
+
+    /* ── CTA ── */
+    .btn-checkout {
+      display: block; width: 100%; padding: 1.1rem;
+      background: var(--black); color: #fff;
+      font-size: 0.65rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase;
+      text-align: center; border-radius: 2px; cursor: pointer;
+      transition: background 0.2s; border: none;
+    }
+    .btn-checkout:hover { background: #333; }
+    .btn-checkout:disabled { background: #ccc; cursor: not-allowed; }
+    .checkout-note { font-size: 0.6rem; color: var(--dim); text-align: center; margin-top: 0.8rem; line-height: 1.6; }
+
+    .sep { height: 1px; background: var(--line); margin: 2rem 0; }
+    .continue-link { font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim); transition: color 0.15s; }
+    .continue-link:hover { color: var(--black); }
+
+    @media (max-width: 600px) {
+      .page-wrap { padding: 2rem 1.2rem 4rem; }
+      .header-logo-name { display: none; }
+      .cart-item { grid-template-columns: 64px 1fr auto; gap: 0.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <a href="index.html" class="header-logo">
+    <img src="assets/logo-b.svg" alt="B">
+    <span class="header-logo-name">Bertrand Basset</span>
+  </a>
+  <a href="boutique.html" class="header-back">← Continuer mes achats</a>
+</header>
+
+<div class="page-wrap">
+  <p class="page-kicker">Mon sélection</p>
+  <h1 class="page-title">Panier</h1>
+
+  <div id="cartContent"></div>
+</div>
+
+<script>
+  const EDITIONS = [
+    { slug:'sandstorm-feu',          img:'images/dustin-kolor/01.jpg', titre_fr:'Sandstorm',        format:'60 × 90 cm'  },
+    { slug:'flying-car-orange',      img:'images/dustin-kolor/02.jpg', titre_fr:'Flying Car',        format:'70 × 124 cm' },
+    { slug:'after-the-storm-vert',   img:'images/dustin-kolor/03.jpg', titre_fr:'After the Storm',   format:'70 × 124 cm' },
+    { slug:'lost-in-the-dust-rouge', img:'images/dustin-kolor/04.jpg', titre_fr:'Lost in the Dust',  format:'60 × 80 cm'  },
+    { slug:'camp-lighters-jaune',    img:'images/dustin-kolor/05.jpg', titre_fr:'Camp Lighters',     format:'40 × 100 cm' },
+    { slug:'im-here-bleu',           img:'images/dustin-kolor/06.jpg', titre_fr:"I'm Here",          format:'60 × 80 cm'  },
+    { slug:'umbrellas-way-rose',     img:'images/dustin-kolor/08.jpg', titre_fr:'Umbrellas Way',     format:'60 × 80 cm'  },
+  ];
+
+  function getCart() { try { return JSON.parse(localStorage.getItem('dk_cart')||'[]'); } catch(e){ return []; } }
+  function saveCart(c) { localStorage.setItem('dk_cart', JSON.stringify(c)); }
+
+  function changeQty(slug, delta) {
+    const cart = getCart();
+    const item = cart.find(x => x.slug === slug);
+    if (!item) return;
+    item.qty = (item.qty||1) + delta;
+    if (item.qty <= 0) cart.splice(cart.indexOf(item), 1);
+    saveCart(cart);
+    renderCart();
+  }
+
+  function removeItem(slug) {
+    saveCart(getCart().filter(x => x.slug !== slug));
+    renderCart();
+  }
+
+  function renderCart() {
+    const cart = getCart();
+    const wrap = document.getElementById('cartContent');
+
+    if (cart.length === 0) {
+      wrap.innerHTML = `
+        <p class="cart-empty">Votre panier est vide.</p>
+        <div class="sep"></div>
+        <a href="boutique.html" class="continue-link">← Voir les œuvres disponibles</a>`;
+      return;
+    }
+
+    const total = cart.reduce((s, i) => s + (i.prix * (i.qty||1)), 0);
+
+    const items = cart.map(item => {
+      const ed = EDITIONS.find(e => e.slug === item.slug) || {};
+      return `
+        <div class="cart-item">
+          <div class="cart-item-img">
+            <img src="${ed.img||''}" alt="${item.titre}" loading="lazy">
+          </div>
+          <div>
+            <div class="cart-item-name">${item.titre}</div>
+            <div class="cart-item-format">${item.format} — Ex. ${item.num}</div>
+            <div class="cart-item-qty">
+              <button class="qty-btn" onclick="changeQty('${item.slug}',-1)">−</button>
+              <span>${item.qty||1}</span>
+              <button class="qty-btn" onclick="changeQty('${item.slug}',+1)">+</button>
+            </div>
+          </div>
+          <div class="cart-item-right">
+            <div class="cart-item-prix">${(item.prix*(item.qty||1)).toLocaleString('fr-FR')} €</div>
+            <button class="cart-item-del" onclick="removeItem('${item.slug}')">Retirer</button>
+          </div>
+        </div>`;
+    }).join('');
+
+    wrap.innerHTML = `
+      <div class="cart-items">${items}</div>
+      <div class="cart-summary">
+        <div class="cart-summary-row">
+          <span class="cart-summary-label">Total</span>
+          <span class="cart-summary-total">${total.toLocaleString('fr-FR')} €</span>
+        </div>
+      </div>
+      <button class="btn-checkout" onclick="checkout()">Procéder au paiement</button>
+      <p class="checkout-note">Paiement sécurisé par Stripe · Tirage numéroté livré par Pix in the City, Auray</p>
+      <div class="sep"></div>
+      <a href="boutique.html" class="continue-link">← Continuer mes achats</a>`;
+  }
+
+  function checkout() {
+    // TODO: intégrer Stripe Checkout pour les tirages
+    alert('Paiement des tirages — prochainement disponible.\nPour commander, contactez : bertrand.basset@gmail.com');
+  }
+
+  renderCart();
+</script>
+</body>
+</html>

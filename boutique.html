@@ -30,12 +30,28 @@
       border-bottom: 1px solid var(--line);
       position: sticky; top: 0; background: #fff; z-index: 100;
     }
-    .header-back {
-      font-size: 0.58rem; letter-spacing: 0.14em; text-transform: uppercase;
-      color: var(--dim); transition: color 0.15s;
-      display: flex; align-items: center; gap: 0.4rem;
+    .header-logo {
+      display: flex; align-items: center; gap: 0.5rem;
+      text-decoration: none;
     }
-    .header-back:hover { color: var(--black); }
+    .header-logo img { width: 18px; height: 18px; }
+    .header-logo-name {
+      font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--black); font-weight: 400;
+    }
+    .header-right { display: flex; align-items: center; gap: 1.2rem; }
+    .header-cart {
+      position: relative; display: flex; align-items: center;
+      color: var(--black); text-decoration: none;
+    }
+    .header-cart svg { width: 18px; height: 18px; fill: none; stroke: var(--black); stroke-width: 1.5; }
+    .cart-badge {
+      position: absolute; top: -6px; right: -8px;
+      background: var(--black); color: #fff;
+      font-size: 0.45rem; font-weight: 500;
+      width: 14px; height: 14px; border-radius: 50%;
+      display: none; align-items: center; justify-content: center;
+    }
     .header-lang {
       font-size: 0.58rem; letter-spacing: 0.08em;
       display: flex; gap: 0.3rem; align-items: center;
@@ -43,6 +59,42 @@
     .header-lang a { color: var(--dim); cursor: pointer; transition: color 0.15s; }
     .header-lang a.active { color: var(--black); font-weight: 500; }
     .header-lang span { color: var(--line); }
+
+    /* ── CART POPUP ── */
+    .cart-popup-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.3); z-index: 200;
+    }
+    .cart-popup {
+      display: none; position: fixed;
+      top: 50%; left: 50%; transform: translate(-50%, -50%);
+      background: #fff; z-index: 201;
+      padding: 2.2rem 2rem; width: 320px; border-radius: 2px;
+      text-align: center;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.12);
+    }
+    .cart-popup.open, .cart-popup-overlay.open { display: block; }
+    .cart-popup-check {
+      width: 44px; height: 44px; border: 1.5px solid var(--black);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1rem;
+    }
+    .cart-popup-check svg { width: 18px; height: 18px; fill: none; stroke: var(--black); stroke-width: 2; stroke-linecap: round; }
+    .cart-popup-title { font-size: 0.95rem; font-weight: 300; margin-bottom: 0.4rem; }
+    .cart-popup-sub { font-size: 0.68rem; color: var(--dim); margin-bottom: 1.6rem; }
+    .cart-popup-actions { display: flex; flex-direction: column; gap: 0.6rem; }
+    .cart-popup-btn-primary {
+      display: block; padding: 0.85rem; background: var(--black); color: #fff;
+      font-size: 0.6rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase;
+      border-radius: 2px; text-decoration: none; transition: background 0.15s;
+    }
+    .cart-popup-btn-primary:hover { background: #333; }
+    .cart-popup-btn-secondary {
+      font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--dim); background: none; border: none; cursor: pointer;
+      padding: 0.5rem; transition: color 0.15s;
+    }
+    .cart-popup-btn-secondary:hover { color: var(--black); }
 
     /* ── PRODUCT LAYOUT ── */
     .product-wrap {
@@ -163,22 +215,24 @@
     .serie-subtitle { font-size: 0.6rem; color: var(--dim); letter-spacing: 0.1em; text-transform: uppercase; }
 
     .serie-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-      gap: 1.2rem;
+      display: flex;
+      gap: 1.5rem;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      padding-bottom: 1rem;
+      scrollbar-width: none;
     }
-    .serie-card { cursor: pointer; }
+    .serie-grid::-webkit-scrollbar { display: none; }
+    .serie-card { flex: 0 0 240px; cursor: pointer; scroll-snap-align: start; }
     .serie-card-img {
-      background: var(--bg);
       aspect-ratio: 4/3;
-      overflow: hidden; margin-bottom: 0.55rem;
-      transition: opacity 0.2s;
+      overflow: hidden; margin-bottom: 0.6rem;
     }
     .serie-card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
-    .serie-card:hover .serie-card-img img { transform: scale(1.12); }
-    .serie-card.current .serie-card-img { outline: 2px solid var(--black); }
-    .serie-card-name { font-size: 0.72rem; font-weight: 300; color: var(--black); margin-bottom: 0.1rem; }
-    .serie-card-price { font-size: 0.62rem; color: var(--dim); }
+    .serie-card:hover .serie-card-img img { transform: scale(1.08); }
+    .serie-card.current .serie-card-img { outline: 2px solid var(--black); outline-offset: 2px; }
+    .serie-card-name { font-size: 0.78rem; font-weight: 300; color: var(--black); margin-bottom: 0.15rem; }
+    .serie-card-price { font-size: 0.65rem; color: var(--dim); }
 
     /* ── FEEDBACK ── */
     .toast {
@@ -194,6 +248,7 @@
     /* ── MOBILE ── */
     @media (max-width: 767px) {
       .site-header { padding: 1rem 1.2rem; }
+      .header-logo-name { display: none; }
       .product-wrap {
         grid-template-columns: 1fr;
         gap: 1.8rem; padding: 1.5rem 1.2rem 3rem;
@@ -202,7 +257,8 @@
       .info-title { font-size: 2rem; }
       .price-main { font-size: 1.8rem; }
       .serie-section { padding: 2rem 1.2rem 3rem; }
-      .serie-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 0.8rem; }
+      .serie-card { flex: 0 0 180px; }
+      .cart-popup { width: calc(100vw - 3rem); }
     }
   </style>
 </head>
@@ -210,13 +266,36 @@
 
   <!-- ── HEADER ── -->
   <header class="site-header">
-    <a href="index.html" class="header-back" id="lblBack">‹ Portfolio</a>
-    <div class="header-lang">
-      <a data-lang="fr" class="active" onclick="setLang('fr')">FR</a>
-      <span>/</span>
-      <a data-lang="en" onclick="setLang('en')">EN</a>
+    <a href="index.html" class="header-logo">
+      <img src="assets/logo-b.svg" alt="B">
+      <span class="header-logo-name">Bertrand Basset</span>
+    </a>
+    <div class="header-right">
+      <a href="panier.html" class="header-cart" title="Panier">
+        <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        <span class="cart-badge" id="cartBadge">0</span>
+      </a>
+      <div class="header-lang">
+        <a data-lang="fr" class="active" onclick="setLang('fr')">FR</a>
+        <span>/</span>
+        <a data-lang="en" onclick="setLang('en')">EN</a>
+      </div>
     </div>
   </header>
+
+  <!-- ── CART POPUP ── -->
+  <div class="cart-popup-overlay" id="cartPopupOverlay" onclick="closeCartPopup()"></div>
+  <div class="cart-popup" id="cartPopup">
+    <div class="cart-popup-check">
+      <svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>
+    </div>
+    <p class="cart-popup-title" id="cartPopupTitle">Ajouté au panier</p>
+    <p class="cart-popup-sub" id="cartPopupSub"></p>
+    <div class="cart-popup-actions">
+      <a href="panier.html" class="cart-popup-btn-primary" id="cartPopupBtnCart">Voir le panier</a>
+      <button class="cart-popup-btn-secondary" onclick="closeCartPopup()" id="cartPopupBtnContinue">Continuer mes achats</button>
+    </div>
+  </div>
 
   <!-- ── PRODUCT ── -->
   <div class="product-wrap">
@@ -256,8 +335,6 @@
     <div class="serie-grid" id="serieGrid"></div>
   </section>
 
-  <!-- Toast feedback -->
-  <div class="toast" id="toast"></div>
 
   <script>
   /* ══════════════════════════════════════════════════════════
@@ -393,14 +470,33 @@
       titre: lang==='fr' ? current.titre_fr : current.titre_en,
       format: current.format, prix: prixAct(current), qty: 1 });
     saveCart(cart);
-    showToast(T[lang].added);
+    updateCartBadge();
+    openCartPopup();
   }
 
-  function showToast(msg) {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2200);
+  function updateCartBadge() {
+    const cart  = getCart();
+    const count = cart.reduce((s, i) => s + (i.qty || 1), 0);
+    const badge = document.getElementById('cartBadge');
+    if (!badge) return;
+    badge.textContent    = count;
+    badge.style.display  = count > 0 ? 'flex' : 'none';
+  }
+
+  function openCartPopup() {
+    const t = T[lang];
+    const titre = lang==='fr' ? current.titre_fr : current.titre_en;
+    document.getElementById('cartPopupTitle').textContent   = t.added;
+    document.getElementById('cartPopupSub').textContent     = titre + ' — ' + prixAct(current).toLocaleString('fr-FR') + ' €';
+    document.getElementById('cartPopupBtnCart').textContent = lang==='fr' ? 'Voir le panier' : 'View cart';
+    document.getElementById('cartPopupBtnContinue').textContent = lang==='fr' ? 'Continuer mes achats' : 'Continue shopping';
+    document.getElementById('cartPopup').classList.add('open');
+    document.getElementById('cartPopupOverlay').classList.add('open');
+  }
+
+  function closeCartPopup() {
+    document.getElementById('cartPopup').classList.remove('open');
+    document.getElementById('cartPopupOverlay').classList.remove('open');
   }
 
   /* ══════════════════════════════════════════════════════════
@@ -476,8 +572,8 @@
     btnAdd.textContent = ep ? t.epuise : t.ajouter;
     btnAdd.disabled    = ep;
 
-    // Back link
-    document.getElementById('lblBack').textContent = t.back;
+    // Cart badge
+    updateCartBadge();
 
     // Série grid
     const siblings = EDITIONS.filter(e => e.serie === ed.serie);
@@ -526,8 +622,11 @@
   /* ══════════════════════════════════════════════════════════
      INIT
   ══════════════════════════════════════════════════════════ */
-  const urlId = new URLSearchParams(location.search).get('id');
-  const ed    = EDITIONS.find(e => e.slug === urlId) || EDITIONS[0];
+  const urlId   = new URLSearchParams(location.search).get('id');
+  const DEFAULT = 'lost-in-the-dust-rouge';
+  const ed      = EDITIONS.find(e => e.slug === urlId)
+               || EDITIONS.find(e => e.slug === DEFAULT)
+               || EDITIONS[0];
   render(ed);
   </script>
 </body>

@@ -162,6 +162,7 @@
       body: JSON.stringify({
         access_key: WEB3FORMS_KEY,
         to:         NOTIF_EMAIL,
+        cc:         'bertrand.basset@gmail.com',
         subject:    `✅ Paiement reçu — ${detail} (${total})`,
         message:    `Un client vient de payer ${total} pour : ${detail}.\n\nIl peut prendre ses cartes postales.\n\n— Bertrand Basset / bertrandbasset.com`
       })
