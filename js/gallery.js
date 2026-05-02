@@ -9,7 +9,7 @@ const SITE_CONFIG = {
     defaultLang:    "fr",
     showLanding:    true,
     landingImage:   "images/accueil/accueil-01.jpg?v=20260501",
-    defaultGallery: "best-of",
+    defaultGallery: "portrait",
     social: {
         instagram: "https://www.instagram.com/bassetbertrand/",
         facebook:  "https://www.facebook.com/BertrandBassetPhotographie",
@@ -641,6 +641,18 @@ class Portfolio {
         this.initCursor();
         this.applyLangUI(this.currentLang);
         if (SITE_CONFIG.showLanding === false) this.openHomeGallery();
+        this.updateCartBadge();
+    }
+
+    updateCartBadge() {
+        const badge = document.getElementById('mobileCartBadge');
+        if (!badge) return;
+        try {
+            const cart = JSON.parse(localStorage.getItem('dk_cart') || '[]');
+            const count = cart.reduce((s, i) => s + (i.qty || 1), 0);
+            badge.textContent = count > 0 ? count : '';
+            badge.classList.toggle('has-items', count > 0);
+        } catch (e) {}
     }
 
     buildMenu() {

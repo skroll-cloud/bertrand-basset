@@ -14,7 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 
     <!-- Styles -->
-    <link rel="stylesheet" href="css/style.css?v=20260501">
+    <link rel="stylesheet" href="css/style.css?v=20260502">
 
     <!-- Open Graph -->
     <meta property="og:title" content="Bertrand Basset — Photographer & Filmmaker">
@@ -111,6 +111,10 @@
                     <button id="gridToggle" class="grid-toggle-btn" title="Voir toutes les photos">⊞</button>
                     <!-- Hamburger mobile — masqué sur desktop, EN/FR reste en haut à droite -->
                     <div id="mobileNavControls" class="mobile-nav-controls">
+                        <a href="panier.html" class="mobile-cart-btn" id="mobileCartBtn" aria-label="Panier">
+                            <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+                            <span class="cart-badge" id="mobileCartBadge"></span>
+                        </a>
                         <button id="mobileMenuBtn" class="mobile-menu-btn" aria-label="Menu" onclick="window.portfolio?.toggleMenu()">
                             <span></span><span></span><span></span>
                         </button>
@@ -148,8 +152,8 @@
     </div>
 
     <!-- Auto-generated image lists — run: node scan-galleries.js to refresh -->
-    <script src="js/gallery-images.js?v=20260501"></script>
-    <script src="js/gallery.js?v=20260501"></script>
+    <script src="js/gallery-images.js?v=20260502"></script>
+    <script src="js/gallery.js?v=20260502"></script>
 
 
 </body>

@@ -362,10 +362,10 @@
   </header>
 
   <!-- ── LIGHTBOX ── -->
-  <div class="lightbox" id="lightbox" onclick="closeLightbox()" onmousemove="panLightbox(event)">
+  <div class="lightbox" id="lightbox" onmousemove="panLightbox(event)">
     <img class="lightbox-img" id="lightboxImg" src="" alt="">
     <button class="lightbox-close" onclick="closeLightbox()">✕ Fermer</button>
-    <span class="lightbox-hint">Déplacez la souris pour explorer · Clic pour fermer</span>
+    <span class="lightbox-hint" id="lightboxHint">Déplacez la souris pour explorer · Clic pour fermer</span>
   </div>
 
   <!-- ── CART POPUP ── -->
@@ -559,6 +559,11 @@
     document.getElementById('lightboxImg').src = img.src;
     document.getElementById('lightboxImg').alt = img.alt;
     document.getElementById('lightbox').classList.add('open');
+    // Hint text adapté au device
+    const hint = document.getElementById('lightboxHint');
+    if (hint) hint.textContent = ('ontouchstart' in window)
+      ? 'Glissez pour explorer · Tap pour fermer'
+      : 'Déplacez la souris pour explorer · Clic pour fermer';
   }
 
   function closeLightbox() {
@@ -572,6 +577,32 @@
     const yPct = ((e.clientY - rect.top)  / rect.height * 100).toFixed(1);
     document.getElementById('lightboxImg').style.transformOrigin = `${xPct}% ${yPct}%`;
   }
+
+  // Touch handling for lightbox pan (mobile)
+  (function() {
+    let _lbTouchStartX = 0, _lbTouchStartY = 0, _lbMoved = false;
+    const lb = document.getElementById('lightbox');
+    lb.addEventListener('touchstart', e => {
+      _lbTouchStartX = e.touches[0].clientX;
+      _lbTouchStartY = e.touches[0].clientY;
+      _lbMoved = false;
+    }, { passive: true });
+    lb.addEventListener('touchmove', e => {
+      e.preventDefault();
+      _lbMoved = true;
+      const t = e.touches[0];
+      const rect = lb.getBoundingClientRect();
+      const xPct = ((t.clientX - rect.left) / rect.width  * 100).toFixed(1);
+      const yPct = ((t.clientY - rect.top)  / rect.height * 100).toFixed(1);
+      document.getElementById('lightboxImg').style.transformOrigin = `${xPct}% ${yPct}%`;
+    }, { passive: false });
+    lb.addEventListener('touchend', e => {
+      // Tap (no significant movement) → close
+      const dx = Math.abs(e.changedTouches[0].clientX - _lbTouchStartX);
+      const dy = Math.abs(e.changedTouches[0].clientY - _lbTouchStartY);
+      if (!_lbMoved && dx < 10 && dy < 10) closeLightbox();
+    }, { passive: true });
+  })();
 
   // Close lightbox on Escape
   document.addEventListener('keydown', e => {
