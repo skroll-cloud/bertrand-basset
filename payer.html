@@ -127,7 +127,14 @@
       text-decoration: none;
     }
     .btn-pay:hover { background: #333; }
+    .btn-pay--secondary {
+      background: #fff; color: var(--black);
+      border: 1px solid var(--black);
+    }
+    .btn-pay--secondary:hover { background: var(--bg); }
     .btn-pay svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; }
+    .prix-chip--promo { border-color: var(--black); }
+    .prix-chip--promo .label::after { content: ' ↙ meilleur tarif'; }
 
     .secure-note {
       font-size: 0.58rem; color: var(--dim); letter-spacing: 0.04em;
@@ -180,35 +187,30 @@
 
     <p class="desc">
       Merci de votre achat.<br>
-      Les cartes sont à <strong>3 € l'unité</strong> — composez votre sélection librement.
-      Le montant est à saisir sur la page de paiement sécurisé.
+      Choisissez votre formule et réglez directement par carte bancaire.
     </p>
 
-    <!-- Prix indicatif -->
+    <!-- Tarifs -->
     <div class="prix-grid">
       <div class="prix-chip">
-        <span class="montant">3 €</span>
+        <span class="montant">6 €</span>
         <span class="label">1 carte</span>
       </div>
-      <div class="prix-chip">
-        <span class="montant">6 €</span>
-        <span class="label">2 cartes</span>
-      </div>
-      <div class="prix-chip">
-        <span class="montant">12 €</span>
-        <span class="label">4 cartes</span>
-      </div>
-      <div class="prix-chip">
-        <span class="montant">20 €</span>
-        <span class="label">pochette</span>
+      <div class="prix-chip prix-chip--promo">
+        <span class="montant">15 €</span>
+        <span class="label">3 cartes</span>
       </div>
     </div>
 
     <div class="cta-block">
-      <!-- Remplacer VOTRE_LIEN_STRIPE par l'URL du Payment Link Stripe -->
-      <a href="VOTRE_LIEN_STRIPE" class="btn-pay" id="btnPay" target="_self">
+      <!-- Remplacer LIEN_STRIPE_1 et LIEN_STRIPE_3 par les URLs Stripe -->
+      <a href="LIEN_STRIPE_1" class="btn-pay" target="_self">
         <svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-        Payer par carte bancaire
+        Payer 1 carte — 6 €
+      </a>
+      <a href="LIEN_STRIPE_3" class="btn-pay btn-pay--secondary" target="_self">
+        <svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+        Payer 3 cartes — 15 €
       </a>
       <p class="secure-note">
         <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
