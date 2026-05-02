@@ -119,29 +119,13 @@
     }
     .price-tier-note { font-size: 0.6rem; color: var(--dim); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 1rem; }
 
-    .tier-grid {
-      display: grid; grid-template-columns: 1fr 1fr;
-      background: var(--bg); border-radius: 4px;
-      overflow: hidden;
-    }
-    .tier-cell {
-      padding: 0.65rem 0.8rem;
-      border-right: 1px solid var(--line); border-bottom: 1px solid var(--line);
-    }
-    .tier-cell:nth-child(2n) { border-right: none; }
-    .tier-cell:nth-last-child(-n+2) { border-bottom: none; }
-    .tier-label { font-size: 0.55rem; color: var(--dim); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.2rem; }
-    .tier-price { font-size: 0.9rem; font-weight: 400; color: var(--black); }
-    .tier-cell.current { background: var(--black); }
-    .tier-cell.current .tier-label { color: rgba(255,255,255,0.5); }
-    .tier-cell.current .tier-price { color: #fff; }
-
     /* Stock */
     .stock-line {
       display: flex; justify-content: space-between; align-items: center;
       margin-top: 0.9rem; margin-bottom: 1.8rem;
-      font-size: 0.65rem; color: var(--gray);
+      font-size: 0.72rem; color: var(--gray);
     }
+    .stock-count { font-size: 1.5rem; font-weight: 300; color: var(--black); line-height: 1; }
     .stock-bar-wrap { width: 80px; height: 2px; background: var(--line); border-radius: 1px; overflow: hidden; }
     .stock-bar-fill { height: 100%; background: var(--black); border-radius: 1px; }
 
@@ -157,23 +141,6 @@
     }
     .btn-primary:hover { background: #333; }
     .btn-primary:disabled { background: #ccc; cursor: not-allowed; }
-    .btn-secondary {
-      display: block; width: 100%; padding: 0.9rem 1.5rem;
-      background: #fff; color: var(--black);
-      font-size: 0.65rem; font-weight: 400; letter-spacing: 0.12em;
-      text-transform: uppercase; text-align: center;
-      cursor: pointer; border-radius: 2px;
-      border: 1px solid var(--line);
-      transition: border-color 0.2s, color 0.2s;
-    }
-    .btn-secondary:hover { border-color: var(--black); }
-
-    /* Note */
-    .info-note {
-      font-size: 0.62rem; color: var(--dim); line-height: 1.7;
-      padding: 1rem 0; border-top: 1px solid var(--line);
-    }
-
     /* Description */
     .info-desc {
       font-size: 0.78rem; color: var(--gray); line-height: 1.8;
@@ -205,8 +172,8 @@
       overflow: hidden; margin-bottom: 0.55rem;
       transition: opacity 0.2s;
     }
-    .serie-card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
-    .serie-card:hover .serie-card-img img { transform: scale(1.03); }
+    .serie-card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+    .serie-card:hover .serie-card-img img { transform: scale(1.12); }
     .serie-card.current .serie-card-img { outline: 2px solid var(--black); }
     .serie-card-name { font-size: 0.72rem; font-weight: 300; color: var(--black); margin-bottom: 0.1rem; }
     .serie-card-price { font-size: 0.62rem; color: var(--dim); }
@@ -274,16 +241,12 @@
       <div class="price-block">
         <div class="price-main" id="priceMain"></div>
         <div class="price-tier-note" id="priceTierNote"></div>
-        <div class="tier-grid" id="tierGrid"></div>
         <div class="stock-line" id="stockLine"></div>
       </div>
 
       <div class="cta-block">
         <button class="btn-primary" id="btnAdd" onclick="addToCart()"></button>
-        <a class="btn-secondary" id="btnContact" href="mailto:yellowshoesstudio@gmail.com"></a>
       </div>
-
-      <p class="info-note" id="infoNote"></p>
     </div>
   </div>
 
@@ -408,6 +371,16 @@
   const palierIdx = e => e.vendus < 3 ? 0 : e.vendus < 7 ? 1 : 2;
   const prixAct   = e => e.prix[palierIdx(e)];
 
+  /* Code technique : "70 × 124 cm" + "Orange" → "70124_Orange" */
+  function workCode(ed) {
+    const digits  = ed.format.replace(/[^0-9]/g, '');
+    const couleur = lang === 'fr' ? ed.couleur_fr : ed.couleur_en;
+    return digits + '_' + couleur;
+  }
+  function fullTitle(ed) {
+    return (lang === 'fr' ? ed.titre_fr : ed.titre_en) + ' ' + workCode(ed);
+  }
+
   /* ══════════════════════════════════════════════════════════
      CART
   ══════════════════════════════════════════════════════════ */
@@ -444,22 +417,26 @@
     const ser  = SERIES_META[ed.serie];
     const desc = lang==='fr' ? ser.desc_fr : ser.desc_en;
 
-    document.title = (lang==='fr' ? ed.titre_fr : ed.titre_en) + ' — Bertrand Basset';
+    document.title = fullTitle(ed) + ' — Bertrand Basset';
 
     document.getElementById('mainPhoto').src  = ed.img;
-    document.getElementById('mainPhoto').alt  = lang==='fr' ? ed.titre_fr : ed.titre_en;
+    document.getElementById('mainPhoto').alt  = fullTitle(ed);
     document.getElementById('photoCaption').textContent =
-      `${lang==='fr' ? ser.name_fr : ser.name_en} — ${lang==='fr' ? ed.titre_fr : ed.titre_en}`;
+      `${lang==='fr' ? ser.name_fr : ser.name_en} — ${fullTitle(ed)}`;
 
     document.getElementById('infoSerie').textContent  = lang==='fr' ? ser.name_fr : ser.name_en;
-    document.getElementById('infoTitle').textContent  = lang==='fr' ? ed.titre_fr : ed.titre_en;
+    document.getElementById('infoTitle').textContent  = fullTitle(ed);
     document.getElementById('infoDesc').innerHTML     = desc.replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>');
 
-    // Specs
+    // Specs — certificat intégré à la ligne support
+    const certNote = lang === 'fr'
+      ? 'Numéroté, daté &amp; signé par l\'artiste. Certificat d\'authenticité inclus. Livraison par Pix in the City, Auray.'
+      : 'Numbered, dated &amp; signed by the artist. Certificate of authenticity included. Shipped by Pix in the City, Auray.';
+
     document.getElementById('specs').innerHTML = `
       <div class="spec-row">
         <span class="spec-key">${t.edition}</span>
-        <span class="spec-val">${ed.total} ex. numérotés &amp; signés</span>
+        <span class="spec-val">${ed.total} ex.</span>
       </div>
       <div class="spec-row">
         <span class="spec-key">${t.couleur}</span>
@@ -472,28 +449,24 @@
         <span class="spec-key">${t.format}</span>
         <span class="spec-val">${ed.format}</span>
       </div>
-      <div class="spec-row">
-        <span class="spec-key">${t.support}</span>
-        <span class="spec-val" style="text-align:right;max-width:220px;line-height:1.5">
-          ${lang==='fr' ? ed.support_fr : ed.support_en}
+      <div class="spec-row" style="align-items:flex-start">
+        <span class="spec-key" style="padding-top:0.1rem">${t.support}</span>
+        <span class="spec-val" style="text-align:right;max-width:230px;line-height:1.6;flex-direction:column;align-items:flex-end;gap:0.3rem">
+          <span>${lang==='fr' ? ed.support_fr : ed.support_en}</span>
+          <span style="color:var(--dim);font-size:0.62rem">${certNote}</span>
         </span>
       </div>`;
 
-    // Prix
+    // Prix — palier actuel uniquement, les autres restent secrets
     document.getElementById('priceMain').textContent =
       ep ? '—' : prixAct(ed).toLocaleString('fr-FR') + ' €';
     document.getElementById('priceTierNote').textContent = ep ? t.epuise : t.paliers[pi];
 
-    document.getElementById('tierGrid').innerHTML = ed.prix.map((p, i) => `
-      <div class="tier-cell${i===pi?' current':''}">
-        <div class="tier-label">${t.paliers[i]}${i===pi?' · '+t.palier_actuel:''}</div>
-        <div class="tier-price">${p.toLocaleString('fr-FR')} €</div>
-      </div>`).join('');
-
+    // Stock — compteur gros
     const d = dispo(ed);
     document.getElementById('stockLine').innerHTML = ep
       ? `<span style="color:#c00">${t.epuise}</span>`
-      : `<span>${d} ${t.disponibles} / ${ed.total}</span>
+      : `<div><span class="stock-count">${d}</span><span style="font-size:0.6rem;color:var(--dim);margin-left:0.3rem">${t.disponibles} / ${ed.total}</span></div>
          <div class="stock-bar-wrap"><div class="stock-bar-fill" style="width:${Math.round(d/ed.total*100)}%"></div></div>
          <span>${ed.vendus} ${t.vendu}</span>`;
 
@@ -501,13 +474,6 @@
     const btnAdd = document.getElementById('btnAdd');
     btnAdd.textContent = ep ? t.epuise : t.ajouter;
     btnAdd.disabled    = ep;
-    document.getElementById('btnContact').textContent =
-      t.contacter;
-    document.getElementById('btnContact').href =
-      `mailto:yellowshoesstudio@gmail.com?subject=${encodeURIComponent('Demande tirage — '+(lang==='fr'?ed.titre_fr:ed.titre_en))}`;
-
-    document.getElementById('infoNote').innerHTML =
-      t.note.replace(/\n/g,'<br>');
 
     // Back link
     document.getElementById('lblBack').textContent = t.back;
@@ -520,7 +486,7 @@
 
     document.getElementById('serieGrid').innerHTML = siblings.map(s => {
       const isCurrent = s.slug === ed.slug;
-      const name = lang==='fr' ? s.titre_fr : s.titre_en;
+      const name = fullTitle(s);
       return `<div class="serie-card${isCurrent?' current':''}"
                    onclick="navigate('${s.slug}')">
         <div class="serie-card-img">
