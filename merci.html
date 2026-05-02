@@ -141,15 +141,19 @@
   const NOTIF_EMAIL   = 'team@labrasseriegraphique.com';
 
   const PRODUITS = {
-    carte: { label: '1 carte postale', montant: '6 €' },
-    pack3: { label: 'Pack 3 cartes postales', montant: '15 €' }
+    carte: { label: 'carte postale', unitPrice: 6  },
+    pack3: { label: 'pack 3 cartes', unitPrice: 15 }
   };
 
   (function () {
     const params = new URLSearchParams(location.search);
     const type   = params.get('type');
+    const qty    = parseInt(params.get('qty') || '1');
     const produit = PRODUITS[type];
-    if (!produit || WEB3FORMS_KEY === 'VOTRE_CLE_WEB3FORMS') return;
+    if (!produit) return;
+
+    const total   = (produit.unitPrice * qty) + ' €';
+    const detail  = qty > 1 ? `${qty} × ${produit.label}` : produit.label;
 
     // Envoyer la notification
     fetch('https://api.web3forms.com/submit', {
@@ -158,8 +162,8 @@
       body: JSON.stringify({
         access_key: WEB3FORMS_KEY,
         to:         NOTIF_EMAIL,
-        subject:    `✅ Paiement reçu — ${produit.label} (${produit.montant})`,
-        message:    `Un client vient de payer ${produit.montant} pour : ${produit.label}.\n\nIl peut prendre ses cartes postales.\n\n— Bertrand Basset / bertrandbasset.com`
+        subject:    `✅ Paiement reçu — ${detail} (${total})`,
+        message:    `Un client vient de payer ${total} pour : ${detail}.\n\nIl peut prendre ses cartes postales.\n\n— Bertrand Basset / bertrandbasset.com`
       })
     }).catch(() => {}); // silencieux si erreur réseau
   })();
