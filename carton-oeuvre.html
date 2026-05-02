@@ -9,18 +9,17 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root { --font: 'IBM Plex Sans', Arial, sans-serif; }
-    html { font-family: var(--font); -webkit-font-smoothing: antialiased; }
+    html { font-family: 'IBM Plex Sans', Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+    body { background: #d8d8d8; padding: 24px; }
 
-    body { background: #ddd; padding: 24px; }
-
+    /* ── SCREEN HEADER ── */
     .screen-bar {
       max-width: 220mm; margin: 0 auto 14px;
       display: flex; justify-content: space-between; align-items: center;
     }
-    .screen-bar-title { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: #888; }
+    .screen-title { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: #888; }
     .btn-print {
-      font-family: var(--font); padding: 8px 20px; background: #111; color: #fff;
+      font-family: inherit; padding: 8px 20px; background: #111; color: #fff;
       font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
       border: none; cursor: pointer; border-radius: 2px;
     }
@@ -29,174 +28,167 @@
     /* ── PAGE A4 ── */
     .page {
       width: 210mm;
-      background: white;
+      background: #fff;
       margin: 0 auto 20px;
       padding: 10mm;
+      display: flex; flex-direction: column; gap: 4.5mm;
       box-shadow: 0 2px 20px rgba(0,0,0,0.15);
     }
 
-    /* Page 1 : 2×2 artwork grid */
-    .page-artworks {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      grid-template-rows: 1fr 1fr;
-      gap: 5mm;
-      height: 277mm; /* A4 content height */
-    }
-
-    /* Page 2 : 2 artworks top + postcard full width bottom */
-    .page-mixed {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      grid-template-rows: 1fr auto;
-      gap: 5mm;
-      min-height: 277mm;
-    }
-
-    /* ── ARTWORK CARTON ── */
+    /* ══════════════════════════════
+       GABARIT UNIQUE — tous les cartons
+       ══════════════════════════════ */
     .carton {
       border: 0.5pt solid #ccc;
-      display: flex; flex-direction: column; overflow: hidden;
+      display: flex; flex-direction: column;
+      overflow: hidden;
+      flex-shrink: 0;
     }
-    .c-header { padding: 5mm 6mm 4.5mm 7mm; flex-shrink: 0; }
-    .c-header-top {
-      display: flex; justify-content: space-between; margin-bottom: 1.5mm;
-    }
-    .c-num { font-size: 6pt; letter-spacing: 0.2em; text-transform: uppercase; }
-    .c-serie { font-size: 5.5pt; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 300; }
-    .c-title { font-size: 22pt; font-weight: 300; letter-spacing: -0.02em; line-height: 1; }
-    .c-body {
-      flex: 1; padding: 4mm 6mm 4mm 7mm;
-      display: flex; flex-direction: column; justify-content: space-between;
-    }
-    .c-desc { font-size: 6.5pt; color: #444; line-height: 1.6; font-weight: 300; margin-bottom: 3mm; }
-    .c-specs { font-size: 6.5pt; color: #555; line-height: 1.65; font-weight: 300; }
-    .c-specs strong { font-weight: 500; color: #111; }
-    .c-bottom {
-      display: flex; justify-content: space-between; align-items: flex-end;
-      padding-top: 3mm; border-top: 0.3pt solid #ddd; margin-top: 3mm;
-    }
-    .c-price { font-size: 15pt; font-weight: 300; letter-spacing: -0.02em; color: #111; line-height: 1; }
-    .c-price-note { font-size: 5pt; letter-spacing: 0.06em; color: #888; margin-top: 1mm; text-transform: uppercase; line-height: 1.5; }
-    .c-qr { width: 16mm; height: 16mm; flex-shrink: 0; }
-    .c-qr canvas, .c-qr img { width: 100% !important; height: 100% !important; }
 
-    /* ── CARTE POSTALE — pleine largeur ── */
-    .carton-carte {
-      grid-column: 1 / -1;
-      border: 0.5pt solid #ccc;
-      display: flex; flex-direction: column; overflow: hidden;
-    }
-    .cc-header {
-      background: #111; padding: 4.5mm 8mm; flex-shrink: 0;
+    /* Header coloré */
+    .c-head {
+      padding: 3.5mm 6mm 3mm 7mm;
       display: flex; justify-content: space-between; align-items: center;
+      flex-shrink: 0;
     }
-    .cc-header-left {}
-    .cc-expo { font-size: 6pt; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 1mm; }
-    .cc-title { font-size: 18pt; font-weight: 300; color: #fff; letter-spacing: -0.02em; line-height: 1; }
-    .cc-header-right { font-size: 6pt; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.4); text-align: right; }
-
-    .cc-body {
-      flex: 1; padding: 5mm 8mm 5mm;
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 6mm;
-      align-items: center;
+    .c-head-left {}
+    .c-head-meta {
+      font-size: 5.5pt; letter-spacing: 0.18em; text-transform: uppercase;
+      margin-bottom: 1mm;
+    }
+    .c-head-title { font-size: 17pt; font-weight: 300; letter-spacing: -0.02em; line-height: 1; }
+    .c-head-right {
+      font-size: 5.5pt; letter-spacing: 0.12em; text-transform: uppercase;
+      text-align: right;
     }
 
-    /* Left col — info */
-    .cc-info { display: flex; flex-direction: column; justify-content: center; gap: 2mm; }
-    .cc-sub { font-size: 7pt; color: #888; font-weight: 300; line-height: 1.5; }
-    .cc-scan-note { font-size: 6pt; letter-spacing: 0.1em; text-transform: uppercase; color: #aaa; }
+    /* Body : info | prix | QR */
+    .c-body {
+      flex: 1;
+      display: flex; align-items: center;
+      padding: 3.5mm 5mm 3.5mm 7mm;
+      gap: 5mm;
+      border-top: 0.3pt solid #e0e0e0;
+    }
 
-    /* Middle col — produit */
-    .cc-produit {
-      border: 0.5pt solid #ddd; padding: 4mm 5mm;
+    .c-info { flex: 1; }
+    .c-desc { font-size: 6.5pt; color: #444; line-height: 1.55; font-weight: 300; margin-bottom: 2mm; }
+    .c-specs { font-size: 6.5pt; color: #666; line-height: 1.55; font-weight: 300; }
+    .c-specs strong { font-weight: 500; color: #111; }
+
+    /* Bloc prix (grand format + A4) */
+    .c-prix {
+      flex-shrink: 0; min-width: 42mm;
       display: flex; flex-direction: column; gap: 1.5mm;
-      height: 100%;
+      border-left: 0.3pt solid #e0e0e0;
+      padding-left: 5mm;
     }
-    .cc-produit-name { font-size: 7pt; font-weight: 400; color: #111; letter-spacing: 0.04em; text-transform: uppercase; }
-    .cc-produit-price { font-size: 26pt; font-weight: 300; color: #111; letter-spacing: -0.03em; line-height: 1; }
-    .cc-produit-note { font-size: 5.5pt; color: #999; font-style: italic; }
+    .c-prix-row { display: flex; justify-content: space-between; align-items: baseline; gap: 3mm; }
+    .c-prix-label { font-size: 5.5pt; color: #888; text-transform: uppercase; letter-spacing: 0.08em; white-space: nowrap; }
+    .c-prix-val { font-size: 11pt; font-weight: 300; color: #111; letter-spacing: -0.01em; white-space: nowrap; }
+    .c-prix-val-small { font-size: 9pt; font-weight: 300; color: #555; }
+    .c-prix-note { font-size: 5pt; color: #aaa; letter-spacing: 0.06em; text-transform: uppercase; margin-top: 0.5mm; }
 
-    /* Right col — QR */
-    .cc-qr-col { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2mm; }
-    .cc-qr { width: 26mm; height: 26mm; }
-    .cc-qr canvas, .cc-qr img { width: 100% !important; height: 100% !important; }
-    .cc-qr-label { font-size: 5.5pt; letter-spacing: 0.1em; text-transform: uppercase; color: #aaa; text-align: center; }
+    /* QR code */
+    .c-qr-wrap {
+      flex-shrink: 0;
+      border-left: 0.3pt solid #e0e0e0;
+      padding-left: 5mm;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.5mm;
+    }
+    .c-qr { width: 20mm; height: 20mm; }
+    .c-qr canvas, .c-qr img { width: 100% !important; height: 100% !important; }
+    .c-qr-label { font-size: 4.5pt; letter-spacing: 0.08em; text-transform: uppercase; color: #bbb; text-align: center; }
 
     /* ── PRINT ── */
     @media print {
       body { background: none; padding: 0; }
       .screen-bar { display: none; }
       .page { margin: 0; box-shadow: none; page-break-after: always; break-after: page; }
-      .page-artworks { height: 277mm; }
-      .carton, .carton-carte { border: 0.3pt solid #bbb; }
-      @page { size: A4 portrait; margin: 0; padding: 10mm; }
+      .carton { border: 0.3pt solid #bbb; }
+      @page { size: A4 portrait; margin: 10mm; }
     }
   </style>
 </head>
 <body>
 
 <div class="screen-bar">
-  <span class="screen-bar-title">Cartons d'œuvres — 2 pages A4 · 6 tirages + cartes postales</span>
+  <span class="screen-title">Cartons d'œuvres · 2 pages A4 · imprimer → couper</span>
   <button class="btn-print" onclick="window.print()">Imprimer</button>
 </div>
 
-<!-- PAGE 1 : 4 cartons -->
-<div class="page">
-  <div class="page-artworks" id="page1"></div>
-</div>
+<!-- Page 1 : cartons 01 02 04 05 -->
+<div class="page" id="page1"></div>
 
-<!-- PAGE 2 : 2 cartons + carte postale -->
-<div class="page">
-  <div class="page-mixed" id="page2"></div>
-</div>
+<!-- Page 2 : cartons 06 08 + cartes postales -->
+<div class="page" id="page2"></div>
 
 <script>
-const BASE_URL  = 'https://bertrandbasset.com/boutique.html?id=';
-const PAYER_URL = 'https://bertrandbasset.com/payer.html';
+const BASE   = 'https://bertrandbasset.com/boutique.html?id=';
+const PAYER  = 'https://bertrandbasset.com/payer.html';
+let qrCount  = 0;
 
-/* After the Storm (03) exclue — pas encore tiré */
+/* ── Catalogue (After the Storm exclue — pas encore tirée) ── */
 const EDITIONS = [
-  { slug:'sandstorm-feu',          num:'01', titre:'Sandstorm',      code:'6090_Feu',   hex:'#FF4500', format:'60 × 90 cm',  papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm', prix_vente:'850 €'   },
-  { slug:'flying-car-orange',      num:'02', titre:'Flying Car',     code:'70124_Orange',hex:'#FF6600', format:'70 × 124 cm', papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm', prix_vente:'1 290 €' },
-  { slug:'lost-in-the-dust-rouge', num:'04', titre:'Lost in the Dust',code:'6080_Rouge', hex:'#CC0000', format:'60 × 80 cm',  papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm', prix_vente:'890 €'   },
-  { slug:'camp-lighters-jaune',    num:'05', titre:'Camp Lighters',  code:'40100_Jaune', hex:'#FFB300', format:'40 × 100 cm', papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm', prix_vente:'790 €'   },
-  { slug:'im-here-bleu',           num:'06', titre:"I'm Here",       code:'6080_Bleu',   hex:'#0066CC', format:'60 × 80 cm',  papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm', prix_vente:'890 €'   },
-  { slug:'umbrellas-way-rose',     num:'08', titre:'Umbrellas Way',  code:'6080_Rose',   hex:'#FF1493', format:'60 × 80 cm',  papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm', prix_vente:'890 €'   },
+  { slug:'sandstorm-feu',          num:'01', titre:'Sandstorm',       hex:'#FF4500', format:'60 × 90 cm',  prix:'850 €',  a4:'160 €', papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm' },
+  { slug:'flying-car-orange',      num:'02', titre:'Flying Car',      hex:'#FF6600', format:'70 × 124 cm', prix:'1 290 €',a4:'160 €', papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm' },
+  { slug:'lost-in-the-dust-rouge', num:'04', titre:'Lost in the Dust',hex:'#CC0000', format:'60 × 80 cm',  prix:'890 €',  a4:'160 €', papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm' },
+  { slug:'camp-lighters-jaune',    num:'05', titre:'Camp Lighters',   hex:'#FFB300', format:'40 × 100 cm', prix:'790 €',  a4:'160 €', papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm' },
+  { slug:'im-here-bleu',           num:'06', titre:"I'm Here",        hex:'#0066CC', format:'60 × 80 cm',  prix:'890 €',  a4:'160 €', papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm' },
+  { slug:'umbrellas-way-rose',     num:'08', titre:'Umbrellas Way',   hex:'#FF1493', format:'60 × 80 cm',  prix:'890 €',  a4:'160 €', papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm' },
 ];
 
-function makeCarton(ed) {
-  const hex = ed.hex.replace('#','');
-  const r = parseInt(hex.substr(0,2),16);
-  const g = parseInt(hex.substr(2,2),16);
-  const b = parseInt(hex.substr(4,2),16);
-  const lum = (0.299*r + 0.587*g + 0.114*b)/255;
-  const tc  = lum > 0.55 ? '#111' : '#fff';
-  const tc2 = lum > 0.55 ? 'rgba(0,0,0,0.45)' : 'rgba(255,255,255,0.6)';
+/* Luminance → couleur texte sur fond coloré */
+function textColor(hex) {
+  const h = hex.replace('#','');
+  const l = (0.299*parseInt(h.substr(0,2),16) + 0.587*parseInt(h.substr(2,2),16) + 0.114*parseInt(h.substr(4,2),16)) / 255;
+  return l > 0.55 ? '#111' : '#fff';
+}
+function dimColor(hex) {
+  const h = hex.replace('#','');
+  const l = (0.299*parseInt(h.substr(0,2),16) + 0.587*parseInt(h.substr(2,2),16) + 0.114*parseInt(h.substr(4,2),16)) / 255;
+  return l > 0.55 ? 'rgba(0,0,0,0.45)' : 'rgba(255,255,255,0.6)';
+}
+
+function makeArtworkCarton(ed) {
+  const tc = textColor(ed.hex);
+  const dc = dimColor(ed.hex);
+  const qid = 'qr-' + ed.slug;
 
   const div = document.createElement('div');
   div.className = 'carton';
   div.innerHTML = `
-    <div class="c-header" style="background:${ed.hex}">
-      <div class="c-header-top">
-        <span class="c-num" style="color:${tc2}">№ ${ed.num}</span>
-        <span class="c-serie" style="color:${tc2}">Dust'in Kolor</span>
+    <div class="c-head" style="background:${ed.hex}">
+      <div class="c-head-left">
+        <div class="c-head-meta" style="color:${dc}">№ ${ed.num} · Dust'in Kolor · Bertrand Basset</div>
+        <div class="c-head-title" style="color:${tc}">${ed.titre}</div>
       </div>
-      <div class="c-title" style="color:${tc}">${ed.titre}</div>
+      <div class="c-head-right" style="color:${dc}">bertrandbasset.com</div>
     </div>
     <div class="c-body">
-      <div>
-        <div class="c-desc">Série limitée à 10 exemplaires numérotée et signée par l'artiste, avec certificat d'authenticité.</div>
+      <div class="c-info">
+        <div class="c-desc">Série limitée à 10 exemplaires numérotée et signée par l'artiste · Certificat d'authenticité inclus</div>
         <div class="c-specs"><strong>${ed.format}</strong> · ${ed.papier}<br>Tirage d'art : Pix in the City, Auray</div>
       </div>
-      <div class="c-bottom">
+      <div class="c-prix">
         <div>
-          <div class="c-price">${ed.prix_vente}</div>
-          <div class="c-price-note">3 premiers exemplaires à ce prix<br>Prix progressif ensuite</div>
+          <div class="c-prix-row">
+            <span class="c-prix-label">Grand format</span>
+            <span class="c-prix-val">${ed.prix}</span>
+          </div>
+          <div class="c-prix-note">3 premiers ex. · prix progressif</div>
         </div>
-        <div class="c-qr" id="qr-${ed.slug}"></div>
+        <div>
+          <div class="c-prix-row">
+            <span class="c-prix-label">A4 · Museum Etching</span>
+            <span class="c-prix-val-small">${ed.a4}</span>
+          </div>
+          <div class="c-prix-note">30 ex. · prix fixe</div>
+        </div>
+      </div>
+      <div class="c-qr-wrap">
+        <div class="c-qr" id="${qid}"></div>
+        <div class="c-qr-label">Voir & commander</div>
       </div>
     </div>`;
   return div;
@@ -204,62 +196,57 @@ function makeCarton(ed) {
 
 function makeCartePostale() {
   const div = document.createElement('div');
-  div.className = 'carton-carte';
+  div.className = 'carton';
   div.innerHTML = `
-    <div class="cc-header">
-      <div class="cc-header-left">
-        <div class="cc-expo">Exposition · Dust'in Kolor</div>
-        <div class="cc-title">Cartes postales</div>
+    <div class="c-head" style="background:#111">
+      <div class="c-head-left">
+        <div class="c-head-meta" style="color:rgba(255,255,255,0.5)">Exposition · Dust'in Kolor · Bertrand Basset</div>
+        <div class="c-head-title" style="color:#fff">Cartes postales</div>
       </div>
-      <div class="cc-header-right">Bertrand Basset<br>bertrandbasset.com</div>
+      <div class="c-head-right" style="color:rgba(255,255,255,0.4)">bertrandbasset.com</div>
     </div>
-    <div class="cc-body">
-      <div class="cc-info">
-        <div class="cc-sub">Format 10 × 15 cm<br>Impression haute définition<br>Pix in the City, Auray</div>
-        <div class="cc-scan-note">Scannez pour payer par carte bancaire</div>
+    <div class="c-body">
+      <div class="c-info">
+        <div class="c-desc">Format 10 × 15 cm · Impression haute définition · Pix in the City, Auray</div>
+        <div class="c-specs">Règlement sécurisé par carte bancaire · Scannez le QR code ci-contre</div>
       </div>
-      <div class="cc-produit">
-        <div class="cc-produit-name">1 carte postale</div>
-        <div class="cc-produit-price">6 €</div>
-        <div class="cc-produit-note">l'unité</div>
+      <div class="c-prix">
+        <div class="c-prix-row">
+          <span class="c-prix-label">1 carte postale</span>
+          <span class="c-prix-val">6 €</span>
+        </div>
+        <div class="c-prix-row" style="margin-top:2mm">
+          <span class="c-prix-label">Pack 3 cartes</span>
+          <span class="c-prix-val">15 €</span>
+        </div>
+        <div class="c-prix-note" style="margin-top:1mm">5 € la carte · économisez 17 %</div>
       </div>
-      <div class="cc-produit">
-        <div class="cc-produit-name">Pack 3 cartes</div>
-        <div class="cc-produit-price">15 €</div>
-        <div class="cc-produit-note">5 € la carte · économisez 17 %</div>
+      <div class="c-qr-wrap">
+        <div class="c-qr" id="qr-cartes"></div>
+        <div class="c-qr-label">Payer en ligne</div>
       </div>
     </div>`;
-
-  // On ne met pas le QR dans le HTML string — on l'ajoute après
   return div;
 }
 
-/* --- Build pages --- */
+/* ── Assemblage ── */
 const page1 = document.getElementById('page1');
 const page2 = document.getElementById('page2');
 
 EDITIONS.forEach((ed, i) => {
-  (i < 4 ? page1 : page2).appendChild(makeCarton(ed));
+  (i < 4 ? page1 : page2).appendChild(makeArtworkCarton(ed));
 });
+page2.appendChild(makeCartePostale());
 
-const cartePostale = makeCartePostale();
-page2.appendChild(cartePostale);
-
-// Ajouter le QR de la carte postale dans la cc-body
-const qrCol = document.createElement('div');
-qrCol.className = 'cc-qr-col';
-qrCol.innerHTML = `<div class="cc-qr" id="qr-carte-postale"></div><div class="cc-qr-label">Payer en ligne</div>`;
-cartePostale.querySelector('.cc-body').appendChild(qrCol);
-
-/* --- QR Codes --- */
+/* ── QR Codes ── */
 EDITIONS.forEach(ed => {
   new QRCode(document.getElementById('qr-' + ed.slug), {
-    text: BASE_URL + ed.slug, width: 150, height: 150,
+    text: BASE + ed.slug, width: 120, height: 120,
     colorDark: '#111', colorLight: '#fff', correctLevel: QRCode.CorrectLevel.M
   });
 });
-new QRCode(document.getElementById('qr-carte-postale'), {
-  text: PAYER_URL, width: 200, height: 200,
+new QRCode(document.getElementById('qr-cartes'), {
+  text: PAYER, width: 120, height: 120,
   colorDark: '#111', colorLight: '#fff', correctLevel: QRCode.CorrectLevel.M
 });
 </script>
