@@ -39,8 +39,7 @@
       align-content: start;
     }
 
-    /* Carte postale : pleine largeur */
-    .carton-full { grid-column: 1 / -1; }
+    /* 7 cartons = 3 rangées de 2 + 1 seul en bas à gauche */
 
     /* ══════════════════════════════
        GABARIT UNIQUE
@@ -138,16 +137,6 @@
       color: #ccc; text-align: center;
     }
 
-    /* Carte postale pleine largeur — layout horizontal */
-    .carton-full .c-body {
-      flex-direction: row;
-      align-items: center;
-      padding: 5mm 6mm 5mm 7mm;
-      gap: 6mm;
-    }
-    .carton-full .c-info { flex: 1; }
-    .carton-full .c-bottom { flex-shrink: 0; align-items: center; gap: 5mm; }
-    .carton-full .c-prix { border-top: none; border-left: 0.3pt solid #e0e0e0; padding-top: 0; padding-left: 5mm; }
 
     /* ── PRINT ── */
     @media print {
@@ -229,7 +218,7 @@ function makeArtworkCarton(ed) {
 
 function makeCartePostale() {
   const div = document.createElement('div');
-  div.className = 'carton carton-full';
+  div.className = 'carton';
   div.innerHTML = `
     <div class="c-head" style="background:#111">
       <div class="c-head-top">
@@ -240,9 +229,9 @@ function makeCartePostale() {
     </div>
     <div class="c-body">
       <div class="c-info">
-        <div class="c-limited">Format 10 × 15 cm</div>
-        <div class="c-signed">Impression haute définition · Pix in the City, Auray</div>
-        <div class="c-specs">Règlement sécurisé par carte bancaire · Scannez le QR code ci-contre</div>
+        <div class="c-limited">Série Dust'in Kolor</div>
+        <div class="c-signed">Impression haute définition</div>
+        <div class="c-specs">Règlement en espèces ou en ligne<br>via QR code · bertrandbasset.com</div>
       </div>
       <div class="c-bottom">
         <div class="c-prix">
