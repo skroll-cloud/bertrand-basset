@@ -31,7 +31,7 @@
       background: #fff;
       margin: 0 auto 20px;
       padding: 10mm;
-      display: flex; flex-direction: column; gap: 4.5mm;
+      display: flex; flex-direction: column; gap: 5mm;
       box-shadow: 0 2px 20px rgba(0,0,0,0.15);
     }
 
@@ -45,49 +45,70 @@
       flex-shrink: 0;
     }
 
-    /* Header coloré */
+    /* ── HEADER COLORÉ — 2 lignes ── */
     .c-head {
-      padding: 3.5mm 6mm 3mm 7mm;
-      display: flex; justify-content: space-between; align-items: center;
+      padding: 3mm 6mm 3.5mm 7mm;
+      display: flex; flex-direction: column; gap: 2mm;
       flex-shrink: 0;
     }
-    .c-head-left {}
+    /* Ligne 1 : numéro·collection  |  Bertrand Basset */
+    .c-head-top {
+      display: flex; justify-content: space-between; align-items: center;
+    }
     .c-head-meta {
       font-size: 5.5pt; letter-spacing: 0.18em; text-transform: uppercase;
-      margin-bottom: 1mm;
     }
-    .c-head-title { font-size: 17pt; font-weight: 300; letter-spacing: -0.02em; line-height: 1; }
-    .c-head-right {
-      font-size: 5.5pt; letter-spacing: 0.12em; text-transform: uppercase;
-      text-align: right;
+    .c-head-author {
+      font-size: 5.5pt; letter-spacing: 0.15em; text-transform: uppercase;
+    }
+    /* Ligne 2 : titre de l'œuvre */
+    .c-head-title {
+      font-size: 19pt; font-weight: 300; letter-spacing: -0.02em; line-height: 1;
     }
 
-    /* Body : info | prix | QR */
+    /* ── BODY : info | prix | QR ── */
     .c-body {
       flex: 1;
       display: flex; align-items: center;
-      padding: 3.5mm 5mm 3.5mm 7mm;
+      padding: 4mm 5mm 4mm 7mm;
       gap: 5mm;
       border-top: 0.3pt solid #e0e0e0;
     }
 
-    .c-info { flex: 1; }
-    .c-desc { font-size: 6.5pt; color: #444; line-height: 1.55; font-weight: 300; margin-bottom: 2mm; }
-    .c-specs { font-size: 6.5pt; color: #666; line-height: 1.55; font-weight: 300; }
+    /* Info */
+    .c-info { flex: 1; display: flex; flex-direction: column; gap: 1.5mm; }
+    .c-limited {
+      font-size: 8pt; font-weight: 500; color: #111;
+      letter-spacing: 0.01em;
+    }
+    .c-signed {
+      font-size: 6.5pt; font-weight: 300; color: #555; line-height: 1.5;
+    }
+    .c-specs {
+      font-size: 6.5pt; color: #666; line-height: 1.55; font-weight: 300;
+      margin-top: 1mm;
+    }
     .c-specs strong { font-weight: 500; color: #111; }
 
-    /* Bloc prix (grand format + A4) */
+    /* Bloc prix */
     .c-prix {
-      flex-shrink: 0; min-width: 42mm;
-      display: flex; flex-direction: column; gap: 1.5mm;
+      flex-shrink: 0; min-width: 38mm;
+      display: flex; flex-direction: column; gap: 1mm;
       border-left: 0.3pt solid #e0e0e0;
       padding-left: 5mm;
     }
-    .c-prix-row { display: flex; justify-content: space-between; align-items: baseline; gap: 3mm; }
-    .c-prix-label { font-size: 5.5pt; color: #888; text-transform: uppercase; letter-spacing: 0.08em; white-space: nowrap; }
-    .c-prix-val { font-size: 11pt; font-weight: 300; color: #111; letter-spacing: -0.01em; white-space: nowrap; }
-    .c-prix-val-small { font-size: 9pt; font-weight: 300; color: #555; }
-    .c-prix-note { font-size: 5pt; color: #aaa; letter-spacing: 0.06em; text-transform: uppercase; margin-top: 0.5mm; }
+    .c-prix-label {
+      font-size: 5.5pt; color: #888; text-transform: uppercase;
+      letter-spacing: 0.08em; white-space: nowrap;
+    }
+    .c-prix-val {
+      font-size: 14pt; font-weight: 300; color: #111;
+      letter-spacing: -0.02em; white-space: nowrap; line-height: 1;
+    }
+    .c-prix-note {
+      font-size: 5pt; color: #aaa; letter-spacing: 0.06em;
+      text-transform: uppercase; margin-top: 1mm;
+    }
 
     /* QR code */
     .c-qr-wrap {
@@ -96,7 +117,7 @@
       padding-left: 5mm;
       display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.5mm;
     }
-    .c-qr { width: 20mm; height: 20mm; }
+    .c-qr { width: 21mm; height: 21mm; }
     .c-qr canvas, .c-qr img { width: 100% !important; height: 100% !important; }
     .c-qr-label { font-size: 4.5pt; letter-spacing: 0.08em; text-transform: uppercase; color: #bbb; text-align: center; }
 
@@ -126,16 +147,15 @@
 <script>
 const BASE   = 'https://bertrandbasset.com/boutique.html?id=';
 const PAYER  = 'https://bertrandbasset.com/payer.html';
-let qrCount  = 0;
 
 /* ── Catalogue (After the Storm exclue — pas encore tirée) ── */
 const EDITIONS = [
-  { slug:'sandstorm-feu',          num:'01', titre:'Sandstorm',       hex:'#FF4500', format:'60 × 90 cm',  prix:'850 €',  a4:'160 €', papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm' },
-  { slug:'flying-car-orange',      num:'02', titre:'Flying Car',      hex:'#FF6600', format:'70 × 124 cm', prix:'1 290 €',a4:'160 €', papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm' },
-  { slug:'lost-in-the-dust-rouge', num:'04', titre:'Lost in the Dust',hex:'#CC0000', format:'60 × 80 cm',  prix:'890 €',  a4:'160 €', papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm' },
-  { slug:'camp-lighters-jaune',    num:'05', titre:'Camp Lighters',   hex:'#FFB300', format:'40 × 100 cm', prix:'790 €',  a4:'160 €', papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm' },
-  { slug:'im-here-bleu',           num:'06', titre:"I'm Here",        hex:'#0066CC', format:'60 × 80 cm',  prix:'890 €',  a4:'160 €', papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm' },
-  { slug:'umbrellas-way-rose',     num:'08', titre:'Umbrellas Way',   hex:'#FF1493', format:'60 × 80 cm',  prix:'890 €',  a4:'160 €', papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm' },
+  { slug:'sandstorm-feu',          num:'01', titre:'Sandstorm',       hex:'#FF4500', format:'60 × 90 cm',  prix:'850 €',  papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm' },
+  { slug:'flying-car-orange',      num:'02', titre:'Flying Car',      hex:'#FF6600', format:'70 × 124 cm', prix:'1 290 €',papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm' },
+  { slug:'lost-in-the-dust-rouge', num:'04', titre:'Lost in the Dust',hex:'#CC0000', format:'60 × 80 cm',  prix:'890 €',  papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm' },
+  { slug:'camp-lighters-jaune',    num:'05', titre:'Camp Lighters',   hex:'#FFB300', format:'40 × 100 cm', prix:'790 €',  papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm' },
+  { slug:'im-here-bleu',           num:'06', titre:"I'm Here",        hex:'#0066CC', format:'60 × 80 cm',  prix:'890 €',  papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm' },
+  { slug:'umbrellas-way-rose',     num:'08', titre:'Umbrellas Way',   hex:'#FF1493', format:'60 × 80 cm',  prix:'890 €',  papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm' },
 ];
 
 /* Luminance → couleur texte sur fond coloré */
@@ -159,32 +179,22 @@ function makeArtworkCarton(ed) {
   div.className = 'carton';
   div.innerHTML = `
     <div class="c-head" style="background:${ed.hex}">
-      <div class="c-head-left">
-        <div class="c-head-meta" style="color:${dc}">№ ${ed.num} · Dust'in Kolor · Bertrand Basset</div>
-        <div class="c-head-title" style="color:${tc}">${ed.titre}</div>
+      <div class="c-head-top">
+        <span class="c-head-meta" style="color:${dc}">№ ${ed.num} · Dust'in Kolor</span>
+        <span class="c-head-author" style="color:${dc}">Bertrand Basset</span>
       </div>
-      <div class="c-head-right" style="color:${dc}">bertrandbasset.com</div>
+      <div class="c-head-title" style="color:${tc}">${ed.titre}</div>
     </div>
     <div class="c-body">
       <div class="c-info">
-        <div class="c-desc">Série limitée à 10 exemplaires numérotée et signée par l'artiste · Certificat d'authenticité inclus</div>
+        <div class="c-limited">Série limitée à 10 exemplaires</div>
+        <div class="c-signed">Numérotée et signée par l'artiste · Certificat d'authenticité inclus</div>
         <div class="c-specs"><strong>${ed.format}</strong> · ${ed.papier}<br>Tirage d'art : Pix in the City, Auray</div>
       </div>
       <div class="c-prix">
-        <div>
-          <div class="c-prix-row">
-            <span class="c-prix-label">Grand format</span>
-            <span class="c-prix-val">${ed.prix}</span>
-          </div>
-          <div class="c-prix-note">3 premiers ex. · prix progressif</div>
-        </div>
-        <div>
-          <div class="c-prix-row">
-            <span class="c-prix-label">A4 · Museum Etching</span>
-            <span class="c-prix-val-small">${ed.a4}</span>
-          </div>
-          <div class="c-prix-note">30 ex. · prix fixe</div>
-        </div>
+        <div class="c-prix-label">3 premiers tirages</div>
+        <div class="c-prix-val">${ed.prix}</div>
+        <div class="c-prix-note">Prix progressif ensuite</div>
       </div>
       <div class="c-qr-wrap">
         <div class="c-qr" id="${qid}"></div>
@@ -199,27 +209,25 @@ function makeCartePostale() {
   div.className = 'carton';
   div.innerHTML = `
     <div class="c-head" style="background:#111">
-      <div class="c-head-left">
-        <div class="c-head-meta" style="color:rgba(255,255,255,0.5)">Exposition · Dust'in Kolor · Bertrand Basset</div>
-        <div class="c-head-title" style="color:#fff">Cartes postales</div>
+      <div class="c-head-top">
+        <span class="c-head-meta" style="color:rgba(255,255,255,0.5)">Exposition · Dust'in Kolor</span>
+        <span class="c-head-author" style="color:rgba(255,255,255,0.4)">Bertrand Basset</span>
       </div>
-      <div class="c-head-right" style="color:rgba(255,255,255,0.4)">bertrandbasset.com</div>
+      <div class="c-head-title" style="color:#fff">Cartes postales</div>
     </div>
     <div class="c-body">
       <div class="c-info">
-        <div class="c-desc">Format 10 × 15 cm · Impression haute définition · Pix in the City, Auray</div>
+        <div class="c-limited">Format 10 × 15 cm</div>
+        <div class="c-signed">Impression haute définition · Pix in the City, Auray</div>
         <div class="c-specs">Règlement sécurisé par carte bancaire · Scannez le QR code ci-contre</div>
       </div>
       <div class="c-prix">
-        <div class="c-prix-row">
-          <span class="c-prix-label">1 carte postale</span>
-          <span class="c-prix-val">6 €</span>
-        </div>
-        <div class="c-prix-row" style="margin-top:2mm">
-          <span class="c-prix-label">Pack 3 cartes</span>
-          <span class="c-prix-val">15 €</span>
-        </div>
-        <div class="c-prix-note" style="margin-top:1mm">5 € la carte · économisez 17 %</div>
+        <div class="c-prix-label">1 carte postale</div>
+        <div class="c-prix-val">6 €</div>
+        <div style="height:3mm"></div>
+        <div class="c-prix-label">Pack 3 cartes</div>
+        <div class="c-prix-val">15 €</div>
+        <div class="c-prix-note">5 € la carte · économisez 17 %</div>
       </div>
       <div class="c-qr-wrap">
         <div class="c-qr" id="qr-cartes"></div>
