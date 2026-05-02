@@ -9,22 +9,17 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --font: 'IBM Plex Sans', Arial, sans-serif;
-      --black: #111; --gray: #444; --dim: #888; --line: #ddd;
-    }
+    :root { --font: 'IBM Plex Sans', Arial, sans-serif; }
     html { font-family: var(--font); -webkit-font-smoothing: antialiased; }
 
     /* ── SCREEN ── */
-    body { background: #e8e8e8; padding: 24px; }
+    body { background: #e0e0e0; padding: 24px; }
 
     .screen-bar {
-      max-width: 220mm; margin: 0 auto 16px;
+      max-width: 220mm; margin: 0 auto 14px;
       display: flex; justify-content: space-between; align-items: center;
     }
-    .screen-bar-title {
-      font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: #888;
-    }
+    .screen-bar-title { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: #888; }
     .btn-print {
       font-family: var(--font);
       padding: 8px 20px; background: #111; color: #fff;
@@ -35,7 +30,7 @@
 
     /* ── PAGE A4 ── */
     .page {
-      width: 210mm; min-height: 297mm;
+      width: 210mm;
       background: white;
       margin: 0 auto 20px;
       padding: 10mm;
@@ -43,102 +38,99 @@
       grid-template-columns: 1fr 1fr;
       grid-template-rows: 1fr 1fr;
       gap: 5mm;
-      box-shadow: 0 2px 16px rgba(0,0,0,0.12);
+      box-shadow: 0 2px 20px rgba(0,0,0,0.15);
     }
 
     /* ── CARTON ── */
     .carton {
-      border: 0.5pt solid var(--line);
-      padding: 6mm 6mm 5mm 7mm;
+      border: 0.5pt solid #ccc;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      position: relative;
       overflow: hidden;
+      position: relative;
     }
 
-    /* Top section */
-    .c-kicker {
-      font-size: 6.5pt; letter-spacing: 0.18em; text-transform: uppercase;
-      color: var(--dim); margin-bottom: 2.5mm;
+    /* Color header */
+    .c-header {
+      padding: 5mm 6mm 4.5mm 7mm;
+      flex-shrink: 0;
+    }
+    .c-header-top {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      margin-bottom: 1.5mm;
+    }
+    .c-num {
+      font-size: 6pt; letter-spacing: 0.2em; text-transform: uppercase;
+      color: rgba(255,255,255,0.65); font-weight: 400;
+    }
+    .c-serie {
+      font-size: 5.5pt; letter-spacing: 0.12em; text-transform: uppercase;
+      color: rgba(255,255,255,0.55); font-weight: 300; text-align: right;
     }
     .c-title {
-      font-size: 20pt; font-weight: 300; letter-spacing: -0.02em;
-      line-height: 1.05; color: var(--black); margin-bottom: 1mm;
-    }
-    .c-code {
-      font-size: 6pt; letter-spacing: 0.06em; color: var(--dim);
-      margin-bottom: 3.5mm;
+      font-size: 22pt; font-weight: 300; letter-spacing: -0.02em;
+      line-height: 1; color: #fff;
     }
 
-    .c-sep { height: 0.3pt; background: var(--line); margin-bottom: 3.5mm; }
+    /* Body */
+    .c-body {
+      flex: 1; padding: 4mm 6mm 4mm 7mm;
+      display: flex; flex-direction: column; justify-content: space-between;
+    }
 
-    /* Description */
     .c-desc {
-      font-size: 7pt; color: var(--gray); line-height: 1.55;
-      font-weight: 300; margin-bottom: 2.5mm;
-    }
-    .c-desc em { font-style: italic; color: var(--dim); }
-
-    /* Specs */
-    .c-specs {
-      font-size: 6.5pt; color: var(--gray); line-height: 1.6;
+      font-size: 6.5pt; color: #444; line-height: 1.6;
       font-weight: 300; margin-bottom: 3mm;
     }
-    .c-specs strong { font-weight: 500; color: var(--black); }
 
-    /* Bottom: price + QR */
+    .c-specs {
+      font-size: 6.5pt; color: #555; line-height: 1.65;
+      font-weight: 300;
+    }
+    .c-specs strong { font-weight: 500; color: #111; }
+
+    /* Bottom */
     .c-bottom {
       display: flex; justify-content: space-between; align-items: flex-end;
+      padding-top: 3mm; border-top: 0.3pt solid #ddd; margin-top: 3mm;
     }
-    .c-price-block {}
     .c-price {
-      font-size: 16pt; font-weight: 300; letter-spacing: -0.02em;
-      color: var(--black); line-height: 1;
+      font-size: 15pt; font-weight: 300; letter-spacing: -0.02em;
+      color: #111; line-height: 1;
     }
     .c-price-note {
-      font-size: 5.5pt; letter-spacing: 0.06em; color: var(--dim);
-      margin-top: 1mm; line-height: 1.4; text-transform: uppercase;
+      font-size: 5pt; letter-spacing: 0.06em; color: #888;
+      margin-top: 1mm; text-transform: uppercase; line-height: 1.5;
     }
-    .c-qr {
-      width: 18mm; height: 18mm; flex-shrink: 0;
-    }
-    .c-qr canvas, .c-qr img {
-      width: 100% !important; height: 100% !important;
-    }
+    .c-qr { width: 16mm; height: 16mm; flex-shrink: 0; }
+    .c-qr canvas, .c-qr img { width: 100% !important; height: 100% !important; }
 
     /* ── CARTON CARTE POSTALE ── */
     .carton-carte {
-      border: 0.5pt solid var(--line);
-      padding: 6mm 6mm 5mm 7mm;
-      display: flex; flex-direction: column;
-      justify-content: space-between;
+      border: 0.5pt solid #ccc;
+      display: flex; flex-direction: column; overflow: hidden;
     }
-    .cc-kicker {
-      font-size: 6.5pt; letter-spacing: 0.18em; text-transform: uppercase;
-      color: var(--dim); margin-bottom: 2mm;
+    .cc-header {
+      background: #111; padding: 5mm 6mm 4.5mm 7mm; flex-shrink: 0;
     }
-    .cc-title {
-      font-size: 16pt; font-weight: 300; letter-spacing: -0.02em;
-      line-height: 1.05; color: var(--black); margin-bottom: 1mm;
+    .cc-num { font-size: 6pt; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 1.5mm; }
+    .cc-title { font-size: 19pt; font-weight: 300; color: #fff; letter-spacing: -0.02em; line-height: 1; }
+    .cc-body {
+      flex: 1; padding: 4mm 6mm 4mm 7mm;
+      display: flex; flex-direction: column; justify-content: space-between;
     }
-    .cc-sub {
-      font-size: 7pt; color: var(--dim); margin-bottom: 3.5mm;
-    }
-    .cc-sep { height: 0.3pt; background: var(--line); margin-bottom: 3.5mm; }
-    .cc-produits { display: flex; flex-direction: column; gap: 2.5mm; margin-bottom: 4mm; }
-    .cc-produit {
-      display: flex; justify-content: space-between; align-items: baseline;
-      font-size: 8pt; color: var(--black);
-    }
-    .cc-produit-name { font-weight: 300; }
-    .cc-produit-price { font-weight: 500; }
-    .cc-produit-note { font-size: 6pt; color: var(--dim); font-style: italic; }
+    .cc-sub { font-size: 6.5pt; color: #888; font-weight: 300; margin-bottom: 3mm; }
+    .cc-produits { display: flex; flex-direction: column; gap: 2mm; }
+    .cc-row { display: flex; justify-content: space-between; align-items: baseline; }
+    .cc-name { font-size: 8pt; font-weight: 300; color: #111; }
+    .cc-price { font-size: 8pt; font-weight: 500; color: #111; }
+    .cc-note { font-size: 5.5pt; color: #999; font-style: italic; margin-top: 0.5mm; }
     .cc-bottom {
       display: flex; justify-content: space-between; align-items: flex-end;
+      padding-top: 3mm; border-top: 0.3pt solid #ddd; margin-top: 3mm;
     }
-    .cc-note { font-size: 5.5pt; color: var(--dim); line-height: 1.5; text-transform: uppercase; letter-spacing: 0.06em; }
-    .cc-qr { width: 18mm; height: 18mm; flex-shrink: 0; }
+    .cc-scan { font-size: 5.5pt; letter-spacing: 0.08em; color: #888; text-transform: uppercase; line-height: 1.6; }
+    .cc-qr { width: 16mm; height: 16mm; flex-shrink: 0; }
     .cc-qr canvas, .cc-qr img { width: 100% !important; height: 100% !important; }
 
     /* ── PRINT ── */
@@ -147,14 +139,10 @@
       .screen-bar { display: none; }
       .page {
         width: 210mm; min-height: 297mm;
-        padding: 10mm;
-        margin: 0;
-        box-shadow: none;
-        page-break-after: always;
+        padding: 10mm; margin: 0; box-shadow: none;
+        page-break-after: always; break-after: page;
       }
-      .carton, .carton-carte {
-        border: 0.3pt solid #bbb;
-      }
+      .carton, .carton-carte { border: 0.3pt solid #bbb; }
       @page { size: A4 portrait; margin: 0; }
     }
   </style>
@@ -162,7 +150,7 @@
 <body>
 
 <div class="screen-bar">
-  <span class="screen-bar-title">Cartons d'œuvres + cartes postales — 2 pages A4</span>
+  <span class="screen-bar-title">Cartons d'œuvres — 2 pages A4 · Cliquer Imprimer</span>
   <button class="btn-print" onclick="window.print()">Imprimer</button>
 </div>
 
@@ -175,86 +163,91 @@ const PAYER_URL = 'https://bertrandbasset.com/payer.html';
 
 const EDITIONS = [
   { slug:'sandstorm-feu',
-    serie:"Dust'in Kolor", num:'01',
-    titre:'Sandstorm', code:'6090_Feu',
+    num:'01', titre:'Sandstorm', code:'6090_Feu', hex:'#FF4500',
     format:'60 × 90 cm',
     papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm',
-    total:10, vendus:1, prix:[950, 1100, 1250] },
+    prix_vente:'820 €' },
 
   { slug:'flying-car-orange',
-    serie:"Dust'in Kolor", num:'02',
-    titre:'Flying Car', code:'70124_Orange',
+    num:'02', titre:'Flying Car', code:'70124_Orange', hex:'#FF6600',
     format:'70 × 124 cm',
     papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm',
-    total:10, vendus:1, prix:[1290, 1490, 1690] },
+    prix_vente:'1 290 €' },
 
   { slug:'after-the-storm-vert',
-    serie:"Dust'in Kolor", num:'03',
-    titre:'After the Storm', code:'70124_Vert',
+    num:'03', titre:'After the Storm', code:'70124_Vert', hex:'#7BC043',
     format:'70 × 124 cm',
     papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm',
-    total:10, vendus:2, prix:[1290, 1490, 1690] },
+    prix_vente:'1 290 €' },
 
   { slug:'lost-in-the-dust-rouge',
-    serie:"Dust'in Kolor", num:'04',
-    titre:'Lost in the Dust', code:'6080_Rouge',
+    num:'04', titre:'Lost in the Dust', code:'6080_Rouge', hex:'#CC0000',
     format:'60 × 80 cm',
     papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm',
-    total:10, vendus:1, prix:[890, 1020, 1150] },
+    prix_vente:'890 €' },
 
   { slug:'camp-lighters-jaune',
-    serie:"Dust'in Kolor", num:'05',
-    titre:'Camp Lighters', code:'40100_Jaune',
+    num:'05', titre:'Camp Lighters', code:'40100_Jaune', hex:'#FFB300',
     format:'40 × 100 cm',
     papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm',
-    total:10, vendus:1, prix:[790, 910, 1030] },
+    prix_vente:'790 €' },
 
   { slug:'im-here-bleu',
-    serie:"Dust'in Kolor", num:'06',
-    titre:"I'm Here", code:'6080_Bleu',
+    num:'06', titre:"I'm Here", code:'6080_Bleu', hex:'#0066CC',
     format:'60 × 80 cm',
     papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm',
-    total:10, vendus:1, prix:[890, 1020, 1150] },
+    prix_vente:'890 €' },
 
   { slug:'umbrellas-way-rose',
-    serie:"Dust'in Kolor", num:'08',
-    titre:'Umbrellas Way', code:'6080_Rose',
+    num:'08', titre:'Umbrellas Way', code:'6080_Rose', hex:'#FF1493',
     format:'60 × 80 cm',
     papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm',
-    total:10, vendus:1, prix:[890, 1020, 1150] },
+    prix_vente:'890 €' },
 ];
-
-function palierIdx(ed) { return ed.vendus < 3 ? 0 : ed.vendus < 7 ? 1 : 2; }
-function prixAct(ed)   { return ed.prix[palierIdx(ed)]; }
-const restants = ed => [3,7,10][palierIdx(ed)] - ed.vendus;
 
 function makeCarton(ed) {
   const div = document.createElement('div');
   div.className = 'carton';
+
+  // Luminance check — dark text on light colors
+  const hex = ed.hex.replace('#','');
+  const r = parseInt(hex.substr(0,2),16);
+  const g = parseInt(hex.substr(2,2),16);
+  const b = parseInt(hex.substr(4,2),16);
+  const lum = (0.299*r + 0.587*g + 0.114*b) / 255;
+  const textColor = lum > 0.55 ? 'rgba(0,0,0,0.75)' : 'rgba(255,255,255,0.85)';
+  const titleColor = lum > 0.55 ? '#111' : '#fff';
+  const numColor = lum > 0.55 ? 'rgba(0,0,0,0.45)' : 'rgba(255,255,255,0.6)';
+
   div.innerHTML = `
-    <div>
-      <div class="c-kicker">${ed.serie} — № ${ed.num}</div>
-      <div class="c-title">${ed.titre}</div>
-      <div class="c-code">${ed.code}</div>
-      <div class="c-sep"></div>
-      <div class="c-desc">
-        Série limitée à ${ed.total} exemplaires numérotée et signée par l'artiste,
-        avec certificat d'authenticité.
+    <div class="c-header" style="background:${ed.hex}">
+      <div class="c-header-top">
+        <span class="c-num" style="color:${numColor}">№ ${ed.num}</span>
+        <span class="c-serie" style="color:${numColor}">Dust'in Kolor</span>
       </div>
-      <div class="c-specs">
-        <strong>${ed.format}</strong> · ${ed.papier}<br>
-        Tirage d'art : Pix in the City, Auray
-      </div>
+      <div class="c-title" style="color:${titleColor}">${ed.titre}</div>
     </div>
-    <div class="c-bottom">
-      <div class="c-price-block">
-        <div class="c-price">${prixAct(ed).toLocaleString('fr-FR')} €</div>
-        <div class="c-price-note">
-          ${restants(ed)} premier${restants(ed)>1?'s':''} exemplaire${restants(ed)>1?'s':''} à ce prix<br>
-          Prix progressif ensuite
+    <div class="c-body">
+      <div>
+        <div class="c-desc">
+          Série limitée à 10 exemplaires numérotée et signée par l'artiste,
+          avec certificat d'authenticité.
+        </div>
+        <div class="c-specs">
+          <strong>${ed.format}</strong> · ${ed.papier}<br>
+          Tirage d'art : Pix in the City, Auray
         </div>
       </div>
-      <div class="c-qr" id="qr-${ed.slug}"></div>
+      <div class="c-bottom">
+        <div>
+          <div class="c-price">${ed.prix_vente}</div>
+          <div class="c-price-note">
+            3 premiers exemplaires à ce prix<br>
+            Prix progressif ensuite
+          </div>
+        </div>
+        <div class="c-qr" id="qr-${ed.slug}"></div>
+      </div>
     </div>`;
   return div;
 }
@@ -263,45 +256,46 @@ function makeCartePostale() {
   const div = document.createElement('div');
   div.className = 'carton-carte';
   div.innerHTML = `
-    <div>
-      <div class="cc-kicker">Exposition Dust'in Kolor · Bertrand Basset</div>
+    <div class="cc-header">
+      <div class="cc-num">Exposition · Dust'in Kolor</div>
       <div class="cc-title">Cartes postales</div>
-      <div class="cc-sub">Format 10 × 15 cm · Impression haute définition</div>
-      <div class="cc-sep"></div>
-      <div class="cc-produits">
-        <div>
-          <div class="cc-produit">
-            <span class="cc-produit-name">1 carte postale</span>
-            <span class="cc-produit-price">6 €</span>
+    </div>
+    <div class="cc-body">
+      <div>
+        <div class="cc-sub">Bertrand Basset · bertrandbasset.com</div>
+        <div class="cc-produits">
+          <div>
+            <div class="cc-row">
+              <span class="cc-name">1 carte postale</span>
+              <span class="cc-price">6 €</span>
+            </div>
           </div>
-        </div>
-        <div>
-          <div class="cc-produit">
-            <span class="cc-produit-name">Pack 3 cartes postales</span>
-            <span class="cc-produit-price">15 €</span>
+          <div>
+            <div class="cc-row">
+              <span class="cc-name">Pack 3 cartes</span>
+              <span class="cc-price">15 €</span>
+            </div>
+            <div class="cc-note">5 € la carte · économisez 17 %</div>
           </div>
-          <div class="cc-produit-note">5 € la carte · économisez 17 %</div>
         </div>
       </div>
-    </div>
-    <div class="cc-bottom">
-      <div class="cc-note">Scannez pour payer<br>par carte bancaire</div>
-      <div class="cc-qr" id="qr-carte-postale"></div>
+      <div class="cc-bottom">
+        <div class="cc-scan">Scannez pour payer<br>par carte bancaire</div>
+        <div class="cc-qr" id="qr-carte-postale"></div>
+      </div>
     </div>`;
   return div;
 }
 
-// Distribute 8 items across 2 pages (4 + 4)
 const page1 = document.getElementById('page1');
 const page2 = document.getElementById('page2');
 
 EDITIONS.forEach((ed, i) => {
-  const carton = makeCarton(ed);
-  (i < 4 ? page1 : page2).appendChild(carton);
+  (i < 4 ? page1 : page2).appendChild(makeCarton(ed));
 });
 page2.appendChild(makeCartePostale());
 
-// Generate all QR codes
+// QR codes
 EDITIONS.forEach(ed => {
   new QRCode(document.getElementById('qr-' + ed.slug), {
     text: BASE_URL + ed.slug,
@@ -310,7 +304,6 @@ EDITIONS.forEach(ed => {
     correctLevel: QRCode.CorrectLevel.M
   });
 });
-
 new QRCode(document.getElementById('qr-carte-postale'), {
   text: PAYER_URL,
   width: 150, height: 150,
