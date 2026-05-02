@@ -260,84 +260,35 @@
     }
     .panel-close:hover { color: #fff; }
 
+    /* Panel — contenu minimal */
     .panel-inner {
-      display: flex; flex-direction: column;
-      gap: 2px; padding-top: 2px;
+      padding: 2rem 1.6rem;
+      display: flex; flex-direction: column; gap: 1.4rem;
     }
-
-    .panel-card {
-      background: #fff;
-      padding: 1.1rem 1.4rem;
-      flex-shrink: 0;
+    .panel-thumb {
+      aspect-ratio: 4/3; background: #1a1a1a; overflow: hidden;
     }
-
-    .work-kicker {
-      font-size: 0.48rem; letter-spacing: 0.2em;
-      text-transform: uppercase; color: #999; margin-bottom: 0.45rem;
-    }
-    .work-title {
-      font-size: 1.35rem; font-weight: 300;
-      letter-spacing: -0.01em; line-height: 1.1; color: #111;
-    }
-
-    .info-row {
-      display: flex; justify-content: space-between;
-      align-items: center; padding: 0.42rem 0;
-      border-bottom: 1px solid #eee; gap: 1rem;
-    }
-    .info-row:last-child { border-bottom: none; }
-    .info-key {
-      font-size: 0.58rem; letter-spacing: 0.08em;
-      text-transform: uppercase; color: #555; flex-shrink: 0;
-    }
-    .info-val {
-      font-size: 0.75rem; text-align: right; color: #111;
-      display: flex; align-items: center;
-      gap: 0.45rem; justify-content: flex-end; font-weight: 400;
-    }
-    .color-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
-
-    .support-name {
-      font-size: 0.78rem; font-weight: 400;
-      color: #111; margin-bottom: 0.2rem; line-height: 1.4;
-    }
-    .support-detail { font-size: 0.65rem; color: #666; margin-bottom: 1rem; line-height: 1.5; }
-    .stock-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.4rem; }
-    .stock-big { font-size: 1.1rem; font-weight: 300; color: #111; }
-    .stock-frac { font-size: 0.6rem; color: #777; }
-    .stock-bar { height: 2px; background: #e8e8e8; border-radius: 1px; overflow: hidden; margin-bottom: 0.3rem; }
-    .stock-bar-fill { height: 100%; background: #111; border-radius: 1px; }
-    .stock-lbl { font-size: 0.55rem; color: #777; letter-spacing: 0.04em; }
-
-    .price-big { font-size: 1.6rem; font-weight: 300; letter-spacing: -0.02em; color: #111; margin-bottom: 0.15rem; }
-    .price-tier-lbl { font-size: 0.55rem; color: #777; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.9rem; }
-    .tier-list { display: flex; flex-direction: column; }
-    .tier-row {
-      display: flex; justify-content: space-between; align-items: baseline;
-      padding: 0.3rem 0; font-size: 0.65rem; color: #888;
-      border-bottom: 1px solid #f5f5f5;
-    }
-    .tier-row:last-child { border-bottom: none; }
-    .tier-row.active-tier { color: #111; font-weight: 500; }
-    .tier-tag {
-      font-size: 0.42rem; letter-spacing: 0.08em; text-transform: uppercase;
-      color: #888; background: #f0f0f0; padding: 2px 5px; margin-left: 0.4rem; vertical-align: middle;
-    }
-    .active-tier .tier-tag { background: #111; color: #fff; }
-
-    .panel-card-btn { background: #111; padding: 0; }
-    .btn-panier {
-      display: block; width: 100%; padding: 1.1rem 1.5rem;
+    .panel-thumb img { width: 100%; height: 100%; object-fit: cover; opacity: 0.85; }
+    .panel-kicker { font-size: 0.5rem; letter-spacing: 0.18em; text-transform: uppercase; color: #555; }
+    .panel-title { font-size: 1.5rem; font-weight: 300; letter-spacing: -0.01em; color: #fff; line-height: 1.1; }
+    .panel-price { font-size: 1.6rem; font-weight: 300; color: #fff; letter-spacing: -0.02em; }
+    .panel-price-note { font-size: 0.55rem; color: #555; text-transform: uppercase; letter-spacing: 0.08em; margin-top: 0.2rem; }
+    .btn-commander {
+      display: block; width: 100%; padding: 1rem 1.5rem;
       background: #fff; color: #111; font-family: var(--font);
-      font-size: 0.6rem; font-weight: 600; letter-spacing: 0.16em;
+      font-size: 0.62rem; font-weight: 500; letter-spacing: 0.14em;
       text-transform: uppercase; text-align: center;
-      cursor: pointer; transition: background 0.2s, color 0.2s;
-      border: none; border-bottom: 2px solid #111;
+      cursor: pointer; border: none; border-radius: 1px;
+      transition: background 0.2s, color 0.2s; text-decoration: none;
     }
-    .btn-panier:hover { background: #111; color: #fff; }
-    .btn-panier:disabled { background: #f0f0f0; color: #bbb; border-bottom-color: transparent; cursor: not-allowed; }
-
-    .panel-note { padding: 1rem 1.4rem; font-size: 0.57rem; color: #777; line-height: 1.7; letter-spacing: 0.02em; }
+    .btn-commander:hover { background: #e8e8e8; }
+    .panel-serie-link {
+      display: block; text-align: center;
+      font-size: 0.58rem; color: #555; letter-spacing: 0.08em;
+      text-transform: uppercase; cursor: pointer;
+      transition: color 0.15s; text-decoration: none;
+    }
+    .panel-serie-link:hover { color: #ccc; }
 
     @media (max-width: 767px) {
       .product-panel { width: 100vw; right: -100vw; }
@@ -421,7 +372,9 @@
   <div class="product-overlay" id="productOverlay" onclick="closePanel()"></div>
   <div class="product-panel" id="productPanel">
     <button class="panel-close" onclick="closePanel()">✕</button>
-    <div class="panel-inner" id="panelInner"></div>
+    <div class="panel-inner" id="panelInner">
+      <!-- filled by renderPanel() -->
+    </div>
   </div>
 
   <script>
@@ -585,73 +538,29 @@
   function renderPanel(i) {
     const e  = EDITIONS[i];
     const t  = T[lang];
-    const d  = dispo(e);
+    const ep = dispo(e) <= 0;
     const pi = palierIdx(e);
-    const ep = d <= 0;
-
-    const tiers = e.prix.map((p,idx) => {
-      const a = idx===pi;
-      return `<div class="tier-row${a?' active-tier':''}">
-        <span>${t.paliers[idx]}${a?`<span class="tier-tag">${t.palier_actuel}</span>`:''}</span>
-        <span class="tier-price">${p.toLocaleString('fr-FR')} €</span>
-      </div>`;
-    }).join('');
+    const titre = lang === 'fr' ? e.titre_fr : e.titre_en;
+    const boutiqueUrl = `../boutique.html?id=${e.slug}`;
 
     document.getElementById('panelInner').innerHTML = `
-      <div class="panel-card">
-        <p class="work-kicker">Dust'in Kolor — ${e.num}</p>
-        <h2 class="work-title">${lang==='fr'?e.titre_fr:e.titre_en}</h2>
+      <div class="panel-thumb">
+        <img src="../images/dustin-kolor/${e.img}" alt="${titre}">
       </div>
-
-      <div class="panel-card">
-        <div class="info-row">
-          <span class="info-key">${t.edition}</span>
-          <span class="info-val">10 ex. numérotés &amp; signés</span>
-        </div>
-        <div class="info-row">
-          <span class="info-key">${t.couleur}</span>
-          <span class="info-val">
-            <span class="color-dot" style="background:${e.hex}"></span>
-            ${lang==='fr'?e.couleur_fr:e.couleur_en}
-          </span>
-        </div>
-        <div class="info-row">
-          <span class="info-key">${t.format}</span>
-          <span class="info-val">${e.format}</span>
-        </div>
+      <div>
+        <p class="panel-kicker">Dust'in Kolor — ${t.edition} ${e.num}</p>
+        <h2 class="panel-title">${titre}</h2>
       </div>
-
-      <div class="panel-card">
-        <p class="support-name">${e.support}</p>
-        <p class="support-detail">${lang==='fr'?e.detail_fr:e.detail_en}</p>
-        ${ep
-          ? `<p style="font-size:.72rem;color:#aaa;">${t.epuise}</p>`
-          : `<div class="stock-row">
-               <span class="stock-big">${d}</span>
-               <span class="stock-frac">${t.disponibles} / ${e.total}</span>
-             </div>
-             <div class="stock-bar">
-               <div class="stock-bar-fill" style="width:${Math.round(d/e.total*100)}%"></div>
-             </div>
-             <p class="stock-lbl">${e.vendus} ${t.vendus_lbl}</p>`
-        }
+      <div>
+        <div class="panel-price">${ep ? t.epuise : prixAct(e).toLocaleString('fr-FR')+' '}<span style="font-size:1rem">€</span></div>
+        <div class="panel-price-note">${ep ? '' : t.paliers[pi]}</div>
       </div>
-
-      <div class="panel-card">
-        <div class="price-big">${ep?'—':prixAct(e).toLocaleString('fr-FR')+' €'}</div>
-        <p class="price-tier-lbl">${t.paliers[pi]}</p>
-        <div class="tier-list">${tiers}</div>
-      </div>
-
-      <div class="panel-card panel-card-btn">
-        <button class="btn-panier" id="btnPanier"
-          ${ep?'disabled':''}
-          onclick="addToCart('${e.slug}')">
-          ${ep?t.epuise:t.ajouter}
-        </button>
-      </div>
-
-      <p class="panel-note">${t.certificat.replace(/\n/g,'<br>')}</p>
+      <a class="btn-commander" href="${boutiqueUrl}">
+        ${lang === 'en' ? 'Order this print' : 'Commander ce tirage'} →
+      </a>
+      <a class="panel-serie-link" href="../boutique.html">
+        ${lang === 'en' ? 'See all 7 works' : 'Voir les 7 œuvres de la série'}
+      </a>
     `;
   }
 
