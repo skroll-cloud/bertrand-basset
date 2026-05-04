@@ -2704,3 +2704,37 @@ body {
     color: var(--dim);
     margin-bottom: 1rem;
 }
+
+/* ================================== */
+/* AUTEUR / POST-PRODUCTION PAGES     */
+/* ================================== */
+.auteur-item {
+    margin-bottom: 1.6rem;
+}
+.auteur-title {
+    font-size: 0.88rem;
+    font-weight: 400;
+    color: var(--black);
+    margin-bottom: 0.2rem;
+    letter-spacing: 0.01em;
+}
+.auteur-meta {
+    font-size: 0.72rem;
+    font-weight: 300;
+    color: var(--gray);
+    line-height: 1.6;
+}
+.auteur-desc {
+    font-size: 0.68rem;
+    font-weight: 300;
+    color: var(--light-gray);
+    line-height: 1.6;
+    margin-top: 0.15rem;
+}
+.pp-clients {
+    font-size: 0.72rem;
+    font-weight: 300;
+    color: var(--gray);
+    line-height: 1.8;
+    margin-top: 0.8rem;
+}

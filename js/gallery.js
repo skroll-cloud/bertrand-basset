@@ -139,6 +139,20 @@ const MENU_CONFIG = [
     "parent": "group-1773158227466"
   },
   {
+    "id": "post-production",
+    "name": "POST-PRODUCTION",
+    "type": "page",
+    "pageId": "post-production",
+    "parent": "group-1773158227466"
+  },
+  {
+    "id": "auteur",
+    "name": "AUTEUR",
+    "type": "page",
+    "pageId": "auteur",
+    "parent": "group-1773158227466"
+  },
+  {
     "id": "item-1773175848292",
     "name": "ARCHIVES",
     "type": "gallery",
@@ -523,6 +537,78 @@ function buildPage(pageId, lang) {
     return `<div class="page-text">${sections}</div>`;
 }
 function buildInfosPage(lang) { return buildPage('infos', lang); }
+
+function buildPostProductionPage(lang) {
+    const en = lang === 'en';
+    return `<div class="page-text">
+      <div class="page-section">
+        <h2>${en ? 'Post-production' : 'Post-production'}</h2>
+        <p>${en
+          ? 'I founded Yellow Shoes Studio, through which I worked as a service provider for cinema and television as post-production director, editor and colorist.'
+          : "J'ai fondé la société Yellow Shoes Studio, avec laquelle j'ai été prestataire pour le cinéma et la télévision en tant que directeur de post-production, monteur et étalonneur."
+        }</p>
+        <p class="pp-clients">France Télévisions &nbsp;·&nbsp; Respiro Productions &nbsp;·&nbsp; Stank Films &nbsp;·&nbsp; Hutong Production &nbsp;·&nbsp; 1001 Films &nbsp;·&nbsp; Le Petit Remorqueur &nbsp;·&nbsp; Vidémo&hellip;</p>
+      </div>
+    </div>`;
+}
+
+function buildAuteurPage(lang) {
+    const en = lang === 'en';
+    const films = [
+        {
+            titre: "J'arrive",
+            meta: en ? 'Short film' : 'Court métrage',
+            desc: en ? '40 festival selections &nbsp;·&nbsp; 20 awards including Clermont-Ferrand and Los Angeles' : '40 sélections festival &nbsp;·&nbsp; 20 prix dont Clermont-Ferrand et Los Angeles'
+        }
+    ];
+    const projets = [
+        {
+            titre: 'Skroll',
+            meta: en ? 'Web series &nbsp;·&nbsp; found-footage archives &nbsp;·&nbsp; In production &nbsp;·&nbsp; Stank Films' : 'Série web &nbsp;·&nbsp; détournement d\'archives &nbsp;·&nbsp; En production &nbsp;·&nbsp; Stank Films'
+        },
+        {
+            titre: 'Madelenou Plouk',
+            meta: en ? 'Short series in Breton &nbsp;·&nbsp; cinematheque archives &nbsp;·&nbsp; Stank &amp; Kalanna' : 'Série courte en breton &nbsp;·&nbsp; archives cinémathèque &nbsp;·&nbsp; Stank &amp; Kalanna'
+        },
+        {
+            titre: 'Des grumeaux dans la pâte à crêpe',
+            meta: en ? 'TV film 52 min &nbsp;·&nbsp; co-written with Christophe Lemoine' : 'Unitaire télé 52 min &nbsp;·&nbsp; co-écrit avec Christophe Lemoine'
+        },
+        {
+            titre: 'Canal 88',
+            meta: en ? 'Series 12×56 &nbsp;·&nbsp; co-written with Anthony Santoro &nbsp;·&nbsp; Option Trajectoire Givrée' : 'Série 12×56 &nbsp;·&nbsp; co-écrit avec Anthony Santoro &nbsp;·&nbsp; option Trajectoire Givrée'
+        },
+        {
+            titre: 'Kapo',
+            meta: en ? 'Feature film &nbsp;·&nbsp; in development' : 'Long métrage &nbsp;·&nbsp; en écriture'
+        },
+        {
+            titre: 'Ordures',
+            meta: en ? 'Feature film &nbsp;·&nbsp; in development' : 'Long métrage &nbsp;·&nbsp; en écriture'
+        }
+    ];
+    const filmHtml = films.map(f => `
+        <div class="auteur-item">
+          <div class="auteur-title">${f.titre}</div>
+          <div class="auteur-meta">${f.meta}</div>
+          ${f.desc ? `<div class="auteur-desc">${f.desc}</div>` : ''}
+        </div>`).join('');
+    const projetHtml = projets.map(p => `
+        <div class="auteur-item">
+          <div class="auteur-title">${p.titre}</div>
+          <div class="auteur-meta">${p.meta}</div>
+        </div>`).join('');
+    return `<div class="page-text">
+      <div class="page-section">
+        <h2>${en ? 'Films' : 'Films'}</h2>
+        ${filmHtml}
+      </div>
+      <div class="page-section">
+        <h2>${en ? 'Projects' : 'Projets'}</h2>
+        ${projetHtml}
+      </div>
+    </div>`;
+}
 
 function buildContactPage(lang) {
     const t  = T[lang];
@@ -1324,8 +1410,10 @@ class Portfolio {
         const container = document.getElementById('galleryContainer');
         container.classList.add('page-mode');
         let html = '';
-        if (id === 'infos')   html = buildInfosPage(this.currentLang);
-        if (id === 'contact') html = buildContactPage(this.currentLang);
+        if (id === 'infos')            html = buildInfosPage(this.currentLang);
+        if (id === 'contact')          html = buildContactPage(this.currentLang);
+        if (id === 'post-production')  html = buildPostProductionPage(this.currentLang);
+        if (id === 'auteur')           html = buildAuteurPage(this.currentLang);
         container.innerHTML = `<div class="page-content">${html}</div>`;
         const counter = document.querySelector('.gallery-counter');
         if (counter) counter.textContent = '';
