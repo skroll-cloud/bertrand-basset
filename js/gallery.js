@@ -143,14 +143,16 @@ const MENU_CONFIG = [
     "name": "POST-PRODUCTION",
     "type": "page",
     "pageId": "post-production",
-    "parent": "group-1773158227466"
+    "parent": "group-1773158227466",
+    "hidden": true
   },
   {
     "id": "auteur",
     "name": "AUTEUR",
     "type": "page",
     "pageId": "auteur",
-    "parent": "group-1773158227466"
+    "parent": "group-1773158227466",
+    "hidden": true
   },
   {
     "id": "item-1773175848292",
