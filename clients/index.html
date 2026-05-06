@@ -3,211 +3,432 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Galeries clients — Bertrand Basset</title>
+  <title>Galeries — Bertrand Basset</title>
   <link rel="icon" type="image/svg+xml" href="../assets/logo-b.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     :root {
-      --font: 'IBM Plex Sans', -apple-system, Arial, sans-serif;
-      --black: #111;
-      --gray: #555;
-      --dim: #999;
-      --line: #e8e8e8;
-      --bg: #f9f9f9;
+      --black:      #0a0a0a;
+      --white:      #fafafa;
+      --gray:       #666;
+      --dim:        #999;
+      --light-gray: #e0e0e0;
+      --font:       'IBM Plex Sans', sans-serif;
     }
+
     html, body {
-      font-family: var(--font); color: var(--black); background: #fff;
-      -webkit-font-smoothing: antialiased; min-height: 100vh;
+      font-family: var(--font);
+      font-weight: 300;
+      background: var(--white);
+      color: var(--black);
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
     }
     a { color: inherit; text-decoration: none; }
+    button { font-family: var(--font); cursor: pointer; border: none; background: none; }
 
     /* ── HEADER ── */
-    header {
+    .site-header {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 1.4rem 2.5rem;
-      border-bottom: 1px solid var(--line);
+      padding: 1.2rem 2.5rem;
+      border-bottom: 1px solid var(--light-gray);
     }
-    .header-brand { display: flex; align-items: center; gap: 0.6rem; }
-    .header-brand img { width: 18px; height: 18px; opacity: 0.5; }
-    .header-brand span {
-      font-size: 0.58rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim);
+    .site-brand { display: flex; align-items: center; gap: 0.55rem; }
+    .site-brand img { width: 16px; height: 16px; opacity: 0.5; }
+    .site-brand-name {
+      font-size: 0.55rem; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--dim);
     }
-    .header-back {
-      font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase;
-      color: var(--dim); transition: color 0.15s;
+    .site-back {
+      font-size: 0.55rem; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--dim);
+      transition: color 0.15s;
     }
-    .header-back:hover { color: var(--black); }
+    .site-back:hover { color: var(--black); }
 
-    /* ── HERO ── */
-    .page-hero {
-      padding: 3rem 2.5rem 2.5rem;
-      border-bottom: 1px solid var(--line);
-      max-width: 900px;
+    /* ── INTRO ── */
+    .page-intro {
+      padding: 2.5rem 2.5rem 2rem;
+      border-bottom: 1px solid var(--light-gray);
     }
     .page-kicker {
-      font-size: 0.52rem; letter-spacing: 0.22em; text-transform: uppercase;
-      color: var(--dim); margin-bottom: 0.6rem;
+      font-size: 0.5rem; letter-spacing: 0.22em;
+      text-transform: uppercase; color: var(--dim); margin-bottom: 0.5rem;
     }
     .page-titre {
-      font-size: clamp(1.6rem, 3vw, 2.2rem);
-      font-weight: 300; letter-spacing: -0.02em; color: var(--black);
+      font-size: clamp(1.4rem, 2.5vw, 2rem);
+      font-weight: 300; letter-spacing: -0.02em;
+    }
+    .page-desc {
+      margin-top: 0.6rem;
+      font-size: 0.72rem; font-weight: 300;
+      color: var(--gray); line-height: 1.7;
+      max-width: 480px;
     }
 
     /* ── GRILLE ── */
-    .grille {
+    .galeries-grille {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      border-left: 1px solid var(--line);
     }
 
-    .galerie-card {
-      border-right: 1px solid var(--line);
-      border-bottom: 1px solid var(--line);
-      display: block;
-      cursor: pointer;
-      transition: background 0.2s;
+    /* ── CARTE ── */
+    .galerie-carte {
+      border-right: 1px solid var(--light-gray);
+      border-bottom: 1px solid var(--light-gray);
     }
-    .galerie-card:hover { background: var(--bg); }
+    .galerie-carte:nth-child(3n+1) { border-left: 1px solid var(--light-gray); }
 
-    .galerie-card-img {
+    .carte-visuel {
       position: relative;
       aspect-ratio: 2/3;
       overflow: hidden;
-      background: var(--bg);
+      background: #efefef;
+      display: block;
     }
-    .galerie-card-img img {
+    .carte-visuel img {
       width: 100%; height: 100%;
       object-fit: cover; display: block;
-      transition: transform 0.5s ease, filter 0.3s;
-      filter: grayscale(8%);
+      transition: transform 0.5s ease;
     }
-    .galerie-card:hover .galerie-card-img img {
-      transform: scale(1.03);
-      filter: grayscale(0%);
-    }
-    .galerie-card-overlay {
+    .galerie-carte:hover .carte-visuel img { transform: scale(1.03); }
+
+    .carte-overlay {
       position: absolute; inset: 0;
       display: flex; align-items: center; justify-content: center;
-      background: rgba(255,255,255,0);
-      transition: background 0.3s;
-    }
-    .galerie-card:hover .galerie-card-overlay {
-      background: rgba(255,255,255,0.12);
-    }
-    .lock-icon {
-      width: 34px; height: 34px; border-radius: 50%;
-      border: 1.5px solid rgba(17,17,17,0.4);
-      background: rgba(255,255,255,0.85);
-      display: flex; align-items: center; justify-content: center;
       opacity: 0; transition: opacity 0.25s;
+      background: rgba(10,10,10,0.08);
     }
-    .galerie-card:hover .lock-icon { opacity: 1; }
-    .lock-icon svg {
-      width: 13px; height: 13px;
+    .galerie-carte:hover .carte-overlay { opacity: 1; }
+
+    .carte-lock {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: rgba(250,250,250,0.92);
+      border: 1px solid rgba(10,10,10,0.15);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .carte-lock svg {
+      width: 12px; height: 12px;
       fill: none; stroke: var(--black); stroke-width: 2;
       stroke-linecap: round; stroke-linejoin: round;
     }
 
-    .galerie-card-info {
-      padding: 1rem 1.2rem 1.3rem;
-      border-top: 1px solid var(--line);
+    .carte-infos {
+      padding: 0.9rem 1.1rem 1rem;
+      border-top: 1px solid var(--light-gray);
     }
-    .galerie-card-titre {
+    .carte-titre {
       font-size: 0.82rem; font-weight: 400;
-      color: var(--black); margin-bottom: 0.3rem;
+      letter-spacing: 0.01em; margin-bottom: 0.5rem;
     }
-    .galerie-card-meta {
-      font-size: 0.6rem; font-weight: 300; color: var(--dim);
-      display: flex; align-items: center; gap: 0.4rem;
-      letter-spacing: 0.04em;
-    }
-    .galerie-card-meta svg {
-      width: 9px; height: 9px;
-      fill: none; stroke: var(--dim); stroke-width: 2;
-      stroke-linecap: round; stroke-linejoin: round;
-      flex-shrink: 0;
-    }
+    .carte-actions { display: flex; align-items: center; gap: 1rem; }
 
-    /* Slots vides */
-    .galerie-slot {
-      border-right: 1px solid var(--line);
-      border-bottom: 1px solid var(--line);
-      aspect-ratio: 2/3;
-      background: var(--bg);
+    .btn-acceder {
+      font-size: 0.58rem; font-weight: 500;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--black);
+      padding: 0.45rem 0.9rem;
+      border: 1px solid var(--black);
+      transition: background 0.15s, color 0.15s;
     }
+    .btn-acceder:hover { background: var(--black); color: var(--white); }
+
+    .btn-demander {
+      font-size: 0.58rem; font-weight: 300;
+      letter-spacing: 0.08em; color: var(--dim);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      text-decoration-color: var(--light-gray);
+      transition: color 0.15s;
+    }
+    .btn-demander:hover { color: var(--black); }
+
+    /* Slot vide */
+    .galerie-slot {
+      border-right: 1px solid var(--light-gray);
+      border-bottom: 1px solid var(--light-gray);
+      aspect-ratio: 2/3;
+      background: #f3f3f3;
+    }
+    .galerie-slot:nth-child(3n+1) { border-left: 1px solid var(--light-gray); }
 
     /* ── FOOTER ── */
-    footer {
-      padding: 1.8rem 2.5rem;
-      border-top: 1px solid var(--line);
+    .site-footer {
+      padding: 1.6rem 2.5rem;
+      border-top: 1px solid var(--light-gray);
       display: flex; align-items: center; justify-content: space-between;
     }
-    .footer-brand {
-      font-size: 0.55rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim);
-    }
-    .footer-note {
-      font-size: 0.55rem; color: var(--dim); letter-spacing: 0.04em;
+    .site-footer span {
+      font-size: 0.52rem; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--dim);
     }
 
+    /* ── MODAL ── */
+    .modal-bg {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(10,10,10,0.45);
+      display: none; align-items: center; justify-content: center;
+      padding: 1.5rem;
+    }
+    .modal-bg.open { display: flex; }
+
+    .modal {
+      background: var(--white);
+      width: 100%; max-width: 420px;
+      padding: 2rem 2rem 1.8rem;
+      box-shadow: 0 4px 40px rgba(0,0,0,0.12);
+    }
+    .modal-head {
+      display: flex; align-items: flex-start;
+      justify-content: space-between; margin-bottom: 1.4rem;
+    }
+    .modal-titre {
+      font-size: 1.1rem; font-weight: 300; letter-spacing: -0.01em;
+    }
+    .modal-sous {
+      font-size: 0.65rem; font-weight: 300;
+      color: var(--gray); margin-top: 0.3rem; line-height: 1.6;
+    }
+    .modal-close {
+      font-size: 1.1rem; color: var(--dim); line-height: 1;
+      flex-shrink: 0; margin-left: 1rem; padding: 0.1rem;
+      transition: color 0.15s;
+    }
+    .modal-close:hover { color: var(--black); }
+
+    .modal-form { display: flex; flex-direction: column; gap: 0.9rem; }
+    .modal-field { display: flex; flex-direction: column; gap: 0.35rem; }
+    .modal-label {
+      font-size: 0.5rem; font-weight: 500;
+      letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim);
+    }
+    .modal-input, .modal-textarea {
+      font-family: var(--font); font-size: 0.8rem; font-weight: 300;
+      padding: 0.7rem 0.85rem;
+      border: 1px solid var(--light-gray);
+      background: #fff; color: var(--black);
+      outline: none; border-radius: 0;
+      transition: border-color 0.2s;
+    }
+    .modal-input:focus, .modal-textarea:focus {
+      border-color: var(--black);
+    }
+    .modal-textarea { resize: vertical; min-height: 80px; }
+
+    .modal-galerie-tag {
+      font-size: 0.65rem; font-weight: 300; color: var(--gray);
+      padding: 0.5rem 0.85rem;
+      background: #f3f3f3; border: 1px solid var(--light-gray);
+    }
+
+    .modal-submit {
+      margin-top: 0.3rem;
+      padding: 0.8rem 1.5rem;
+      background: var(--black); color: var(--white);
+      font-family: var(--font); font-size: 0.6rem; font-weight: 500;
+      letter-spacing: 0.16em; text-transform: uppercase;
+      transition: opacity 0.2s; align-self: flex-start;
+    }
+    .modal-submit:hover { opacity: 0.8; }
+
+    .modal-note {
+      font-size: 0.58rem; font-weight: 300;
+      color: var(--dim); line-height: 1.6;
+    }
+
+    /* ── CONFIRM ── */
+    .modal-confirm {
+      display: none; flex-direction: column;
+      align-items: center; text-align: center; gap: 0.8rem;
+      padding: 1rem 0;
+    }
+    .modal-confirm.open { display: flex; }
+    .confirm-check {
+      width: 40px; height: 40px; border-radius: 50%;
+      border: 1.5px solid var(--black);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .confirm-check svg {
+      width: 16px; height: 16px; fill: none;
+      stroke: var(--black); stroke-width: 2;
+      stroke-linecap: round; stroke-linejoin: round;
+    }
+    .confirm-titre { font-size: 1rem; font-weight: 300; }
+    .confirm-msg { font-size: 0.68rem; font-weight: 300; color: var(--gray); line-height: 1.7; }
+
+    /* ── RESPONSIVE ── */
     @media (max-width: 768px) {
-      header { padding: 1rem 1.2rem; }
-      .page-hero { padding: 2rem 1.2rem 1.5rem; }
-      .grille { grid-template-columns: repeat(2, 1fr); }
-      footer { padding: 1.4rem 1.2rem; flex-direction: column; gap: 0.4rem; }
+      .site-header { padding: 1rem 1.2rem; }
+      .page-intro { padding: 1.8rem 1.2rem 1.4rem; }
+      .galeries-grille { grid-template-columns: repeat(2, 1fr); }
+      .galerie-carte:nth-child(3n+1) { border-left: none; }
+      .galerie-carte:nth-child(2n+1) { border-left: 1px solid var(--light-gray); }
+      .galerie-slot:nth-child(3n+1) { border-left: none; }
+      .galerie-slot:nth-child(2n+1) { border-left: 1px solid var(--light-gray); }
+      .site-footer { padding: 1.2rem; flex-direction: column; gap: 0.4rem; }
     }
     @media (max-width: 480px) {
-      .grille { grid-template-columns: 1fr; }
+      .galeries-grille { grid-template-columns: 1fr; }
+      .galerie-carte, .galerie-slot { border-left: 1px solid var(--light-gray) !important; }
     }
   </style>
 </head>
 <body>
 
-<header>
-  <div class="header-brand">
+<!-- ── HEADER ── -->
+<header class="site-header">
+  <div class="site-brand">
     <img src="../assets/logo-b.svg" alt="B">
-    <span>Bertrand Basset</span>
+    <span class="site-brand-name">Bertrand Basset</span>
   </div>
-  <a href="../index.html" class="header-back">← Portfolio</a>
+  <a href="../index.html" class="site-back">← Portfolio</a>
 </header>
 
-<div class="page-hero">
-  <p class="page-kicker">Accès client · Galeries de sélection</p>
-  <h1 class="page-titre">Vos photos</h1>
+<!-- ── INTRO ── -->
+<div class="page-intro">
+  <p class="page-kicker">Accès client</p>
+  <h1 class="page-titre">Galeries</h1>
+  <p class="page-desc">Vos photos de séance, organisées par série. Chaque galerie est protégée par un code personnel transmis par email.</p>
 </div>
 
-<div class="grille">
+<!-- ── GRILLE ── -->
+<div class="galeries-grille">
 
   <!-- Plougasnou -->
-  <a href="plougasnou.html" class="galerie-card">
-    <div class="galerie-card-img">
+  <div class="galerie-carte">
+    <a href="plougasnou.html" class="carte-visuel">
       <img src="plougasnou/Ricardo_Conversation/StudioB.AntoineAsnar%202.jpg" alt="Série Plougasnou">
-      <div class="galerie-card-overlay">
-        <div class="lock-icon">
+      <div class="carte-overlay">
+        <div class="carte-lock">
           <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
         </div>
       </div>
-    </div>
-    <div class="galerie-card-info">
-      <div class="galerie-card-titre">Série Plougasnou</div>
-      <div class="galerie-card-meta">
-        <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-        Accès protégé · Sélection
+    </a>
+    <div class="carte-infos">
+      <div class="carte-titre">Série Plougasnou</div>
+      <div class="carte-actions">
+        <a href="plougasnou.html" class="btn-acceder">Accéder</a>
+        <button class="btn-demander" onclick="openModal('Série Plougasnou')">Demander le code</button>
       </div>
     </div>
-  </a>
+  </div>
 
-  <!-- Slots disponibles -->
+  <!-- Slots -->
   <div class="galerie-slot"></div>
   <div class="galerie-slot"></div>
 
 </div>
 
-<footer>
-  <span class="footer-brand">Bertrand Basset · Studio</span>
-  <span class="footer-note">Galeries réservées aux clients</span>
+<!-- ── FOOTER ── -->
+<footer class="site-footer">
+  <span>Bertrand Basset · Studio</span>
+  <span>Galeries réservées aux clients</span>
 </footer>
 
+<!-- ── MODAL ── -->
+<div class="modal-bg" id="modalBg" onclick="bgClick(event)">
+  <div class="modal">
+
+    <div id="modalForm">
+      <div class="modal-head">
+        <div>
+          <div class="modal-titre">Demander l'accès</div>
+          <div class="modal-sous">Bertrand Basset vous enverra le code dans les 24h.</div>
+        </div>
+        <button class="modal-close" onclick="closeModal()">×</button>
+      </div>
+
+      <div class="modal-form">
+        <div class="modal-field">
+          <label class="modal-label">Galerie demandée</label>
+          <div class="modal-galerie-tag" id="modalGalerie"></div>
+        </div>
+        <div class="modal-field">
+          <label class="modal-label">Votre prénom et nom</label>
+          <input type="text" class="modal-input" id="modalNom" placeholder="Marie Dupont">
+        </div>
+        <div class="modal-field">
+          <label class="modal-label">Votre email</label>
+          <input type="email" class="modal-input" id="modalEmail" placeholder="vous@email.com">
+        </div>
+        <div class="modal-field">
+          <label class="modal-label">Message (facultatif)</label>
+          <textarea class="modal-textarea" id="modalMsg" placeholder="Quelques mots sur votre séance…"></textarea>
+        </div>
+        <button class="modal-submit" onclick="envoyer()">Envoyer la demande →</button>
+        <p class="modal-note">Votre demande est envoyée directement à Bertrand Basset par email.</p>
+      </div>
+    </div>
+
+    <div class="modal-confirm" id="modalConfirm">
+      <div class="confirm-check">
+        <svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>
+      </div>
+      <div class="confirm-titre">Demande envoyée</div>
+      <p class="confirm-msg">Bertrand Basset a reçu votre demande.<br>Vous recevrez le code d'accès sous 24h.</p>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  let galerieActive = '';
+
+  function openModal(galerie) {
+    galerieActive = galerie;
+    document.getElementById('modalGalerie').textContent = galerie;
+    document.getElementById('modalForm').style.display = '';
+    document.getElementById('modalConfirm').classList.remove('open');
+    document.getElementById('modalNom').value = '';
+    document.getElementById('modalEmail').value = '';
+    document.getElementById('modalMsg').value = '';
+    document.getElementById('modalBg').classList.add('open');
+    document.addEventListener('keydown', escHandler);
+  }
+
+  function closeModal() {
+    document.getElementById('modalBg').classList.remove('open');
+    document.removeEventListener('keydown', escHandler);
+  }
+
+  function bgClick(e) {
+    if (e.target === document.getElementById('modalBg')) closeModal();
+  }
+
+  function escHandler(e) { if (e.key === 'Escape') closeModal(); }
+
+  function envoyer() {
+    const nom   = document.getElementById('modalNom').value.trim();
+    const email = document.getElementById('modalEmail').value.trim();
+    const msg   = document.getElementById('modalMsg').value.trim();
+
+    if (!nom || !email) {
+      if (!nom)   document.getElementById('modalNom').focus();
+      else        document.getElementById('modalEmail').focus();
+      return;
+    }
+
+    const subject = `Demande d'accès galerie — ${galerieActive}`;
+    const body = [
+      `Demande d'accès à la galerie : ${galerieActive}`,
+      ``,
+      `Nom : ${nom}`,
+      `Email : ${email}`,
+      msg ? `\nMessage : ${msg}` : '',
+      ``,
+      `— Envoyé depuis bertrandbasset.com/clients`
+    ].join('\n');
+
+    window.location.href = `mailto:yellowshoesstudio@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+    setTimeout(() => {
+      document.getElementById('modalForm').style.display = 'none';
+      document.getElementById('modalConfirm').classList.add('open');
+    }, 600);
+  }
+</script>
 </body>
 </html>
