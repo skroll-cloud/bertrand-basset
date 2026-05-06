@@ -10,18 +10,16 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --noir: #111;
-      --blanc: #fff;
-      --gris: #888;
-      --ligne: rgba(255,255,255,0.08);
-      --font: 'IBM Plex Sans', system-ui, sans-serif;
+      --font: 'IBM Plex Sans', -apple-system, Arial, sans-serif;
+      --black: #111;
+      --gray: #555;
+      --dim: #999;
+      --line: #e8e8e8;
+      --bg: #f9f9f9;
     }
     html, body {
-      font-family: var(--font);
-      background: var(--noir);
-      color: var(--blanc);
-      min-height: 100vh;
-      -webkit-font-smoothing: antialiased;
+      font-family: var(--font); color: var(--black); background: #fff;
+      -webkit-font-smoothing: antialiased; min-height: 100vh;
     }
     a { color: inherit; text-decoration: none; }
 
@@ -29,125 +27,135 @@
     header {
       display: flex; align-items: center; justify-content: space-between;
       padding: 1.4rem 2.5rem;
-      border-bottom: 1px solid var(--ligne);
+      border-bottom: 1px solid var(--line);
     }
-    .header-brand {
-      display: flex; align-items: center; gap: 0.6rem;
-    }
-    .header-brand img { width: 18px; height: 18px; opacity: 0.6; }
+    .header-brand { display: flex; align-items: center; gap: 0.6rem; }
+    .header-brand img { width: 18px; height: 18px; opacity: 0.5; }
     .header-brand span {
-      font-size: 0.58rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gris);
+      font-size: 0.58rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim);
     }
     .header-back {
       font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase;
-      color: var(--gris); transition: color 0.15s;
+      color: var(--dim); transition: color 0.15s;
     }
-    .header-back:hover { color: var(--blanc); }
+    .header-back:hover { color: var(--black); }
 
     /* ── HERO ── */
     .page-hero {
-      padding: 3rem 2.5rem 2rem;
-      border-bottom: 1px solid var(--ligne);
+      padding: 3rem 2.5rem 2.5rem;
+      border-bottom: 1px solid var(--line);
+      max-width: 900px;
     }
     .page-kicker {
       font-size: 0.52rem; letter-spacing: 0.22em; text-transform: uppercase;
-      color: var(--gris); margin-bottom: 0.6rem;
+      color: var(--dim); margin-bottom: 0.6rem;
     }
     .page-titre {
-      font-size: clamp(1.6rem, 3vw, 2.4rem);
-      font-weight: 300; letter-spacing: -0.02em;
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 300; letter-spacing: -0.02em; color: var(--black);
     }
 
     /* ── GRILLE ── */
     .grille {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 1px;
-      background: var(--ligne);
-      margin: 0;
+      border-left: 1px solid var(--line);
     }
 
     .galerie-card {
-      position: relative;
-      background: var(--noir);
-      cursor: pointer;
-      overflow: hidden;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
       display: block;
+      cursor: pointer;
+      transition: background 0.2s;
     }
+    .galerie-card:hover { background: var(--bg); }
+
     .galerie-card-img {
       position: relative;
       aspect-ratio: 2/3;
       overflow: hidden;
+      background: var(--bg);
     }
     .galerie-card-img img {
       width: 100%; height: 100%;
       object-fit: cover; display: block;
-      transition: transform 0.5s ease;
-      filter: brightness(0.88);
+      transition: transform 0.5s ease, filter 0.3s;
+      filter: grayscale(8%);
     }
     .galerie-card:hover .galerie-card-img img {
-      transform: scale(1.04);
-      filter: brightness(0.75);
+      transform: scale(1.03);
+      filter: grayscale(0%);
     }
     .galerie-card-overlay {
       position: absolute; inset: 0;
       display: flex; align-items: center; justify-content: center;
-      opacity: 0; transition: opacity 0.3s;
+      background: rgba(255,255,255,0);
+      transition: background 0.3s;
     }
-    .galerie-card:hover .galerie-card-overlay { opacity: 1; }
+    .galerie-card:hover .galerie-card-overlay {
+      background: rgba(255,255,255,0.12);
+    }
     .lock-icon {
-      width: 36px; height: 36px;
-      border: 1.5px solid rgba(255,255,255,0.7); border-radius: 50%;
+      width: 34px; height: 34px; border-radius: 50%;
+      border: 1.5px solid rgba(17,17,17,0.4);
+      background: rgba(255,255,255,0.85);
       display: flex; align-items: center; justify-content: center;
-      background: rgba(0,0,0,0.3);
+      opacity: 0; transition: opacity 0.25s;
     }
+    .galerie-card:hover .lock-icon { opacity: 1; }
     .lock-icon svg {
-      width: 14px; height: 14px;
-      fill: none; stroke: #fff; stroke-width: 2;
+      width: 13px; height: 13px;
+      fill: none; stroke: var(--black); stroke-width: 2;
       stroke-linecap: round; stroke-linejoin: round;
     }
 
     .galerie-card-info {
-      padding: 1rem 1.2rem 1.4rem;
+      padding: 1rem 1.2rem 1.3rem;
+      border-top: 1px solid var(--line);
     }
     .galerie-card-titre {
-      font-size: 0.88rem; font-weight: 400; margin-bottom: 0.3rem;
+      font-size: 0.82rem; font-weight: 400;
+      color: var(--black); margin-bottom: 0.3rem;
     }
     .galerie-card-meta {
-      font-size: 0.62rem; font-weight: 300; color: var(--gris);
-      display: flex; align-items: center; gap: 0.5rem;
+      font-size: 0.6rem; font-weight: 300; color: var(--dim);
+      display: flex; align-items: center; gap: 0.4rem;
+      letter-spacing: 0.04em;
     }
     .galerie-card-meta svg {
-      width: 10px; height: 10px;
-      fill: none; stroke: var(--gris); stroke-width: 2;
+      width: 9px; height: 9px;
+      fill: none; stroke: var(--dim); stroke-width: 2;
       stroke-linecap: round; stroke-linejoin: round;
       flex-shrink: 0;
     }
 
-    /* ── EMPTY SLOTS ── */
-    .galerie-placeholder {
-      background: #0d0d0d;
+    /* Slots vides */
+    .galerie-slot {
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
       aspect-ratio: 2/3;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .galerie-placeholder-inner {
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      padding: 2rem; height: 100%;
+      background: var(--bg);
     }
 
     /* ── FOOTER ── */
     footer {
-      padding: 2rem 2.5rem;
-      border-top: 1px solid var(--ligne);
-      font-size: 0.58rem; color: var(--gris); letter-spacing: 0.06em;
+      padding: 1.8rem 2.5rem;
+      border-top: 1px solid var(--line);
       display: flex; align-items: center; justify-content: space-between;
+    }
+    .footer-brand {
+      font-size: 0.55rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim);
+    }
+    .footer-note {
+      font-size: 0.55rem; color: var(--dim); letter-spacing: 0.04em;
     }
 
     @media (max-width: 768px) {
       header { padding: 1rem 1.2rem; }
       .page-hero { padding: 2rem 1.2rem 1.5rem; }
       .grille { grid-template-columns: repeat(2, 1fr); }
-      footer { padding: 1.5rem 1.2rem; flex-direction: column; gap: 0.5rem; }
+      footer { padding: 1.4rem 1.2rem; flex-direction: column; gap: 0.4rem; }
     }
     @media (max-width: 480px) {
       .grille { grid-template-columns: 1fr; }
@@ -165,8 +173,8 @@
 </header>
 
 <div class="page-hero">
-  <p class="page-kicker">Accès client</p>
-  <h1 class="page-titre">Galeries de sélection</h1>
+  <p class="page-kicker">Accès client · Galeries de sélection</p>
+  <h1 class="page-titre">Vos photos</h1>
 </div>
 
 <div class="grille">
@@ -174,9 +182,7 @@
   <!-- Plougasnou -->
   <a href="plougasnou.html" class="galerie-card">
     <div class="galerie-card-img">
-      <img
-        src="plougasnou/Ricardo_Conversation/StudioB.AntoineAsnar%202.jpg"
-        alt="Série Plougasnou">
+      <img src="plougasnou/Ricardo_Conversation/StudioB.AntoineAsnar%202.jpg" alt="Série Plougasnou">
       <div class="galerie-card-overlay">
         <div class="lock-icon">
           <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
@@ -193,14 +199,14 @@
   </a>
 
   <!-- Slots disponibles -->
-  <div class="galerie-placeholder"></div>
-  <div class="galerie-placeholder"></div>
+  <div class="galerie-slot"></div>
+  <div class="galerie-slot"></div>
 
 </div>
 
 <footer>
-  <span>Bertrand Basset · Studio</span>
-  <span>Galeries réservées aux clients</span>
+  <span class="footer-brand">Bertrand Basset · Studio</span>
+  <span class="footer-note">Galeries réservées aux clients</span>
 </footer>
 
 </body>
