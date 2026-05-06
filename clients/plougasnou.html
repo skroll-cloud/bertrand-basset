@@ -189,38 +189,82 @@
     /* ── LIGHTBOX ── */
     #lightbox {
       position: fixed; inset: 0; z-index: 300;
-      background: rgba(0,0,0,0.95); display: none;
-      align-items: center; justify-content: center;
+      background: #000; display: none;
+      flex-direction: column; align-items: center; justify-content: center;
     }
     #lightbox.open { display: flex; }
-    .lb-img { max-width: 92vw; max-height: 90vh; object-fit: contain; display: block; }
+
+    /* image zone */
+    .lb-stage {
+      flex: 1; width: 100%;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden; position: relative;
+    }
+    .lb-img {
+      max-width: 100%; max-height: 100%;
+      width: auto; height: auto;
+      object-fit: contain; display: block;
+      user-select: none; -webkit-user-drag: none;
+    }
+
+    /* top bar */
+    .lb-topbar {
+      width: 100%; display: flex; align-items: center; justify-content: space-between;
+      padding: 0.75rem 1.2rem;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, transparent 100%);
+      position: absolute; top: 0; left: 0; z-index: 10;
+    }
+    .lb-title {
+      font-size: 0.65rem; font-weight: 300; letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.6);
+    }
+    .lb-topbar-right { display: flex; align-items: center; gap: 0.8rem; }
+    .lb-fs-btn {
+      background: none; border: none; color: rgba(255,255,255,0.5); cursor: pointer;
+      padding: 0.3rem; transition: color 0.15s; line-height: 0;
+    }
+    .lb-fs-btn:hover { color: #fff; }
+    .lb-fs-btn svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
     .lb-close {
-      position: absolute; top: 1rem; right: 1.5rem;
       background: none; border: none; color: rgba(255,255,255,0.5);
-      font-size: 1.8rem; cursor: pointer; font-family: var(--font); line-height: 1;
-      transition: color 0.15s;
+      font-size: 1.6rem; cursor: pointer; font-family: var(--font); line-height: 1;
+      transition: color 0.15s; padding: 0.1rem;
     }
     .lb-close:hover { color: #fff; }
+
+    /* nav arrows */
     .lb-nav {
       position: absolute; top: 50%; transform: translateY(-50%);
-      background: rgba(255,255,255,0.08); border: none; color: rgba(255,255,255,0.6);
-      font-size: 1.4rem; cursor: pointer; padding: 1rem 0.8rem; font-family: var(--font);
-      transition: background 0.15s; line-height: 1;
+      background: rgba(255,255,255,0.07); border: none; color: rgba(255,255,255,0.55);
+      font-size: 1.6rem; cursor: pointer; padding: 1.2rem 0.9rem; font-family: var(--font);
+      transition: background 0.15s, color 0.15s; line-height: 1; z-index: 10;
     }
-    .lb-nav:hover { background: rgba(255,255,255,0.16); color: #fff; }
-    .lb-prev { left: 0.5rem; }
-    .lb-next { right: 0.5rem; }
+    .lb-nav:hover { background: rgba(255,255,255,0.18); color: #fff; }
+    .lb-prev { left: 0; border-radius: 0 3px 3px 0; }
+    .lb-next { right: 0; border-radius: 3px 0 0 3px; }
+
+    /* bottom bar */
+    .lb-bottombar {
+      width: 100%; display: flex; align-items: center; justify-content: space-between;
+      padding: 0.75rem 1.5rem;
+      background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%);
+      position: absolute; bottom: 0; left: 0; z-index: 10;
+      gap: 1rem;
+    }
+    .lb-counter {
+      font-size: 0.62rem; color: rgba(255,255,255,0.35); letter-spacing: 0.06em; flex-shrink: 0;
+    }
     .lb-sel-btn {
-      position: absolute; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
-      padding: 0.65rem 1.8rem; font-family: var(--font);
+      padding: 0.6rem 1.8rem; font-family: var(--font);
       font-size: 0.62rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase;
       border: 1px solid rgba(255,255,255,0.3); background: transparent; color: #fff;
-      cursor: pointer; transition: all 0.2s;
+      cursor: pointer; transition: all 0.2s; flex-shrink: 0;
     }
-    .lb-sel-btn:hover, .lb-sel-btn.selected { background: var(--ocre); border-color: var(--ocre); color: var(--noir); }
-    .lb-counter {
-      position: absolute; bottom: 1.5rem; right: 1.5rem;
-      font-size: 0.6rem; color: rgba(255,255,255,0.35); letter-spacing: 0.06em;
+    .lb-sel-btn:hover { background: rgba(255,255,255,0.1); }
+    .lb-sel-btn.selected { background: var(--ocre); border-color: var(--ocre); color: var(--noir); }
+    .lb-hint {
+      font-size: 0.55rem; color: rgba(255,255,255,0.2);
+      letter-spacing: 0.06em; text-align: center; flex: 1;
     }
 
     /* ── SUCCESS ── */
@@ -304,13 +348,31 @@
 </div>
 
 <!-- ── LIGHTBOX ── -->
-<div id="lightbox" onclick="lbBgClick(event)">
-  <button class="lb-close" onclick="closeLb()">×</button>
-  <button class="lb-nav lb-prev" onclick="lbNav(-1)">‹</button>
-  <img class="lb-img" id="lbImg" src="" alt="">
-  <button class="lb-nav lb-next" onclick="lbNav(1)">›</button>
-  <button class="lb-sel-btn" id="lbSelBtn" onclick="lbToggleSel()">Sélectionner</button>
-  <span class="lb-counter" id="lbCounter"></span>
+<div id="lightbox">
+  <!-- top bar -->
+  <div class="lb-topbar">
+    <span class="lb-title" id="lbTitle"></span>
+    <div class="lb-topbar-right">
+      <button class="lb-fs-btn" id="lbFsBtn" onclick="lbToggleFs()" title="Plein écran">
+        <svg id="lbFsIcon" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+      </button>
+      <button class="lb-close" onclick="closeLb()">×</button>
+    </div>
+  </div>
+
+  <!-- image -->
+  <div class="lb-stage" id="lbStage">
+    <button class="lb-nav lb-prev" onclick="lbNav(-1)">‹</button>
+    <img class="lb-img" id="lbImg" src="" alt="">
+    <button class="lb-nav lb-next" onclick="lbNav(1)">›</button>
+  </div>
+
+  <!-- bottom bar -->
+  <div class="lb-bottombar">
+    <span class="lb-counter" id="lbCounter"></span>
+    <button class="lb-sel-btn" id="lbSelBtn" onclick="lbToggleSel()">Sélectionner</button>
+    <span class="lb-hint">← → naviguer &nbsp;·&nbsp; S sélectionner &nbsp;·&nbsp; Esc fermer</span>
+  </div>
 </div>
 
 <!-- ── SUCCESS ── -->
@@ -425,11 +487,7 @@ function buildGallery() {
           </div>
           <span class="photo-num">${photoLabel(file)}</span>
         </div>`;
-      item.addEventListener('click', (e) => {
-        if (e.target.closest('.photo-num')) { openLb(flat); return; }
-        togglePhoto(id, item);
-      });
-      item.addEventListener('dblclick', () => openLb(flat));
+      item.addEventListener('click', () => openLb(flat));
       grid.appendChild(item);
     });
   });
@@ -482,30 +540,41 @@ function openLb(flatIdx) {
   document.getElementById('lightbox').classList.add('open');
   document.addEventListener('keydown', lbKeydown);
 }
+
 function closeLb() {
   document.getElementById('lightbox').classList.remove('open');
   document.removeEventListener('keydown', lbKeydown);
+  if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
 }
-function lbBgClick(e) { if (e.target === document.getElementById('lightbox')) closeLb(); }
+
 function lbKeydown(e) {
-  if (e.key === 'ArrowLeft') lbNav(-1);
+  if (e.key === 'ArrowLeft')  lbNav(-1);
   else if (e.key === 'ArrowRight') lbNav(1);
-  else if (e.key === 'Escape') closeLb();
+  else if (e.key === 'Escape')     closeLb();
+  else if (e.key === 's' || e.key === 'S') lbToggleSel();
 }
+
 function lbNav(dir) {
   lbPhoto = (lbPhoto + dir + allPhotos.length) % allPhotos.length;
   renderLb();
 }
+
 function renderLb() {
   const p = allPhotos[lbPhoto];
+  const sec = SECTIONS[p.si];
   const src = `${BASE}${encodeFolder(p.sid)}/${encodeFile(p.file)}`;
   document.getElementById('lbImg').src = src;
+  document.getElementById('lbImg').alt = photoLabel(p.file);
+  document.getElementById('lbTitle').textContent =
+    `${sec.nom}${sec.titre ? ' — ' + sec.titre : ''}`;
   document.getElementById('lbCounter').textContent = `${lbPhoto + 1} / ${allPhotos.length}`;
   const id = photoId(p.sid, p.file);
   const btn = document.getElementById('lbSelBtn');
   btn.textContent = selected.has(id) ? 'Désélectionner' : 'Sélectionner';
   btn.classList.toggle('selected', selected.has(id));
+  updateFsIcon();
 }
+
 function lbToggleSel() {
   const p = allPhotos[lbPhoto];
   const id = photoId(p.sid, p.file);
@@ -513,6 +582,28 @@ function lbToggleSel() {
   togglePhoto(id, el);
   renderLb();
 }
+
+/* ── FULLSCREEN ── */
+function lbToggleFs() {
+  const lb = document.getElementById('lightbox');
+  if (!document.fullscreenElement) {
+    lb.requestFullscreen().catch(err => console.warn('Fullscreen refused:', err));
+  } else {
+    document.exitFullscreen();
+  }
+}
+
+function updateFsIcon() {
+  const icon = document.getElementById('lbFsIcon');
+  if (document.fullscreenElement) {
+    // minimize icon
+    icon.innerHTML = '<path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/>';
+  } else {
+    // maximize icon
+    icon.innerHTML = '<path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>';
+  }
+}
+document.addEventListener('fullscreenchange', updateFsIcon);
 
 /* ── PANEL ── */
 function openPanel() {
