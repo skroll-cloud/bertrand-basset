@@ -162,6 +162,12 @@ const MENU_CONFIG = [
     "hidden": true
   },
   {
+    "id": "galeries",
+    "name": "GALERIES",
+    "type": "link",
+    "url": "clients/index.html"
+  },
+  {
     "id": "infos",
     "name": "INFOS",
     "type": "page",

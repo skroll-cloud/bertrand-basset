@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plougasnou — Sélection · Bertrand Basset</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/logo-b.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --noir: #111;
+      --blanc: #fff;
+      --creme: #f7f6f4;
+      --gris: #888;
+      --ligne: #e0e0e0;
+      --ocre: #c8913a;
+      --font: 'IBM Plex Sans', system-ui, sans-serif;
+    }
+    html, body { font-family: var(--font); background: var(--noir); color: var(--blanc); min-height: 100vh; -webkit-font-smoothing: antialiased; }
+
+    /* ── GATE ── */
+    #gate {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 2rem; padding: 2rem;
+    }
+    .gate-logo { font-size: 0.55rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gris); }
+    .gate-titre { font-size: clamp(2rem, 6vw, 3.5rem); font-weight: 300; letter-spacing: -0.02em; }
+    .gate-sous { font-size: 0.72rem; font-weight: 300; color: var(--gris); }
+    .gate-form { display: flex; flex-direction: column; align-items: center; gap: 0.8rem; width: 100%; max-width: 300px; }
+    .gate-input {
+      width: 100%; padding: 0.85rem 1rem;
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+      color: var(--blanc); font-family: var(--font); font-size: 0.9rem; font-weight: 300;
+      text-align: center; letter-spacing: 0.12em; outline: none; border-radius: 0;
+      transition: border-color 0.2s;
+    }
+    .gate-input:focus { border-color: var(--ocre); }
+    .gate-btn {
+      width: 100%; padding: 0.85rem; background: var(--blanc); color: var(--noir);
+      font-family: var(--font); font-size: 0.62rem; font-weight: 500;
+      letter-spacing: 0.16em; text-transform: uppercase; border: none; cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .gate-btn:hover { opacity: 0.85; }
+    .gate-error { font-size: 0.68rem; color: #e05; display: none; }
+    .gate-error.visible { display: block; }
+
+    /* ── APP ── */
+    #app { display: none; }
+
+    /* ── HEADER ── */
+    .app-header {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(17,17,17,0.96); backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.9rem 2rem;
+    }
+    .header-left { display: flex; flex-direction: column; gap: 0.15rem; }
+    .header-shooting { font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gris); }
+    .header-titre { font-size: 0.9rem; font-weight: 300; letter-spacing: 0.06em; }
+    .header-right { display: flex; align-items: center; gap: 1rem; }
+    .sel-count {
+      font-size: 0.62rem; font-weight: 500; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--gris);
+      transition: color 0.2s;
+    }
+    .sel-count.active { color: var(--ocre); }
+    .btn-envoyer {
+      padding: 0.6rem 1.2rem; background: var(--ocre); color: var(--noir);
+      font-family: var(--font); font-size: 0.6rem; font-weight: 500;
+      letter-spacing: 0.14em; text-transform: uppercase; border: none; cursor: pointer;
+      opacity: 0.4; pointer-events: none; transition: opacity 0.2s;
+    }
+    .btn-envoyer.active { opacity: 1; pointer-events: auto; }
+    .btn-envoyer:hover.active { opacity: 0.85; }
+
+    /* ── GALERIE ── */
+    .galerie { padding: 2rem; }
+    .section { margin-bottom: 3rem; }
+    .section-header {
+      display: flex; align-items: baseline; justify-content: space-between;
+      margin-bottom: 1rem; padding-bottom: 0.6rem;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .section-nom { font-size: 0.62rem; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gris); }
+    .section-titre { font-size: 1rem; font-weight: 300; }
+    .section-actions { display: flex; gap: 1rem; }
+    .btn-tout {
+      font-size: 0.52rem; font-weight: 400; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--gris); background: none; border: none; cursor: pointer; font-family: var(--font);
+      transition: color 0.15s;
+    }
+    .btn-tout:hover { color: var(--blanc); }
+
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 3px;
+    }
+
+    .photo-item {
+      position: relative; aspect-ratio: 3/2; overflow: hidden; cursor: pointer;
+      background: #1a1a1a;
+    }
+    .photo-item img {
+      width: 100%; height: 100%; object-fit: cover;
+      display: block; transition: transform 0.3s ease;
+    }
+    .photo-item:hover img { transform: scale(1.03); }
+    .photo-item .overlay {
+      position: absolute; inset: 0;
+      background: rgba(0,0,0,0); transition: background 0.2s;
+      display: flex; align-items: flex-end; justify-content: space-between;
+      padding: 0.5rem;
+    }
+    .photo-item:hover .overlay { background: rgba(0,0,0,0.15); }
+    .photo-item.selected .overlay { background: rgba(200,145,58,0.25); }
+
+    .photo-check {
+      width: 26px; height: 26px; border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.6);
+      background: transparent; display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s; flex-shrink: 0;
+    }
+    .photo-check svg { display: none; }
+    .photo-item.selected .photo-check {
+      background: var(--ocre); border-color: var(--ocre);
+    }
+    .photo-item.selected .photo-check svg { display: block; }
+
+    .photo-num {
+      font-size: 0.52rem; letter-spacing: 0.08em; color: rgba(255,255,255,0.5);
+      background: rgba(0,0,0,0.4); padding: 0.2rem 0.4rem; border-radius: 2px;
+    }
+
+    /* ── PANEL ── */
+    #panel {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,0.7); display: none; align-items: stretch; justify-content: flex-end;
+    }
+    #panel.open { display: flex; }
+    .panel-inner {
+      width: min(420px, 100vw); background: #1a1a1a;
+      display: flex; flex-direction: column;
+      animation: slideIn 0.25s ease;
+    }
+    @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+
+    .panel-head {
+      padding: 1.5rem 1.5rem 1rem;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .panel-titre { font-size: 0.88rem; font-weight: 400; }
+    .panel-close {
+      background: none; border: none; color: var(--gris); cursor: pointer;
+      font-size: 1.2rem; font-family: var(--font); line-height: 1;
+    }
+    .panel-body { flex: 1; overflow-y: auto; padding: 1.2rem 1.5rem; }
+    .panel-sel-count { font-size: 0.62rem; color: var(--gris); margin-bottom: 1.2rem; }
+    .panel-sel-list { display: flex; flex-direction: column; gap: 0.3rem; margin-bottom: 1.5rem; }
+    .panel-sel-section { font-size: 0.52rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ocre); margin-top: 0.8rem; margin-bottom: 0.3rem; }
+    .panel-sel-item { font-size: 0.75rem; font-weight: 300; color: rgba(255,255,255,0.7); }
+
+    .panel-form { display: flex; flex-direction: column; gap: 0.8rem; border-top: 1px solid rgba(255,255,255,0.07); padding-top: 1.2rem; }
+    .panel-label { font-size: 0.52rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gris); margin-bottom: 0.3rem; display: block; }
+    .panel-input, .panel-textarea {
+      width: 100%; padding: 0.75rem 0.9rem;
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+      color: var(--blanc); font-family: var(--font); font-size: 0.8rem; font-weight: 300;
+      outline: none; border-radius: 0; transition: border-color 0.2s;
+    }
+    .panel-input:focus, .panel-textarea:focus { border-color: var(--ocre); }
+    .panel-textarea { resize: vertical; min-height: 80px; }
+    .panel-submit {
+      padding: 0.9rem; background: var(--ocre); color: var(--noir);
+      font-family: var(--font); font-size: 0.62rem; font-weight: 500;
+      letter-spacing: 0.16em; text-transform: uppercase; border: none; cursor: pointer;
+      transition: opacity 0.2s; margin-top: 0.4rem;
+    }
+    .panel-submit:hover { opacity: 0.85; }
+    .panel-note { font-size: 0.6rem; color: var(--gris); line-height: 1.6; }
+
+    /* ── LIGHTBOX ── */
+    #lightbox {
+      position: fixed; inset: 0; z-index: 300;
+      background: rgba(0,0,0,0.95); display: none;
+      align-items: center; justify-content: center;
+    }
+    #lightbox.open { display: flex; }
+    .lb-img { max-width: 92vw; max-height: 90vh; object-fit: contain; display: block; }
+    .lb-close {
+      position: absolute; top: 1rem; right: 1.5rem;
+      background: none; border: none; color: rgba(255,255,255,0.5);
+      font-size: 1.8rem; cursor: pointer; font-family: var(--font); line-height: 1;
+      transition: color 0.15s;
+    }
+    .lb-close:hover { color: #fff; }
+    .lb-nav {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      background: rgba(255,255,255,0.08); border: none; color: rgba(255,255,255,0.6);
+      font-size: 1.4rem; cursor: pointer; padding: 1rem 0.8rem; font-family: var(--font);
+      transition: background 0.15s; line-height: 1;
+    }
+    .lb-nav:hover { background: rgba(255,255,255,0.16); color: #fff; }
+    .lb-prev { left: 0.5rem; }
+    .lb-next { right: 0.5rem; }
+    .lb-sel-btn {
+      position: absolute; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
+      padding: 0.65rem 1.8rem; font-family: var(--font);
+      font-size: 0.62rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase;
+      border: 1px solid rgba(255,255,255,0.3); background: transparent; color: #fff;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .lb-sel-btn:hover, .lb-sel-btn.selected { background: var(--ocre); border-color: var(--ocre); color: var(--noir); }
+    .lb-counter {
+      position: absolute; bottom: 1.5rem; right: 1.5rem;
+      font-size: 0.6rem; color: rgba(255,255,255,0.35); letter-spacing: 0.06em;
+    }
+
+    /* ── SUCCESS ── */
+    #success {
+      position: fixed; inset: 0; z-index: 400;
+      background: var(--noir); display: none;
+      flex-direction: column; align-items: center; justify-content: center;
+      gap: 1.5rem; text-align: center; padding: 2rem;
+    }
+    #success.open { display: flex; }
+    .success-check {
+      width: 50px; height: 50px; border: 1.5px solid var(--ocre); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .success-check svg { width: 20px; height: 20px; stroke: var(--ocre); }
+    .success-titre { font-size: 1.6rem; font-weight: 300; letter-spacing: -0.02em; }
+    .success-msg { font-size: 0.78rem; font-weight: 300; color: var(--gris); line-height: 1.8; max-width: 320px; }
+
+    @media (max-width: 600px) {
+      .app-header { padding: 0.8rem 1rem; }
+      .galerie { padding: 1rem; }
+      .photo-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 2px; }
+      .section-header { flex-direction: column; gap: 0.4rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── GATE ── -->
+<div id="gate">
+  <span class="gate-logo">Bertrand Basset · Studio</span>
+  <h1 class="gate-titre">Plougasnou</h1>
+  <p class="gate-sous">Galerie de sélection — accès protégé</p>
+  <div class="gate-form">
+    <input type="password" class="gate-input" id="gateInput" placeholder="Mot de passe" autocomplete="off">
+    <button class="gate-btn" onclick="checkPwd()">Accéder à la galerie</button>
+    <span class="gate-error" id="gateError">Mot de passe incorrect.</span>
+  </div>
+</div>
+
+<!-- ── APP ── -->
+<div id="app">
+  <header class="app-header">
+    <div class="header-left">
+      <span class="header-shooting">Sélection · Plougasnou</span>
+      <span class="header-titre">Bertrand Basset</span>
+    </div>
+    <div class="header-right">
+      <span class="sel-count" id="selCount">0 photo sélectionnée</span>
+      <button class="btn-envoyer" id="btnEnvoyer" onclick="openPanel()">Envoyer ma sélection →</button>
+    </div>
+  </header>
+
+  <main class="galerie" id="galerie"></main>
+</div>
+
+<!-- ── PANEL ── -->
+<div id="panel" onclick="panelBgClick(event)">
+  <div class="panel-inner">
+    <div class="panel-head">
+      <span class="panel-titre">Ma sélection</span>
+      <button class="panel-close" onclick="closePanel()">×</button>
+    </div>
+    <div class="panel-body">
+      <p class="panel-sel-count" id="panelCount"></p>
+      <div class="panel-sel-list" id="panelList"></div>
+      <div class="panel-form">
+        <div>
+          <label class="panel-label">Votre prénom</label>
+          <input type="text" class="panel-input" id="clientNom" placeholder="Ex. : Marie">
+        </div>
+        <div>
+          <label class="panel-label">Message (facultatif)</label>
+          <textarea class="panel-textarea" id="clientMsg" placeholder="Une précision sur votre sélection…"></textarea>
+        </div>
+        <button class="panel-submit" onclick="envoyer()">Envoyer ma sélection</button>
+        <p class="panel-note">Votre sélection sera envoyée à Bertrand Basset par email. Il reviendra vers vous pour la suite.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── LIGHTBOX ── -->
+<div id="lightbox" onclick="lbBgClick(event)">
+  <button class="lb-close" onclick="closeLb()">×</button>
+  <button class="lb-nav lb-prev" onclick="lbNav(-1)">‹</button>
+  <img class="lb-img" id="lbImg" src="" alt="">
+  <button class="lb-nav lb-next" onclick="lbNav(1)">›</button>
+  <button class="lb-sel-btn" id="lbSelBtn" onclick="lbToggleSel()">Sélectionner</button>
+  <span class="lb-counter" id="lbCounter"></span>
+</div>
+
+<!-- ── SUCCESS ── -->
+<div id="success">
+  <div class="success-check">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20,6 9,17 4,12"/></svg>
+  </div>
+  <h2 class="success-titre">Sélection envoyée</h2>
+  <p class="success-msg">Merci ! Bertrand Basset a reçu votre sélection et reviendra vers vous très vite pour la suite.</p>
+</div>
+
+<script>
+/* ── DONNÉES ── */
+const SECTIONS = [
+  { id: "ARMAND_La folie des grandeurs", nom: "Armand", titre: "La folie des grandeurs",
+    photos: ["StudioB.AntoineAsnar.jpg","StudioB.AntoineAsnar 1.jpg","StudioB.AntoineAsnar 2.jpg","StudioB.AntoineAsnar 3.jpg","StudioB.AntoineAsnar 4.jpg","StudioB.AntoineAsnar 5.jpg"] },
+  { id: "BENEVOLES", nom: "Bénévoles", titre: "",
+    photos: ["StudioB.AntoineAsnar.jpg","StudioB.AntoineAsnar 1.jpg","StudioB.AntoineAsnar 2.jpg","StudioB.AntoineAsnar 3.jpg","StudioB.AntoineAsnar 4.jpg","StudioB.AntoineAsnar 5.jpg","StudioB.AntoineAsnar 6.jpg","StudioB.AntoineAsnar 7.jpg","StudioB.AntoineAsnar 8.jpg","StudioB.AntoineAsnar 9.jpg","StudioB.AntoineAsnar 10.jpg","StudioB.AntoineAsnar 11.jpg","StudioB.AntoineAsnar 12.jpg","StudioB.AntoineAsnar 13.jpg","StudioB.AntoineAsnar 14.jpg","StudioB.AntoineAsnar 15.jpg","StudioB.AntoineAsnar 16.jpg","StudioB.AntoineAsnar 17.jpg","StudioB.AntoineAsnar 18.jpg","StudioB.AntoineAsnar 19.jpg","StudioB.AntoineAsnar 20.jpg","StudioB.AntoineAsnar 21.jpg","StudioB.AntoineAsnar 22.jpg","StudioB.AntoineAsnar 23.jpg","StudioB.AntoineAsnar 24.jpg","StudioB.AntoineAsnar 25.jpg","StudioB.AntoineAsnar 26.jpg","StudioB.AntoineAsnar 27.jpg","StudioB.AntoineAsnar 28.jpg","StudioB.AntoineAsnar 29.jpg","StudioB.AntoineAsnar 30.jpg","StudioB.AntoineAsnar 31.jpg","StudioB.AntoineAsnar 32.jpg","StudioB.AntoineAsnar 33.jpg","StudioB.AntoineAsnar 34.jpg","StudioB.AntoineAsnar 35.jpg","StudioB.AntoineAsnar 36.jpg"] },
+  { id: "ELSA_7eme Mois", nom: "Elsa", titre: "7ème Mois",
+    photos: ["StudioB.AntoineAsnar.jpg","StudioB.AntoineAsnar 1.jpg","StudioB.AntoineAsnar 2.jpg","StudioB.AntoineAsnar 3.jpg","StudioB.AntoineAsnar 4.jpg"] },
+  { id: "GWENN_Lecture du soir", nom: "Gwenn", titre: "Lecture du soir",
+    photos: ["StudioB.AntoineAsnar.jpg","StudioB.AntoineAsnar 1.jpg","StudioB.AntoineAsnar 2.jpg","StudioB.AntoineAsnar 3.jpg","StudioB.AntoineAsnar 4.jpg"] },
+  { id: "MANGA", nom: "Manga", titre: "",
+    photos: ["StudioB.AntoineAsnar.jpg","StudioB.AntoineAsnar 1.jpg","StudioB.AntoineAsnar 2.jpg","StudioB.AntoineAsnar 3.jpg"] },
+  { id: "Margaux_Souvenirs Souvenirs", nom: "Margaux", titre: "Souvenirs Souvenirs",
+    photos: ["StudioB.AntoineAsnar.jpg","StudioB.AntoineAsnar 1.jpg","StudioB.AntoineAsnar 2.jpg","StudioB.AntoineAsnar 3.jpg","StudioB.AntoineAsnar 4.jpg"] },
+  { id: "Ricardo_Conversation", nom: "Ricardo", titre: "Conversation",
+    photos: ["StudioB.AntoineAsnar.jpg","StudioB.AntoineAsnar 1.jpg","StudioB.AntoineAsnar 2.jpg","StudioB.AntoineAsnar 3.jpg","StudioB.AntoineAsnar 4.jpg","StudioB.AntoineAsnar 5.jpg","StudioB.AntoineAsnar 6.jpg","StudioB.AntoineAsnar 7.jpg"] },
+  { id: "Yolande_Le chant des possible", nom: "Yolande", titre: "Le chant des possible",
+    photos: ["StudioB.AntoineAsnar.jpg","StudioB.AntoineAsnar 1.jpg","StudioB.AntoineAsnar 2.jpg","StudioB.AntoineAsnar 3.jpg","StudioB.AntoineAsnar 4.jpg","StudioB.AntoineAsnar 5.jpg"] }
+];
+
+const BASE = 'plougasnou/';
+const PWD_HASH = '99ff3f6f22a3559f1ef93fd4e85cca8350f0579ced7884ce88a71bdc011a557b';
+const NOTIF_EMAIL = 'yellowshoesstudio@gmail.com';
+
+/* ── STATE ── */
+const selected = new Set();
+let lbSection = 0, lbPhoto = 0;
+
+/* Flat photo index for lightbox */
+const allPhotos = [];
+SECTIONS.forEach((sec, si) => {
+  sec.photos.forEach((p, pi) => {
+    allPhotos.push({ sid: sec.id, nom: sec.nom, titre: sec.titre, file: p, si, pi });
+  });
+});
+
+/* ── PASSWORD ── */
+async function sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+async function checkPwd() {
+  const val = document.getElementById('gateInput').value.trim();
+  const hash = await sha256(val);
+  if (hash === PWD_HASH) {
+    document.getElementById('gate').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    document.body.style.background = '#111';
+    buildGallery();
+  } else {
+    const err = document.getElementById('gateError');
+    err.classList.add('visible');
+    document.getElementById('gateInput').value = '';
+    setTimeout(() => err.classList.remove('visible'), 3000);
+  }
+}
+document.getElementById('gateInput').addEventListener('keydown', e => { if (e.key === 'Enter') checkPwd(); });
+
+/* ── BUILD GALLERY ── */
+function photoLabel(filename) {
+  const m = filename.match(/(\d+)\.jpg$/);
+  return m ? `Photo ${m[1]}` : 'Photo';
+}
+
+function photoId(secId, file) { return secId + '||' + file; }
+
+function buildGallery() {
+  const container = document.getElementById('galerie');
+  SECTIONS.forEach((sec, si) => {
+    const secEl = document.createElement('div');
+    secEl.className = 'section';
+    secEl.innerHTML = `
+      <div class="section-header">
+        <div>
+          <span class="section-nom">${sec.nom}${sec.titre ? '' : ''}</span>
+          ${sec.titre ? `<span class="section-titre"> — ${sec.titre}</span>` : ''}
+        </div>
+        <div class="section-actions">
+          <button class="btn-tout" onclick="selectAll(${si})">Tout sélectionner</button>
+          <button class="btn-tout" onclick="deselectAll(${si})">Tout désélectionner</button>
+        </div>
+      </div>
+      <div class="photo-grid" id="grid-${si}"></div>`;
+    container.appendChild(secEl);
+
+    const grid = secEl.querySelector(`#grid-${si}`);
+    sec.photos.forEach((file, pi) => {
+      const id = photoId(sec.id, file);
+      const flat = allPhotos.findIndex(p => p.sid === sec.id && p.file === file);
+      const item = document.createElement('div');
+      item.className = 'photo-item';
+      item.dataset.id = id;
+      item.dataset.flat = flat;
+      item.innerHTML = `
+        <img src="${BASE}${encodeFolder(sec.id)}/${encodeFile(file)}" alt="${photoLabel(file)}" loading="lazy">
+        <div class="overlay">
+          <div class="photo-check">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="13" height="13"><polyline points="20,6 9,17 4,12"/></svg>
+          </div>
+          <span class="photo-num">${photoLabel(file)}</span>
+        </div>`;
+      item.addEventListener('click', (e) => {
+        if (e.target.closest('.photo-num')) { openLb(flat); return; }
+        togglePhoto(id, item);
+      });
+      item.addEventListener('dblclick', () => openLb(flat));
+      grid.appendChild(item);
+    });
+  });
+}
+
+function encodeFolder(name) { return name.split('/').map(encodeURIComponent).join('/'); }
+function encodeFile(name) { return encodeURIComponent(name); }
+
+/* ── SELECTION ── */
+function togglePhoto(id, el) {
+  if (selected.has(id)) { selected.delete(id); el.classList.remove('selected'); }
+  else { selected.add(id); el.classList.add('selected'); }
+  updateCounter();
+}
+
+function selectAll(si) {
+  const sec = SECTIONS[si];
+  sec.photos.forEach(file => {
+    const id = photoId(sec.id, file);
+    selected.add(id);
+    const el = document.querySelector(`[data-id="${CSS.escape(id)}"]`);
+    if (el) el.classList.add('selected');
+  });
+  updateCounter();
+}
+
+function deselectAll(si) {
+  const sec = SECTIONS[si];
+  sec.photos.forEach(file => {
+    const id = photoId(sec.id, file);
+    selected.delete(id);
+    const el = document.querySelector(`[data-id="${CSS.escape(id)}"]`);
+    if (el) el.classList.remove('selected');
+  });
+  updateCounter();
+}
+
+function updateCounter() {
+  const n = selected.size;
+  const txt = n === 0 ? '0 photo sélectionnée' : n === 1 ? '1 photo sélectionnée' : `${n} photos sélectionnées`;
+  document.getElementById('selCount').textContent = txt;
+  document.getElementById('selCount').classList.toggle('active', n > 0);
+  document.getElementById('btnEnvoyer').classList.toggle('active', n > 0);
+}
+
+/* ── LIGHTBOX ── */
+function openLb(flatIdx) {
+  lbPhoto = flatIdx;
+  renderLb();
+  document.getElementById('lightbox').classList.add('open');
+  document.addEventListener('keydown', lbKeydown);
+}
+function closeLb() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.removeEventListener('keydown', lbKeydown);
+}
+function lbBgClick(e) { if (e.target === document.getElementById('lightbox')) closeLb(); }
+function lbKeydown(e) {
+  if (e.key === 'ArrowLeft') lbNav(-1);
+  else if (e.key === 'ArrowRight') lbNav(1);
+  else if (e.key === 'Escape') closeLb();
+}
+function lbNav(dir) {
+  lbPhoto = (lbPhoto + dir + allPhotos.length) % allPhotos.length;
+  renderLb();
+}
+function renderLb() {
+  const p = allPhotos[lbPhoto];
+  const src = `${BASE}${encodeFolder(p.sid)}/${encodeFile(p.file)}`;
+  document.getElementById('lbImg').src = src;
+  document.getElementById('lbCounter').textContent = `${lbPhoto + 1} / ${allPhotos.length}`;
+  const id = photoId(p.sid, p.file);
+  const btn = document.getElementById('lbSelBtn');
+  btn.textContent = selected.has(id) ? 'Désélectionner' : 'Sélectionner';
+  btn.classList.toggle('selected', selected.has(id));
+}
+function lbToggleSel() {
+  const p = allPhotos[lbPhoto];
+  const id = photoId(p.sid, p.file);
+  const el = document.querySelector(`[data-id="${CSS.escape(id)}"]`);
+  togglePhoto(id, el);
+  renderLb();
+}
+
+/* ── PANEL ── */
+function openPanel() {
+  if (selected.size === 0) return;
+  buildPanelList();
+  document.getElementById('panel').classList.add('open');
+}
+function closePanel() { document.getElementById('panel').classList.remove('open'); }
+function panelBgClick(e) { if (e.target === document.getElementById('panel')) closePanel(); }
+
+function buildPanelList() {
+  const n = selected.size;
+  document.getElementById('panelCount').textContent = `${n} photo${n > 1 ? 's' : ''} sélectionnée${n > 1 ? 's' : ''}`;
+  const list = document.getElementById('panelList');
+  list.innerHTML = '';
+  SECTIONS.forEach(sec => {
+    const items = sec.photos.filter(f => selected.has(photoId(sec.id, f)));
+    if (!items.length) return;
+    const secLabel = document.createElement('div');
+    secLabel.className = 'panel-sel-section';
+    secLabel.textContent = sec.nom + (sec.titre ? ` — ${sec.titre}` : '');
+    list.appendChild(secLabel);
+    items.forEach(file => {
+      const d = document.createElement('div');
+      d.className = 'panel-sel-item';
+      d.textContent = '· ' + photoLabel(file);
+      list.appendChild(d);
+    });
+  });
+}
+
+function envoyer() {
+  const nom = document.getElementById('clientNom').value.trim() || 'Client';
+  const msg = document.getElementById('clientMsg').value.trim();
+
+  let lines = [`Bonjour Bertrand,\n\nVoici ma sélection pour la galerie Plougasnou :\n`];
+  SECTIONS.forEach(sec => {
+    const items = sec.photos.filter(f => selected.has(photoId(sec.id, f)));
+    if (!items.length) return;
+    lines.push(`\n${sec.nom}${sec.titre ? ' — ' + sec.titre : ''} :`);
+    items.forEach(f => lines.push(`  · ${photoLabel(f)}`));
+  });
+  if (msg) lines.push(`\n\nMessage : ${msg}`);
+  lines.push(`\n\n— ${nom}`);
+
+  const subject = `Sélection Plougasnou — ${nom} (${selected.size} photo${selected.size > 1 ? 's' : ''})`;
+  const body = lines.join('\n');
+  window.location.href = `mailto:${NOTIF_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+  setTimeout(() => {
+    closePanel();
+    document.getElementById('success').classList.add('open');
+  }, 800);
+}
+</script>
+</body>
+</html>

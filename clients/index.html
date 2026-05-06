@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Galeries clients — Bertrand Basset</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/logo-b.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --noir: #111;
+      --blanc: #fff;
+      --gris: #888;
+      --ligne: rgba(255,255,255,0.08);
+      --font: 'IBM Plex Sans', system-ui, sans-serif;
+    }
+    html, body {
+      font-family: var(--font);
+      background: var(--noir);
+      color: var(--blanc);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    /* ── HEADER ── */
+    header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.4rem 2.5rem;
+      border-bottom: 1px solid var(--ligne);
+    }
+    .header-brand {
+      display: flex; align-items: center; gap: 0.6rem;
+    }
+    .header-brand img { width: 18px; height: 18px; opacity: 0.6; }
+    .header-brand span {
+      font-size: 0.58rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gris);
+    }
+    .header-back {
+      font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--gris); transition: color 0.15s;
+    }
+    .header-back:hover { color: var(--blanc); }
+
+    /* ── HERO ── */
+    .page-hero {
+      padding: 3rem 2.5rem 2rem;
+      border-bottom: 1px solid var(--ligne);
+    }
+    .page-kicker {
+      font-size: 0.52rem; letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--gris); margin-bottom: 0.6rem;
+    }
+    .page-titre {
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
+      font-weight: 300; letter-spacing: -0.02em;
+    }
+
+    /* ── GRILLE ── */
+    .grille {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--ligne);
+      margin: 0;
+    }
+
+    .galerie-card {
+      position: relative;
+      background: var(--noir);
+      cursor: pointer;
+      overflow: hidden;
+      display: block;
+    }
+    .galerie-card-img {
+      position: relative;
+      aspect-ratio: 2/3;
+      overflow: hidden;
+    }
+    .galerie-card-img img {
+      width: 100%; height: 100%;
+      object-fit: cover; display: block;
+      transition: transform 0.5s ease;
+      filter: brightness(0.88);
+    }
+    .galerie-card:hover .galerie-card-img img {
+      transform: scale(1.04);
+      filter: brightness(0.75);
+    }
+    .galerie-card-overlay {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .galerie-card:hover .galerie-card-overlay { opacity: 1; }
+    .lock-icon {
+      width: 36px; height: 36px;
+      border: 1.5px solid rgba(255,255,255,0.7); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.3);
+    }
+    .lock-icon svg {
+      width: 14px; height: 14px;
+      fill: none; stroke: #fff; stroke-width: 2;
+      stroke-linecap: round; stroke-linejoin: round;
+    }
+
+    .galerie-card-info {
+      padding: 1rem 1.2rem 1.4rem;
+    }
+    .galerie-card-titre {
+      font-size: 0.88rem; font-weight: 400; margin-bottom: 0.3rem;
+    }
+    .galerie-card-meta {
+      font-size: 0.62rem; font-weight: 300; color: var(--gris);
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .galerie-card-meta svg {
+      width: 10px; height: 10px;
+      fill: none; stroke: var(--gris); stroke-width: 2;
+      stroke-linecap: round; stroke-linejoin: round;
+      flex-shrink: 0;
+    }
+
+    /* ── EMPTY SLOTS ── */
+    .galerie-placeholder {
+      background: #0d0d0d;
+      aspect-ratio: 2/3;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .galerie-placeholder-inner {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 2rem; height: 100%;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 2rem 2.5rem;
+      border-top: 1px solid var(--ligne);
+      font-size: 0.58rem; color: var(--gris); letter-spacing: 0.06em;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+
+    @media (max-width: 768px) {
+      header { padding: 1rem 1.2rem; }
+      .page-hero { padding: 2rem 1.2rem 1.5rem; }
+      .grille { grid-template-columns: repeat(2, 1fr); }
+      footer { padding: 1.5rem 1.2rem; flex-direction: column; gap: 0.5rem; }
+    }
+    @media (max-width: 480px) {
+      .grille { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-brand">
+    <img src="../assets/logo-b.svg" alt="B">
+    <span>Bertrand Basset</span>
+  </div>
+  <a href="../index.html" class="header-back">← Portfolio</a>
+</header>
+
+<div class="page-hero">
+  <p class="page-kicker">Accès client</p>
+  <h1 class="page-titre">Galeries de sélection</h1>
+</div>
+
+<div class="grille">
+
+  <!-- Plougasnou -->
+  <a href="plougasnou.html" class="galerie-card">
+    <div class="galerie-card-img">
+      <img
+        src="plougasnou/Ricardo_Conversation/StudioB.AntoineAsnar%202.jpg"
+        alt="Série Plougasnou">
+      <div class="galerie-card-overlay">
+        <div class="lock-icon">
+          <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+      </div>
+    </div>
+    <div class="galerie-card-info">
+      <div class="galerie-card-titre">Série Plougasnou</div>
+      <div class="galerie-card-meta">
+        <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        Accès protégé · Sélection
+      </div>
+    </div>
+  </a>
+
+  <!-- Slots disponibles -->
+  <div class="galerie-placeholder"></div>
+  <div class="galerie-placeholder"></div>
+
+</div>
+
+<footer>
+  <span>Bertrand Basset · Studio</span>
+  <span>Galeries réservées aux clients</span>
+</footer>
+
+</body>
+</html>
