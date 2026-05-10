@@ -57,13 +57,22 @@
       position: sticky; top: 0; z-index: 50;
       background: rgba(17,17,17,0.96); backdrop-filter: blur(8px);
       border-bottom: 1px solid rgba(255,255,255,0.07);
-      display: flex; align-items: center; justify-content: space-between;
+      display: flex; align-items: center; gap: 1.5rem;
       padding: 0.9rem 2rem;
     }
-    .header-left { display: flex; flex-direction: column; gap: 0.15rem; }
+    .header-brand {
+      display: flex; align-items: center; gap: 0.5rem;
+      flex-shrink: 0; text-decoration: none;
+      opacity: 0.55; transition: opacity 0.15s;
+    }
+    .header-brand:hover { opacity: 1; }
+    .header-brand img { width: 14px; height: 14px; filter: invert(1); }
+    .header-sep {
+      width: 1px; height: 1.4rem; background: rgba(255,255,255,0.12); flex-shrink: 0;
+    }
+    .header-left { display: flex; flex-direction: column; gap: 0.12rem; flex: 1; }
     .header-shooting { font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gris); }
-    .header-titre { font-size: 0.9rem; font-weight: 300; letter-spacing: 0.06em; }
-    .header-right { display: flex; align-items: center; gap: 1rem; }
+    .header-right { display: flex; align-items: center; gap: 1rem; flex-shrink: 0; }
     .sel-count {
       font-size: 0.62rem; font-weight: 500; letter-spacing: 0.12em;
       text-transform: uppercase; color: var(--gris);
@@ -308,9 +317,12 @@
 <!-- ── APP ── -->
 <div id="app">
   <header class="app-header">
+    <a href="index.html" class="header-brand" title="Retour aux galeries">
+      <img src="../assets/logo-b.svg" alt="B">
+    </a>
+    <div class="header-sep"></div>
     <div class="header-left">
       <span class="header-shooting">Sélection · Plougasnou</span>
-      <span class="header-titre">Bertrand Basset</span>
     </div>
     <div class="header-right">
       <span class="sel-count" id="selCount">0 photo sélectionnée</span>

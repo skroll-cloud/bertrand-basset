@@ -36,18 +36,20 @@
       padding: 1.2rem 2.5rem;
       border-bottom: 1px solid var(--light-gray);
     }
-    .site-brand { display: flex; align-items: center; gap: 0.55rem; }
+    .site-brand {
+      display: flex; align-items: center; gap: 0.55rem;
+      transition: opacity 0.15s;
+    }
+    .site-brand:hover { opacity: 0.6; }
     .site-brand img { width: 16px; height: 16px; opacity: 0.5; }
     .site-brand-name {
       font-size: 0.55rem; letter-spacing: 0.14em;
       text-transform: uppercase; color: var(--dim);
     }
-    .site-back {
-      font-size: 0.55rem; letter-spacing: 0.1em;
+    .site-section {
+      font-size: 0.55rem; letter-spacing: 0.14em;
       text-transform: uppercase; color: var(--dim);
-      transition: color 0.15s;
     }
-    .site-back:hover { color: var(--black); }
 
     /* ── INTRO ── */
     .page-intro {
@@ -280,11 +282,11 @@
 
 <!-- ── HEADER ── -->
 <header class="site-header">
-  <div class="site-brand">
+  <a href="../index.html" class="site-brand">
     <img src="../assets/logo-b.svg" alt="B">
     <span class="site-brand-name">Bertrand Basset</span>
-  </div>
-  <a href="../index.html" class="site-back">← Portfolio</a>
+  </a>
+  <span class="site-section">Galeries</span>
 </header>
 
 <!-- ── INTRO ── -->
