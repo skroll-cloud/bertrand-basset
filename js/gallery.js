@@ -524,6 +524,13 @@ const SVG = {
 /* ─── FILMS VIDEOS DATA ─────────────────────────────── */
 /* Pour ajouter une vidéo : videoId = ID YouTube (non répertorié) ou Vimeo  */
 /* platform: "youtube" | "vimeo"                                            */
+/* ─── FILMS NOTE ─────────────────────────────────────── */
+/* Texte affiché/masqué via le bouton "+" en haut de la liste */
+const FILMS_NOTE = {
+    fr: "Réalisateur indépendant depuis 2001, j'ai réalisé des portraits documentaires pour France 2 — 20H30 le dimanche, 13H15 le samedi, 13H15 le dimanche — ainsi qu'un court métrage de fiction, J'arrive, sélectionné dans plus de 40 festivals et primé à Clermont-Ferrand, Los Angeles, Rhodes Island.",
+    en: "Independent filmmaker since 2001. I have directed documentary portraits for France 2 — Sunday 8:30pm, Saturday 1:15pm — as well as the short film J'arrive, selected in over 40 festivals and awarded in Clermont-Ferrand, Los Angeles, Rhodes Island."
+};
+
 const FILMS_VIDEOS = [
     {
         group: { fr: "CINÉMA", en: "CINEMA" },
@@ -778,61 +785,94 @@ function buildContactPage(lang) {
 
 function buildFilmsPlayerPage(lang) {
     const en = lang === 'en';
-    /* Flatten all videos with group info */
+
+    /* Flatten videos */
     const allVideos = [];
     FILMS_VIDEOS.forEach(g => g.videos.forEach(v => allVideos.push(v)));
 
-    /* Build playlist HTML */
+    /* Playlist items — no thumbnails, readable title */
     let playlistHtml = '';
     FILMS_VIDEOS.forEach(g => {
-        const groupLabel = en ? g.group.en : g.group.fr;
-        playlistHtml += `<div class="films-group-header">${groupLabel}</div>`;
+        playlistHtml += `<div class="films-group-header">${en ? g.group.en : g.group.fr}</div>`;
         g.videos.forEach(v => {
-            const title  = en ? v.titleEn : v.titleFr;
-            const meta   = (en ? v.metaEn : v.metaFr).split('\n')[0];
-            const idx    = allVideos.indexOf(v);
-            const thumb  = v.thumb
-                ? `<img src="${v.thumb}" alt="${title}" loading="lazy">`
-                : `<div class="films-thumb-placeholder">▶</div>`;
+            const title = en ? v.titleEn : v.titleFr;
+            const meta  = (en ? v.metaEn : v.metaFr).split('\n')[0];
+            const idx   = allVideos.indexOf(v);
             playlistHtml += `
-                <div class="films-playlist-item${idx === 0 ? ' active' : ''}"
-                     data-fidx="${idx}" onclick="window._filmsPlay(${idx})">
-                    <div class="films-playlist-thumb">${thumb}</div>
-                    <div class="films-playlist-info">
-                        <div class="films-playlist-title">${title}</div>
-                        <div class="films-playlist-meta">${meta}</div>
-                    </div>
+                <div class="films-playlist-item${idx === 0 ? ' active' : ''}" onclick="window._filmsPlay(${idx})">
+                    <div class="films-playlist-title">${title}</div>
+                    ${meta ? `<div class="films-playlist-meta">${meta}</div>` : ''}
                 </div>`;
         });
     });
 
-    /* Build first video player */
-    const first = allVideos[0];
+    /* First video */
+    const first      = allVideos[0];
     const firstTitle = first ? (en ? first.titleEn : first.titleFr) : '';
     const firstMeta  = first ? (en ? first.metaEn  : first.metaFr)  : '';
-    const firstSrc   = first ? _filmsEmbedSrc(first) : '';
+    const firstSrc   = first ? _filmsEmbedSrc(first) : 'about:blank';
 
-    /* Inject global play function */
+    /* Note text */
+    const noteText    = en ? FILMS_NOTE.en : FILMS_NOTE.fr;
+    const noteLabel   = en ? 'Note' : 'Note';
+
+    /* Register globals */
     window._filmsAllVideos = allVideos;
-    window._filmsLang = lang;
+    window._filmsLang      = lang;
+
     window._filmsPlay = function(idx) {
-        const v     = window._filmsAllVideos[idx];
-        const lg    = window._filmsLang;
-        const stage = document.getElementById('filmsStageIframe');
-        const title = document.getElementById('filmsInfoTitle');
-        const meta  = document.getElementById('filmsInfoMeta');
+        const v   = window._filmsAllVideos[idx];
+        const lg  = window._filmsLang;
         if (!v) return;
-        if (stage) stage.src = _filmsEmbedSrc(v);
-        if (title) title.textContent = lg === 'en' ? v.titleEn : v.titleFr;
-        if (meta)  meta.innerHTML    = (lg === 'en' ? v.metaEn : v.metaFr).replace(/\n/g,'<br>');
-        document.querySelectorAll('.films-playlist-item').forEach((el, i) => {
-            el.classList.toggle('active', i === idx);
-        });
+        const iframe = document.getElementById('filmsStageIframe');
+        const tEl    = document.getElementById('filmsInfoTitle');
+        const mEl    = document.getElementById('filmsInfoMeta');
+        if (iframe) iframe.src = _filmsEmbedSrc(v);
+        if (tEl) tEl.textContent = lg === 'en' ? v.titleEn : v.titleFr;
+        if (mEl) mEl.innerHTML  = (lg === 'en' ? v.metaEn : v.metaFr).replace(/\n/g,'<br>');
+        document.querySelectorAll('.films-playlist-item').forEach((el, i) => el.classList.toggle('active', i === idx));
+    };
+
+    window._filmsToggleNote = function() {
+        const btn   = document.getElementById('filmsNoteToggle');
+        const panel = document.getElementById('filmsNotePanel');
+        if (!btn || !panel) return;
+        const open = panel.classList.toggle('open');
+        btn.classList.toggle('open', open);
+    };
+
+    window._filmsBack = function() {
+        document.getElementById('site')?.classList.remove('films-mode');
+        const prev = window._filmsPrevState;
+        if (prev?.gallery) {
+            window.portfolio?.openGallery(prev.gallery);
+        } else {
+            window.portfolio?.openHomeGallery();
+        }
+        window.portfolio?.setActiveLink(null);
     };
 
     return `
         <div class="films-player">
-            <div class="films-playlist">${playlistHtml}</div>
+            <!-- Colonne gauche -->
+            <div class="films-left">
+                <div class="films-header">
+                    <button class="films-back-btn" onclick="window._filmsBack()">
+                        <img src="assets/logo-b.svg" alt="B" class="films-back-logo">
+                    </button>
+                </div>
+                <div class="films-note-section">
+                    <button class="films-note-toggle" id="filmsNoteToggle" onclick="window._filmsToggleNote()">
+                        <span class="films-note-toggle-label">${noteLabel}</span>
+                        <span class="films-note-plus">+</span>
+                    </button>
+                    <div class="films-note-panel" id="filmsNotePanel">
+                        <div class="films-note-text">${noteText}</div>
+                    </div>
+                </div>
+                <div class="films-playlist">${playlistHtml}</div>
+            </div>
+            <!-- Colonne droite -->
             <div class="films-stage">
                 <div class="films-player-wrap">
                     <iframe id="filmsStageIframe"
@@ -1151,6 +1191,7 @@ class Portfolio {
         this.stopSlideshow();
         this.stopAudio();
         this.gridMode = false;
+        document.getElementById('site')?.classList.remove('films-mode');
         document.getElementById('galleryContainer')?.classList.remove('page-mode', 'grid-mode');
         document.getElementById('gridToggle')?.classList.remove('active');
         document.getElementById('site')?.classList.remove('grid-active');
@@ -1631,17 +1672,21 @@ class Portfolio {
         this.currentPageId    = id;
         this.stopSlideshow();
         const container = document.getElementById('galleryContainer');
-        container.classList.add('page-mode');
-        let html = '';
-        if (id === 'infos')            html = buildInfosPage(this.currentLang);
-        if (id === 'contact')          html = buildContactPage(this.currentLang);
-        if (id === 'post-production')  html = buildPostProductionPage(this.currentLang);
-        if (id === 'auteur')           html = buildAuteurPage(this.currentLang);
-        if (id === 'films-player')     html = buildFilmsPlayerPage(this.currentLang);
-        /* films-player occupies full container — no centering wrapper */
+        const siteEl    = document.getElementById('site');
         if (id === 'films-player') {
-            container.innerHTML = html;
+            /* Stocker l'état précédent pour le bouton retour */
+            window._filmsPrevState = { gallery: this.currentGalleryId, page: this.currentPageId };
+            container.classList.remove('page-mode');
+            siteEl?.classList.add('films-mode');
+            container.innerHTML = buildFilmsPlayerPage(this.currentLang);
         } else {
+            siteEl?.classList.remove('films-mode');
+            container.classList.add('page-mode');
+            let html = '';
+            if (id === 'infos')           html = buildInfosPage(this.currentLang);
+            if (id === 'contact')         html = buildContactPage(this.currentLang);
+            if (id === 'post-production') html = buildPostProductionPage(this.currentLang);
+            if (id === 'auteur')          html = buildAuteurPage(this.currentLang);
             container.innerHTML = `<div class="page-content">${html}</div>`;
         }
         const counter = document.querySelector('.gallery-counter');
