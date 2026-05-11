@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Films & Vidéos — Bertrand Basset</title>
+  <link rel="icon" type="image/svg+xml" href="assets/logo-b.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --noir:    #0d0d0d;
+      --surface: #181818;
+      --ligne:   rgba(255,255,255,0.07);
+      --gris:    #888;
+      --dim:     rgba(255,255,255,0.35);
+      --blanc:   #f5f5f5;
+      --or:      #c8913a;
+      --font:    'IBM Plex Sans', system-ui, sans-serif;
+    }
+
+    html, body {
+      font-family: var(--font);
+      background: var(--noir);
+      color: var(--blanc);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button { font-family: var(--font); cursor: pointer; border: none; background: none; color: inherit; }
+
+    /* ── HEADER ── */
+    .page-header {
+      position: relative;
+      height: 220px;
+      display: flex; align-items: flex-end;
+      overflow: hidden;
+    }
+    .header-bg {
+      position: absolute; inset: 0;
+      background: linear-gradient(160deg, #1a1a2e 0%, #16213e 40%, #0d0d0d 100%);
+    }
+    .header-bg::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, var(--noir) 0%, transparent 60%);
+    }
+    .header-content {
+      position: relative; z-index: 2;
+      padding: 2rem 3rem 2.5rem;
+      width: 100%;
+    }
+    .header-nav {
+      display: flex; align-items: center; gap: 0.6rem;
+      margin-bottom: 1.2rem;
+    }
+    .header-nav a {
+      font-size: 0.52rem; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--dim);
+      transition: color 0.15s;
+    }
+    .header-nav a:hover { color: var(--blanc); }
+    .header-nav span { font-size: 0.52rem; color: rgba(255,255,255,0.2); }
+    .page-titre {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 300; letter-spacing: -0.02em;
+    }
+
+    /* ── TAGS ── */
+    .tags-bar {
+      padding: 1rem 3rem;
+      display: flex; align-items: center; gap: 0.5rem;
+      border-bottom: 1px solid var(--ligne);
+      flex-wrap: wrap;
+    }
+    .tag-btn {
+      font-size: 0.52rem; font-weight: 400;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--dim); padding: 0.35rem 0.75rem;
+      border: 1px solid rgba(255,255,255,0.12);
+      transition: all 0.15s;
+    }
+    .tag-btn:hover { color: var(--blanc); border-color: rgba(255,255,255,0.35); }
+    .tag-btn.active {
+      color: var(--noir); background: var(--blanc);
+      border-color: var(--blanc);
+    }
+
+    /* ── LAYOUT PRINCIPAL ── */
+    .main-layout {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      min-height: calc(100vh - 220px - 54px);
+    }
+
+    /* ── PLAYLIST ── */
+    .playlist {
+      border-right: 1px solid var(--ligne);
+      overflow-y: auto;
+      position: sticky;
+      top: 0;
+      max-height: calc(100vh - 54px);
+    }
+    .playlist-head {
+      padding: 1.2rem 1.5rem 0.8rem;
+      display: flex; align-items: baseline; justify-content: space-between;
+      border-bottom: 1px solid var(--ligne);
+      position: sticky; top: 0;
+      background: var(--noir); z-index: 5;
+    }
+    .playlist-label {
+      font-size: 0.62rem; font-weight: 500;
+      letter-spacing: 0.14em; text-transform: uppercase;
+    }
+    .playlist-count {
+      font-size: 0.58rem; color: var(--gris);
+    }
+
+    .group-header {
+      padding: 1rem 1.5rem 0.5rem;
+      font-size: 0.48rem; font-weight: 500;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--or);
+      border-top: 1px solid var(--ligne);
+    }
+    .group-header:first-of-type { border-top: none; }
+
+    .video-item {
+      display: flex; align-items: flex-start; gap: 0.75rem;
+      padding: 0.75rem 1.5rem;
+      cursor: pointer;
+      transition: background 0.15s;
+      border-left: 2px solid transparent;
+    }
+    .video-item:hover { background: rgba(255,255,255,0.04); }
+    .video-item.active {
+      background: rgba(255,255,255,0.06);
+      border-left-color: var(--or);
+    }
+    .video-item.hidden { display: none; }
+
+    .vi-arrow {
+      font-size: 0.52rem; color: var(--dim);
+      margin-top: 0.2rem; flex-shrink: 0;
+      transition: color 0.15s;
+    }
+    .video-item.active .vi-arrow { color: var(--or); }
+    .vi-info { flex: 1; min-width: 0; }
+    .vi-title {
+      font-size: 0.78rem; font-weight: 300;
+      line-height: 1.4;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      transition: color 0.15s;
+    }
+    .video-item.active .vi-title { color: var(--blanc); font-weight: 400; }
+    .vi-meta {
+      font-size: 0.58rem; color: var(--gris);
+      margin-top: 0.2rem;
+    }
+
+    /* ── PLAYER ── */
+    .player-zone {
+      padding: 2.5rem 3rem;
+      display: flex; flex-direction: column; gap: 1.5rem;
+    }
+    .player-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: #0a0a0a;
+      border: 1px solid var(--ligne);
+    }
+    .player-wrap iframe {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      border: none;
+    }
+    .player-placeholder {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 1rem; color: var(--dim);
+    }
+    .player-placeholder svg {
+      width: 48px; height: 48px;
+      stroke: rgba(255,255,255,0.12); fill: none;
+      stroke-width: 1; stroke-linecap: round;
+    }
+    .player-placeholder span {
+      font-size: 0.62rem; letter-spacing: 0.1em;
+      text-transform: uppercase; color: rgba(255,255,255,0.2);
+    }
+
+    .player-info {}
+    .player-group-tag {
+      font-size: 0.48rem; font-weight: 500;
+      letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--or); margin-bottom: 0.5rem;
+    }
+    .player-title {
+      font-size: clamp(1.1rem, 2vw, 1.5rem);
+      font-weight: 300; letter-spacing: -0.01em;
+      line-height: 1.3; margin-bottom: 0.6rem;
+    }
+    .player-desc {
+      font-size: 0.75rem; font-weight: 300;
+      color: var(--gris); line-height: 1.75;
+      max-width: 640px;
+    }
+
+    /* nav vidéo */
+    .player-nav {
+      display: flex; align-items: center; gap: 1rem;
+      margin-top: 0.5rem;
+    }
+    .player-nav-btn {
+      font-size: 0.55rem; font-weight: 400;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--dim); padding: 0.4rem 0.8rem;
+      border: 1px solid rgba(255,255,255,0.12);
+      transition: all 0.15s;
+    }
+    .player-nav-btn:hover { color: var(--blanc); border-color: rgba(255,255,255,0.35); }
+    .player-nav-btn:disabled { opacity: 0.3; pointer-events: none; }
+
+    /* ── FOOTER ── */
+    .page-footer {
+      padding: 1.5rem 3rem;
+      border-top: 1px solid var(--ligne);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .page-footer span {
+      font-size: 0.5rem; letter-spacing: 0.1em;
+      text-transform: uppercase; color: rgba(255,255,255,0.2);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .main-layout { grid-template-columns: 1fr; }
+      .playlist { position: static; max-height: 320px; border-right: none; border-bottom: 1px solid var(--ligne); }
+      .player-zone { padding: 1.5rem; }
+      .tags-bar { padding: 0.8rem 1.5rem; }
+      .header-content { padding: 1.5rem 1.5rem 2rem; }
+      .page-footer { padding: 1.2rem 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<header class="page-header">
+  <div class="header-bg"></div>
+  <div class="header-content">
+    <nav class="header-nav">
+      <a href="index.html">Bertrand Basset</a>
+      <span>›</span>
+      <a href="#">Films & Vidéos</a>
+    </nav>
+    <h1 class="page-titre">Films & Vidéos</h1>
+  </div>
+</header>
+
+<!-- ── TAGS ── -->
+<div class="tags-bar">
+  <button class="tag-btn active" data-tag="all" onclick="filterTag('all')">Tout</button>
+  <button class="tag-btn" data-tag="tv" onclick="filterTag('tv')">Télévision</button>
+  <button class="tag-btn" data-tag="film" onclick="filterTag('film')">Film</button>
+  <button class="tag-btn" data-tag="portrait" onclick="filterTag('portrait')">Portrait</button>
+  <button class="tag-btn" data-tag="postprod" onclick="filterTag('postprod')">Post-production</button>
+</div>
+
+<!-- ── LAYOUT ── -->
+<div class="main-layout">
+
+  <!-- Playlist -->
+  <aside class="playlist">
+    <div class="playlist-head">
+      <span class="playlist-label">Visionner</span>
+      <span class="playlist-count" id="vidCount"></span>
+    </div>
+    <div id="playlistBody"></div>
+  </aside>
+
+  <!-- Player -->
+  <section class="player-zone">
+    <div class="player-wrap" id="playerWrap">
+      <div class="player-placeholder" id="playerPlaceholder">
+        <svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="22"/><polygon points="20,16 36,24 20,32"/></svg>
+        <span>Sélectionner une vidéo</span>
+      </div>
+    </div>
+
+    <div class="player-info" id="playerInfo" style="display:none">
+      <div class="player-group-tag" id="playerTag"></div>
+      <h2 class="player-title" id="playerTitle"></h2>
+      <p class="player-desc" id="playerDesc"></p>
+      <div class="player-nav">
+        <button class="player-nav-btn" id="btnPrev" onclick="navVideo(-1)">← Précédente</button>
+        <button class="player-nav-btn" id="btnNext" onclick="navVideo(1)">Suivante →</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ── FOOTER ── -->
+<footer class="page-footer">
+  <span>Bertrand Basset · Films & Vidéos</span>
+  <span>© 2026</span>
+</footer>
+
+<script>
+/* ══════════════════════════════════════════
+   DONNÉES — remplacer par les vrais liens
+   type: "youtube" | "vimeo"
+   id:   identifiant de la vidéo
+════════════════════════════════════════════ */
+const GROUPS = [
+  {
+    id: "france2",
+    label: "20H30 le dimanche · France 2",
+    tag: "tv",
+    videos: [
+      {
+        id: "v1",
+        title: "Portrait — [Titre à renseigner]",
+        type: "youtube",
+        videoId: "YOUTUBE_ID_ICI",
+        desc: "Portrait court d'archives — 20H30 le dimanche, France 2.",
+        annee: "2024"
+      },
+      {
+        id: "v2",
+        title: "Portrait — [Titre à renseigner]",
+        type: "youtube",
+        videoId: "YOUTUBE_ID_ICI",
+        desc: "Portrait court d'archives — 20H30 le dimanche, France 2.",
+        annee: "2023"
+      },
+      {
+        id: "v3",
+        title: "Portrait — [Titre à renseigner]",
+        type: "vimeo",
+        videoId: "VIMEO_ID_ICI",
+        desc: "Portrait court d'archives — 20H30 le dimanche, France 2.",
+        annee: "2023"
+      }
+    ]
+  },
+  {
+    id: "films",
+    label: "Films",
+    tag: "film",
+    videos: [
+      {
+        id: "v4",
+        title: "J'arrive",
+        type: "vimeo",
+        videoId: "VIMEO_ID_ICI",
+        desc: "Court métrage.",
+        annee: "2022"
+      }
+    ]
+  },
+  {
+    id: "postprod",
+    label: "Post-production & Étalonnage",
+    tag: "postprod",
+    videos: [
+      {
+        id: "v5",
+        title: "[Titre à renseigner]",
+        type: "vimeo",
+        videoId: "VIMEO_ID_ICI",
+        desc: "Étalonnage couleur.",
+        annee: "2024"
+      }
+    ]
+  }
+];
+
+/* ══════════════════════════════════════════ */
+
+let currentTag = 'all';
+let currentVideoId = null;
+
+// Flat index for prev/next
+function flatVideos() {
+  return GROUPS.flatMap(g => g.videos.map(v => ({ ...v, groupLabel: g.label, tag: g.tag })))
+    .filter(v => currentTag === 'all' || v.tag === currentTag);
+}
+
+function buildPlaylist() {
+  const body = document.getElementById('playlistBody');
+  body.innerHTML = '';
+  let total = 0;
+
+  GROUPS.forEach(g => {
+    const vids = g.videos.filter(v => currentTag === 'all' || g.tag === currentTag);
+    if (!vids.length) return;
+    total += vids.length;
+
+    const gh = document.createElement('div');
+    gh.className = 'group-header';
+    gh.textContent = g.label;
+    body.appendChild(gh);
+
+    vids.forEach(v => {
+      const item = document.createElement('div');
+      item.className = 'video-item' + (v.id === currentVideoId ? ' active' : '');
+      item.dataset.vid = v.id;
+      item.innerHTML = `
+        <span class="vi-arrow">▶</span>
+        <div class="vi-info">
+          <div class="vi-title">${v.title}</div>
+          <div class="vi-meta">${v.annee} · ${v.type === 'youtube' ? 'YouTube' : 'Vimeo'}</div>
+        </div>`;
+      item.addEventListener('click', () => playVideo(v.id));
+      body.appendChild(item);
+    });
+  });
+
+  document.getElementById('vidCount').textContent = total + ' vidéo' + (total > 1 ? 's' : '');
+}
+
+function playVideo(vid) {
+  const all = GROUPS.flatMap(g => g.videos.map(v => ({ ...v, groupLabel: g.label, tag: g.tag })));
+  const v = all.find(x => x.id === vid);
+  if (!v) return;
+  currentVideoId = vid;
+
+  // Build embed URL
+  let embedSrc = '';
+  if (v.type === 'youtube') {
+    embedSrc = `https://www.youtube-nocookie.com/embed/${v.videoId}?autoplay=1&rel=0&modestbranding=1`;
+  } else {
+    embedSrc = `https://player.vimeo.com/video/${v.videoId}?autoplay=1&color=c8913a&title=0&byline=0`;
+  }
+
+  // Update player
+  const wrap = document.getElementById('playerWrap');
+  document.getElementById('playerPlaceholder').style.display = 'none';
+  // Remove existing iframe if any
+  wrap.querySelectorAll('iframe').forEach(el => el.remove());
+  const iframe = document.createElement('iframe');
+  iframe.src = embedSrc;
+  iframe.allow = 'autoplay; fullscreen; picture-in-picture';
+  iframe.allowFullscreen = true;
+  wrap.appendChild(iframe);
+
+  // Update info
+  document.getElementById('playerInfo').style.display = 'block';
+  document.getElementById('playerTag').textContent = v.groupLabel;
+  document.getElementById('playerTitle').textContent = v.title;
+  document.getElementById('playerDesc').textContent = v.desc;
+
+  // Update active state in playlist
+  document.querySelectorAll('.video-item').forEach(el => {
+    el.classList.toggle('active', el.dataset.vid === vid);
+  });
+
+  // Prev / next
+  const flat = flatVideos();
+  const idx = flat.findIndex(x => x.id === vid);
+  document.getElementById('btnPrev').disabled = idx <= 0;
+  document.getElementById('btnNext').disabled = idx >= flat.length - 1;
+
+  // Scroll item into view
+  const activeEl = document.querySelector(`.video-item[data-vid="${vid}"]`);
+  activeEl?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+}
+
+function navVideo(dir) {
+  const flat = flatVideos();
+  const idx = flat.findIndex(x => x.id === currentVideoId);
+  const next = flat[idx + dir];
+  if (next) playVideo(next.id);
+}
+
+function filterTag(tag) {
+  currentTag = tag;
+  document.querySelectorAll('.tag-btn').forEach(b => b.classList.toggle('active', b.dataset.tag === tag));
+  buildPlaylist();
+}
+
+// Init
+buildPlaylist();
+</script>
+</body>
+</html>
