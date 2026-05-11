@@ -125,6 +125,13 @@ const MENU_CONFIG = [
     "type": "group"
   },
   {
+    "id": "films-player",
+    "name": "VOIR LES FILMS",
+    "type": "page",
+    "pageId": "films-player",
+    "parent": "group-1773158227466"
+  },
+  {
     "id": "item-1773158247053",
     "name": "CINEMA",
     "type": "gallery",
@@ -514,6 +521,132 @@ const SVG = {
     linkedin:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4V9h4v2a6 6 0 0 1 2-2z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>`
 };
 
+/* ─── FILMS VIDEOS DATA ─────────────────────────────── */
+/* Pour ajouter une vidéo : videoId = ID YouTube (non répertorié) ou Vimeo  */
+/* platform: "youtube" | "vimeo"                                            */
+const FILMS_VIDEOS = [
+    {
+        group: { fr: "CINÉMA", en: "CINEMA" },
+        videos: [
+            {
+                id: "v-jarrive",
+                titleFr: "J'arrive",
+                titleEn: "J'arrive",
+                metaFr: "Court métrage · 13 min · Respiro Production\n40 sélections · 20 prix dont Clermont-Ferrand, Los Angeles",
+                metaEn: "Short film · 13 min · Respiro Production\n40 selections · 20 awards incl. Clermont-Ferrand, LA",
+                platform: "vimeo",
+                videoId: "240574987",
+                thumb: ""
+            }
+        ]
+    },
+    {
+        group: { fr: "FRANCE 2 — 20H30 LE DIMANCHE", en: "FRANCE 2 — 20H30 ON SUNDAYS" },
+        videos: [
+            {
+                id: "v-rochefort",
+                titleFr: "Jean Rochefort",
+                titleEn: "Jean Rochefort",
+                metaFr: "Portrait invité · France 2",
+                metaEn: "Guest portrait · France 2",
+                platform: "youtube",
+                videoId: "",
+                thumb: "images/Television/01.jpg"
+            },
+            {
+                id: "v-gautier",
+                titleFr: "Léon Gautier",
+                titleEn: "Léon Gautier",
+                metaFr: "Les hommes du Commando Kieffer · 40 min",
+                metaEn: "The men of Commando Kieffer · 40 min",
+                platform: "youtube",
+                videoId: "",
+                thumb: "images/Television/02.jpg"
+            },
+            {
+                id: "v-drouot",
+                titleFr: "Jean Claude Drouot",
+                titleEn: "Jean Claude Drouot",
+                metaFr: "L'arrivée de la télévision · 40 min",
+                metaEn: "The arrival of television · 40 min",
+                platform: "youtube",
+                videoId: "",
+                thumb: "images/Television/03.jpg"
+            },
+            {
+                id: "v-lecleach",
+                titleFr: "Armel Le Cleac'h",
+                titleEn: "Armel Le Cleac'h",
+                metaFr: "Portrait · 26 min",
+                metaEn: "Portrait · 26 min",
+                platform: "youtube",
+                videoId: "",
+                thumb: "images/Television/04.jpg"
+            },
+            {
+                id: "v-huchet",
+                titleFr: "Nicolas Huchet",
+                titleEn: "Nicolas Huchet",
+                metaFr: "My Human Kit · 26 min",
+                metaEn: "My Human Kit · 26 min",
+                platform: "youtube",
+                videoId: "",
+                thumb: "images/Television/05.jpg"
+            },
+            {
+                id: "v-bouvard",
+                titleFr: "Philippe Bouvard",
+                titleEn: "Philippe Bouvard",
+                metaFr: "Portrait invité",
+                metaEn: "Guest portrait",
+                platform: "youtube",
+                videoId: "",
+                thumb: "images/Television/06.jpg"
+            },
+            {
+                id: "v-garcia",
+                titleFr: "José Garcia",
+                titleEn: "José Garcia",
+                metaFr: "Portrait invité",
+                metaEn: "Guest portrait",
+                platform: "youtube",
+                videoId: "",
+                thumb: "images/Television/07.jpg"
+            },
+            {
+                id: "v-levy",
+                titleFr: "Marc Levy",
+                titleEn: "Marc Levy",
+                metaFr: "Portrait invité",
+                metaEn: "Guest portrait",
+                platform: "youtube",
+                videoId: "",
+                thumb: "images/Television/08.jpg"
+            },
+            {
+                id: "v-filipetti",
+                titleFr: "Aurélie Filipetti",
+                titleEn: "Aurélie Filipetti",
+                metaFr: "Portrait invité",
+                metaEn: "Guest portrait",
+                platform: "youtube",
+                videoId: "",
+                thumb: "images/Television/09.jpg"
+            },
+            {
+                id: "v-allen",
+                titleFr: "Woody Allen",
+                titleEn: "Woody Allen",
+                metaFr: "Portrait invité",
+                metaEn: "Guest portrait",
+                platform: "youtube",
+                videoId: "",
+                thumb: "images/Television/10.jpg"
+            }
+        ]
+    }
+];
+
 /* ─── PAGE BUILDERS ──────────────────────────────────── */
 function buildPage(pageId, lang) {
     const page = (typeof PAGES_CONFIG !== 'undefined') && PAGES_CONFIG[pageId];
@@ -641,6 +774,88 @@ function buildContactPage(lang) {
                 </form>
             </div>
         </div>`;
+}
+
+function buildFilmsPlayerPage(lang) {
+    const en = lang === 'en';
+    /* Flatten all videos with group info */
+    const allVideos = [];
+    FILMS_VIDEOS.forEach(g => g.videos.forEach(v => allVideos.push(v)));
+
+    /* Build playlist HTML */
+    let playlistHtml = '';
+    FILMS_VIDEOS.forEach(g => {
+        const groupLabel = en ? g.group.en : g.group.fr;
+        playlistHtml += `<div class="films-group-header">${groupLabel}</div>`;
+        g.videos.forEach(v => {
+            const title  = en ? v.titleEn : v.titleFr;
+            const meta   = (en ? v.metaEn : v.metaFr).split('\n')[0];
+            const idx    = allVideos.indexOf(v);
+            const thumb  = v.thumb
+                ? `<img src="${v.thumb}" alt="${title}" loading="lazy">`
+                : `<div class="films-thumb-placeholder">▶</div>`;
+            playlistHtml += `
+                <div class="films-playlist-item${idx === 0 ? ' active' : ''}"
+                     data-fidx="${idx}" onclick="window._filmsPlay(${idx})">
+                    <div class="films-playlist-thumb">${thumb}</div>
+                    <div class="films-playlist-info">
+                        <div class="films-playlist-title">${title}</div>
+                        <div class="films-playlist-meta">${meta}</div>
+                    </div>
+                </div>`;
+        });
+    });
+
+    /* Build first video player */
+    const first = allVideos[0];
+    const firstTitle = first ? (en ? first.titleEn : first.titleFr) : '';
+    const firstMeta  = first ? (en ? first.metaEn  : first.metaFr)  : '';
+    const firstSrc   = first ? _filmsEmbedSrc(first) : '';
+
+    /* Inject global play function */
+    window._filmsAllVideos = allVideos;
+    window._filmsLang = lang;
+    window._filmsPlay = function(idx) {
+        const v     = window._filmsAllVideos[idx];
+        const lg    = window._filmsLang;
+        const stage = document.getElementById('filmsStageIframe');
+        const title = document.getElementById('filmsInfoTitle');
+        const meta  = document.getElementById('filmsInfoMeta');
+        if (!v) return;
+        if (stage) stage.src = _filmsEmbedSrc(v);
+        if (title) title.textContent = lg === 'en' ? v.titleEn : v.titleFr;
+        if (meta)  meta.innerHTML    = (lg === 'en' ? v.metaEn : v.metaFr).replace(/\n/g,'<br>');
+        document.querySelectorAll('.films-playlist-item').forEach((el, i) => {
+            el.classList.toggle('active', i === idx);
+        });
+    };
+
+    return `
+        <div class="films-player">
+            <div class="films-playlist">${playlistHtml}</div>
+            <div class="films-stage">
+                <div class="films-player-wrap">
+                    <iframe id="filmsStageIframe"
+                        src="${firstSrc}"
+                        allow="autoplay; fullscreen; picture-in-picture"
+                        allowfullscreen>
+                    </iframe>
+                </div>
+                <div class="films-info">
+                    <div class="films-info-title" id="filmsInfoTitle">${firstTitle}</div>
+                    <div class="films-info-meta" id="filmsInfoMeta">${firstMeta.replace(/\n/g,'<br>')}</div>
+                </div>
+            </div>
+        </div>`;
+}
+
+function _filmsEmbedSrc(v) {
+    if (!v || !v.videoId) return 'about:blank';
+    if (v.platform === 'vimeo') {
+        return `https://player.vimeo.com/video/${v.videoId}?title=0&byline=0&portrait=0`;
+    }
+    /* youtube */
+    return `https://www.youtube-nocookie.com/embed/${v.videoId}?rel=0`;
 }
 
 /* ─── PORTFOLIO CLASS ────────────────────────────────── */
@@ -1422,7 +1637,13 @@ class Portfolio {
         if (id === 'contact')          html = buildContactPage(this.currentLang);
         if (id === 'post-production')  html = buildPostProductionPage(this.currentLang);
         if (id === 'auteur')           html = buildAuteurPage(this.currentLang);
-        container.innerHTML = `<div class="page-content">${html}</div>`;
+        if (id === 'films-player')     html = buildFilmsPlayerPage(this.currentLang);
+        /* films-player occupies full container — no centering wrapper */
+        if (id === 'films-player') {
+            container.innerHTML = html;
+        } else {
+            container.innerHTML = `<div class="page-content">${html}</div>`;
+        }
         const counter = document.querySelector('.gallery-counter');
         if (counter) counter.textContent = '';
         const descEl = document.getElementById('galleryDesc');

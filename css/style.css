@@ -2738,3 +2738,154 @@ body {
     line-height: 1.8;
     margin-top: 0.8rem;
 }
+
+/* ================================== */
+/* FILMS PLAYER PAGE                  */
+/* ================================== */
+.films-player {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.films-playlist {
+    border-right: 1px solid var(--light-gray);
+    overflow-y: auto;
+    padding: 1rem 0;
+}
+
+.films-group-header {
+    font-size: 0.52rem;
+    font-weight: 400;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--dim);
+    padding: 0.8rem 1.2rem 0.5rem;
+}
+.films-group-header:first-child { padding-top: 0; }
+
+.films-playlist-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.55rem 1.2rem;
+    cursor: pointer;
+    transition: background 0.15s;
+    border-left: 2px solid transparent;
+}
+.films-playlist-item:hover { background: rgba(0,0,0,0.03); }
+.films-playlist-item.active {
+    border-left-color: var(--black);
+    background: rgba(0,0,0,0.035);
+}
+
+.films-playlist-thumb {
+    width: 70px;
+    height: 40px;
+    background: var(--light-gray);
+    flex-shrink: 0;
+    overflow: hidden;
+}
+.films-playlist-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+.films-thumb-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    color: var(--dim);
+    opacity: 0.4;
+}
+
+.films-playlist-info { flex: 1; min-width: 0; }
+.films-playlist-title {
+    font-size: 0.7rem;
+    font-weight: 300;
+    color: var(--black);
+    line-height: 1.35;
+    margin-bottom: 0.1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.films-playlist-meta {
+    font-size: 0.58rem;
+    color: var(--dim);
+    letter-spacing: 0.04em;
+}
+
+.films-stage {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 1.8rem 2rem;
+    gap: 1rem;
+}
+
+.films-player-wrap {
+    flex: 1;
+    min-height: 0;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.films-player-wrap iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+}
+
+.films-info { flex-shrink: 0; }
+.films-info-title {
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: var(--black);
+    margin-bottom: 0.25rem;
+    letter-spacing: 0.01em;
+}
+.films-info-meta {
+    font-size: 0.68rem;
+    font-weight: 300;
+    color: var(--gray);
+    line-height: 1.65;
+}
+
+@media (max-width: 768px) {
+    .films-player {
+        grid-template-columns: 1fr;
+        grid-template-rows: 200px 1fr;
+    }
+    .films-playlist {
+        border-right: none;
+        border-bottom: 1px solid var(--light-gray);
+        overflow-x: auto;
+        overflow-y: hidden;
+        display: flex;
+        padding: 0.6rem 0;
+    }
+    .films-group-header { display: none; }
+    .films-playlist-item {
+        flex-direction: column;
+        align-items: center;
+        padding: 0.4rem 0.7rem;
+        border-left: none;
+        border-bottom: 2px solid transparent;
+        gap: 0.3rem;
+        min-width: 80px;
+    }
+    .films-playlist-item.active { border-bottom-color: var(--black); border-left-color: transparent; }
+    .films-playlist-thumb { width: 60px; height: 36px; }
+    .films-playlist-title { font-size: 0.58rem; white-space: normal; text-align: center; }
+    .films-playlist-meta { display: none; }
+    .films-stage { padding: 0.8rem; gap: 0.6rem; }
+}
