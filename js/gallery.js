@@ -129,7 +129,8 @@ const MENU_CONFIG = [
     "name": "VOIR LES FILMS",
     "type": "page",
     "pageId": "films-player",
-    "parent": "group-1773158227466"
+    "parent": "group-1773158227466",
+    "hidden": true
   },
   {
     "id": "item-1773158247053",
