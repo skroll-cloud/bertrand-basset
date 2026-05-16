@@ -40,10 +40,16 @@ const T = {
 /* ─── MENU ──────────────────────────────────────────────────── */
 const MENU_CONFIG = [
   {
+    "id": "boutique",
+    "name": "BOUTIQUE",
+    "type": "group"
+  },
+  {
     "id": "dustin-kolor-link",
     "name": "DUST'IN KOLOR",
     "type": "link",
-    "url": "dustin-kolor/index.html"
+    "url": "dustin-kolor/index.html",
+    "parent": "boutique"
   },
   {
     "id": "item-1773174917949",
@@ -1463,7 +1469,7 @@ class Portfolio {
             if (footerCap) {
                 if (this.currentGalleryId === 'dustin-kolor') {
                     const fname = (item.filename || '').split('/').pop();
-                    const lbl = lang === 'en' ? 'Buy this print' : 'Acheter un tirage';
+                    const lbl = lang === 'en' ? 'Buy this print \u2014 from 160 \u20ac' : 'Acheter un tirage \u2014 \u00e0 partir de 160\u00a0\u20ac';
                     footerCap.innerHTML = `<button class="dk-buy-btn" onclick="window.portfolio.openBoutiquePanel('${fname}')">${lbl} \u2192</button>`;
                 } else if (item.button?.url) {
                     const lbl = item.button.label || (lang === 'en' ? 'See more' : 'En savoir plus');
@@ -1715,13 +1721,41 @@ class Portfolio {
     // ─── BOUTIQUE PANEL ──────────────────────────────────────────────────────
     openBoutiquePanel(filename) {
         const DK_EDITIONS = {
-            '01.jpg': { titre: 'Sandstorm',       couleur: 'Feu',    formats: [{ size: '60 \u00D7 90 cm',  prix: [820,  1050, 1230] }] },
-            '02.jpg': { titre: 'Flying Car',       couleur: 'Orange', formats: [{ size: '70 \u00D7 124 cm', prix: [1290, 1550, 1800] }] },
-            '03.jpg': { titre: 'After the Storm',  couleur: 'Vert',   formats: [{ size: '70 \u00D7 124 cm', prix: [1290, 1550, 1800] }] },
-            '04.jpg': { titre: 'Lost in the Dust', couleur: 'Rouge',  formats: [{ size: '60 \u00D7 80 cm',  prix: [890,  1100, 1300] }] },
-            '05.jpg': { titre: 'Camp Lighters',    couleur: 'Jaune',  formats: [{ size: '40 \u00D7 100 cm', prix: [790,  980,  1180] }] },
-            '06.jpg': { titre: "I'm Here",         couleur: 'Bleu',   formats: [{ size: '60 \u00D7 80 cm',  prix: [890,  1100, 1300] }] },
-            '08.jpg': { titre: "Umbrellas Way",    couleur: 'Rose',   formats: [{ size: '60 \u00D7 80 cm',  prix: [890,  1100, 1300] }] },
+            '01.jpg': { titre: 'Sandstorm',       couleur: 'Feu',
+                formats: [
+                    { size: '20 × 30 cm',  prix: [160,  200,  240]  },
+                    { size: '60 × 90 cm',  prix: [820,  1050, 1230] }
+                ]},
+            '02.jpg': { titre: 'Flying Car',       couleur: 'Orange',
+                formats: [
+                    { size: '17 × 30 cm',  prix: [160,  200,  240]  },
+                    { size: '70 × 124 cm', prix: [1290, 1550, 1800] }
+                ]},
+            '03.jpg': { titre: 'After the Storm',  couleur: 'Vert',
+                formats: [
+                    { size: '17 × 30 cm',  prix: [160,  200,  240]  },
+                    { size: '70 × 124 cm', prix: [1290, 1550, 1800] }
+                ]},
+            '04.jpg': { titre: 'Lost in the Dust', couleur: 'Rouge',
+                formats: [
+                    { size: '22 × 30 cm',  prix: [160,  200,  240]  },
+                    { size: '60 × 80 cm',  prix: [890,  1100, 1300] }
+                ]},
+            '05.jpg': { titre: 'Camp Lighters',    couleur: 'Jaune',
+                formats: [
+                    { size: '12 × 30 cm',  prix: [160,  200,  240]  },
+                    { size: '40 × 100 cm', prix: [790,  980,  1180] }
+                ]},
+            '06.jpg': { titre: "I'm Here",         couleur: 'Bleu',
+                formats: [
+                    { size: '22 × 30 cm',  prix: [160,  200,  240]  },
+                    { size: '60 × 80 cm',  prix: [890,  1100, 1300] }
+                ]},
+            '08.jpg': { titre: "Umbrellas Way",    couleur: 'Rose',
+                formats: [
+                    { size: '22 × 30 cm',  prix: [160,  200,  240]  },
+                    { size: '60 × 80 cm',  prix: [890,  1100, 1300] }
+                ]},
         };
         const SUPPORT = 'Museum Etching 350g\ncollé sur Dibond 2mm';
         const panel   = document.getElementById('boutiquePanel');
@@ -1732,45 +1766,84 @@ class Portfolio {
         const lang = this.currentLang;
         const ed   = filename ? DK_EDITIONS[filename] : null;
 
+        // Store state for dynamic format switching
+        window._dkEd       = ed;
+        window._dkFilename = filename;
+        window._dkLang     = lang;
+        window._dkFmtIdx   = 0;
+
+        window._dkSetFmt = function(idx) {
+            window._dkFmtIdx = idx;
+            const ed2   = window._dkEd;
+            if (!ed2) return;
+            const fmt2  = ed2.formats[idx];
+            const prix2 = fmt2.prix;
+            const lg    = window._dkLang;
+            // Update format buttons
+            document.querySelectorAll('.bq-fmt-btn').forEach((b, i) => {
+                b.classList.toggle('active', i === idx);
+            });
+            // Update price grid
+            const grid = document.getElementById('bqPrixGrid');
+            if (grid) {
+                grid.innerHTML =
+                    '<span class="bq-px-range">' + (lg==='en'?'ex. 1–3':'ex. 1–3') + '</span><span class="bq-px-val">' + prix2[0].toLocaleString('fr-FR') + ' €</span>' +
+                    '<span class="bq-px-range">' + (lg==='en'?'ex. 4–7':'ex. 4–7') + '</span><span class="bq-px-val">' + prix2[1].toLocaleString('fr-FR') + ' €</span>' +
+                    '<span class="bq-px-range">' + (lg==='en'?'ex. 8–10':'ex. 8–10') + '</span><span class="bq-px-val">' + prix2[2].toLocaleString('fr-FR') + ' €</span>';
+            }
+            // Update add button
+            const addBtn = document.getElementById('bqAddBtn');
+            if (addBtn) {
+                addBtn.onclick = function() { window.portfolio.addToCart(window._dkFilename, ed2.titre, fmt2.size, prix2[0]); };
+                addBtn.innerHTML = (lg==='en'?'Add to cart':'Ajouter au panier') + ' — ' + prix2[0].toLocaleString('fr-FR') + ' €';
+            }
+        };
+
         if (ed) {
-            const fmt      = ed.formats[0];
-            const prix     = fmt.prix;
-            const imgPath  = `images/dustin-kolor/${filename}`;
+            const fmt0      = ed.formats[0];
+            const prix0     = fmt0.prix;
+            const imgPath   = `images/dustin-kolor/${filename}`;
             const suppLines = SUPPORT.split('\n');
+            const fmtBtns   = ed.formats.map((f, i) =>
+                `<button class="bq-fmt-btn${i===0?' active':''}" onclick="window._dkSetFmt(${i})">${f.size}</button>`
+            ).join('');
+
             content.innerHTML = `
                 <div class="bq-header">
                     <div class="bq-img-wrap">
                         <img src="${imgPath}" alt="${ed.titre}" class="bq-thumb">
                     </div>
                     <div class="bq-meta">
-                        <p class="bq-serie">Dust'in Kolor &mdash; \u00C9dition ${ed.couleur}</p>
+                        <p class="bq-serie">Dust'in Kolor &mdash; Édition ${ed.couleur}</p>
                         <h2 class="bq-title">${ed.titre}</h2>
-                        <p class="bq-format">${fmt.size}</p>
                     </div>
+                </div>
+                <div class="bq-format-selector">
+                    ${fmtBtns}
                 </div>
                 <div class="bq-support">
                     ${suppLines.map(l => `<span>${l}</span>`).join('')}
                 </div>
                 <div class="bq-editions">
-                    <p class="bq-editions-label">${lang === 'en' ? 'Edition of 10 — price by exemplar' : '\u00C9dition 10 ex. — prix par num\u00E9ro'}</p>
-                    <div class="bq-prix-grid">
-                        <span class="bq-px-range">${lang === 'en' ? 'ex. 1–3' : 'ex. 1\u20133'}</span><span class="bq-px-val">${prix[0].toLocaleString('fr-FR')}\u00A0\u20AC</span>
-                        <span class="bq-px-range">${lang === 'en' ? 'ex. 4–7' : 'ex. 4\u20137'}</span><span class="bq-px-val">${prix[1].toLocaleString('fr-FR')}\u00A0\u20AC</span>
-                        <span class="bq-px-range">${lang === 'en' ? 'ex. 8–10' : 'ex. 8\u201310'}</span><span class="bq-px-val">${prix[2].toLocaleString('fr-FR')}\u00A0\u20AC</span>
+                    <p class="bq-editions-label">${lang === 'en' ? 'Edition of 10 — price by exemplar' : 'Édition 10 ex. — prix par numéro'}</p>
+                    <div class="bq-prix-grid" id="bqPrixGrid">
+                        <span class="bq-px-range">${lang === 'en' ? 'ex. 1–3' : 'ex. 1–3'}</span><span class="bq-px-val">${prix0[0].toLocaleString('fr-FR')} €</span>
+                        <span class="bq-px-range">${lang === 'en' ? 'ex. 4–7' : 'ex. 4–7'}</span><span class="bq-px-val">${prix0[1].toLocaleString('fr-FR')} €</span>
+                        <span class="bq-px-range">${lang === 'en' ? 'ex. 8–10' : 'ex. 8–10'}</span><span class="bq-px-val">${prix0[2].toLocaleString('fr-FR')} €</span>
                     </div>
                 </div>
                 <div class="bq-actions">
-                    <button class="bq-btn-add" onclick="window.portfolio.addToCart('${filename}', '${ed.titre}', '${fmt.size}', ${prix[0]})">
-                        ${lang === 'en' ? 'Add to cart' : 'Ajouter au panier'} &mdash; ${prix[0].toLocaleString('fr-FR')}\u00A0\u20AC
+                    <button class="bq-btn-add" id="bqAddBtn" onclick="window.portfolio.addToCart('${filename}', '${ed.titre}', '${fmt0.size}', ${prix0[0]})">
+                        ${lang === 'en' ? 'Add to cart' : 'Ajouter au panier'} — ${prix0[0].toLocaleString('fr-FR')} €
                     </button>
-                    <p class="bq-note">${lang === 'en' ? 'Numbered & signed. Certificate of authenticity included.' : 'Num\u00E9rot\u00E9 & sign\u00E9. Certificat d\u2019authenticit\u00E9 inclus.'}</p>
+                    <p class="bq-note">${lang === 'en' ? 'Numbered & signed. Certificate of authenticity included.' : 'Numéroté & signé. Certificat d’authenticité inclus.'}</p>
                     <p class="bq-contact"><a href="mailto:yellowshoesstudio@gmail.com">${lang === 'en' ? 'Contact for another size' : 'Demander un autre format'}</a></p>
                 </div>`;
         } else {
             // Generic panel — list all works
             content.innerHTML = `
-                <h2 class="bq-title">${lang === 'en' ? "Dust'in Kolor — Editions" : "Dust'in Kolor — \u00C9ditions"}</h2>
-                <p class="bq-note" style="margin-bottom:1.5rem">${lang === 'en' ? 'Navigate to a photo and click the buy button to order a specific print.' : 'Naviguez jusqu\u2019\u00E0 une photo puis cliquez sur Acheter un tirage.'}</p>`;
+                <h2 class="bq-title">${lang === 'en' ? "Dust'in Kolor — Editions" : "Dust'in Kolor — Éditions"}</h2>
+                <p class="bq-note" style="margin-bottom:1.5rem">${lang === 'en' ? 'Navigate to a photo and click the buy button to order a specific print.' : 'Naviguez jusqu’à une photo puis cliquez sur Acheter un tirage.'}</p>`;
         }
 
         panel.classList.add('open');
