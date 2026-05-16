@@ -40,58 +40,14 @@ const T = {
 /* ─── MENU ──────────────────────────────────────────────────── */
 const MENU_CONFIG = [
   {
-    "id": "boutique",
-    "name": "BOUTIQUE",
-    "type": "group"
-  },
-  {
-    "id": "dustin-kolor-link",
-    "name": "DUST'IN KOLOR",
-    "type": "link",
-    "url": "dustin-kolor/index.html",
-    "parent": "boutique"
-  },
-  {
-    "id": "item-1773174917949",
-    "name": "METIER",
-    "type": "gallery",
-    "galleryId": "studio",
-    "parent": "group-1773174817135",
-    "hidden": true
-  },
-  {
     "id": "item-1773178057178",
     "name": "PORTRAIT",
     "type": "gallery",
     "galleryId": "portrait"
   },
   {
-    "id": "item-1773174948772",
-    "name": "SERIE",
-    "type": "gallery",
-    "galleryId": "gem",
-    "parent": "group-1773174817135",
-    "hidden": true
-  },
-  {
-    "id": "item-1773174901597",
-    "name": "STUDIO",
-    "type": "gallery",
-    "galleryId": "studio",
-    "parent": "group-1773174817135",
-    "hidden": true
-  },
-  {
-    "id": "portrait",
-    "name": "ACTEUR",
-    "type": "gallery",
-    "galleryId": "portrait",
-    "parent": "group-1773174817135",
-    "hidden": true
-  },
-  {
     "id": "immersion",
-    "name": "SERIE",
+    "name": "IMMERSION",
     "type": "group",
     "galleryId": "gem"
   },
@@ -110,33 +66,9 @@ const MENU_CONFIG = [
     "parent": "immersion"
   },
   {
-    "id": "item-1773158098062",
-    "name": "Burning Man",
-    "type": "gallery",
-    "galleryId": "portrait",
-    "parent": "immersion",
-    "hidden": true
-  },
-  {
-    "id": "item-1773158051230",
-    "name": "Carré d'AS",
-    "type": "gallery",
-    "galleryId": "portrait",
-    "parent": "group-1773157969699",
-    "hidden": true
-  },
-  {
     "id": "group-1773158227466",
     "name": "FILM",
     "type": "group"
-  },
-  {
-    "id": "films-player",
-    "name": "VOIR LES FILMS",
-    "type": "page",
-    "pageId": "films-player",
-    "parent": "group-1773158227466",
-    "hidden": true
   },
   {
     "id": "item-1773158247053",
@@ -169,10 +101,11 @@ const MENU_CONFIG = [
     "hidden": true
   },
   {
-    "id": "item-1773175848292",
-    "name": "ARCHIVES",
-    "type": "gallery",
-    "galleryId": "television",
+    "id": "films-player",
+    "name": "VOIR LES FILMS",
+    "type": "page",
+    "pageId": "films-player",
+    "parent": "group-1773158227466",
     "hidden": true
   },
   {
@@ -182,10 +115,77 @@ const MENU_CONFIG = [
     "url": "clients/index.html"
   },
   {
+    "id": "boutique",
+    "name": "BOUTIQUE",
+    "type": "group"
+  },
+  {
+    "id": "dustin-kolor-link",
+    "name": "DUST'IN KOLOR",
+    "type": "link",
+    "url": "dustin-kolor/index.html",
+    "parent": "boutique"
+  },
+  {
     "id": "infos",
     "name": "INFOS",
     "type": "page",
     "pageId": "infos"
+  },
+  {
+    "id": "item-1773174917949",
+    "name": "METIER",
+    "type": "gallery",
+    "galleryId": "studio",
+    "parent": "group-1773174817135",
+    "hidden": true
+  },
+  {
+    "id": "item-1773174948772",
+    "name": "SERIE",
+    "type": "gallery",
+    "galleryId": "gem",
+    "parent": "group-1773174817135",
+    "hidden": true
+  },
+  {
+    "id": "item-1773174901597",
+    "name": "STUDIO",
+    "type": "gallery",
+    "galleryId": "studio",
+    "parent": "group-1773174817135",
+    "hidden": true
+  },
+  {
+    "id": "portrait",
+    "name": "ACTEUR",
+    "type": "gallery",
+    "galleryId": "portrait",
+    "parent": "group-1773174817135",
+    "hidden": true
+  },
+  {
+    "id": "item-1773158098062",
+    "name": "Burning Man",
+    "type": "gallery",
+    "galleryId": "portrait",
+    "parent": "immersion",
+    "hidden": true
+  },
+  {
+    "id": "item-1773158051230",
+    "name": "Carré d'AS",
+    "type": "gallery",
+    "galleryId": "portrait",
+    "parent": "group-1773157969699",
+    "hidden": true
+  },
+  {
+    "id": "item-1773175848292",
+    "name": "ARCHIVES",
+    "type": "gallery",
+    "galleryId": "television",
+    "hidden": true
   },
   {
     "id": "archives",
