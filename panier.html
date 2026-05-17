@@ -131,7 +131,7 @@
     <img src="assets/logo-b.svg" alt="B">
     <span class="header-logo-name">Bertrand Basset</span>
   </a>
-  <a href="boutique.html" class="header-back">← Continuer mes achats</a>
+  <a href="javascript:history.back()" class="header-back">← Continuer mes achats</a>
 </header>
 
 <div class="page-wrap">
@@ -142,6 +142,13 @@
 </div>
 
 <script>
+  /* ── Configuration Supabase / Edge Function ─────────────────────────────── */
+  const SUPABASE_URL       = 'https://[PROJECT_REF].supabase.co';   // ← à remplir
+  const SUPABASE_ANON_KEY  = '[SUPABASE_ANON_KEY]';                 // ← à remplir
+  const CHECKOUT_ENDPOINT  = SUPABASE_URL + '/functions/v1/stripe-checkout';
+  const SUCCESS_URL        = window.location.origin + '/merci.html';
+  const CANCEL_URL         = window.location.origin + '/panier.html';
+
   const IMG_BY_SLUG = {
     'sandstorm-feu':          'images/dustin-kolor/01.jpg',
     'flying-car-orange':      'images/dustin-kolor/02.jpg',
@@ -156,8 +163,8 @@
   const PROMO_DISCOUNT = 0.10;
   let promoApplied     = false;
 
-  function getCart() { try { return JSON.parse(localStorage.getItem('dk_cart')||'[]'); } catch(e){ return []; } }
-  function saveCart(c) { localStorage.setItem('dk_cart', JSON.stringify(c)); }
+  function getCart() { try { return JSON.parse(localStorage.getItem('bb_cart')||'[]'); } catch(e){ return []; } }
+  function saveCart(c) { localStorage.setItem('bb_cart', JSON.stringify(c)); }
 
   function getImg(item) {
     if (item.cat === 'carte' && item.imgs && item.imgs.length)
@@ -214,7 +221,7 @@
     if (cart.length === 0) {
       wrap.innerHTML = `<p class="cart-empty">Votre panier est vide.</p>
         <div class="sep"></div>
-        <a href="dustin-kolor/index.html" class="continue-link">← Retour à la boutique</a>`;
+        <a href="javascript:history.back()" class="continue-link">← Retour à la boutique</a>`;
       return;
     }
 
@@ -319,11 +326,60 @@
       </div>
 
       <div class="sep"></div>
-      <a href="dustin-kolor/index.html" class="continue-link">← Continuer mes achats</a>`;
+      <a href="javascript:history.back()" class="continue-link">← Continuer mes achats</a>`;
   }
 
-  function checkout() {
-    alert('Paiement en ligne bientôt disponible.\nPour commander maintenant :\nbertrand.basset@gmail.com · 06 43 10 58 60');
+  async function checkout() {
+    const cart = getCart();
+    if (!cart.length) return;
+
+    const btn = document.querySelector('.btn-checkout');
+    if (!btn) return;
+    btn.disabled = true;
+    btn.textContent = 'Redirection vers le paiement…';
+
+    try {
+      const items = cart.map(item => ({
+        type:    item.type   || 'simple',
+        slug:    item.slug   || null,
+        titre:   item.titre  || item.name || 'Article',
+        prix:    item.prix,
+        qty:     item.qty    || 1,
+        chassis: item.chassis || false,
+        id:      item.id     || null,
+        ids:     item.ids    || null,
+        cat:     item.cat    || null,
+      }));
+
+      const res = await fetch(CHECKOUT_ENDPOINT, {
+        method:  'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+        },
+        body: JSON.stringify({
+          items,
+          promo:       promoApplied ? PROMO_CODE : '',
+          success_url: SUCCESS_URL,
+          cancel_url:  CANCEL_URL,
+        }),
+      });
+
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert(data.error || 'Erreur lors du paiement. Veuillez réessayer.');
+        btn.disabled = false;
+        btn.textContent = 'Procéder au paiement';
+      }
+    } catch (e) {
+      console.error('checkout error:', e);
+      alert('Erreur de connexion. Veuillez réessayer ou nous contacter : bertrand.basset@gmail.com');
+      btn.disabled = false;
+      btn.textContent = 'Procéder au paiement';
+    }
   }
 
   renderCart();

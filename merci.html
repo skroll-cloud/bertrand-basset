@@ -3,171 +3,146 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Paiement confirmé — Bertrand Basset</title>
+  <title>Merci — Bertrand Basset</title>
   <link rel="icon" type="image/svg+xml" href="assets/logo-b.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
       --font: 'IBM Plex Sans', -apple-system, Arial, sans-serif;
-      --black: #111;
-      --gray: #555;
-      --dim: #999;
-      --line: #e8e8e8;
+      --black: #111; --gray: #555; --dim: #999; --line: #e8e8e8; --bg: #f7f7f7;
     }
-    html, body {
-      font-family: var(--font);
-      color: var(--black);
-      background: #fff;
-      -webkit-font-smoothing: antialiased;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+    html { font-family: var(--font); color: var(--black); background: #fff; -webkit-font-smoothing: antialiased; }
+    body { min-height: 100vh; display: flex; flex-direction: column; }
     a { color: inherit; text-decoration: none; }
 
-    .card {
-      max-width: 440px;
-      width: 100%;
-      padding: 3rem 2rem;
-      text-align: center;
+    .site-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.2rem 2rem; border-bottom: 1px solid var(--line);
+      position: sticky; top: 0; background: #fff; z-index: 100;
+    }
+    .header-logo { display: flex; align-items: center; gap: 0.5rem; }
+    .header-logo img { width: 18px; height: 18px; opacity: 0.7; }
+    .header-logo-name { font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--black); }
+
+    .page-wrap {
+      max-width: 560px; margin: 0 auto; padding: 5rem 2rem 6rem;
+      text-align: center; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
     }
 
-    .check-circle {
-      width: 52px; height: 52px;
-      border: 1.5px solid var(--black);
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 2rem;
-    }
-    .check-circle svg {
-      width: 22px; height: 22px;
-      fill: none; stroke: var(--black); stroke-width: 2;
-      stroke-linecap: round; stroke-linejoin: round;
+    .check-icon {
+      width: 52px; height: 52px; border-radius: 50%; border: 1.5px solid var(--black);
+      display: flex; align-items: center; justify-content: center; margin: 0 auto 2rem;
     }
 
-    .kicker {
-      font-size: 0.52rem; letter-spacing: 0.22em; text-transform: uppercase;
-      color: var(--dim); margin-bottom: 0.6rem;
-    }
-    .title {
-      font-size: 1.9rem; font-weight: 300;
-      letter-spacing: -0.02em; line-height: 1.15;
-      margin-bottom: 1.4rem;
-    }
-    .message {
-      font-size: 0.82rem; color: var(--gray);
-      line-height: 1.8; font-weight: 300;
-      margin-bottom: 2.5rem;
-    }
-    .message strong { font-weight: 400; color: var(--black); }
+    .page-kicker { font-size: 0.52rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--dim); margin-bottom: 0.8rem; }
+    .page-title  { font-size: 2.2rem; font-weight: 300; letter-spacing: -0.02em; margin-bottom: 1.4rem; }
+    .page-desc   { font-size: 0.82rem; color: var(--gray); line-height: 1.8; max-width: 420px; margin: 0 auto 2.5rem; }
+    .page-desc strong { color: var(--black); font-weight: 400; }
 
-    .sep { height: 1px; background: var(--line); margin: 2rem 0; }
+    .order-recap {
+      width: 100%; border: 1px solid var(--line); border-radius: 3px;
+      padding: 1.4rem 1.6rem; margin-bottom: 2.5rem; text-align: left;
+    }
+    .recap-title { font-size: 0.55rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--dim); margin-bottom: 1rem; }
+    .recap-item { display: flex; justify-content: space-between; padding: 0.45rem 0; border-bottom: 1px solid var(--line); font-size: 0.75rem; }
+    .recap-item:last-child { border-bottom: none; }
+    .recap-item-label { color: var(--gray); }
+    .recap-total { display: flex; justify-content: space-between; padding-top: 0.8rem; margin-top: 0.4rem; border-top: 1px solid var(--black); font-size: 0.9rem; }
 
-    .links {
-      display: flex; flex-direction: column; gap: 0.8rem;
+    .actions { display: flex; flex-direction: column; gap: 0.8rem; width: 100%; align-items: center; }
+    .btn-retour {
+      padding: 0.9rem 2rem; background: var(--black); color: #fff;
+      font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase;
+      border-radius: 2px; border: none; cursor: pointer; transition: background 0.2s; width: 100%;
     }
-    .link-primary {
-      display: inline-block;
-      padding: 0.85rem 1.5rem;
-      background: var(--black); color: #fff;
-      font-size: 0.62rem; font-weight: 500; letter-spacing: 0.14em;
-      text-transform: uppercase; border-radius: 2px;
-      transition: background 0.2s;
-    }
-    .link-primary:hover { background: #333; }
-    .link-secondary {
-      font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase;
-      color: var(--dim); transition: color 0.15s;
-    }
-    .link-secondary:hover { color: var(--black); }
+    .btn-retour:hover { background: #333; }
+    .btn-link { font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim); transition: color 0.15s; }
+    .btn-link:hover { color: var(--black); }
 
-    .brand {
-      display: flex; align-items: center; justify-content: center;
-      gap: 0.45rem; margin-bottom: 2.5rem;
-    }
-    .brand img { width: 16px; height: 16px; opacity: 0.5; }
-    .brand-name {
-      font-size: 0.55rem; letter-spacing: 0.12em; text-transform: uppercase;
-      color: var(--dim);
-    }
-
-    @media (max-width: 480px) {
-      .card { padding: 2.5rem 1.5rem; }
-      .title { font-size: 1.6rem; }
-    }
+    .contact-note { margin-top: 3rem; font-size: 0.65rem; color: var(--dim); line-height: 1.7; }
+    .contact-note a { color: var(--black); border-bottom: 1px solid var(--line); }
   </style>
 </head>
 <body>
-<div class="card">
 
-  <div class="brand">
+<header class="site-header">
+  <a href="index.html" class="header-logo">
     <img src="assets/logo-b.svg" alt="B">
-    <span class="brand-name">Bertrand Basset</span>
+    <span class="header-logo-name">Bertrand Basset</span>
+  </a>
+</header>
+
+<div class="page-wrap">
+  <div class="check-icon">
+    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5">
+      <polyline points="4,11 9,16 18,6"/>
+    </svg>
   </div>
 
-  <div class="check-circle">
-    <svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>
-  </div>
-
-  <p class="kicker">Paiement confirmé</p>
-  <h1 class="title">Merci pour<br>votre achat</h1>
-
-  <p class="message" id="msg">
-    Votre paiement a bien été reçu.<br>
-    <strong>Vous pouvez prendre vos cartes postales.</strong><br><br>
-    Un reçu vous a été envoyé par email.<br>
-    Bonne route avec les images.
+  <p class="page-kicker">Commande confirmée</p>
+  <h1 class="page-title">Merci !</h1>
+  <p class="page-desc" id="pageDesc">
+    Votre paiement a bien été reçu. Un <strong>email de confirmation</strong> vous a été envoyé.
   </p>
 
-  <div class="sep"></div>
-
-  <div class="links">
-    <a href="dustin-kolor/index.html" class="link-primary">Voir la série Dust'in Kolor</a>
-    <a href="index.html" class="link-secondary">← Retour au portfolio</a>
+  <div class="order-recap" id="orderRecap" style="display:none">
+    <p class="recap-title">Récapitulatif</p>
+    <div id="recapItems"></div>
+    <div class="recap-total" id="recapTotal"></div>
   </div>
 
+  <div class="actions">
+    <button class="btn-retour" onclick="location.href='index.html'">Retour au portfolio</button>
+    <a class="btn-link" href="dustin-kolor/index.html">← Dust'in Kolor</a>
+  </div>
+
+  <p class="contact-note">
+    Une question ? <a href="mailto:bertrand.basset@gmail.com">bertrand.basset@gmail.com</a> · 06 43 10 58 60
+  </p>
 </div>
 
 <script>
-  /* ── Notification automatique au bar — cartes postales uniquement ──
-     Déclenché seulement si l'URL contient ?type=carte ou ?type=pack3
-     (configuré dans les success_url des Payment Links Stripe)
-  ── */
-  const WEB3FORMS_KEY = '558203';
+// Afficher le recap depuis bb_cart avant de le vider
+try {
+  var cart = JSON.parse(localStorage.getItem('bb_cart') || '[]');
+  if (cart.length > 0) {
+    var sub  = cart.reduce(function(s,i) { return s + i.prix * (i.qty||1); }, 0);
+    var html = cart.map(function(item) {
+      return '<div class="recap-item">' +
+        '<span class="recap-item-label">' + (item.titre || item.name || 'Article') + '</span>' +
+        '<span>' + (item.prix * (item.qty||1)).toLocaleString('fr-FR') + ' €</span>' +
+      '</div>';
+    }).join('');
+    document.getElementById('recapItems').innerHTML = html;
+    document.getElementById('recapTotal').innerHTML =
+      '<span style="color:var(--dim);font-size:0.65rem;text-transform:uppercase;letter-spacing:0.06em">Total payé</span>' +
+      '<span style="font-weight:300">' + sub.toLocaleString('fr-FR') + ' €</span>';
+    document.getElementById('orderRecap').style.display = '';
 
-  const NOTIF_EMAIL   = 'team@labrasseriegraphique.com';
+    // Adapter le message selon le contenu du panier
+    var hasTirages = cart.some(function(i){
+      return i.cat === 'tirage' || i.type === 'simple' || i.type === 'dibond' || i.type === 'grand';
+    });
+    var hasCartes = cart.some(function(i){
+      return i.cat === 'carte' || i.type === 'carte' || i.type === 'carte-pack';
+    });
+    if (hasTirages) {
+      document.getElementById('pageDesc').innerHTML =
+        'Votre paiement a bien été reçu. Un <strong>email de confirmation</strong> vous a été envoyé.<br>' +
+        'Vos tirages sont fabriqués sur commande par <strong>Pix in the City</strong>, Auray.<br>' +
+        'Délai estimé : <strong>2 à 3 semaines</strong>.';
+    } else if (hasCartes) {
+      document.getElementById('pageDesc').innerHTML =
+        'Votre paiement a bien été reçu. Un <strong>email de confirmation</strong> vous a été envoyé.<br>' +
+        'Vos cartes postales seront expédiées sous quelques jours.';
+    }
+  }
+} catch(e) {}
 
-  const PRODUITS = {
-    carte: { label: 'carte postale', unitPrice: 6  },
-    pack3: { label: 'pack 3 cartes', unitPrice: 15 }
-  };
-
-  (function () {
-    const params = new URLSearchParams(location.search);
-    const type   = params.get('type');
-    const qty    = parseInt(params.get('qty') || '1');
-    const produit = PRODUITS[type];
-    if (!produit) return;
-
-    const total   = (produit.unitPrice * qty) + ' €';
-    const detail  = qty > 1 ? `${qty} × ${produit.label}` : produit.label;
-
-    // Envoyer la notification
-    fetch('https://api.web3forms.com/submit', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-      body: JSON.stringify({
-        access_key: WEB3FORMS_KEY,
-        to:         NOTIF_EMAIL,
-        cc:         'bertrand.basset@gmail.com',
-        subject:    `✅ Paiement reçu — ${detail} (${total})`,
-        message:    `Un client vient de payer ${total} pour : ${detail}.\n\nIl peut prendre ses cartes postales.\n\n— Bertrand Basset / bertrandbasset.com`
-      })
-    }).catch(() => {}); // silencieux si erreur réseau
-  })();
+// Vider le panier
+localStorage.removeItem('bb_cart');
 </script>
 </body>
 </html>

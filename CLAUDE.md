@@ -269,3 +269,82 @@ img.save(dst, 'JPEG', quality=82, optimize=True)
 3. [ ] La police est-elle IBM Plex Sans, weight 300 ?
 4. [ ] Le logo B navigue-t-il vers le bon endroit ? (voir §4)
 5. [ ] Le déploiement se fait-il depuis `/tmp/site_deploy` ?
+
+---
+
+## 13. Architecture e-commerce universelle
+
+### Règle d'or : un seul panier pour tout le site
+
+**Un seul fichier panier** : `/panier.html` (racine du site).
+**Un seul fichier merci** : `/merci.html` (racine du site).
+**Jamais** de panier local dans un sous-dossier. Si `dustin-kolor/panier.html` existe, c'est un redirect.
+
+### Clé localStorage universelle
+
+```js
+localStorage.key = 'bb_cart'   // Bertrand Basset cart — toujours cette clé, partout
+```
+
+Toutes les pages qui ajoutent au panier (boutique.html, cartes.html, etc.) écrivent dans `bb_cart`.
+Le fichier `/panier.html` lit et écrit dans `bb_cart`.
+Le fichier `/merci.html` lit puis efface `bb_cart`.
+
+### Structure d'un item cart (générique)
+
+```js
+{
+  id:      string,       // clé unique, ex. "sandstorm-feu-simple"
+  slug:    string,       // identifiant œuvre pour l'Edge Function
+  type:    string,       // "simple" | "dibond" | "grand" | "carte" | "carte-pack" | futur: "portrait-seance"
+  cat:     string,       // catégorie pour l'affichage et la livraison : "tirage" | "carte" | "portrait"
+  titre:   string,       // libellé affiché dans le panier et les emails
+  prix:    number,       // prix unitaire en €
+  qty:     number,       // quantité (toujours 1 pour les tirages numérotés)
+  chassis: boolean,      // option châssis alu (tirages Dibond uniquement)
+  // optionnels selon le type :
+  imgs:    string[],     // images de cartes postales
+  ids:     string[],     // IDs pour les packs
+}
+```
+
+### Endpoint de paiement (Supabase Edge Function)
+
+```
+POST https://[PROJECT_REF].supabase.co/functions/v1/stripe-checkout
+Headers: apikey: [SUPABASE_ANON_KEY]
+Body: { items, promo, success_url, cancel_url }
+Response: { url: "https://checkout.stripe.com/..." }
+```
+
+Les constantes à configurer dans `/panier.html` :
+```js
+const SUPABASE_URL      = 'https://[PROJECT_REF].supabase.co';
+const SUPABASE_ANON_KEY = '[SUPABASE_ANON_KEY]';
+```
+
+### Logo B sur les pages boutique (sous-dossiers)
+
+Sur toute page dans `dustin-kolor/` ou autre sous-dossier avec achat :
+- **Gauche** : `← Retour à la série` → lien vers la galerie du sous-dossier
+- **Centre** : logo B → `../index.html` (site principal Bertrand Basset)
+- **Droite** : nom de la série + lien panier → `../panier.html`
+
+Exemple (boutique.html, cartes.html, merci.html dans dustin-kolor/) :
+```html
+<header class="site-header">
+  <a class="header-back" href="index.html">← Retour à la série</a>
+  <a href="../index.html"><img src="../assets/logo-b.svg" class="header-logo" alt="B"></a>
+  <div class="header-right">
+    <span class="header-series">Dust'in Kolor</span>
+    <a class="header-cart" href="../panier.html">Panier</a>
+  </div>
+</header>
+```
+
+### Ajouter un nouveau produit vendable
+
+1. Créer la page de présentation (ex. `portrait/index.html`) avec bouton "Ajouter au panier"
+2. L'item ajouté au panier suit la structure générique ci-dessus (avec `cat: 'portrait'`)
+3. Ajouter le traitement du nouveau type dans l'Edge Function `stripe-checkout/index.ts`
+4. Aucune modification de `/panier.html` ni de `/merci.html` requise — ils sont génériques

@@ -445,7 +445,7 @@
       <img src="../assets/logo-b.svg" class="g-logo" alt="B" onclick="location.href='../index.html'" title="Retour au portfolio">
       <div class="g-actions">
         <button class="g-btn accent" onclick="openPanel()" id="lblAcheter">ACHETER</button>
-        <button class="g-btn" onclick="location.href='panier.html'">
+        <button class="g-btn" onclick="location.href='../panier.html'">
           <span id="lblPanier">PANIER</span>
           <span class="cart-badge hidden" id="cartCount">0</span>
         </button>
@@ -623,8 +623,8 @@
   /* ════════════════════════════════════════
      CART
   ════════════════════════════════════════ */
-  function getCart() { try { return JSON.parse(localStorage.getItem('dk_cart')||'[]'); } catch(e){ return []; } }
-  function saveCart(c) { localStorage.setItem('dk_cart', JSON.stringify(c)); updateCartBadge(); }
+  function getCart() { try { return JSON.parse(localStorage.getItem('bb_cart')||'[]'); } catch(e){ return []; } }
+  function saveCart(c) { localStorage.setItem('bb_cart', JSON.stringify(c)); updateCartBadge(); }
 
   function addToCart() {
     const e   = EDITIONS[current];
@@ -751,7 +751,7 @@
       <button class="btn-commander" onclick="location.href='boutique.html?id=${e.slug}'">
         ${lang==='fr'?'Acheter / Configurer':'Buy / Configure'}
       </button>
-      <a class="panel-serie-link" href="panier.html">${lang==='fr'?'Voir le panier':'View cart'}</a>
+      <a class="panel-serie-link" href="../panier.html">${lang==='fr'?'Voir le panier':'View cart'}</a>
     `;
   }
 

@@ -231,7 +231,7 @@
   </a>
   <div class="header-right">
     <span class="header-series">Dust'in Kolor</span>
-    <a class="header-cart" href="panier.html">
+    <a class="header-cart" href="../panier.html">
       <span class="cart-badge" id="cartCount" style="display:none">0</span>
       Panier
     </a>
@@ -288,7 +288,7 @@
   <!-- ACTIONS -->
   <div class="actions-row">
     <button class="btn-add-cart" id="btnAdd" onclick="addToCart()" disabled>Ajouter au panier</button>
-    <button class="btn-voir-panier" onclick="location.href='panier.html'">Voir le panier</button>
+    <button class="btn-voir-panier" onclick="location.href='../panier.html'">Voir le panier</button>
   </div>
 
   <!-- INFOS -->
@@ -445,9 +445,9 @@ function updateRecap() {
 
 /* ── PANIER ── */
 function getCart() {
-  try { return JSON.parse(localStorage.getItem('dk_cart') || '[]'); } catch(e) { return []; }
+  try { return JSON.parse(localStorage.getItem('bb_cart') || '[]'); } catch(e) { return []; }
 }
-function saveCart(c) { localStorage.setItem('dk_cart', JSON.stringify(c)); }
+function saveCart(c) { localStorage.setItem('bb_cart', JSON.stringify(c)); }
 
 function addToCart() {
   var items = CARTES.filter(function(c) { return quantities[c.id] > 0; });

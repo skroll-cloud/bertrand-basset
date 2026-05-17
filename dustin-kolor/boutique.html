@@ -221,7 +221,7 @@
 
   <div class="header-right">
     <span class="header-series">Dust'in Kolor</span>
-    <a class="header-cart" href="panier.html">
+    <a class="header-cart" href="../panier.html">
       <span id="cartCount" class="cart-badge" style="display:none">0</span>
       <span id="cartLabel">Panier</span>
     </a>
@@ -261,7 +261,7 @@
       <div id="early-simple"></div>
       <div class="prix-block" id="prix-simple"></div>
       <button class="btn-add-cart" id="btn-simple" onclick="addToCart('simple')">Ajouter au panier</button>
-      <button class="btn-voir-panier" onclick="location.href='panier.html'">Voir le panier</button>
+      <button class="btn-voir-panier" onclick="location.href='../panier.html'">Voir le panier</button>
     </div>
 
     <!-- TAB: DIBOND -->
@@ -285,7 +285,7 @@
       <div id="early-dibond"></div>
       <div class="prix-block" id="prix-dibond"></div>
       <button class="btn-add-cart" id="btn-dibond" onclick="addToCart('dibond')">Ajouter au panier</button>
-      <button class="btn-voir-panier" onclick="location.href='panier.html'">Voir le panier</button>
+      <button class="btn-voir-panier" onclick="location.href='../panier.html'">Voir le panier</button>
     </div>
 
     <!-- TAB: GRAND FORMAT -->
@@ -295,7 +295,7 @@
       <div id="early-grand"></div>
       <div class="prix-block" id="prix-grand"></div>
       <button class="btn-add-cart" id="btn-grand" onclick="addToCart('grand')">Ajouter au panier</button>
-      <button class="btn-voir-panier" onclick="location.href='panier.html'">Voir le panier</button>
+      <button class="btn-voir-panier" onclick="location.href='../panier.html'">Voir le panier</button>
     </div>
 
     <!-- CARTES POSTALES — LIEN -->
@@ -404,10 +404,10 @@ let lang = 'fr';
    PANIER
 ══════════════════════════════════════════════════ */
 function getCart() {
-  try { return JSON.parse(localStorage.getItem('dk_cart') || '[]'); }
+  try { return JSON.parse(localStorage.getItem('bb_cart') || '[]'); }
   catch(e) { return []; }
 }
-function saveCart(c) { localStorage.setItem('dk_cart', JSON.stringify(c)); }
+function saveCart(c) { localStorage.setItem('bb_cart', JSON.stringify(c)); }
 function getCartCount() { return getCart().reduce(function(s,i){ return s + (i.qty||1); }, 0); }
 function updateCartBadge() {
   var n = getCartCount();
