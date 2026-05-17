@@ -15,7 +15,7 @@
       --line: #e8e8e8; --bg: #f7f7f7;
     }
     html { font-family: var(--font); color: var(--black); background: #fff; -webkit-font-smoothing: antialiased; }
-    body { min-height: 100vh; }
+    body { min-height: 100vh; display: flex; flex-direction: column; }
     a { color: inherit; text-decoration: none; }
     button { font-family: var(--font); cursor: pointer; border: none; background: none; }
     img { display: block; }
@@ -26,6 +26,7 @@
       padding: 1.2rem 2.5rem;
       border-bottom: 1px solid var(--line);
       position: sticky; top: 0; background: #fff; z-index: 100;
+      flex-shrink: 0;
     }
     .header-back {
       font-size: 0.55rem; letter-spacing: 0.14em; text-transform: uppercase;
@@ -49,115 +50,141 @@
       font-size: 0.45rem; border-radius: 50%; font-weight: 700;
     }
 
-    /* ── PAGE ── */
-    .page-wrap { max-width: 960px; margin: 0 auto; padding: 3.5rem 2.5rem 6rem; }
+    /* ── PAGE LAYOUT ── */
+    .page-wrap {
+      max-width: 860px; margin: 0 auto; width: 100%;
+      padding: 3rem 2.5rem 5rem;
+      display: flex; flex-direction: column; gap: 2.5rem;
+      flex: 1;
+    }
 
-    .page-header { margin-bottom: 2.8rem; }
     .page-kicker {
-      font-size: 0.55rem; letter-spacing: 0.15em; text-transform: uppercase;
-      color: var(--dim); margin-bottom: 0.7rem;
+      font-size: 0.55rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--dim);
+      margin-bottom: 0.5rem;
     }
     .page-title {
-      font-size: 2rem; font-weight: 300; letter-spacing: -0.02em; margin-bottom: 0.7rem;
-    }
-    .page-desc {
-      font-size: 0.82rem; line-height: 1.75; color: var(--gray); font-weight: 300;
-      max-width: 520px;
+      font-size: 1.9rem; font-weight: 300; letter-spacing: -0.02em;
     }
 
-    /* ── GRILLE CARTES ── */
-    .cartes-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 1.2rem;
-      margin-bottom: 2.5rem;
+    /* ── PLAYER ── */
+    .player-wrap {
+      position: relative;
+      background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .player-img {
+      width: 100%; max-height: 480px;
+      object-fit: contain; display: block;
+      transition: opacity 0.2s;
+    }
+    .player-img.fade { opacity: 0; }
+
+    .player-nav {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      width: 36px; height: 36px; border-radius: 50%;
+      background: rgba(255,255,255,0.9); border: 1px solid var(--line);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: background 0.15s, border-color 0.15s;
+      z-index: 2;
+    }
+    .player-nav:hover { background: #fff; border-color: #aaa; }
+    .player-nav.prev { left: 0.8rem; }
+    .player-nav.next { right: 0.8rem; }
+    .player-nav svg { stroke: var(--black); }
+
+    .player-num {
+      position: absolute; bottom: 0.7rem; right: 1rem;
+      font-size: 0.52rem; letter-spacing: 0.1em; color: rgba(0,0,0,0.35);
     }
 
-    /* carte paysage : full width dans sa colonne */
-    .carte-item { cursor: pointer; }
-
-    /* portrait seul sur 1 colonne (étroit) */
-    .carte-item.portrait {
-      grid-column: span 1;
-      max-width: 280px;
+    /* ── STRIP ── */
+    .strip-wrap {
+      position: relative;
     }
-
-    /* paysage : 2 colonnes pour les grandes */
-    .carte-item.paysage {
-      grid-column: span 2;
+    .strip-scroll {
+      display: flex; gap: 0.6rem;
+      overflow-x: auto; scroll-behavior: smooth;
+      padding: 0.2rem 0 0.5rem;
+      scrollbar-width: none;
     }
+    .strip-scroll::-webkit-scrollbar { display: none; }
 
-    /* Pour afficher portrait en plus petit */
-    @media (min-width: 700px) {
-      .cartes-grid {
-        grid-template-columns: repeat(3, 1fr);
-      }
-      .carte-item.paysage { grid-column: span 2; }
-      .carte-item.portrait { grid-column: span 1; }
+    .strip-thumb {
+      flex-shrink: 0; cursor: pointer;
+      position: relative;
     }
-
-    .carte-img-wrap {
-      overflow: hidden;
-      border: 2px solid transparent; transition: border-color 0.2s;
+    /* paysage : hauteur fixe, largeur auto */
+    .strip-thumb img {
+      height: 70px; width: auto; display: block;
+      border: 2px solid transparent; transition: border-color 0.15s;
       background: var(--bg);
     }
-    .carte-img-wrap img {
-      width: 100%; height: auto; display: block;
-    }
-    .carte-item:hover .carte-img-wrap { border-color: #ccc; }
-    .carte-item.active .carte-img-wrap { border-color: var(--black); }
+    .strip-thumb:hover img { border-color: #ccc; }
+    .strip-thumb.active img { border-color: var(--black); }
+    /* portrait : même hauteur */
 
-    .carte-num {
-      font-size: 0.52rem; color: var(--dim); margin-top: 0.4rem;
-      letter-spacing: 0.1em; text-align: center;
-    }
-
-    /* ── BLOC COMMANDE ── */
-    .order-block {
-      border-top: 1px solid var(--line); padding-top: 2rem;
-      display: flex; align-items: flex-start; justify-content: space-between;
-      gap: 2rem; flex-wrap: wrap;
-    }
-    .order-info { max-width: 380px; }
-    .order-spec-rows { display: flex; flex-direction: column; gap: 0; margin-bottom: 1.2rem; }
-    .spec-row {
-      display: flex; justify-content: space-between; align-items: baseline;
-      padding: 0.5rem 0; border-bottom: 1px solid var(--line); font-size: 0.78rem;
-    }
-    .spec-label { color: var(--dim); font-size: 0.65rem; letter-spacing: 0.06em; text-transform: uppercase; }
-    .spec-val { color: var(--black); font-weight: 300; }
-
-    .selection-info {
-      font-size: 0.7rem; color: var(--gray); margin-bottom: 0.5rem; min-height: 1.2em;
+    /* ── BAS : SELECTION + PRIX ── */
+    .bottom-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 1.2rem;
+      border-top: 1px solid var(--line); padding-top: 1.6rem;
     }
 
-    .order-action { display: flex; flex-direction: column; gap: 0.75rem; min-width: 200px; }
-    .prix-main {
-      font-size: 2.4rem; font-weight: 300; letter-spacing: -0.03em; color: var(--black);
+    .selection-state { display: flex; flex-direction: column; gap: 0.3rem; }
+    .sel-carte-label {
+      font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim);
     }
-    .prix-main sup { font-size: 1.2rem; font-weight: 300; vertical-align: super; }
-    .prix-sub { font-size: 0.58rem; color: var(--dim); letter-spacing: 0.07em; margin-top: 0.3rem; }
+    .sel-carte-val {
+      font-size: 1.1rem; font-weight: 300; color: var(--black); min-height: 1.4em;
+    }
+
+    .price-opts { display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap; }
+    .price-opt {
+      padding: 0.45rem 0.9rem;
+      border: 1px solid var(--line);
+      font-size: 0.62rem; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--dim); cursor: pointer; transition: all 0.15s; border-radius: 2px;
+    }
+    .price-opt:hover { border-color: #aaa; color: var(--black); }
+    .price-opt.active { border-color: var(--black); color: var(--black); background: var(--bg); }
+
+    .actions { display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap; }
+    .btn-select {
+      padding: 0.75rem 1.4rem;
+      border: 1px solid var(--black);
+      font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--black); transition: background 0.15s, color 0.15s; border-radius: 2px;
+    }
+    .btn-select:hover { background: var(--bg); }
+    .btn-select.selected {
+      background: var(--black); color: #fff;
+    }
 
     .btn-add-cart {
-      padding: 0.9rem 1.4rem;
+      padding: 0.75rem 1.6rem;
       background: var(--black); color: #fff;
-      font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 400;
+      font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 400;
       border-radius: 2px; transition: background 0.2s;
     }
-    .btn-add-cart:hover { background: #333; }
+    .btn-add-cart:hover:not(:disabled) { background: #333; }
     .btn-add-cart:disabled { background: #ccc; cursor: not-allowed; }
+
     .btn-voir-panier {
-      padding: 0.75rem 1.4rem;
+      padding: 0.75rem 1.2rem;
       background: none; color: var(--gray);
-      font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase;
+      font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase;
       border: 1px solid var(--line); border-radius: 2px; transition: border-color 0.2s, color 0.2s;
     }
     .btn-voir-panier:hover { border-color: var(--gray); color: var(--black); }
 
-    .legal-note {
-      font-size: 0.6rem; color: var(--dim); line-height: 1.65; margin-top: 2.5rem;
-      border-top: 1px solid var(--line); padding-top: 1.2rem; max-width: 520px;
+    /* ── INFOS ── */
+    .infos-row {
+      display: flex; gap: 2rem; flex-wrap: wrap;
+      border-top: 1px solid var(--line); padding-top: 1.4rem;
     }
+    .info-col { flex: 1; min-width: 160px; }
+    .info-label { font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim); margin-bottom: 0.3rem; }
+    .info-val { font-size: 0.78rem; color: var(--black); font-weight: 300; line-height: 1.5; }
 
     /* ── TOAST ── */
     .toast {
@@ -197,99 +224,191 @@
 <!-- PAGE -->
 <div class="page-wrap">
 
-  <div class="page-header">
-    <p class="page-kicker">Dust'in Kolor — Série photographique</p>
+  <!-- TITRE -->
+  <div>
+    <p class="page-kicker">Dust'in Kolor</p>
     <h1 class="page-title">Cartes postales</h1>
-    <p class="page-desc">Format DL 99 × 210 mm, papier premium soft touch. Impression professionnelle. Choisissez une carte ci-dessous.</p>
   </div>
 
-  <!-- GRILLE -->
-  <div class="cartes-grid" id="cartesGrid"></div>
+  <!-- PLAYER -->
+  <div class="player-wrap">
+    <button class="player-nav prev" onclick="go(-1)" aria-label="Précédent">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke-width="1.5"><polyline points="8,1 3,6 8,11"/></svg>
+    </button>
 
-  <!-- COMMANDE -->
-  <div class="order-block">
-    <div class="order-info">
-      <div class="order-spec-rows">
-        <div class="spec-row">
-          <span class="spec-label">Format</span>
-          <span class="spec-val">99 × 210 mm (DL)</span>
-        </div>
-        <div class="spec-row">
-          <span class="spec-label">Support</span>
-          <span class="spec-val">Papier soft touch premium</span>
-        </div>
-        <div class="spec-row">
-          <span class="spec-label">Finition</span>
-          <span class="spec-val">Impression professionnelle</span>
-        </div>
-        <div class="spec-row">
-          <span class="spec-label">Livraison</span>
-          <span class="spec-val">4 € — offerte dès 35 €</span>
-        </div>
-      </div>
-      <p class="selection-info" id="selectionInfo">Sélectionnez une carte ci-dessus</p>
+    <img class="player-img" id="playerImg" src="" alt="">
+
+    <button class="player-nav next" onclick="go(+1)" aria-label="Suivant">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke-width="1.5"><polyline points="4,1 9,6 4,11"/></svg>
+    </button>
+
+    <span class="player-num" id="playerNum">1 / 9</span>
+  </div>
+
+  <!-- STRIP -->
+  <div class="strip-wrap">
+    <div class="strip-scroll" id="stripScroll"></div>
+  </div>
+
+  <!-- BAS -->
+  <div class="bottom-bar">
+    <div class="selection-state">
+      <span class="sel-carte-label">Carte sélectionnée</span>
+      <span class="sel-carte-val" id="selVal">—</span>
     </div>
 
-    <div class="order-action">
-      <div>
-        <div class="prix-main">4<sup> €</sup></div>
-        <div class="prix-sub">Par carte · TTC</div>
+    <div style="display:flex;flex-direction:column;gap:0.8rem">
+      <div class="price-opts">
+        <button class="price-opt active" id="optUnite" onclick="setPack(false)">1 carte — 6 €</button>
+        <button class="price-opt" id="optPack" onclick="setPack(true)">Pack 3 cartes — 15 €</button>
       </div>
-      <button class="btn-add-cart" id="btnAddCart" onclick="addToCart()" disabled>Ajouter au panier</button>
-      <button class="btn-voir-panier" onclick="location.href='panier.html'">Voir le panier</button>
+      <div class="actions">
+        <button class="btn-select" id="btnSelect" onclick="toggleSelect()">Sélectionner</button>
+        <button class="btn-add-cart" id="btnAdd" onclick="addToCart()" disabled>Ajouter au panier</button>
+        <button class="btn-voir-panier" onclick="location.href='panier.html'">Voir le panier</button>
+      </div>
     </div>
   </div>
 
-  <p class="legal-note">
-    Les cartes postales sont expédiées sous enveloppe protectrice.<br>
-    Délai de livraison : 5–7 jours ouvrés. Commandes traitées par Bertrand Basset.<br>
-    Contact : bertrand.basset@gmail.com
-  </p>
+  <!-- INFOS -->
+  <div class="infos-row">
+    <div class="info-col">
+      <p class="info-label">Format</p>
+      <p class="info-val">99 × 210 mm (DL)</p>
+    </div>
+    <div class="info-col">
+      <p class="info-label">Support</p>
+      <p class="info-val">Papier premium soft touch</p>
+    </div>
+    <div class="info-col">
+      <p class="info-label">Livraison</p>
+      <p class="info-val">4 € — offerte dès 35 €</p>
+    </div>
+    <div class="info-col">
+      <p class="info-label">Délai</p>
+      <p class="info-val">5–7 jours ouvrés</p>
+    </div>
+  </div>
 
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-const CARTES = [
-  { id: 'cp-01', num: '01', orientation: 'portrait'  },
-  { id: 'cp-02', num: '02', orientation: 'paysage'   },
-  { id: 'cp-03', num: '03', orientation: 'paysage'   },
-  { id: 'cp-04', num: '04', orientation: 'paysage'   },
-  { id: 'cp-05', num: '05', orientation: 'paysage'   },
-  { id: 'cp-06', num: '06', orientation: 'paysage'   },
-  { id: 'cp-07', num: '07', orientation: 'paysage'   },
-  { id: 'cp-08', num: '08', orientation: 'paysage'   },
-  { id: 'cp-09', num: '09', orientation: 'paysage'   }
+var CARTES = [
+  { id:'cp-01', num:'01' },
+  { id:'cp-02', num:'02' },
+  { id:'cp-03', num:'03' },
+  { id:'cp-04', num:'04' },
+  { id:'cp-05', num:'05' },
+  { id:'cp-06', num:'06' },
+  { id:'cp-07', num:'07' },
+  { id:'cp-08', num:'08' },
+  { id:'cp-09', num:'09' }
 ];
 
-const PRIX = 4;
-let selected = null;
+var PRIX_UNITE = 6;
+var PRIX_PACK  = 15;
 
-/* ── Grille ── */
-function buildGrid() {
-  var grid = document.getElementById('cartesGrid');
-  grid.innerHTML = CARTES.map(function(c) {
-    return '<div class="carte-item ' + c.orientation + '" id="ci-' + c.id + '" onclick="selectCarte(\'' + c.id + '\')">' +
-      '<div class="carte-img-wrap">' +
-        '<img src="../images/cartes-postales/' + c.id + '.jpg" alt="Carte ' + c.num + '" loading="lazy">' +
-      '</div>' +
-      '<p class="carte-num">#' + c.num + '</p>' +
+var current  = 0;       // index dans le player
+var selected = [];      // cartes sélectionnées (ids)
+var packMode = false;   // true = pack 3 cartes
+
+/* ── BUILD STRIP ── */
+function buildStrip() {
+  var strip = document.getElementById('stripScroll');
+  strip.innerHTML = CARTES.map(function(c, i) {
+    return '<div class="strip-thumb' + (i === 0 ? ' active' : '') + '" id="th-' + c.id + '" onclick="goTo(' + i + ')">' +
+      '<img src="../images/cartes-postales/' + c.id + '.jpg" alt="Carte ' + c.num + '" loading="' + (i < 3 ? 'eager' : 'lazy') + '">' +
     '</div>';
   }).join('');
 }
 
-function selectCarte(id) {
-  selected = id;
-  document.querySelectorAll('.carte-item').forEach(function(el) {
-    el.classList.toggle('active', el.id === 'ci-' + id);
+/* ── NAVIGATION PLAYER ── */
+function goTo(i) {
+  current = (i + CARTES.length) % CARTES.length;
+  var img = document.getElementById('playerImg');
+  img.classList.add('fade');
+  setTimeout(function() {
+    img.src = '../images/cartes-postales/' + CARTES[current].id + '.jpg';
+    img.alt = 'Carte #' + CARTES[current].num;
+    img.classList.remove('fade');
+  }, 150);
+  document.getElementById('playerNum').textContent = (current + 1) + ' / ' + CARTES.length;
+  document.querySelectorAll('.strip-thumb').forEach(function(el, idx) {
+    el.classList.toggle('active', idx === current);
   });
-  var num = id.replace('cp-', '');
-  document.getElementById('selectionInfo').textContent = 'Carte #' + num + ' sélectionnée — ' + PRIX + ' €';
-  document.getElementById('btnAddCart').disabled = false;
+  // scroll strip pour centrer
+  var th = document.getElementById('th-' + CARTES[current].id);
+  if (th) th.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  // mettre à jour le bouton sélectionner
+  updateSelectBtn();
 }
 
-/* ── Panier ── */
+function go(dir) { goTo(current + dir); }
+
+/* ── SÉLECTION ── */
+function toggleSelect() {
+  var id = CARTES[current].id;
+  var idx = selected.indexOf(id);
+  if (idx >= 0) {
+    selected.splice(idx, 1);
+  } else {
+    if (packMode && selected.length >= 3) {
+      showToast('Pack limité à 3 cartes — décochez-en une');
+      return;
+    }
+    selected.push(id);
+  }
+  updateSelectBtn();
+  updateSelVal();
+  updateAddBtn();
+}
+
+function updateSelectBtn() {
+  var id = CARTES[current].id;
+  var isSelected = selected.indexOf(id) >= 0;
+  var btn = document.getElementById('btnSelect');
+  btn.textContent = isSelected ? 'Désélectionner' : 'Sélectionner';
+  btn.classList.toggle('selected', isSelected);
+}
+
+function updateSelVal() {
+  var el = document.getElementById('selVal');
+  if (selected.length === 0) {
+    el.textContent = '—';
+  } else {
+    el.textContent = selected.map(function(id) { return '#' + id.replace('cp-',''); }).join(', ');
+  }
+}
+
+function updateAddBtn() {
+  var btn = document.getElementById('btnAdd');
+  if (packMode) {
+    btn.disabled = selected.length !== 3;
+    btn.textContent = selected.length < 3
+      ? 'Choisir ' + (3 - selected.length) + ' carte' + (3 - selected.length > 1 ? 's' : '') + ' de plus'
+      : 'Ajouter au panier — 15 €';
+  } else {
+    btn.disabled = selected.length === 0;
+    btn.textContent = selected.length === 0
+      ? 'Ajouter au panier'
+      : 'Ajouter au panier — ' + (selected.length * PRIX_UNITE) + ' €';
+  }
+}
+
+/* ── PACK ── */
+function setPack(isPack) {
+  packMode = isPack;
+  selected = [];
+  document.getElementById('optUnite').classList.toggle('active', !isPack);
+  document.getElementById('optPack').classList.toggle('active', isPack);
+  updateSelectBtn();
+  updateSelVal();
+  updateAddBtn();
+}
+
+/* ── PANIER ── */
 function getCart() {
   try { return JSON.parse(localStorage.getItem('dk_cart') || '[]'); }
   catch(e) { return []; }
@@ -297,16 +416,31 @@ function getCart() {
 function saveCart(c) { localStorage.setItem('dk_cart', JSON.stringify(c)); }
 
 function addToCart() {
-  if (!selected) return;
+  if (selected.length === 0) return;
   var cart = getCart();
-  var num = selected.replace('cp-', '');
-  var item = { type: 'carte', id: selected, titre: 'Carte postale Dust\'in Kolor #' + num, prix: PRIX, qty: 1 };
-  var idx = cart.findIndex(function(c) { return c.type === 'carte' && c.id === selected; });
-  if (idx >= 0) { cart[idx].qty = (cart[idx].qty || 1) + 1; }
-  else { cart.push(item); }
+  var prix, titre, type;
+  if (packMode && selected.length === 3) {
+    type  = 'carte-pack';
+    prix  = PRIX_PACK;
+    titre = 'Pack 3 cartes Dust\'in Kolor (#' + selected.map(function(id){ return id.replace('cp-',''); }).join(', #') + ')';
+    cart.push({ type: type, ids: selected.slice(), titre: titre, prix: prix, qty: 1 });
+  } else {
+    selected.forEach(function(id) {
+      var num = id.replace('cp-', '');
+      var item = { type: 'carte', id: id, titre: 'Carte postale Dust\'in Kolor #' + num, prix: PRIX_UNITE, qty: 1 };
+      var idx = cart.findIndex(function(c) { return c.type === 'carte' && c.id === id; });
+      if (idx >= 0) { cart[idx].qty = (cart[idx].qty || 1) + 1; }
+      else { cart.push(item); }
+    });
+  }
   saveCart(cart);
   updateBadge();
   showToast('Ajouté au panier');
+  // reset sélection
+  selected = [];
+  updateSelectBtn();
+  updateSelVal();
+  updateAddBtn();
 }
 
 function updateBadge() {
@@ -323,8 +457,18 @@ function showToast(msg) {
   setTimeout(function() { t.classList.remove('show'); }, 2500);
 }
 
-buildGrid();
+/* ── CLAVIER ── */
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft')  go(-1);
+  if (e.key === 'ArrowRight') go(+1);
+  if (e.key === ' ') { e.preventDefault(); toggleSelect(); }
+});
+
+/* ── INIT ── */
+buildStrip();
 updateBadge();
+updateAddBtn();
+goTo(0);
 </script>
 </body>
 </html>
