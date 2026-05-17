@@ -202,25 +202,34 @@
       border: 1px solid var(--line); border-radius: 2px; transition: border-color 0.2s, color 0.2s;
     }
     .btn-voir-panier:hover { border-color: var(--gray); color: var(--black); }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(12px);
+      background: var(--black); color: #fff;
+      padding: 0.75rem 1.8rem; border-radius: 2px;
+      font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase;
+      opacity: 0; transition: opacity 0.22s, transform 0.22s;
+      z-index: 9999; pointer-events: none; white-space: nowrap;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
   </style>
 </head>
 <body>
 
 <!-- HEADER -->
 <header class="site-header">
-  <a class="header-back" id="backLink" href="index.html">
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.2">
-      <polyline points="9,2 4,7 9,12"/>
-    </svg>
-    <span id="backLabel">Retour à la série</span>
-  </a>
-
   <a href="../index.html" title="Bertrand Basset">
     <img src="../assets/logo-b.svg" class="header-logo" alt="B">
   </a>
 
   <div class="header-right">
-    <span class="header-series">Dust'in Kolor</span>
+    <a class="header-back" id="backLink" href="index.html">
+      <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.2">
+        <polyline points="9,2 4,7 9,12"/>
+      </svg>
+      <span id="backLabel">Dust'in Kolor</span>
+    </a>
     <a class="header-cart" href="../panier.html">
       <span id="cartCount" class="cart-badge" style="display:none">0</span>
       <span id="cartLabel">Panier</span>

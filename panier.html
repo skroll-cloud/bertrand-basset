@@ -240,7 +240,7 @@
           </div>
           <div>
             <div class="cart-item-name">${item.titre}</div>
-            <div class="cart-item-format">${item.type||item.format||''}\${item.taille?' — '+item.taille:''}</div>
+            <div class="cart-item-format">${item.type||item.format||''}${item.taille?' — '+item.taille:''}</div>
             <div class="cart-item-qty">
               <button class="qty-btn" onclick="changeQty('${eid}',-1)">−</button>
               <span>${item.qty||1}</span>
@@ -332,6 +332,12 @@
   async function checkout() {
     const cart = getCart();
     if (!cart.length) return;
+
+    // Vérifier que l'URL Supabase est configurée
+    if (SUPABASE_URL.includes('[PROJECT_REF]') || SUPABASE_ANON_KEY.includes('[SUPABASE_ANON_KEY]')) {
+      alert('Le paiement en ligne n\'est pas encore activé.\nPour commander : bertrand.basset@gmail.com · 06 43 10 58 60');
+      return;
+    }
 
     const btn = document.querySelector('.btn-checkout');
     if (!btn) return;
