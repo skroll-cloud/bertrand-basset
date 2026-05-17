@@ -229,84 +229,64 @@
     }
 
     /* ════════════════════════════════════════
-       PANNEAU PRODUIT — overlay depuis la droite
+       ÉTAT 3 — PAGE PRODUIT plein écran
     ════════════════════════════════════════ */
-    .product-overlay {
+    .product-page {
       position: fixed; inset: 0;
-      background: rgba(0,0,0,0.55);
-      z-index: 400;
+      background: #0d0d0d;
+      z-index: 300;
       opacity: 0; pointer-events: none;
-      transition: opacity 0.35s;
-    }
-    .product-overlay.visible { opacity: 1; pointer-events: auto; }
-
-    .product-panel {
-      position: fixed;
-      top: 0; right: -380px;
-      width: 340px; height: 100vh;
-      background: #111;
-      z-index: 410;
+      transition: opacity 0.4s ease;
       overflow-y: auto;
-      transition: right 0.38s cubic-bezier(0.4,0,0.2,1);
     }
-    .product-panel.open { right: 0; }
+    .product-page.open { opacity: 1; pointer-events: auto; }
 
-    .panel-close {
-      position: absolute; top: 1rem; right: 1.2rem;
-      background: none; border: none;
-      color: #666; font-size: 1.3rem;
-      cursor: pointer; z-index: 2;
-      transition: color 0.15s; line-height: 1; padding: 0;
+    .pp-layout {
+      display: grid;
+      grid-template-columns: 55% 45%;
+      min-height: 100vh;
     }
-    .panel-close:hover { color: #fff; }
-
-    /* Panel — contenu minimal */
-    .panel-inner {
-      padding: 2rem 1.6rem;
-      display: flex; flex-direction: column; gap: 1.4rem;
+    .pp-vis {
+      position: sticky; top: 0;
+      height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      background: #000;
+      padding: 3rem 2rem;
     }
-    .panel-thumb {
-      aspect-ratio: 4/3; background: #1a1a1a; overflow: hidden;
+    .pp-vis img { max-width: 100%; max-height: 100%; object-fit: contain; }
+    .pp-details {
+      padding: 2.8rem 2.4rem 4rem;
+      display: flex; flex-direction: column;
+      border-left: 1px solid #1a1a1a;
     }
-    .panel-thumb img { width: 100%; height: 100%; object-fit: cover; opacity: 0.85; }
+    .pp-back {
+      font-size: 0.52rem; letter-spacing: 0.16em; text-transform: uppercase;
+      color: #444; cursor: pointer; background: none; border: none; padding: 0;
+      margin-bottom: 2.8rem; text-align: left; transition: color 0.15s;
+    }
+    .pp-back:hover { color: #aaa; }
+    .pp-kicker { font-size: 0.48rem; letter-spacing: 0.2em; text-transform: uppercase; color: #444; margin-bottom: 0.5rem; }
+    .pp-title { font-size: 2rem; font-weight: 300; color: #f0f0f0; line-height: 1; letter-spacing: -0.01em; margin-bottom: 0.4rem; }
+    .pp-couleur { font-size: 0.72rem; color: #666; font-style: italic; margin-bottom: 2.4rem; }
     .panel-kicker { font-size: 0.5rem; letter-spacing: 0.18em; text-transform: uppercase; color: #555; }
-    .panel-title { font-size: 1.5rem; font-weight: 300; letter-spacing: -0.01em; color: #fff; line-height: 1.1; }
-    .panel-price { font-size: 1.6rem; font-weight: 300; color: #fff; letter-spacing: -0.02em; }
-    .panel-price-note { font-size: 0.55rem; color: #555; text-transform: uppercase; letter-spacing: 0.08em; margin-top: 0.2rem; }
-    .btn-commander {
-      display: block; width: 100%; padding: 1rem 1.5rem;
-      background: #fff; color: #111; font-family: var(--font);
-      font-size: 0.62rem; font-weight: 500; letter-spacing: 0.14em;
-      text-transform: uppercase; text-align: center;
-      cursor: pointer; border: none; border-radius: 1px;
-      transition: background 0.2s, color 0.2s; text-decoration: none;
-    }
-    .btn-commander:hover { background: #e8e8e8; }
-    .panel-serie-link {
-      display: block; text-align: center;
-      font-size: 0.58rem; color: #555; letter-spacing: 0.08em;
-      text-transform: uppercase; cursor: pointer;
-      transition: color 0.15s; text-decoration: none;
-    }
-    .panel-serie-link:hover { color: #ccc; }
-
-    @media (max-width: 767px) {
-      .product-panel { width: 100vw; right: -100vw; }
-      .product-panel.open { right: 0; }
-      .g-nav-zone { width: 30%; }
-    }
-  
     /* ── Format tabs ── */
-    .fmt-tabs { display:flex; gap:0.4rem; margin:1rem 0 0.8rem; flex-wrap:wrap; }
+    .fmt-tabs { display:flex; gap:0.4rem; margin-bottom:1rem; flex-wrap:wrap; }
     .fmt-tab {
-      flex:1; min-width:0; padding:0.4rem 0.5rem;
-      border:1px solid #333; background:transparent; color:#bbb;
-      font-size:0.6rem; letter-spacing:0.08em; text-transform:uppercase;
+      flex:1; min-width:0; padding:0.45rem 0.5rem;
+      border:1px solid #2a2a2a; background:transparent; color:#777;
+      font-size:0.58rem; letter-spacing:0.08em; text-transform:uppercase;
       cursor:pointer; transition:all 0.15s; white-space:nowrap;
     }
     .fmt-tab:hover { border-color:#aaa; color:#eee; }
     .fmt-tab.active { background:#f0f0f0; color:#111; border-color:#f0f0f0; }
 
+    @media (max-width: 767px) {
+      .pp-layout { grid-template-columns: 1fr; }
+      .pp-vis { position: relative; height: 50vh; top: auto; }
+      .pp-details { border-left: none; padding: 2rem 1.4rem 3rem; }
+      .g-nav-zone { width: 30%; }
+    }
+  
     .fmt-detail { margin-top:0.5rem; }
     .fmt-row { display:flex; justify-content:space-between; align-items:baseline;
       padding:0.35rem 0; border-bottom:1px solid #1e1e1e; font-size:0.7rem; }
@@ -481,12 +461,15 @@
 
   </div>
 
-  <!-- Panneau produit -->
-  <div class="product-overlay" id="productOverlay" onclick="closePanel()"></div>
-  <div class="product-panel" id="productPanel">
-    <button class="panel-close" onclick="closePanel()">✕</button>
-    <div class="panel-inner" id="panelInner">
-      <!-- filled by renderPanel() -->
+  <!-- Page produit plein écran (état 3) -->
+  <div class="product-page" id="productPage">
+    <div class="pp-layout">
+      <div class="pp-vis">
+        <img id="ppImg" src="" alt="">
+      </div>
+      <div class="pp-details" id="panelInner">
+        <!-- rempli par renderPanel() -->
+      </div>
     </div>
   </div>
 
@@ -749,6 +732,11 @@
     const e = EDITIONS[i];
     const t = T[lang];
     const titre = lang==='fr' ? e.titre_fr : e.titre_en;
+    const couleur = lang==='fr' ? e.couleur_fr : e.couleur_en;
+
+    // Image colonne gauche
+    document.getElementById('ppImg').src = `../images/dustin-kolor/${e.img}`;
+    document.getElementById('ppImg').alt = titre;
 
     const tabsHtml = FMT_KEYS.map(k => {
       const labels = { simple:t.fmt_simple, dibond:t.fmt_dibond, chassis:t.fmt_chassis, grand:t.fmt_grand };
@@ -756,13 +744,10 @@
     }).join('');
 
     document.getElementById('panelInner').innerHTML = `
-      <div class="panel-thumb">
-        <img src="../images/dustin-kolor/${e.img}" alt="${titre}">
-      </div>
-      <div>
-        <p class="panel-kicker">Dust'in Kolor — Édition ${e.num} — ${lang==='fr'?e.couleur_fr:e.couleur_en}</p>
-        <h2 class="panel-title">${titre}</h2>
-      </div>
+      <button class="pp-back" onclick="closePanel()">← ${lang==='fr'?'Retour à la série':'Back to series'}</button>
+      <p class="pp-kicker">Dust'in Kolor — Édition ${e.num}</p>
+      <h2 class="pp-title">${titre}</h2>
+      <p class="pp-couleur">${couleur}</p>
       <div class="fmt-tabs">${tabsHtml}</div>
       <div id="fmtDetail"></div>
       <div class="panel-legal">
@@ -779,7 +764,7 @@
         <span class="panel-cartes-info" id="pcInfo">${lang==='fr'?'1 carte — 6 € · 3 cartes — 15 €':'1 card — 6 € · 3 cards — 15 €'}</span>
         <button class="panel-cartes-add" id="pcAddBtn" disabled onclick="addCartesToCart()">${lang==='fr'?'Ajouter':'Add'}</button>
       </div>
-    `;
+    \`;
     renderFmtDetail(e, activeFmt);
   }
 
@@ -787,13 +772,11 @@
     activeFmt = 'simple';
     panelOpen = true;
     renderPanel(current);
-    document.getElementById('productPanel').classList.add('open');
-    document.getElementById('productOverlay').classList.add('visible');
+    document.getElementById('productPage').classList.add('open');
   }
   function closePanel() {
     panelOpen = false;
-    document.getElementById('productPanel').classList.remove('open');
-    document.getElementById('productOverlay').classList.remove('visible');
+    document.getElementById('productPage').classList.remove('open');
   }
 
   /* ════════════════════════════════════════
