@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dust'in Kolor — Boutique — Bertrand Basset</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/logo-b.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --font: 'IBM Plex Sans', -apple-system, Arial, sans-serif;
+      --black: #111; --gray: #555; --dim: #999;
+      --line: #e8e8e8; --bg: #f5f5f5;
+    }
+    html { font-family: var(--font); color: var(--black); background: #fff; -webkit-font-smoothing: antialiased; }
+    body { min-height: 100vh; }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: var(--font); cursor: pointer; border: none; background: none; }
+    img { display: block; max-width: 100%; }
+
+    /* ── HEADER ── */
+    .site-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.2rem 2.5rem;
+      border-bottom: 1px solid var(--line);
+      position: sticky; top: 0; background: #fff; z-index: 100;
+    }
+    .header-back {
+      font-size: 0.55rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--dim); transition: color 0.15s;
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .header-back:hover { color: var(--black); }
+    .header-logo { width: 22px; height: 22px; opacity: 0.7; transition: opacity 0.15s; }
+    .header-logo:hover { opacity: 1; }
+    .header-right {
+      display: flex; align-items: center; gap: 1.8rem;
+    }
+    .header-cart {
+      font-size: 0.55rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--dim); transition: color 0.15s;
+      display: flex; align-items: center; gap: 0.4rem;
+    }
+    .header-cart:hover { color: var(--black); }
+    .cart-badge {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 16px; height: 16px; background: var(--black); color: #fff;
+      font-size: 0.45rem; border-radius: 50%; font-weight: 700;
+    }
+    .cart-badge.hidden { display: none; }
+    .header-lang { font-size: 0.55rem; letter-spacing: 0.08em; display: flex; gap: 0.3rem; align-items: center; }
+    .header-lang a { color: var(--dim); cursor: pointer; transition: color 0.15s; }
+    .header-lang a.active { color: var(--black); font-weight: 500; }
+    .header-lang span { color: var(--line); }
+
+    /* ── PRODUCT LAYOUT ── */
+    .product-wrap {
+      max-width: 1140px; margin: 0 auto;
+      padding: 3.5rem 2.5rem 5rem;
+      display: grid;
+      grid-template-columns: 52% 48%;
+      gap: 5rem;
+      align-items: start;
+    }
+
+    /* ── PHOTO SIDE ── */
+    .photo-col { position: sticky; top: 5rem; }
+    .photo-main {
+      background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+      aspect-ratio: 4/3;
+    }
+    .photo-main img {
+      width: 100%; height: 100%; object-fit: contain;
+      padding: 1.8rem;
+    }
+    .photo-caption {
+      margin-top: 0.8rem;
+      font-size: 0.58rem; color: var(--dim); letter-spacing: 0.06em;
+      text-align: center; font-style: italic;
+    }
+
+    /* ── INFO SIDE ── */
+    .info-col { display: flex; flex-direction: column; }
+
+    .info-kicker {
+      font-size: 0.5rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--dim); margin-bottom: 0.6rem;
+    }
+    .info-title {
+      font-size: clamp(2rem, 3vw, 2.8rem); font-weight: 300;
+      letter-spacing: -0.02em; line-height: 1.05;
+      margin-bottom: 0.3rem;
+    }
+    .info-sub {
+      font-size: 0.82rem; font-style: italic; color: var(--gray);
+      margin-bottom: 2.5rem;
+    }
+
+    /* ── FORMAT TABS ── */
+    .fmt-tabs {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 0.5rem; margin-bottom: 2rem;
+    }
+    .fmt-tab {
+      padding: 0.6rem 0.8rem;
+      border: 1px solid var(--line); background: transparent; color: var(--dim);
+      font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase;
+      cursor: pointer; transition: all 0.15s; text-align: left;
+    }
+    .fmt-tab:hover { border-color: #bbb; color: var(--black); }
+    .fmt-tab.active { background: var(--black); color: #fff; border-color: var(--black); }
+
+    /* ── FORMAT DÉTAIL ── */
+    .fmt-detail { display: flex; flex-direction: column; }
+    .spec-row {
+      display: flex; justify-content: space-between; align-items: baseline;
+      padding: 0.6rem 0; border-bottom: 1px solid var(--line);
+      font-size: 0.72rem;
+    }
+    .spec-row:last-of-type { border-bottom: none; }
+    .spec-key { color: var(--dim); font-weight: 300; }
+    .spec-val { color: var(--black); text-align: right; max-width: 55%; line-height: 1.5; }
+
+    /* Prix */
+    .prix-block { margin: 1.8rem 0 1.2rem; }
+    .prix-main {
+      font-size: 2.4rem; font-weight: 300; letter-spacing: -0.03em;
+      line-height: 1; margin-bottom: 0.3rem;
+    }
+    .prix-note { font-size: 0.6rem; color: var(--dim); letter-spacing: 0.06em; text-transform: uppercase; }
+
+    /* Grille paliers grand format */
+    .tier-grid {
+      display: grid; grid-template-columns: 1fr 1fr 1fr;
+      border: 1px solid var(--line);
+      margin: 1.2rem 0 0.8rem;
+      overflow: hidden;
+    }
+    .tier-cell {
+      padding: 0.7rem 0.8rem;
+      border-right: 1px solid var(--line);
+    }
+    .tier-cell:last-child { border-right: none; }
+    .tier-label { font-size: 0.52rem; color: var(--dim); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.25rem; }
+    .tier-price { font-size: 1rem; font-weight: 300; color: var(--black); }
+    .tier-cell.current { background: var(--black); }
+    .tier-cell.current .tier-label { color: rgba(255,255,255,0.45); }
+    .tier-cell.current .tier-price { color: #fff; }
+
+    .stock-line {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 1.5rem;
+      font-size: 0.62rem; color: var(--gray);
+    }
+    .stock-bar-wrap { width: 70px; height: 2px; background: var(--line); border-radius: 1px; overflow: hidden; }
+    .stock-bar-fill { height: 100%; background: var(--black); border-radius: 1px; }
+
+    /* CTA */
+    .btn-add {
+      display: block; width: 100%; padding: 1rem 1.5rem;
+      background: var(--black); color: #fff;
+      font-size: 0.65rem; font-weight: 500; letter-spacing: 0.14em;
+      text-transform: uppercase; text-align: center;
+      cursor: pointer; transition: background 0.2s; margin-bottom: 2rem;
+    }
+    .btn-add:hover { background: #333; }
+    .btn-add:disabled { background: #ccc; cursor: not-allowed; }
+
+    /* Note légale */
+    .info-note {
+      font-size: 0.6rem; color: var(--dim); line-height: 1.8;
+      padding: 1.2rem 0;
+      border-top: 1px solid var(--line);
+    }
+    .info-note a { color: var(--dim); border-bottom: 1px solid var(--line); }
+
+    /* ── CARTES POSTALES ── */
+    .cartes-section {
+      max-width: 1140px; margin: 0 auto;
+      padding: 3rem 2.5rem 4rem;
+      border-top: 1px solid var(--line);
+    }
+    .section-label {
+      font-size: 0.52rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--dim); margin-bottom: 0.4rem;
+    }
+    .section-title {
+      font-size: 1.1rem; font-weight: 300; margin-bottom: 0.4rem;
+    }
+    .section-sub {
+      font-size: 0.7rem; color: var(--gray); margin-bottom: 1.8rem; line-height: 1.6;
+    }
+    .cartes-grid {
+      display: grid; grid-template-columns: repeat(9, 1fr); gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .cp-item {
+      position: relative; cursor: pointer;
+      border: 2px solid transparent; transition: border-color 0.15s;
+    }
+    .cp-item img { width: 100%; aspect-ratio: 99/210; object-fit: cover; display: block; opacity: 0.75; transition: opacity 0.15s; }
+    .cp-item:hover img { opacity: 1; }
+    .cp-item.selected { border-color: var(--black); }
+    .cp-item.selected img { opacity: 1; }
+    .cp-check {
+      position: absolute; top: 4px; right: 4px;
+      width: 16px; height: 16px; background: var(--black); color: #fff;
+      border-radius: 50%; font-size: 0.5rem;
+      display: none; align-items: center; justify-content: center;
+    }
+    .cp-item.selected .cp-check { display: flex; }
+    .cartes-footer {
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    }
+    .cartes-info { font-size: 0.65rem; color: var(--gray); }
+    .btn-cartes {
+      padding: 0.65rem 1.4rem; background: var(--black); color: #fff;
+      font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase;
+      cursor: pointer; transition: background 0.2s;
+    }
+    .btn-cartes:hover { background: #333; }
+    .btn-cartes:disabled { background: #ccc; cursor: not-allowed; }
+
+    /* ── SÉRIE CAROUSEL ── */
+    .serie-section {
+      max-width: 1140px; margin: 0 auto;
+      padding: 3rem 2.5rem 5rem;
+      border-top: 1px solid var(--line);
+    }
+    .serie-header {
+      display: flex; justify-content: space-between; align-items: baseline;
+      margin-bottom: 1.5rem;
+    }
+    .serie-ttl { font-size: 0.85rem; font-weight: 400; }
+    .serie-count { font-size: 0.58rem; color: var(--dim); letter-spacing: 0.1em; text-transform: uppercase; }
+    .serie-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 1.2rem;
+    }
+    .serie-card { cursor: pointer; }
+    .serie-card-img {
+      background: var(--bg); aspect-ratio: 4/3; overflow: hidden;
+      margin-bottom: 0.5rem; transition: opacity 0.2s;
+    }
+    .serie-card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
+    .serie-card:hover .serie-card-img img { transform: scale(1.04); }
+    .serie-card.current .serie-card-img { outline: 2px solid var(--black); }
+    .serie-card-name { font-size: 0.7rem; font-weight: 300; margin-bottom: 0.1rem; }
+    .serie-card-price { font-size: 0.6rem; color: var(--dim); }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(4rem);
+      background: var(--black); color: #fff;
+      font-size: 0.62rem; letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 0.75rem 1.5rem; transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+      z-index: 999; pointer-events: none; white-space: nowrap;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    @media (max-width: 900px) {
+      .product-wrap { grid-template-columns: 1fr; gap: 2rem; padding: 2rem 1.4rem 3rem; }
+      .photo-col { position: static; }
+      .fmt-tabs { grid-template-columns: 1fr 1fr; }
+      .cartes-grid { grid-template-columns: repeat(5, 1fr); }
+      .site-header { padding: 1rem 1.4rem; }
+      .cartes-section, .serie-section { padding-left: 1.4rem; padding-right: 1.4rem; }
+    }
+    @media (max-width: 600px) {
+      .cartes-grid { grid-template-columns: repeat(3, 1fr); }
+      .tier-grid { grid-template-columns: 1fr; }
+      .tier-cell { border-right: none; border-bottom: 1px solid var(--line); }
+      .tier-cell:last-child { border-bottom: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <a class="header-back" id="backLink" href="index.html">← Retour à la série</a>
+    <a href="../index.html">
+      <img src="../assets/logo-b.svg" alt="B" class="header-logo">
+    </a>
+    <div class="header-right">
+      <a href="panier.html" class="header-cart" id="lblPanier">
+        PANIER <span class="cart-badge hidden" id="cartCount">0</span>
+      </a>
+      <div class="header-lang">
+        <a data-lang="fr" class="active" onclick="setLang('fr');return false;">FR</a>
+        <span>/</span>
+        <a data-lang="en" onclick="setLang('en');return false;">EN</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── PRODUIT ── -->
+  <div class="product-wrap">
+    <div class="photo-col">
+      <div class="photo-main"><img id="mainPhoto" src="" alt=""></div>
+      <p class="photo-caption" id="photoCaption"></p>
+    </div>
+    <div class="info-col">
+      <p class="info-kicker" id="infoKicker"></p>
+      <h1 class="info-title" id="infoTitle"></h1>
+      <p class="info-sub" id="infoSub"></p>
+
+      <div class="fmt-tabs" id="fmtTabs"></div>
+      <div id="fmtDetail"></div>
+
+      <button class="btn-add" id="btnAdd" onclick="addToCart()"></button>
+
+      <p class="info-note" id="infoNote"></p>
+    </div>
+  </div>
+
+  <!-- ── CARTES POSTALES ── -->
+  <section class="cartes-section">
+    <p class="section-label" id="lblCartesLabel">Cartes postales</p>
+    <h2 class="section-title" id="lblCartesTitle">Format DL — Papier soft touch premium</h2>
+    <p class="section-sub" id="lblCartesSub">Impression professionnelle. Livraison 4 € — offerte dès 35 € d'achat.</p>
+    <div class="cartes-grid" id="cartesGrid"></div>
+    <div class="cartes-footer">
+      <span class="cartes-info" id="cartesInfo">1 carte — 6 € · 3 cartes — 15 €</span>
+      <button class="btn-cartes" id="btnCartes" onclick="addCartesToCart()" disabled>Ajouter au panier</button>
+    </div>
+  </section>
+
+  <!-- ── SÉRIE ── -->
+  <section class="serie-section">
+    <div class="serie-header">
+      <span class="serie-ttl" id="serieTtl"></span>
+      <span class="serie-count" id="serieCount"></span>
+    </div>
+    <div class="serie-grid" id="serieGrid"></div>
+  </section>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+  /* ══════════════════════════════════════════════════════
+     ÉDITIONS — Dust'in Kolor (4 formats par œuvre)
+  ══════════════════════════════════════════════════════ */
+  const EDITIONS = [
+    { slug:'sandstorm-feu', num:'01', img:'../images/dustin-kolor/01.jpg',
+      titre_fr:'Sandstorm', titre_en:'Sandstorm',
+      couleur_fr:'Feu', couleur_en:'Fire', hex:'#FF4500',
+      formats: {
+        simple:  { taille:'30 × 45 cm', support:'Museum Etching 350g', prix:145, ed:30 },
+        dibond:  { taille:'30 × 45 cm', support:'Museum Etching 350g', montage:'Dibond 2mm', prix:300, ed:30 },
+        chassis: { taille:'30 × 45 cm', support:'Museum Etching 350g', montage:'Dibond 2mm + châssis rentrant', prix:350, ed:30 },
+        grand:   { taille:'60 × 90 cm', support:'Museum Etching 350g', montage:'Dibond 2mm', prix:[820,1050,1230], ed:10, vendus:1 }
+      }
+    },
+    { slug:'flying-car-orange', num:'02', img:'../images/dustin-kolor/02.jpg',
+      titre_fr:'Flying Car', titre_en:'Flying Car',
+      couleur_fr:'Orange', couleur_en:'Orange', hex:'#FF6600',
+      formats: {
+        simple:  { taille:'28 × 50 cm', support:'Museum Etching 350g', prix:175, ed:30 },
+        dibond:  { taille:'28 × 50 cm', support:'Museum Etching 350g', montage:'Dibond 2mm', prix:300, ed:30 },
+        chassis: { taille:'28 × 50 cm', support:'Museum Etching 350g', montage:'Dibond 2mm + châssis rentrant', prix:350, ed:30 },
+        grand:   { taille:'70 × 124 cm', support:'Museum Etching 350g', montage:'Dibond 2mm', prix:[1290,1550,1800], ed:10, vendus:1 }
+      }
+    },
+    { slug:'after-the-storm-vert', num:'03', img:'../images/dustin-kolor/03.jpg',
+      titre_fr:'After the Storm', titre_en:'After the Storm',
+      couleur_fr:'Vert', couleur_en:'Green', hex:'#7BC043',
+      formats: {
+        simple:  { taille:'28 × 50 cm', support:'Museum Etching 350g', prix:175, ed:30 },
+        dibond:  { taille:'28 × 50 cm', support:'Museum Etching 350g', montage:'Dibond 2mm', prix:300, ed:30 },
+        chassis: { taille:'28 × 50 cm', support:'Museum Etching 350g', montage:'Dibond 2mm + châssis rentrant', prix:350, ed:30 },
+        grand:   { taille:'70 × 124 cm', support:'Museum Etching 350g', montage:'Dibond 2mm', prix:[1290,1550,1800], ed:10, vendus:2 }
+      }
+    },
+    { slug:'lost-in-the-dust-rouge', num:'04', img:'../images/dustin-kolor/04.jpg',
+      titre_fr:'Lost in the Dust', titre_en:'Lost in the Dust',
+      couleur_fr:'Rouge', couleur_en:'Red', hex:'#CC0000',
+      formats: {
+        simple:  { taille:'30 × 40 cm', support:'Museum Etching 350g', prix:140, ed:30 },
+        dibond:  { taille:'30 × 40 cm', support:'Museum Etching 350g', montage:'Dibond 2mm', prix:300, ed:30 },
+        chassis: { taille:'30 × 40 cm', support:'Museum Etching 350g', montage:'Dibond 2mm + châssis rentrant', prix:330, ed:30 },
+        grand:   { taille:'60 × 80 cm', support:'Museum Etching 350g', montage:'Dibond 2mm', prix:[890,1100,1300], ed:10, vendus:1 }
+      }
+    },
+    { slug:'camp-lighters-jaune', num:'05', img:'../images/dustin-kolor/05.jpg',
+      titre_fr:'Camp Lighters', titre_en:'Camp Lighters',
+      couleur_fr:'Jaune', couleur_en:'Yellow', hex:'#FFB300',
+      formats: {
+        simple:  { taille:'20 × 50 cm', support:'Museum Etching 350g', prix:150, ed:30 },
+        dibond:  { taille:'20 × 50 cm', support:'Museum Etching 350g', montage:'Dibond 2mm', prix:340, ed:30 },
+        chassis: { taille:'20 × 50 cm', support:'Museum Etching 350g', montage:'Dibond 2mm + châssis rentrant', prix:385, ed:30 },
+        grand:   { taille:'40 × 100 cm', support:'Museum Etching 350g', montage:'Dibond 2mm', prix:[790,980,1180], ed:10, vendus:1 }
+      }
+    },
+    { slug:'im-here-bleu', num:'06', img:'../images/dustin-kolor/06.jpg',
+      titre_fr:"I'm Here", titre_en:"I'm Here",
+      couleur_fr:'Bleu', couleur_en:'Blue', hex:'#0066CC',
+      formats: {
+        simple:  { taille:'30 × 40 cm', support:'Museum Etching 350g', prix:140, ed:30 },
+        dibond:  { taille:'30 × 40 cm', support:'Museum Etching 350g', montage:'Dibond 2mm', prix:300, ed:30 },
+        chassis: { taille:'30 × 40 cm', support:'Museum Etching 350g', montage:'Dibond 2mm + châssis rentrant', prix:330, ed:30 },
+        grand:   { taille:'60 × 80 cm', support:'Museum Etching 350g', montage:'Dibond 2mm', prix:[890,1100,1300], ed:10, vendus:1 }
+      }
+    },
+    { slug:'umbrellas-way-rose', num:'08', img:'../images/dustin-kolor/08.jpg',
+      titre_fr:'Umbrellas Way', titre_en:'Umbrellas Way',
+      couleur_fr:'Rose', couleur_en:'Pink', hex:'#FF1493',
+      formats: {
+        simple:  { taille:'30 × 40 cm', support:'Museum Etching 350g', prix:140, ed:30 },
+        dibond:  { taille:'30 × 40 cm', support:'Museum Etching 350g', montage:'Dibond 2mm', prix:300, ed:30 },
+        chassis: { taille:'30 × 40 cm', support:'Museum Etching 350g', montage:'Dibond 2mm + châssis rentrant', prix:330, ed:30 },
+        grand:   { taille:'60 × 80 cm', support:'Museum Etching 350g', montage:'Dibond 2mm', prix:[890,1100,1300], ed:10, vendus:1 }
+      }
+    }
+  ];
+
+  const CARTES_POSTALES = {
+    items: [{id:'cp-01'},{id:'cp-02'},{id:'cp-03'},{id:'cp-04'},{id:'cp-05'},
+            {id:'cp-06'},{id:'cp-07'},{id:'cp-08'},{id:'cp-09'}],
+    prix_unite: 6, prix_pack3: 15, livraison: 4, livraison_gratuite: 35
+  };
+
+  const FMT_KEYS = ['simple','dibond','chassis','grand'];
+
+  const T = {
+    fr: {
+      back:'← Retour à la série', panier:'PANIER',
+      fmt_simple:'Tirage simple', fmt_dibond:'Contrecollé Dibond',
+      fmt_chassis:'À suspendre', fmt_grand:'Grand format',
+      taille:'Format', support:'Support', montage:'Montage',
+      edition:'Édition', dispo:'Disponibles',
+      ed_30:'30 ex. numérotés', ed_10:'10 ex. limités',
+      prix_fixe:'Prix fixe',
+      paliers:['Ex. 1–3','Ex. 4–7','Ex. 8–10'],
+      ajouter:'Ajouter au panier', epuise:'Épuisé',
+      simple_note:'À encadrer soi-même',
+      legal:"Numéroté, daté & signé. Certificat d'authenticité inclus.\nFabriqué par Pix in the City, Auray. Délai 2–3 semaines.\nŒuvre personnalisée — ni repris, ni échangé.",
+      panier_link:'Voir le panier',
+      serie_ttl:"Les œuvres de la série",
+      cartes_lbl:'Cartes postales', cartes_ttl:'Format DL — Papier soft touch premium',
+      cartes_sub:'Impression professionnelle. Livraison 4 € — offerte dès 35 € d\'achat.',
+      cartes_add:'Ajouter au panier', cartes_added:'✓ Cartes ajoutées',
+      added:'✓ Ajouté au panier',
+    },
+    en: {
+      back:'← Back to series', panier:'CART',
+      fmt_simple:'Fine art print', fmt_dibond:'Dibond mounted',
+      fmt_chassis:'Wall-ready', fmt_grand:'Large format',
+      taille:'Size', support:'Paper', montage:'Mounting',
+      edition:'Edition', dispo:'Available',
+      ed_30:'30 numbered prints', ed_10:'10 limited prints',
+      prix_fixe:'Fixed price',
+      paliers:['No. 1–3','No. 4–7','No. 8–10'],
+      ajouter:'Add to cart', epuise:'Sold out',
+      simple_note:'Unframed',
+      legal:"Numbered, dated & signed. Certificate of authenticity included.\nProduced by Pix in the City, Auray. Lead time 2–3 weeks.\nPersonalised artwork — no returns or exchanges.",
+      panier_link:'View cart',
+      serie_ttl:'Works in the series',
+      cartes_lbl:'Postcards', cartes_ttl:'DL Format — Premium soft touch paper',
+      cartes_sub:'Professional printing. Shipping 4 € — free from 35 €.',
+      cartes_add:'Add to cart', cartes_added:'✓ Cards added',
+      added:'✓ Added to cart',
+    }
+  };
+
+  let lang = 'fr';
+  let currentEd = null;
+  let activeFmt = 'simple';
+  let selectedCartes = [];
+
+  /* ── CART ── */
+  function getCart() { try { return JSON.parse(localStorage.getItem('dk_cart')||'[]'); } catch(e){ return []; } }
+  function saveCart(c) { localStorage.setItem('dk_cart', JSON.stringify(c)); updateCartBadge(); }
+  function updateCartBadge() {
+    const n = getCart().reduce((s,i)=>s+(i.qty||1),0);
+    const b = document.getElementById('cartCount');
+    if (b) { b.textContent=n; b.classList.toggle('hidden',n===0); }
+  }
+
+  function addToCart() {
+    if (!currentEd) return;
+    const e = currentEd;
+    const fmt = e.formats[activeFmt];
+    const t = T[lang];
+    const titre = lang==='fr' ? e.titre_fr : e.titre_en;
+    const cart = getCart();
+    let prix, type_label;
+    if (activeFmt === 'grand') {
+      const pi = fmt.vendus < 3 ? 0 : fmt.vendus < 7 ? 1 : 2;
+      prix = fmt.prix[pi];
+      type_label = (lang==='fr'?'Grand format':'Large format') + ' — ' + t.paliers[pi];
+    } else {
+      prix = fmt.prix;
+      type_label = t['fmt_'+activeFmt];
+    }
+    const itemId = e.slug + '-' + activeFmt;
+    const ex = cart.find(x => x.id === itemId);
+    if (ex) ex.qty = (ex.qty||1)+1;
+    else cart.push({ id:itemId, slug:e.slug, num:e.num, titre, type:type_label, taille:fmt.taille, prix, qty:1, cat:'tirage' });
+    saveCart(cart);
+    showToast(t.added);
+  }
+
+  function addCartesToCart() {
+    if (selectedCartes.length === 0) return;
+    const cp = CARTES_POSTALES;
+    const n = selectedCartes.length;
+    const isPack = n === 3;
+    const prix = isPack ? cp.prix_pack3 : n * cp.prix_unite;
+    const cart = getCart();
+    const itemId = 'cartes-' + selectedCartes.join('-');
+    cart.push({ id:itemId, titre:'Cartes postales DL', type:isPack?'Pack 3 cartes':n+' carte(s)', taille:'Format DL — papier soft touch', prix, qty:1, cat:'carte', imgs:selectedCartes });
+    saveCart(cart);
+    selectedCartes = [];
+    document.querySelectorAll('.cp-item').forEach(el => el.classList.remove('selected'));
+    updateCartesUI();
+    showToast(T[lang].cartes_added);
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2200);
+  }
+
+  /* ── FORMAT ── */
+  function selectFmt(key) {
+    activeFmt = key;
+    document.querySelectorAll('.fmt-tab').forEach(b => b.classList.toggle('active', b.dataset.fmt===key));
+    renderFmtDetail(currentEd, key);
+  }
+
+  function renderFmtDetail(e, key) {
+    const t = T[lang];
+    const fmt = e.formats[key];
+    const isGrand = key === 'grand';
+    let h = '<div class="fmt-detail">';
+
+    h += `<div class="spec-row"><span class="spec-key">${t.taille}</span><span class="spec-val">${fmt.taille}</span></div>`;
+    h += `<div class="spec-row"><span class="spec-key">${t.support}</span><span class="spec-val">${fmt.support}</span></div>`;
+    if (fmt.montage) h += `<div class="spec-row"><span class="spec-key">${t.montage}</span><span class="spec-val">${fmt.montage}</span></div>`;
+
+    h += '<div class="prix-block">';
+    if (isGrand) {
+      const pi = fmt.vendus < 3 ? 0 : fmt.vendus < 7 ? 1 : 2;
+      const dispo = fmt.ed - fmt.vendus;
+      h += `<div class="spec-row"><span class="spec-key">${t.edition}</span><span class="spec-val">${t.ed_10}</span></div>`;
+      h += `<div class="spec-row"><span class="spec-key">${t.dispo}</span><span class="spec-val">${dispo} / ${fmt.ed}</span></div>`;
+      h += '<div class="tier-grid">';
+      fmt.prix.forEach((p,i) => {
+        h += `<div class="tier-cell${i===pi?' current':''}">
+          <div class="tier-label">${t.paliers[i]}</div>
+          <div class="tier-price">${p.toLocaleString('fr-FR')} €</div>
+        </div>`;
+      });
+      h += '</div>';
+      h += `<div class="stock-line">
+        <span>${dispo} ${t.dispo.toLowerCase()} / ${fmt.ed}</span>
+        <div class="stock-bar-wrap"><div class="stock-bar-fill" style="width:${Math.round(dispo/fmt.ed*100)}%"></div></div>
+      </div>`;
+      const epuise = fmt.vendus >= fmt.ed;
+      const btnAdd = document.getElementById('btnAdd');
+      btnAdd.textContent = epuise ? t.epuise : t.ajouter + ' — ' + fmt.prix[pi].toLocaleString('fr-FR') + ' €';
+      btnAdd.disabled = epuise;
+    } else {
+      h += `<div class="prix-main">${fmt.prix.toLocaleString('fr-FR')} <span style="font-size:1.5rem">€</span></div>`;
+      h += `<div class="prix-note">${t.prix_fixe} — ${t.ed_30}</div>`;
+      if (key==='simple') h += `<div class="prix-note" style="margin-top:0.2rem">${t.simple_note}</div>`;
+      const btnAdd = document.getElementById('btnAdd');
+      btnAdd.textContent = t.ajouter + ' — ' + fmt.prix.toLocaleString('fr-FR') + ' €';
+      btnAdd.disabled = false;
+    }
+    h += '</div></div>';
+
+    document.getElementById('fmtDetail').innerHTML = h;
+  }
+
+  /* ── CARTES ── */
+  function buildCartesGrid() {
+    document.getElementById('cartesGrid').innerHTML = CARTES_POSTALES.items.map(c =>
+      `<div class="cp-item" data-id="${c.id}" onclick="toggleCarte('${c.id}')">
+        <img src="../images/cartes-postales/${c.id}.jpg" alt="Carte ${c.id}" loading="lazy">
+        <span class="cp-check">✓</span>
+      </div>`
+    ).join('');
+  }
+
+  function toggleCarte(id) {
+    const idx = selectedCartes.indexOf(id);
+    if (idx >= 0) selectedCartes.splice(idx, 1);
+    else selectedCartes.push(id);
+    document.querySelectorAll('.cp-item').forEach(el =>
+      el.classList.toggle('selected', selectedCartes.includes(el.dataset.id))
+    );
+    updateCartesUI();
+  }
+
+  function updateCartesUI() {
+    const n = selectedCartes.length;
+    const isPack = n === 3;
+    const prix = isPack ? CARTES_POSTALES.prix_pack3 : n * CARTES_POSTALES.prix_unite;
+    const info = document.getElementById('cartesInfo');
+    const btn = document.getElementById('btnCartes');
+    const t = T[lang];
+    info.textContent = n === 0
+      ? (lang==='fr'?'1 carte — 6 € · 3 cartes — 15 €':'1 card — 6 € · 3 cards — 15 €')
+      : `${n} carte${n>1?'s':''} — ${prix} €`;
+    btn.disabled = n === 0;
+    btn.textContent = n === 0 ? t.cartes_add : `${t.cartes_add} — ${prix} €`;
+  }
+
+  /* ── RENDER ÉDITION ── */
+  function render(ed) {
+    currentEd = ed;
+    activeFmt = 'simple';
+    const t = T[lang];
+    const titre = lang==='fr' ? ed.titre_fr : ed.titre_en;
+    const couleur = lang==='fr' ? ed.couleur_fr : ed.couleur_en;
+
+    document.title = titre + ' — Dust\'in Kolor — Bertrand Basset';
+    document.getElementById('mainPhoto').src = ed.img;
+    document.getElementById('mainPhoto').alt = titre;
+    document.getElementById('photoCaption').textContent = `Dust'in Kolor — ${titre}`;
+    document.getElementById('infoKicker').textContent = `Dust'in Kolor — Édition ${ed.num}`;
+    document.getElementById('infoTitle').textContent = titre;
+    document.getElementById('infoSub').innerHTML = `<span style="color:${ed.hex}">●</span> ${couleur}`;
+    document.getElementById('backLink').textContent = t.back;
+    document.getElementById('backLink').href = `index.html#${ed.slug}`;
+    document.getElementById('lblPanier').childNodes[0].textContent = t.panier + ' ';
+
+    // Tabs
+    const labels = { simple:t.fmt_simple, dibond:t.fmt_dibond, chassis:t.fmt_chassis, grand:t.fmt_grand };
+    document.getElementById('fmtTabs').innerHTML = FMT_KEYS.map(k =>
+      `<button class="fmt-tab${k===activeFmt?' active':''}" data-fmt="${k}" onclick="selectFmt('${k}')">${labels[k]}</button>`
+    ).join('');
+
+    renderFmtDetail(ed, activeFmt);
+
+    // Legal note
+    document.getElementById('infoNote').innerHTML =
+      t.legal.replace(/\n/g,'<br>') + `<br><a href="panier.html">${t.panier_link}</a>`;
+
+    // Cartes labels
+    document.getElementById('lblCartesLabel').textContent = t.cartes_lbl;
+    document.getElementById('lblCartesTitle').textContent = t.cartes_ttl;
+    document.getElementById('lblCartesSub').textContent = t.cartes_sub;
+    updateCartesUI();
+
+    // Série grid
+    const siblings = EDITIONS;
+    document.getElementById('serieTtl').textContent = t.serie_ttl;
+    document.getElementById('serieCount').textContent = siblings.length + ' œuvres';
+    document.getElementById('serieGrid').innerHTML = siblings.map(s => {
+      const sName = lang==='fr' ? s.titre_fr : s.titre_en;
+      const fromPrix = s.formats.simple.prix;
+      return `<div class="serie-card${s.slug===ed.slug?' current':''}" onclick="navigate('${s.slug}')">
+        <div class="serie-card-img"><img src="${s.img}" alt="${sName}" loading="lazy"></div>
+        <div class="serie-card-name">${sName}</div>
+        <div class="serie-card-price">${lang==='fr'?'à partir de':'from'} ${fromPrix} €</div>
+      </div>`;
+    }).join('');
+
+    // Lang toggles
+    document.querySelectorAll('[data-lang]').forEach(a =>
+      a.classList.toggle('active', a.dataset.lang===lang)
+    );
+
+    history.replaceState(null,'',`?id=${ed.slug}`);
+  }
+
+  function navigate(slug) {
+    const ed = EDITIONS.find(e => e.slug===slug);
+    if (!ed) return;
+    render(ed);
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  function setLang(l) {
+    lang = l;
+    if (currentEd) render(currentEd);
+  }
+
+  /* ── INIT ── */
+  buildCartesGrid();
+  updateCartBadge();
+  const urlId = new URLSearchParams(location.search).get('id');
+  const initEd = EDITIONS.find(e => e.slug===urlId) || EDITIONS[0];
+  render(initEd);
+  </script>
+</body>
+</html>
