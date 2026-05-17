@@ -295,6 +295,101 @@
       .product-panel.open { right: 0; }
       .g-nav-zone { width: 30%; }
     }
+  
+    /* ── Format tabs ── */
+    .fmt-tabs { display:flex; gap:0.4rem; margin:1rem 0 0.8rem; flex-wrap:wrap; }
+    .fmt-tab {
+      flex:1; min-width:0; padding:0.4rem 0.5rem;
+      border:1px solid #333; background:transparent; color:#bbb;
+      font-size:0.6rem; letter-spacing:0.08em; text-transform:uppercase;
+      cursor:pointer; transition:all 0.15s; white-space:nowrap;
+    }
+    .fmt-tab:hover { border-color:#aaa; color:#eee; }
+    .fmt-tab.active { background:#f0f0f0; color:#111; border-color:#f0f0f0; }
+
+    .fmt-detail { margin-top:0.5rem; }
+    .fmt-row { display:flex; justify-content:space-between; align-items:baseline;
+      padding:0.35rem 0; border-bottom:1px solid #1e1e1e; font-size:0.7rem; }
+    .fmt-row:last-child { border-bottom:none; }
+    .fmt-label { color:#777; }
+    .fmt-val { color:#ddd; text-align:right; }
+    .fmt-prix-block { margin:1rem 0 0.8rem; }
+    .fmt-prix-main { font-size:1.8rem; font-weight:300; color:#f0f0f0; }
+    .fmt-prix-note { font-size:0.58rem; color:#666; letter-spacing:0.08em; margin-top:0.2rem; }
+    .fmt-prix-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.3rem; margin-top:0.6rem; }
+    .fmt-prix-tier { background:#141414; padding:0.4rem 0.6rem; }
+    .fmt-prix-tier .tier-range { font-size:0.55rem; color:#666; letter-spacing:0.06em; }
+    .fmt-prix-tier .tier-val { font-size:0.9rem; color:#ddd; }
+    .fmt-prix-tier.current { background:#1a1a1a; border:1px solid #333; }
+    .fmt-prix-tier.current .tier-val { color:#f0f0f0; }
+
+    .panel-add-btn {
+      display:block; width:100%; margin-top:0.8rem;
+      padding:0.75rem 1rem; background:#f0f0f0; color:#111;
+      font-size:0.65rem; letter-spacing:0.14em; text-transform:uppercase;
+      border:none; cursor:pointer; transition:background 0.15s;
+    }
+    .panel-add-btn:hover { background:#fff; }
+    .panel-add-btn:disabled { background:#222; color:#555; cursor:not-allowed; }
+
+    .panel-legal {
+      margin-top:1.2rem; padding-top:0.8rem; border-top:1px solid #1e1e1e;
+      font-size:0.58rem; color:#555; line-height:1.6;
+    }
+    .panel-legal a { color:#666; border-bottom:1px solid #333; }
+
+    /* ── Cartes postales panel ── */
+    .cartes-panel {
+      position:fixed; inset:0; background:#0a0a0a; z-index:200;
+      display:flex; flex-direction:column;
+      transform:translateY(100%); transition:transform 0.35s ease;
+    }
+    .cartes-panel.open { transform:translateY(0); }
+    .cartes-header {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:1.2rem 1.5rem; border-bottom:1px solid #1a1a1a; flex-shrink:0;
+    }
+    .cartes-header h2 { font-size:0.65rem; letter-spacing:0.16em; color:#aaa; font-weight:400; text-transform:uppercase; }
+    .cartes-close { font-size:1.2rem; color:#666; cursor:pointer; }
+    .cartes-close:hover { color:#eee; }
+    .cartes-body { flex:1; overflow-y:auto; padding:1rem 1.5rem 2rem; }
+    .cartes-info { font-size:0.65rem; color:#666; margin-bottom:1.2rem; line-height:1.6; }
+    .cartes-prix-opts { display:flex; gap:0.5rem; margin-bottom:1.2rem; flex-wrap:wrap; }
+    .cartes-prix-btn {
+      padding:0.4rem 0.8rem; border:1px solid #333; background:transparent;
+      color:#aaa; font-size:0.6rem; letter-spacing:0.08em; cursor:pointer; transition:all 0.15s;
+    }
+    .cartes-prix-btn:hover { border-color:#aaa; color:#eee; }
+    .cartes-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:0.5rem; }
+    .carte-item { position:relative; cursor:pointer; }
+    .carte-item img { width:100%; aspect-ratio:99/210; object-fit:cover; display:block; }
+    .carte-item .carte-sel {
+      position:absolute; inset:0; border:2px solid transparent;
+      display:flex; align-items:center; justify-content:center;
+      background:transparent; transition:all 0.15s;
+    }
+    .carte-item.selected .carte-sel { border-color:#f0f0f0; background:rgba(240,240,240,0.08); }
+    .carte-item .carte-check { display:none; font-size:1rem; color:#f0f0f0; }
+    .carte-item.selected .carte-check { display:block; }
+    .cartes-footer {
+      padding:1rem 1.5rem; border-top:1px solid #1a1a1a; background:#0a0a0a; flex-shrink:0;
+    }
+    .cartes-selection-info { font-size:0.6rem; color:#666; margin-bottom:0.6rem; }
+    .cartes-add-btn {
+      display:block; width:100%; padding:0.75rem;
+      background:#f0f0f0; color:#111; border:none;
+      font-size:0.65rem; letter-spacing:0.14em; text-transform:uppercase; cursor:pointer;
+    }
+    .cartes-add-btn:disabled { background:#1a1a1a; color:#444; cursor:not-allowed; }
+
+    /* ── Cart badge update ── */
+    .g-cartes-btn {
+      font-size:0.55rem; letter-spacing:0.1em; color:#888;
+      border:1px solid #2a2a2a; padding:0.35rem 0.7rem; cursor:pointer;
+      text-transform:uppercase; transition:all 0.15s;
+    }
+    .g-cartes-btn:hover { color:#ddd; border-color:#555; }
+
   </style>
 </head>
 <body>
@@ -350,6 +445,7 @@
       <img src="../assets/logo-b.svg" class="g-logo" alt="B" onclick="location.href='../index.html'" title="Retour au portfolio">
       <div class="g-actions">
         <button class="g-btn accent" onclick="openPanel()" id="lblAcheter">ACHETER</button>
+        <button class="g-cartes-btn" onclick="openCartesPanel()" id="lblCartes">CARTES</button>
         <button class="g-btn" onclick="location.href='panier.html'">
           <span id="lblPanier">PANIER</span>
           <span class="cart-badge hidden" id="cartCount">0</span>
@@ -379,82 +475,137 @@
 
   <script>
   /* ════════════════════════════════════════
-     DATA
+     COLLECTIONS — Dust'in Kolor
   ════════════════════════════════════════ */
   const EDITIONS = [
     { slug:'sandstorm-feu',          num:'01', img:'01.jpg',
-      titre_fr:'Sandstorm',          titre_en:'Sandstorm',
-      couleur_fr:'Feu',              couleur_en:'Fire',     hex:'#FF4500',
-      format:'60 × 90 cm',
-      support:'Museum Etching 350g', detail_fr:'contrecollé Dibond 2mm', detail_en:'mounted on Dibond 2mm',
-      total:10, vendus:1, prix:[950, 1090, 1250] },
+      titre_fr:'Sandstorm',           titre_en:'Sandstorm',
+      couleur_fr:'Feu',               couleur_en:'Fire',    hex:'#FF4500',
+      formats: {
+        simple:  { taille:'30 × 45 cm', support:'Museum Etching 350g', prix:145, ed:30 },
+        dibond:  { taille:'30 × 45 cm', support:'Museum Etching 350g', montage:'Dibond 2mm', prix:300, ed:30 },
+        chassis: { taille:'30 × 45 cm', support:'Museum Etching 350g', montage:'Dibond 2mm + châssis rentrant', prix:350, ed:30 },
+        grand:   { taille:'60 × 90 cm', support:'Museum Etching 350g', montage:'Dibond 2mm', prix:[820,1050,1230], ed:10, vendus:1 }
+      }
+    },
     { slug:'flying-car-orange',      num:'02', img:'02.jpg',
-      titre_fr:'Flying Car',         titre_en:'Flying Car',
-      couleur_fr:'Orange',           couleur_en:'Orange',   hex:'#FF6600',
-      format:'70 × 124 cm',
-      support:'Museum Etching 350g', detail_fr:'contrecollé Dibond 2mm', detail_en:'mounted on Dibond 2mm',
-      total:10, vendus:1, prix:[1290, 1490, 1690] },
+      titre_fr:'Flying Car',          titre_en:'Flying Car',
+      couleur_fr:'Orange',            couleur_en:'Orange', hex:'#FF6600',
+      formats: {
+        simple:  { taille:'28 × 50 cm', support:'Museum Etching 350g', prix:175, ed:30 },
+        dibond:  { taille:'28 × 50 cm', support:'Museum Etching 350g', montage:'Dibond 2mm', prix:300, ed:30 },
+        chassis: { taille:'28 × 50 cm', support:'Museum Etching 350g', montage:'Dibond 2mm + châssis rentrant', prix:350, ed:30 },
+        grand:   { taille:'70 × 124 cm', support:'Museum Etching 350g', montage:'Dibond 2mm', prix:[1290,1550,1800], ed:10, vendus:1 }
+      }
+    },
     { slug:'after-the-storm-vert',   num:'03', img:'03.jpg',
-      titre_fr:'After the Storm',    titre_en:'After the Storm',
-      couleur_fr:'Vert',             couleur_en:'Green',    hex:'#7BC043',
-      format:'70 × 124 cm',
-      support:'Museum Etching 350g', detail_fr:'contrecollé Dibond 2mm', detail_en:'mounted on Dibond 2mm',
-      total:10, vendus:2, prix:[1290, 1490, 1690] },
+      titre_fr:'After the Storm',     titre_en:'After the Storm',
+      couleur_fr:'Vert',              couleur_en:'Green',  hex:'#7BC043',
+      formats: {
+        simple:  { taille:'28 × 50 cm', support:'Museum Etching 350g', prix:175, ed:30 },
+        dibond:  { taille:'28 × 50 cm', support:'Museum Etching 350g', montage:'Dibond 2mm', prix:300, ed:30 },
+        chassis: { taille:'28 × 50 cm', support:'Museum Etching 350g', montage:'Dibond 2mm + châssis rentrant', prix:350, ed:30 },
+        grand:   { taille:'70 × 124 cm', support:'Museum Etching 350g', montage:'Dibond 2mm', prix:[1290,1550,1800], ed:10, vendus:2 }
+      }
+    },
     { slug:'lost-in-the-dust-rouge', num:'04', img:'04.jpg',
-      titre_fr:'Lost in the Dust',   titre_en:'Lost in the Dust',
-      couleur_fr:'Rouge',            couleur_en:'Red',      hex:'#CC0000',
-      format:'60 × 80 cm',
-      support:'Museum Etching 350g', detail_fr:'contrecollé Dibond 2mm', detail_en:'mounted on Dibond 2mm',
-      total:10, vendus:1, prix:[890, 1020, 1150] },
+      titre_fr:'Lost in the Dust',    titre_en:'Lost in the Dust',
+      couleur_fr:'Rouge',             couleur_en:'Red',   hex:'#CC0000',
+      formats: {
+        simple:  { taille:'30 × 40 cm', support:'Museum Etching 350g', prix:140, ed:30 },
+        dibond:  { taille:'30 × 40 cm', support:'Museum Etching 350g', montage:'Dibond 2mm', prix:300, ed:30 },
+        chassis: { taille:'30 × 40 cm', support:'Museum Etching 350g', montage:'Dibond 2mm + châssis rentrant', prix:330, ed:30 },
+        grand:   { taille:'60 × 80 cm', support:'Museum Etching 350g', montage:'Dibond 2mm', prix:[890,1100,1300], ed:10, vendus:1 }
+      }
+    },
     { slug:'camp-lighters-jaune',    num:'05', img:'05.jpg',
-      titre_fr:'Lamp Lighters',      titre_en:'Lamp Lighters',
-      couleur_fr:'Jaune',            couleur_en:'Yellow',   hex:'#FFB300',
-      format:'40 × 100 cm',
-      support:'Museum Etching 350g', detail_fr:'contrecollé Dibond 2mm', detail_en:'mounted on Dibond 2mm',
-      total:10, vendus:1, prix:[790, 910, 1030] },
+      titre_fr:'Camp Lighters',       titre_en:'Camp Lighters',
+      couleur_fr:'Jaune',             couleur_en:'Yellow', hex:'#FFB300',
+      formats: {
+        simple:  { taille:'20 × 50 cm', support:'Museum Etching 350g', prix:150, ed:30 },
+        dibond:  { taille:'20 × 50 cm', support:'Museum Etching 350g', montage:'Dibond 2mm', prix:340, ed:30 },
+        chassis: { taille:'20 × 50 cm', support:'Museum Etching 350g', montage:'Dibond 2mm + châssis rentrant', prix:385, ed:30 },
+        grand:   { taille:'40 × 100 cm', support:'Museum Etching 350g', montage:'Dibond 2mm', prix:[790,980,1180], ed:10, vendus:1 }
+      }
+    },
     { slug:'im-here-bleu',           num:'06', img:'06.jpg',
-      titre_fr:"I'm Here",           titre_en:"I'm Here",
-      couleur_fr:'Bleu',             couleur_en:'Blue',     hex:'#0066CC',
-      format:'60 × 80 cm',
-      support:'Museum Etching 350g', detail_fr:'contrecollé Dibond 2mm', detail_en:'mounted on Dibond 2mm',
-      total:10, vendus:1, prix:[890, 1020, 1150] },
+      titre_fr:"I'm Here",             titre_en:"I'm Here",
+      couleur_fr:'Bleu',              couleur_en:'Blue',  hex:'#0066CC',
+      formats: {
+        simple:  { taille:'30 × 40 cm', support:'Museum Etching 350g', prix:140, ed:30 },
+        dibond:  { taille:'30 × 40 cm', support:'Museum Etching 350g', montage:'Dibond 2mm', prix:300, ed:30 },
+        chassis: { taille:'30 × 40 cm', support:'Museum Etching 350g', montage:'Dibond 2mm + châssis rentrant', prix:330, ed:30 },
+        grand:   { taille:'60 × 80 cm', support:'Museum Etching 350g', montage:'Dibond 2mm', prix:[890,1100,1300], ed:10, vendus:1 }
+      }
+    },
     { slug:'umbrellas-way-rose',     num:'08', img:'08.jpg',
-      titre_fr:'Umbrellas Way',      titre_en:'Umbrellas Way',
-      couleur_fr:'Rose',             couleur_en:'Pink',     hex:'#FF1493',
-      format:'60 × 80 cm',
-      support:'Museum Etching 350g', detail_fr:'contrecollé Dibond 2mm', detail_en:'mounted on Dibond 2mm',
-      total:10, vendus:1, prix:[890, 1020, 1150] }
+      titre_fr:'Umbrellas Way',       titre_en:'Umbrellas Way',
+      couleur_fr:'Rose',              couleur_en:'Pink',  hex:'#FF1493',
+      formats: {
+        simple:  { taille:'30 × 40 cm', support:'Museum Etching 350g', prix:140, ed:30 },
+        dibond:  { taille:'30 × 40 cm', support:'Museum Etching 350g', montage:'Dibond 2mm', prix:300, ed:30 },
+        chassis: { taille:'30 × 40 cm', support:'Museum Etching 350g', montage:'Dibond 2mm + châssis rentrant', prix:330, ed:30 },
+        grand:   { taille:'60 × 80 cm', support:'Museum Etching 350g', montage:'Dibond 2mm', prix:[890,1100,1300], ed:10, vendus:1 }
+      }
+    }
   ];
+
+  const CARTES_POSTALES = {
+    items: [
+      {id:'cp-01'},{id:'cp-02'},{id:'cp-03'},{id:'cp-04'},{id:'cp-05'},
+      {id:'cp-06'},{id:'cp-07'},{id:'cp-08'},{id:'cp-09'}
+    ],
+    prix_unite: 6,
+    prix_pack3: 15,
+    livraison: 4,
+    livraison_gratuite: 35
+  };
 
   /* ════════════════════════════════════════
      I18N
   ════════════════════════════════════════ */
   const T = {
     fr: {
-      kicker: 'Série photographique — 2016',
-      desc: "En pleine tempête de sable, la visibilité est proche de zéro. On enfile les goggles — ces lunettes de protection aux verres colorés. Le monde devient rouge, bleu, orange, rose…\n\nDust'in Kolor n'est pas une série colorisée. C'est ce que j'ai vu.\n\nDésert du Nevada — Burning Man, août 2016.",
-      enter: 'Entrer dans la série',
-      back: '← Bertrand Basset',
-      panier: 'PANIER', acheter: 'ACHETER',
-      edition:'Édition', couleur:'Couleur', format:'Format', support:'Support',
-      disponibles:'disponibles', vendus_lbl:'vendu(s)',
+      kicker:'Série photographique — 2016',
+      desc:"En pleine tempête de sable, la visibilité est proche de zéro. On enfile les goggles — ces lunettes de protection aux verres colorés. Le monde devient rouge, bleu, orange, rose…\n\nDust'in Kolor n'est pas une série colorisée. C'est ce que j'ai vu.\n\nDésert du Nevada — Burning Man, août 2016.",
+      enter:'Entrer dans la série', back:'← Bertrand Basset',
+      panier:'PANIER', acheter:'ACHETER', cartes:'CARTES',
+      fmt_simple:'Tirage simple', fmt_simple_sub:'À encadrer soi-même',
+      fmt_dibond:'Contrecollé Dibond', fmt_chassis:'À suspendre',
+      fmt_grand:'Grand format',
+      support_lbl:'Support', montage_lbl:'Montage', taille_lbl:'Format',
+      edition_lbl:'Édition', dispo_lbl:'Disponibles',
+      prix_fixe:'Prix fixe', ed_30:'30 ex. numérotés', ed_10:'10 ex. limités',
       paliers:['Ex. 1–3','Ex. 4–7','Ex. 8–10'],
-      palier_actuel:'actuel', epuise:'Épuisé',
-      ajouter:'Ajouter au panier',
-      certificat:"Tirage numéroté, daté et signé par l'artiste. Certificat d'authenticité inclus.\nLivraison par Pix in the City, tireur d'art à Auray.",
+      ajouter:'Ajouter au panier', epuise:'Épuisé',
+      legal:"Numéroté, daté & signé. Certificat d’authenticité inclus.\nFabriqué par Pix in the City, Auray. Délai 2–3 semaines.\nŒuvre personnalisée — ni repris, ni échangé.",
+      cartes_titre:'Cartes postales — Format DL',
+      cartes_info:'Papier premium soft touch. Impression professionnelle.',
+      livraison_info:'Livraison 4 € — offerte dès 35 € d’achat.',
+      cartes_sel:'Choisissez vos cartes ci-dessous',
+      pack3:'Pack 3 cartes',
+      unite_lbl:'1 carte —', pack_lbl:'3 cartes —',
     },
     en: {
-      kicker: 'Photography series — 2016',
-      desc: "In the middle of a sandstorm, visibility drops to near zero. You put on goggles — those coloured protective lenses. The world turns red, blue, orange, pink…\n\nDust'in Kolor is not a colorised series. It's what I saw.\n\nNevada Desert — Burning Man, August 2016.",
-      enter: 'Enter the series',
-      back: '← Bertrand Basset',
-      panier: 'CART', acheter: 'BUY',
-      edition:'Edition', couleur:'Color', format:'Format', support:'Print on',
-      disponibles:'available', vendus_lbl:'sold',
+      kicker:'Photography series — 2016',
+      desc:"In the middle of a sandstorm, visibility drops to near zero. You put on goggles — those coloured protective lenses. The world turns red, blue, orange, pink…\n\nDust'in Kolor is not a colorised series. It's what I saw.\n\nNevada Desert — Burning Man, August 2016.",
+      enter:'Enter the series', back:'← Bertrand Basset',
+      panier:'CART', acheter:'BUY', cartes:'CARDS',
+      fmt_simple:'Fine art print', fmt_simple_sub:'Unframed',
+      fmt_dibond:'Dibond mounted', fmt_chassis:'Wall-ready',
+      fmt_grand:'Large format',
+      support_lbl:'Paper', montage_lbl:'Mounting', taille_lbl:'Size',
+      edition_lbl:'Edition', dispo_lbl:'Available',
+      prix_fixe:'Fixed price', ed_30:'30 numbered prints', ed_10:'10 limited prints',
       paliers:['No. 1–3','No. 4–7','No. 8–10'],
-      palier_actuel:'current', epuise:'Sold out',
-      ajouter:'Add to cart',
-      certificat:"Numbered, dated and signed by the artist. Certificate of authenticity included.\nPrinted by Pix in the City, fine art printer in Auray.",
+      ajouter:'Add to cart', epuise:'Sold out',
+      legal:"Numbered, dated & signed. Certificate of authenticity included.\nProduced by Pix in the City, Auray. Lead time 2–3 weeks.\nPersonalised artwork — no returns or exchanges.",
+      cartes_titre:'Postcards — DL Format',
+      cartes_info:'Premium soft touch paper. Professional printing.',
+      livraison_info:'Shipping 4 € — free from 35 €.',
+      cartes_sel:'Choose your cards below',
+      pack3:'Pack of 3 cards',
+      unite_lbl:'1 card —', pack_lbl:'3 cards —',
     }
   };
 
@@ -465,27 +616,59 @@
   let current   = 0;
   let inGallery = false;
   let panelOpen = false;
-
-  const dispo    = e => e.total - e.vendus;
-  const palierIdx = e => e.vendus < 3 ? 0 : e.vendus < 7 ? 1 : 2;
-  const prixAct  = e => e.prix[palierIdx(e)];
+  let activeFmt = 'simple';
+  let selectedCartes = [];
+  let cartesPack = false;
 
   /* ════════════════════════════════════════
      CART
   ════════════════════════════════════════ */
   function getCart() { try { return JSON.parse(localStorage.getItem('dk_cart')||'[]'); } catch(e){ return []; } }
   function saveCart(c) { localStorage.setItem('dk_cart', JSON.stringify(c)); updateCartBadge(); }
-  function addToCart(slug) {
-    const e = EDITIONS.find(x => x.slug === slug);
-    if (!e || dispo(e) <= 0) return;
+
+  function addToCart() {
+    const e   = EDITIONS[current];
+    const fmt = e.formats[activeFmt];
+    const titre = lang==='fr' ? e.titre_fr : e.titre_en;
     const cart = getCart();
-    const ex = cart.find(x => x.slug === slug);
+
+    let prix, taille_label, type_label;
+    if (activeFmt === 'grand') {
+      const pi = fmt.vendus < 3 ? 0 : fmt.vendus < 7 ? 1 : 2;
+      prix = fmt.prix[pi];
+      type_label = (lang==='fr' ? 'Grand format' : 'Large format') + ' — ' + T[lang].paliers[pi];
+    } else {
+      prix = fmt.prix;
+      type_label = lang==='fr'
+        ? (activeFmt==='simple'?'Tirage simple':activeFmt==='dibond'?'Contrecollé Dibond':'À suspendre')
+        : (activeFmt==='simple'?'Fine art print':activeFmt==='dibond'?'Dibond mounted':'Wall-ready');
+    }
+    taille_label = fmt.taille;
+
+    const itemId = e.slug + '-' + activeFmt;
+    const ex = cart.find(x => x.id === itemId);
     if (ex) ex.qty = (ex.qty||1)+1;
-    else cart.push({ slug, num:e.num, titre: lang==='fr'?e.titre_fr:e.titre_en, format:e.format, prix:prixAct(e), qty:1 });
+    else cart.push({ id:itemId, slug:e.slug, num:e.num, titre, type:type_label, taille:taille_label, prix, qty:1, cat:'tirage' });
     saveCart(cart);
-    const btn = document.getElementById('btnPanier');
-    if (btn) { const orig=btn.textContent; btn.textContent='✓ Ajouté'; setTimeout(()=>btn.textContent=orig,1400); }
+
+    const btn = document.getElementById('panelAddBtn');
+    if (btn) { const orig=btn.textContent; btn.textContent='✔ Ajouté'; setTimeout(()=>btn.textContent=orig,1400); }
   }
+
+  function addCartesToCart() {
+    if (selectedCartes.length === 0) return;
+    const cart = getCart();
+    const cp = CARTES_POSTALES;
+    const isPack = cartesPack && selectedCartes.length === 3;
+    const prix = isPack ? cp.prix_pack3 : selectedCartes.length * cp.prix_unite;
+    const itemId = 'cartes-' + selectedCartes.join('-');
+    cart.push({ id:itemId, titre:'Cartes postales DL', type:isPack?'Pack 3 cartes':selectedCartes.length+' carte(s)', taille:'Format DL — papier soft touch', prix, qty:1, cat:'carte', imgs:selectedCartes });
+    saveCart(cart);
+    closeCartesPanel();
+    const btn = document.getElementById('cartCount');
+    updateCartBadge();
+  }
+
   function updateCartBadge() {
     const total = getCart().reduce((s,i)=>s+(i.qty||1),0);
     const b = document.getElementById('cartCount');
@@ -493,7 +676,172 @@
   }
 
   /* ════════════════════════════════════════
-     BUILD PHOTOS
+     PANEL — Tirages
+  ════════════════════════════════════════ */
+  const FMT_KEYS = ['simple','dibond','chassis','grand'];
+
+  function selectFmt(key) {
+    activeFmt = key;
+    document.querySelectorAll('.fmt-tab').forEach(b => b.classList.toggle('active', b.dataset.fmt===key));
+    renderFmtDetail(EDITIONS[current], key);
+  }
+
+  function renderFmtDetail(e, key) {
+    const t   = T[lang];
+    const fmt = e.formats[key];
+    const isGrand = key === 'grand';
+    let html = '<div class="fmt-detail">';
+
+    // Rows
+    html += `<div class="fmt-row"><span class="fmt-label">${t.taille_lbl}</span><span class="fmt-val">${fmt.taille}</span></div>`;
+    html += `<div class="fmt-row"><span class="fmt-label">${t.support_lbl}</span><span class="fmt-val">${fmt.support}</span></div>`;
+    if (fmt.montage) html += `<div class="fmt-row"><span class="fmt-label">${t.montage_lbl}</span><span class="fmt-val">${fmt.montage}</span></div>`;
+
+    // Prix
+    html += '<div class="fmt-prix-block">';
+    if (isGrand) {
+      const dispo = fmt.ed - fmt.vendus;
+      const pi = fmt.vendus < 3 ? 0 : fmt.vendus < 7 ? 1 : 2;
+      html += `<div class="fmt-row"><span class="fmt-label">${t.edition_lbl}</span><span class="fmt-val">${t.ed_10}</span></div>`;
+      html += `<div class="fmt-row"><span class="fmt-label">${t.dispo_lbl}</span><span class="fmt-val">${dispo} / ${fmt.ed}</span></div>`;
+      html += '<div class="fmt-prix-grid">';
+      fmt.prix.forEach((p,i) => {
+        const isCur = i === pi;
+        html += `<div class="fmt-prix-tier${isCur?' current':''}">
+          <div class="tier-range">${t.paliers[i]}</div>
+          <div class="tier-val">${p.toLocaleString('fr-FR')} €</div>
+        </div>`;
+      });
+      html += '</div>';
+      const epuise = fmt.vendus >= fmt.ed;
+      html += `<button class="panel-add-btn" id="panelAddBtn" onclick="addToCart()" ${epuise?'disabled':''}>
+        ${epuise ? t.epuise : t.ajouter + ' — ' + fmt.prix[pi].toLocaleString('fr-FR') + ' €'}
+      </button>`;
+    } else {
+      html += `<div class="fmt-prix-main">${fmt.prix.toLocaleString('fr-FR')} <span style="font-size:1rem">€</span></div>`;
+      html += `<div class="fmt-prix-note">${t.prix_fixe} — ${t.ed_30}</div>`;
+      if (key === 'simple') html += `<div class="fmt-prix-note" style="margin-top:0.2rem">${t.fmt_simple_sub}</div>`;
+      html += `<button class="panel-add-btn" id="panelAddBtn" onclick="addToCart()">${t.ajouter} — ${fmt.prix.toLocaleString('fr-FR')} €</button>`;
+    }
+    html += '</div></div>';
+
+    document.getElementById('fmtDetail').innerHTML = html;
+  }
+
+  function renderPanel(i) {
+    const e = EDITIONS[i];
+    const t = T[lang];
+    const titre = lang==='fr' ? e.titre_fr : e.titre_en;
+
+    const tabsHtml = FMT_KEYS.map(k => {
+      const labels = { simple:t.fmt_simple, dibond:t.fmt_dibond, chassis:t.fmt_chassis, grand:t.fmt_grand };
+      return `<button class="fmt-tab${k===activeFmt?' active':''}" data-fmt="${k}" onclick="selectFmt('${k}')">${labels[k]}</button>`;
+    }).join('');
+
+    document.getElementById('panelInner').innerHTML = `
+      <div class="panel-thumb">
+        <img src="../images/dustin-kolor/${e.img}" alt="${titre}">
+      </div>
+      <div>
+        <p class="panel-kicker">Dust'in Kolor — Édition ${e.num} — ${lang==='fr'?e.couleur_fr:e.couleur_en}</p>
+        <h2 class="panel-title">${titre}</h2>
+      </div>
+      <div class="fmt-tabs">${tabsHtml}</div>
+      <div id="fmtDetail"></div>
+      <div class="panel-legal">
+        ${t.legal.replace(/\n/g,'<br>')}<br>
+        <a href="../panier.html">${lang==='fr'?'Voir le panier':'View cart'}</a>
+      </div>
+    `;
+    renderFmtDetail(e, activeFmt);
+  }
+
+  function openPanel() {
+    activeFmt = 'simple';
+    panelOpen = true;
+    renderPanel(current);
+    document.getElementById('productPanel').classList.add('open');
+    document.getElementById('productOverlay').classList.add('visible');
+  }
+  function closePanel() {
+    panelOpen = false;
+    document.getElementById('productPanel').classList.remove('open');
+    document.getElementById('productOverlay').classList.remove('visible');
+  }
+
+  /* ════════════════════════════════════════
+     PANEL — Cartes postales
+  ════════════════════════════════════════ */
+  function openCartesPanel() {
+    selectedCartes = [];
+    cartesPack = false;
+    const t  = T[lang];
+    const cp = CARTES_POSTALES;
+
+    document.getElementById('lblCartesTitle').textContent = t.cartes_titre;
+    document.getElementById('cartesInfo').innerHTML =
+      `${t.cartes_info}<br>${t.livraison_info}`;
+
+    document.getElementById('cartesPrixOpts').innerHTML = `
+      <button class="cartes-prix-btn" onclick="setCartesPack(false)" id="btnUnite"
+        style="border-color:#aaa;color:#eee">${t.unite_lbl} ${cp.prix_unite} €</button>
+      <button class="cartes-prix-btn" onclick="setCartesPack(true)" id="btnPack3">${t.pack_lbl} ${cp.prix_pack3} €</button>
+    `;
+
+    document.getElementById('cartesGrid').innerHTML = cp.items.map(c =>
+      `<div class="carte-item" id="ci-${c.id}" onclick="toggleCarte('${c.id}')">
+        <img src="../images/cartes-postales/${c.id}.jpg" alt="Carte ${c.id}" loading="lazy">
+        <div class="carte-sel"><span class="carte-check">✓</span></div>
+      </div>`
+    ).join('');
+
+    updateCartesFooter();
+    document.getElementById('cartesPanel').classList.add('open');
+  }
+
+  function closeCartesPanel() {
+    document.getElementById('cartesPanel').classList.remove('open');
+  }
+
+  function setCartesPack(isPack) {
+    cartesPack = isPack;
+    document.getElementById('btnUnite').style.cssText = isPack?'':' border-color:#aaa;color:#eee';
+    document.getElementById('btnPack3').style.cssText = isPack?'border-color:#aaa;color:#eee':'';
+    updateCartesFooter();
+  }
+
+  function toggleCarte(id) {
+    const max = cartesPack ? 3 : Infinity;
+    const idx = selectedCartes.indexOf(id);
+    if (idx >= 0) {
+      selectedCartes.splice(idx, 1);
+    } else {
+      if (cartesPack && selectedCartes.length >= 3) return;
+      selectedCartes.push(id);
+    }
+    document.querySelectorAll('.carte-item').forEach(el => {
+      el.classList.toggle('selected', selectedCartes.includes(el.id.replace('ci-','')));
+    });
+    updateCartesFooter();
+  }
+
+  function updateCartesFooter() {
+    const cp  = CARTES_POSTALES;
+    const t   = T[lang];
+    const n   = selectedCartes.length;
+    const isPack = cartesPack && n === 3;
+    const prix = isPack ? cp.prix_pack3 : n * cp.prix_unite;
+    const lbl = n === 0
+      ? t.cartes_sel
+      : `${n} carte${n>1?'s':''} sélectionnée${n>1?'s':''} — ${prix} €`;
+    document.getElementById('cartesSelInfo').textContent = lbl;
+    const btn = document.getElementById('cartesAddBtn');
+    btn.disabled = n === 0;
+    btn.textContent = n === 0 ? t.ajouter : `${t.ajouter} — ${prix} €`;
+  }
+
+  /* ════════════════════════════════════════
+     PHOTOS
   ════════════════════════════════════════ */
   function buildPhotos() {
     document.getElementById('photoArea').innerHTML = EDITIONS.map((e,i) =>
@@ -522,58 +870,12 @@
   function next() { showPhoto((current+1)%EDITIONS.length); }
 
   /* ════════════════════════════════════════
-     LANDING → GALERIE
+     LANDING
   ════════════════════════════════════════ */
   function enterGallery() {
     inGallery = true;
     document.getElementById('landing').classList.add('out');
-    setTimeout(() => {
-      document.getElementById('gallery').classList.add('in');
-    }, 200);
-  }
-
-  /* ════════════════════════════════════════
-     PANNEAU PRODUIT
-  ════════════════════════════════════════ */
-  function renderPanel(i) {
-    const e  = EDITIONS[i];
-    const t  = T[lang];
-    const ep = dispo(e) <= 0;
-    const pi = palierIdx(e);
-    const titre = lang === 'fr' ? e.titre_fr : e.titre_en;
-    const boutiqueUrl = `../boutique.html?id=${e.slug}`;
-
-    document.getElementById('panelInner').innerHTML = `
-      <div class="panel-thumb">
-        <img src="../images/dustin-kolor/${e.img}" alt="${titre}">
-      </div>
-      <div>
-        <p class="panel-kicker">Dust'in Kolor — ${t.edition} ${e.num}</p>
-        <h2 class="panel-title">${titre}</h2>
-      </div>
-      <div>
-        <div class="panel-price">${ep ? t.epuise : prixAct(e).toLocaleString('fr-FR')+' '}<span style="font-size:1rem">€</span></div>
-        <div class="panel-price-note">${ep ? '' : t.paliers[pi]}</div>
-      </div>
-      <a class="btn-commander" href="${boutiqueUrl}">
-        ${lang === 'en' ? 'Order this print' : 'Commander ce tirage'} →
-      </a>
-      <a class="panel-serie-link" href="../boutique.html">
-        ${lang === 'en' ? 'See all 7 works' : 'Voir les 7 œuvres de la série'}
-      </a>
-    `;
-  }
-
-  function openPanel() {
-    panelOpen = true;
-    renderPanel(current);
-    document.getElementById('productPanel').classList.add('open');
-    document.getElementById('productOverlay').classList.add('visible');
-  }
-  function closePanel() {
-    panelOpen = false;
-    document.getElementById('productPanel').classList.remove('open');
-    document.getElementById('productOverlay').classList.remove('visible');
+    setTimeout(() => document.getElementById('gallery').classList.add('in'), 200);
   }
 
   /* ════════════════════════════════════════
@@ -581,9 +883,7 @@
   ════════════════════════════════════════ */
   function setLang(l) {
     lang = l;
-    document.querySelectorAll('[data-lang]').forEach(a => {
-      a.classList.toggle('active', a.dataset.lang === l);
-    });
+    document.querySelectorAll('[data-lang]').forEach(a => a.classList.toggle('active', a.dataset.lang === l));
     const t = T[l];
     document.getElementById('lblKicker').textContent  = t.kicker;
     document.getElementById('lblDesc').innerHTML      = t.desc.replace(/\n\n/g,'<br><br>');
@@ -591,6 +891,7 @@
     document.getElementById('lblBack').textContent    = t.back;
     document.getElementById('lblPanier').textContent  = t.panier;
     document.getElementById('lblAcheter').textContent = t.acheter;
+    document.getElementById('lblCartes').textContent  = t.cartes;
     if (inGallery) showPhoto(current);
     if (panelOpen) renderPanel(current);
   }
@@ -599,7 +900,7 @@
      CLAVIER
   ════════════════════════════════════════ */
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape' && panelOpen) { closePanel(); return; }
+    if (e.key === 'Escape') { if (panelOpen) closePanel(); else closeCartesPanel(); return; }
     if (!inGallery || panelOpen) return;
     if (['ArrowLeft','ArrowUp'].includes(e.key))    prev();
     if (['ArrowRight','ArrowDown'].includes(e.key)) next();
@@ -610,7 +911,6 @@
   ════════════════════════════════════════ */
   buildPhotos();
   updateCartBadge();
-
   const hash = location.hash.replace('#','');
   if (hash) {
     const idx = EDITIONS.findIndex(e => e.slug === hash);
@@ -619,4 +919,3 @@
   showPhoto(current);
   </script>
 </body>
-</html>

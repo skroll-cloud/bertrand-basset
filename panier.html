@@ -90,6 +90,38 @@
       .header-logo-name { display: none; }
       .cart-item { grid-template-columns: 64px 1fr auto; gap: 0.8rem; }
     }
+
+    /* ── CODE PROMO ── */
+    .promo-section { margin-bottom:1.5rem; }
+    .promo-row { display:flex; gap:0.5rem; margin-bottom:0.4rem; }
+    .promo-input {
+      flex:1; padding:0.5rem 0.8rem; border:1px solid var(--line);
+      font-family:var(--font); font-size:0.7rem; outline:none; transition:border-color 0.15s;
+    }
+    .promo-input:focus { border-color:var(--black); }
+    .promo-btn {
+      padding:0.5rem 1rem; background:var(--black); color:#fff;
+      font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; border:none; cursor:pointer;
+    }
+    .promo-msg { font-size:0.62rem; color:var(--dim); min-height:1.2em; }
+
+    /* ── LIVRAISON ── */
+    .livraison-note { font-size:0.62rem; color:var(--dim); margin-bottom:1rem; line-height:1.6; }
+
+    /* ── CHECKOUT INFO ── */
+    .checkout-info { font-size:0.62rem; color:var(--dim); text-align:center; margin-top:0.8rem; line-height:1.8; }
+    .checkout-info strong { color:var(--black); font-weight:400; }
+
+    /* ── MENTIONS LÉGALES ── */
+    .mentions-legales { margin-top:3rem; padding-top:2rem; border-top:1px solid var(--line); }
+    .ml-title { font-size:0.55rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--dim); margin-bottom:1.5rem; }
+    .ml-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem 2rem; }
+    .ml-label { font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--dim); margin-bottom:0.4rem; }
+    .ml-block p { font-size:0.68rem; color:var(--gray); line-height:1.7; }
+    .ml-block strong { color:var(--black); font-weight:400; }
+    .ml-block a { color:var(--black); border-bottom:1px solid var(--line); }
+    @media (max-width:600px) { .ml-grid { grid-template-columns:1fr; } }
+
   </style>
 </head>
 <body>
@@ -110,88 +142,188 @@
 </div>
 
 <script>
-  const EDITIONS = [
-    { slug:'sandstorm-feu',          img:'images/dustin-kolor/01.jpg', titre_fr:'Sandstorm',        format:'60 × 90 cm'  },
-    { slug:'flying-car-orange',      img:'images/dustin-kolor/02.jpg', titre_fr:'Flying Car',        format:'70 × 124 cm' },
-    { slug:'after-the-storm-vert',   img:'images/dustin-kolor/03.jpg', titre_fr:'After the Storm',   format:'70 × 124 cm' },
-    { slug:'lost-in-the-dust-rouge', img:'images/dustin-kolor/04.jpg', titre_fr:'Lost in the Dust',  format:'60 × 80 cm'  },
-    { slug:'camp-lighters-jaune',    img:'images/dustin-kolor/05.jpg', titre_fr:'Camp Lighters',     format:'40 × 100 cm' },
-    { slug:'im-here-bleu',           img:'images/dustin-kolor/06.jpg', titre_fr:"I'm Here",          format:'60 × 80 cm'  },
-    { slug:'umbrellas-way-rose',     img:'images/dustin-kolor/08.jpg', titre_fr:'Umbrellas Way',     format:'60 × 80 cm'  },
-  ];
+  const IMG_BY_SLUG = {
+    'sandstorm-feu':          'images/dustin-kolor/01.jpg',
+    'flying-car-orange':      'images/dustin-kolor/02.jpg',
+    'after-the-storm-vert':   'images/dustin-kolor/03.jpg',
+    'lost-in-the-dust-rouge': 'images/dustin-kolor/04.jpg',
+    'camp-lighters-jaune':    'images/dustin-kolor/05.jpg',
+    'im-here-bleu':           'images/dustin-kolor/06.jpg',
+    'umbrellas-way-rose':     'images/dustin-kolor/08.jpg',
+  };
+
+  const PROMO_CODE     = 'Maman';
+  const PROMO_DISCOUNT = 0.10;
+  let promoApplied     = false;
 
   function getCart() { try { return JSON.parse(localStorage.getItem('dk_cart')||'[]'); } catch(e){ return []; } }
   function saveCart(c) { localStorage.setItem('dk_cart', JSON.stringify(c)); }
 
-  function changeQty(slug, delta) {
+  function getImg(item) {
+    if (item.cat === 'carte' && item.imgs && item.imgs.length)
+      return 'images/cartes-postales/' + item.imgs[0] + '.jpg';
+    const slug = (item.id||item.slug||''). replace(/-(simple|dibond|chassis|grand)$/, '');
+    return IMG_BY_SLUG[slug] || '';
+  }
+
+  function changeQty(id, delta) {
     const cart = getCart();
-    const item = cart.find(x => x.slug === slug);
+    const item = cart.find(x => (x.id||x.slug) === id);
     if (!item) return;
     item.qty = (item.qty||1) + delta;
     if (item.qty <= 0) cart.splice(cart.indexOf(item), 1);
-    saveCart(cart);
+    saveCart(cart); renderCart();
+  }
+
+  function removeItem(id) {
+    saveCart(getCart().filter(x => (x.id||x.slug) !== id));
     renderCart();
   }
 
-  function removeItem(slug) {
-    saveCart(getCart().filter(x => x.slug !== slug));
+  function calcShipping(cart) {
+    const tirages = cart.filter(i => i.cat !== 'carte');
+    const cartes  = cart.filter(i => i.cat === 'carte');
+    const tTotal  = tirages.reduce((s,i) => s + i.prix*(i.qty||1), 0);
+    const cTotal  = cartes.reduce((s,i)  => s + i.prix*(i.qty||1), 0);
+    let frais = 0, note = [];
+    if (tTotal > 0)
+      note.push(tTotal >= 200 ? 'Livraison France offerte pour vos tirages.' : 'Livraison tirages France offerte dès 200 €.');
+    if (cTotal > 0) {
+      if (cTotal >= 35) { note.push('Livraison cartes offerte.'); }
+      else { frais += 4; note.push('Livraison cartes : 4 €.'); }
+    }
+    return { frais, note: note.join(' ') };
+  }
+
+  function applyPromo() {
+    const val = (document.getElementById('promoInput')?.value || '').trim();
+    promoApplied = val.toLowerCase() === PROMO_CODE.toLowerCase();
+    const msg = document.getElementById('promoMsg');
+    if (msg) {
+      msg.textContent = promoApplied
+        ? '✓ Code appliqué — 10 % de réduction (ex. 1 et 2 par œuvre et format)'
+        : val ? 'Code invalide' : '';
+      msg.style.color = promoApplied ? '#2a7a2a' : '#c00';
+    }
     renderCart();
   }
 
   function renderCart() {
     const cart = getCart();
     const wrap = document.getElementById('cartContent');
-
     if (cart.length === 0) {
-      wrap.innerHTML = `
-        <p class="cart-empty">Votre panier est vide.</p>
+      wrap.innerHTML = `<p class="cart-empty">Votre panier est vide.</p>
         <div class="sep"></div>
-        <a href="boutique.html" class="continue-link">← Voir les œuvres disponibles</a>`;
+        <a href="dustin-kolor/index.html" class="continue-link">← Retour à la boutique</a>`;
       return;
     }
 
-    const total = cart.reduce((s, i) => s + (i.prix * (i.qty||1)), 0);
+    const sub   = cart.reduce((s,i) => s + i.prix*(i.qty||1), 0);
+    const { frais, note } = calcShipping(cart);
+    const remise = promoApplied ? Math.round(sub * PROMO_DISCOUNT * 100) / 100 : 0;
+    const total  = sub - remise + frais;
 
-    const items = cart.map(item => {
-      const ed = EDITIONS.find(e => e.slug === item.slug) || {};
+    const itemsHtml = cart.map(item => {
+      const img = getImg(item);
+      const eid = item.id || item.slug;
       return `
         <div class="cart-item">
           <div class="cart-item-img">
-            <img src="${ed.img||''}" alt="${item.titre}" loading="lazy">
+            <img src="${img}" alt="${item.titre}" loading="lazy">
           </div>
           <div>
             <div class="cart-item-name">${item.titre}</div>
-            <div class="cart-item-format">${item.format} — Ex. ${item.num}</div>
+            <div class="cart-item-format">${item.type||item.format||''}\${item.taille?' — '+item.taille:''}</div>
             <div class="cart-item-qty">
-              <button class="qty-btn" onclick="changeQty('${item.slug}',-1)">−</button>
+              <button class="qty-btn" onclick="changeQty('${eid}',-1)">−</button>
               <span>${item.qty||1}</span>
-              <button class="qty-btn" onclick="changeQty('${item.slug}',+1)">+</button>
+              <button class="qty-btn" onclick="changeQty('${eid}',+1)">+</button>
             </div>
           </div>
           <div class="cart-item-right">
             <div class="cart-item-prix">${(item.prix*(item.qty||1)).toLocaleString('fr-FR')} €</div>
-            <button class="cart-item-del" onclick="removeItem('${item.slug}')">Retirer</button>
+            <button class="cart-item-del" onclick="removeItem('${eid}')">Retirer</button>
           </div>
         </div>`;
     }).join('');
 
     wrap.innerHTML = `
-      <div class="cart-items">${items}</div>
+      <div class="cart-items">${itemsHtml}</div>
+
+      <div class="promo-section">
+        <div class="promo-row">
+          <input type="text" id="promoInput" class="promo-input" placeholder="Code de réduction" value="${promoApplied ? PROMO_CODE : ''}">
+          <button class="promo-btn" onclick="applyPromo()">Appliquer</button>
+        </div>
+        <div id="promoMsg" class="promo-msg" style="color:${promoApplied?'#2a7a2a':'#c00'}">
+          ${promoApplied ? '✓ Code appliqué — 10 % de réduction (ex. 1 et 2 par œuvre et format)' : ''}
+        </div>
+      </div>
+
       <div class="cart-summary">
         <div class="cart-summary-row">
-          <span class="cart-summary-label">Total</span>
+          <span class="cart-summary-label">Sous-total</span>
+          <span>${sub.toLocaleString('fr-FR')} €</span>
+        </div>
+        ${remise > 0 ? `<div class="cart-summary-row">
+          <span class="cart-summary-label">Réduction −10 %</span>
+          <span style="color:#2a7a2a">−${remise.toLocaleString('fr-FR')} €</span>
+        </div>` : ''}
+        ${frais > 0 ? `<div class="cart-summary-row">
+          <span class="cart-summary-label">Livraison</span>
+          <span>${frais} €</span>
+        </div>` : ''}
+        <div class="cart-summary-row" style="margin-top:0.8rem;border-top:1px solid var(--line);padding-top:0.8rem">
+          <span class="cart-summary-label" style="font-size:0.75rem;color:var(--black)">Total</span>
           <span class="cart-summary-total">${total.toLocaleString('fr-FR')} €</span>
         </div>
       </div>
+
+      ${note ? `<p class="livraison-note">${note}</p>` : ''}
+
       <button class="btn-checkout" onclick="checkout()">Procéder au paiement</button>
-      <p class="checkout-note">Paiement sécurisé par Stripe · Tirage numéroté livré par Pix in the City, Auray</p>
+      <div class="checkout-info">
+        <p>⏱ Délai de fabrication et livraison : <strong>2 à 3 semaines</strong></p>
+        <p>Paiement sécurisé · Fabriqué par Pix in the City, Auray</p>
+      </div>
+
+      <div class="mentions-legales">
+        <p class="ml-title">Informations légales</p>
+        <div class="ml-grid">
+          <div class="ml-block">
+            <p class="ml-label">Vendeur</p>
+            <p>Bertrand Basset<br>SIREN 820 257 962<br>Carantec, Finistère, Bretagne<br>
+              <a href="mailto:bertrand.basset@gmail.com">bertrand.basset@gmail.com</a><br>06 43 10 58 60</p>
+          </div>
+          <div class="ml-block">
+            <p class="ml-label">Retours & échanges</p>
+            <p>Les œuvres étant fabriquées à la commande et personnalisées (numérotées, signées), elles sont <strong>exclues du droit de rétractation</strong> (art. L221-28 4° du Code de la consommation). Ni reprises, ni échangées après fabrication.</p>
+          </div>
+          <div class="ml-block">
+            <p class="ml-label">Garanties légales</p>
+            <p>Garantie légale de conformité (art. L217-4 C. conso.) et garantie contre les vices cachés (art. 1641 C. civil) applicables à toute commande.</p>
+          </div>
+          <div class="ml-block">
+            <p class="ml-label">Livraison</p>
+            <p>Tirages expédiés par Pix in the City, Auray. Délai 2–3 semaines. Livraison France offerte dès 200 €. Cartes postales offerte dès 35 €, sinon 4 €. Tarifs Europe et monde sur demande.</p>
+          </div>
+          <div class="ml-block">
+            <p class="ml-label">Données personnelles</p>
+            <p>Vos données sont traitées uniquement pour l'exécution de votre commande, conformément au RGPD. Elles ne sont pas transmises à des tiers hors prestataires de livraison.</p>
+          </div>
+          <div class="ml-block">
+            <p class="ml-label">Litige</p>
+            <p>En cas de litige, une solution amiable sera prioritairement recherchée. Vous pouvez recourir à la plateforme de résolution en ligne de la Commission européenne : <a href="https://ec.europa.eu/consumers/odr">ec.europa.eu/consumers/odr</a></p>
+          </div>
+        </div>
+      </div>
+
       <div class="sep"></div>
-      <a href="boutique.html" class="continue-link">← Continuer mes achats</a>`;
+      <a href="dustin-kolor/index.html" class="continue-link">← Continuer mes achats</a>`;
   }
 
   function checkout() {
-    // TODO: intégrer Stripe Checkout pour les tirages
-    alert('Paiement des tirages — prochainement disponible.\nPour commander, contactez : bertrand.basset@gmail.com');
+    alert('Paiement en ligne bientôt disponible.\nPour commander maintenant :\nbertrand.basset@gmail.com · 06 43 10 58 60');
   }
 
   renderCart();
