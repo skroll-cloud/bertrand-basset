@@ -202,52 +202,6 @@
       border: 1px solid var(--line); border-radius: 2px; transition: border-color 0.2s, color 0.2s;
     }
     .btn-voir-panier:hover { border-color: var(--gray); color: var(--black); }
-
-    /* ── CARTES POSTALES ── */
-    .cartes-section {
-      border-top: 1px solid var(--line); padding-top: 2.5rem; margin-top: 0.5rem;
-    }
-    .section-title {
-      font-size: 0.55rem; letter-spacing: 0.15em; text-transform: uppercase;
-      color: var(--dim); margin-bottom: 1.4rem;
-    }
-    .cartes-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.8rem; margin-bottom: 1.5rem;
-    }
-    .carte-item { cursor: pointer; }
-    .carte-img-wrap {
-      aspect-ratio: 99/210; overflow: hidden; background: var(--bg);
-      border: 2px solid transparent; transition: border-color 0.15s;
-    }
-    .carte-img-wrap:hover { border-color: #ccc; }
-    .carte-item.active .carte-img-wrap { border-color: var(--black); }
-    .carte-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
-    .carte-num {
-      font-size: 0.5rem; color: var(--dim); text-align: center; margin-top: 0.3rem;
-      letter-spacing: 0.1em;
-    }
-    .carte-config {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 1rem 0; border-top: 1px solid var(--line); font-size: 0.8rem;
-    }
-    .carte-prix-main { font-size: 1.6rem; font-weight: 300; }
-    .carte-prix-sub { font-size: 0.58rem; color: var(--dim); margin-top: 0.2rem; }
-
-    /* ── TOAST ── */
-    .toast {
-      position: fixed; bottom: 2rem; right: 2rem; z-index: 999;
-      background: var(--black); color: #fff;
-      padding: 0.9rem 1.4rem; border-radius: 3px;
-      font-size: 0.7rem; letter-spacing: 0.05em;
-      transform: translateY(150%); opacity: 0;
-      transition: transform 0.3s, opacity 0.3s;
-      pointer-events: none;
-    }
-    .toast.show { transform: translateY(0); opacity: 1; }
-
-    /* ── CARTES PAGE ── */
-    #cartes-wrap { display: none; }
-    #cartes-wrap.visible { display: block; }
   </style>
 </head>
 <body>
@@ -344,17 +298,12 @@
       <button class="btn-voir-panier" onclick="location.href='panier.html'">Voir le panier</button>
     </div>
 
-    <!-- CARTES POSTALES -->
-    <div class="cartes-section" id="cartes-wrap">
-      <p class="section-title">Cartes postales</p>
-      <div class="cartes-grid" id="cartesGrid"></div>
-      <div class="carte-config">
-        <div>
-          <div class="carte-prix-main" id="cartePrix">4 €</div>
-          <div class="carte-prix-sub">Format DL 99×210mm · Soft touch premium</div>
-        </div>
-        <button class="btn-add-cart" style="width:auto;padding:0.7rem 1.4rem" onclick="addToCart('carte')">Ajouter</button>
-      </div>
+    <!-- CARTES POSTALES — LIEN -->
+    <div style="border-top:1px solid var(--line);padding-top:2rem;margin-top:0.5rem">
+      <p style="font-size:0.6rem;color:var(--dim);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.8rem">Cartes postales</p>
+      <a href="cartes.html" style="font-size:0.75rem;color:var(--gray);text-decoration:underline;text-underline-offset:3px">
+        Découvrir les cartes postales Dust'in Kolor →
+      </a>
     </div>
   </div>
 </div>
@@ -438,12 +387,6 @@ const EDITIONS = [
   }
 ];
 
-const CARTES = [
-  { id:'cp-01', num:'01' }, { id:'cp-02', num:'02' }, { id:'cp-03', num:'03' },
-  { id:'cp-04', num:'04' }, { id:'cp-05', num:'05' }, { id:'cp-06', num:'06' },
-  { id:'cp-07', num:'07' }, { id:'cp-08', num:'08' }, { id:'cp-09', num:'09' }
-];
-const CARTE_PRIX = 4;
 
 const EARLY_PETIT = 2;
 const EARLY_GRAND = 1;
@@ -455,7 +398,6 @@ const EARLY_TAUX  = 0.10;
 let edition = null;
 let currentTab = 'simple';
 let chassisActive = false;
-let selectedCarte = null;
 let lang = 'fr';
 
 /* ══════════════════════════════════════════════════
@@ -497,8 +439,6 @@ function addToCart(type) {
     item = { type:'grand', slug:edition.slug, num:edition.num,
              titre: lang==='fr' ? edition.titre_fr : edition.titre_en,
              taille: g.taille, support: g.support + ' / ' + g.montage, prix: prix3, qty:1 };
-  } else if (type === 'carte') {
-    if (!selectedCarte) { showToast('Choisissez une carte postale'); return; }
     item = { type:'carte', id:selectedCarte, prix: CARTE_PRIX, qty:1,
              titre: 'Carte postale Dust\'in Kolor #' + selectedCarte.replace('cp-','') };
   }
@@ -647,29 +587,6 @@ function renderAll() {
     prixEarlyGrand(g.prix, g.vendus_grand), g.prix, isEarlyGrand(g.vendus_grand));
 }
 
-/* ══════════════════════════════════════════════════
-   CARTES POSTALES
-══════════════════════════════════════════════════ */
-function renderCartes() {
-  var grid = document.getElementById('cartesGrid');
-  grid.innerHTML = CARTES.map(function(c){
-    return '<div class="carte-item" id="ci-' + c.id + '" onclick="selectCarte(\'' + c.id + '\')">' +
-      '<div class="carte-img-wrap">' +
-        '<img src="../images/cartes-postales/' + c.id + '.jpg" alt="Carte ' + c.num + '" loading="lazy">' +
-      '</div>' +
-      '<p class="carte-num">#' + c.num + '</p>' +
-    '</div>';
-  }).join('');
-  document.getElementById('cartes-wrap').classList.add('visible');
-}
-
-function selectCarte(id) {
-  selectedCarte = id;
-  document.querySelectorAll('.carte-item').forEach(function(el){
-    el.classList.toggle('active', el.id === 'ci-' + id);
-  });
-  document.getElementById('cartePrix').textContent = CARTE_PRIX + ' €';
-}
 
 /* ══════════════════════════════════════════════════
    TOAST
@@ -711,7 +628,6 @@ function init() {
   document.getElementById('cartLabel').textContent = lang === 'fr' ? 'Panier' : 'Cart';
 
   renderAll();
-  renderCartes();
   updateCartBadge();
 }
 
