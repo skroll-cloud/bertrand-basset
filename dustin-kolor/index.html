@@ -382,13 +382,30 @@
     }
     .cartes-add-btn:disabled { background:#1a1a1a; color:#444; cursor:not-allowed; }
 
-    /* ── Cart badge update ── */
-    .g-cartes-btn {
-      font-size:0.55rem; letter-spacing:0.1em; color:#888;
-      border:1px solid #2a2a2a; padding:0.35rem 0.7rem; cursor:pointer;
-      text-transform:uppercase; transition:all 0.15s;
+    /* ── Prix de départ ── */
+    .g-from-price {
+      font-size:0.58rem; color:#666; letter-spacing:0.06em; margin-top:0.15rem;
     }
-    .g-cartes-btn:hover { color:#ddd; border-color:#555; }
+    /* ── Cartes dans panel ── */
+    .panel-sep { border:none; border-top:1px solid #1e1e1e; margin:1.2rem 0; }
+    .panel-cartes-hd { font-size:0.55rem; letter-spacing:0.14em; text-transform:uppercase;
+      color:#666; margin-bottom:0.8rem; }
+    .panel-cartes-sub { font-size:0.6rem; color:#555; margin-bottom:0.8rem; line-height:1.5; }
+    .panel-cartes-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:0.4rem; margin-bottom:0.8rem; }
+    .pci { position:relative; cursor:pointer; }
+    .pci img { width:100%; aspect-ratio:2/3; object-fit:cover; display:block; opacity:0.6; transition:opacity 0.15s; }
+    .pci.selected img { opacity:1; }
+    .pci .pci-chk { position:absolute; top:3px; right:3px; width:16px; height:16px;
+      background:#f0f0f0; border-radius:50%; display:none;
+      align-items:center; justify-content:center; font-size:0.55rem; color:#111; }
+    .pci.selected .pci-chk { display:flex; }
+    .panel-cartes-footer { display:flex; align-items:center; justify-content:space-between; gap:0.5rem; }
+    .panel-cartes-info { font-size:0.6rem; color:#666; }
+    .panel-cartes-add {
+      padding:0.5rem 0.8rem; background:#f0f0f0; color:#111; border:none; cursor:pointer;
+      font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; white-space:nowrap;
+    }
+    .panel-cartes-add:disabled { background:#222; color:#444; cursor:not-allowed; }
 
   </style>
 </head>
@@ -445,7 +462,6 @@
       <img src="../assets/logo-b.svg" class="g-logo" alt="B" onclick="location.href='../index.html'" title="Retour au portfolio">
       <div class="g-actions">
         <button class="g-btn accent" onclick="openPanel()" id="lblAcheter">ACHETER</button>
-        <button class="g-cartes-btn" onclick="openCartesPanel()" id="lblCartes">CARTES</button>
         <button class="g-btn" onclick="location.href='panier.html'">
           <span id="lblPanier">PANIER</span>
           <span class="cart-badge hidden" id="cartCount">0</span>
@@ -458,6 +474,7 @@
       <div class="g-title-block">
         <span class="g-work-num" id="gWorkNum">Dust'in Kolor — 01</span>
         <span class="g-work-title" id="gWorkTitle">Sandstorm</span>
+        <span class="g-from-price" id="gFromPrice">à partir de 145 €</span>
       </div>
       <span class="g-counter" id="gCounter">1 / 7</span>
     </div>
@@ -664,8 +681,8 @@
     const itemId = 'cartes-' + selectedCartes.join('-');
     cart.push({ id:itemId, titre:'Cartes postales DL', type:isPack?'Pack 3 cartes':selectedCartes.length+' carte(s)', taille:'Format DL — papier soft touch', prix, qty:1, cat:'carte', imgs:selectedCartes });
     saveCart(cart);
-    closeCartesPanel();
-    const btn = document.getElementById('cartCount');
+    selectedCartes = [];
+    updatePanelCartesUI();
     updateCartBadge();
   }
 
@@ -752,6 +769,16 @@
         ${t.legal.replace(/\n/g,'<br>')}<br>
         <a href="../panier.html">${lang==='fr'?'Voir le panier':'View cart'}</a>
       </div>
+      <hr class="panel-sep">
+      <div class="panel-cartes-hd">${t.cartes_titre}</div>
+      <div class="panel-cartes-sub">${t.cartes_info}<br>${t.livraison_info}</div>
+      <div class="panel-cartes-grid">
+        ${CARTES_POSTALES.items.map(c => `<div class="pci${selectedCartes.includes(c.id)?' selected':''}" data-id="${c.id}" onclick="toggleCarte('${c.id}')"><img src="../images/cartes-postales/${c.id}.jpg" alt="Carte ${c.id}" loading="lazy"><span class="pci-chk">✓</span></div>`).join('')}
+      </div>
+      <div class="panel-cartes-footer">
+        <span class="panel-cartes-info" id="pcInfo">${lang==='fr'?'1 carte — 6 € · 3 cartes — 15 €':'1 card — 6 € · 3 cards — 15 €'}</span>
+        <button class="panel-cartes-add" id="pcAddBtn" disabled onclick="addCartesToCart()">${lang==='fr'?'Ajouter':'Add'}</button>
+      </div>
     `;
     renderFmtDetail(e, activeFmt);
   }
@@ -819,25 +846,27 @@
       if (cartesPack && selectedCartes.length >= 3) return;
       selectedCartes.push(id);
     }
-    document.querySelectorAll('.carte-item').forEach(el => {
-      el.classList.toggle('selected', selectedCartes.includes(el.id.replace('ci-','')));
+    document.querySelectorAll('.pci').forEach(el => {
+      el.classList.toggle('selected', selectedCartes.includes(el.dataset.id));
     });
-    updateCartesFooter();
+    updatePanelCartesUI();
   }
 
-  function updateCartesFooter() {
+  function updatePanelCartesUI() {
     const cp  = CARTES_POSTALES;
-    const t   = T[lang];
     const n   = selectedCartes.length;
-    const isPack = cartesPack && n === 3;
+    const isPack = n === 3;
     const prix = isPack ? cp.prix_pack3 : n * cp.prix_unite;
-    const lbl = n === 0
-      ? t.cartes_sel
-      : `${n} carte${n>1?'s':''} sélectionnée${n>1?'s':''} — ${prix} €`;
-    document.getElementById('cartesSelInfo').textContent = lbl;
-    const btn = document.getElementById('cartesAddBtn');
+    const info = document.getElementById('pcInfo');
+    const btn  = document.getElementById('pcAddBtn');
+    if (!info || !btn) return;
+    info.textContent = n === 0
+      ? (lang==='fr' ? '1 carte — 6 € · 3 cartes — 15 €' : '1 card — 6 € · 3 cards — 15 €')
+      : `${n} carte${n>1?'s':''} — ${prix} €`;
     btn.disabled = n === 0;
-    btn.textContent = n === 0 ? t.ajouter : `${t.ajouter} — ${prix} €`;
+    btn.textContent = n === 0
+      ? (lang==='fr' ? 'Ajouter' : 'Add')
+      : `${lang==='fr'?'Ajouter':'Add'} — ${prix} €`;
   }
 
   /* ════════════════════════════════════════
@@ -863,6 +892,8 @@
     document.getElementById('gWorkNum').textContent   = `Dust'in Kolor — ${e.num}`;
     document.getElementById('gWorkTitle').textContent = lang==='fr' ? e.titre_fr : e.titre_en;
     document.getElementById('gCounter').textContent   = `${i+1} / ${EDITIONS.length}`;
+    const fp = e.formats.simple.prix;
+    document.getElementById('gFromPrice').textContent = (lang==='fr'?'à partir de ':'from ') + fp.toLocaleString('fr-FR') + ' €';
     history.replaceState(null, '', '#'+e.slug);
     if (panelOpen) renderPanel(i);
   }
@@ -891,7 +922,6 @@
     document.getElementById('lblBack').textContent    = t.back;
     document.getElementById('lblPanier').textContent  = t.panier;
     document.getElementById('lblAcheter').textContent = t.acheter;
-    document.getElementById('lblCartes').textContent  = t.cartes;
     if (inGallery) showPhoto(current);
     if (panelOpen) renderPanel(current);
   }
@@ -900,7 +930,7 @@
      CLAVIER
   ════════════════════════════════════════ */
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') { if (panelOpen) closePanel(); else closeCartesPanel(); return; }
+    if (e.key === 'Escape') { if (panelOpen) closePanel(); return; }
     if (!inGallery || panelOpen) return;
     if (['ArrowLeft','ArrowUp'].includes(e.key))    prev();
     if (['ArrowRight','ArrowDown'].includes(e.key)) next();
