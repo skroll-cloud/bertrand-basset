@@ -754,25 +754,28 @@ function openPicker(dbId) {
   // Essayer d'ouvrir directement le bon dossier selon la carte
   const card = dbCards[dbId];
   let startPath = 'images';
-  if (card?.gallery_id) {
-    // Mapping gallery_id → dossier connu
-    const folderMap = {
-      portrait:    'images/portrait',
-      gem:         'images/gem',
-      cinema:      'images/cinema',
-      television:  'images/Television',
-      archives:    'images/Television',
-      corporate:   'images/corporate',
-      studio:      'images/ST MELAR',
-      'st-melar':  'images/ST MELAR',
-      'dustin-kolor': 'images/dustin-kolor',
-      'best-of':   'images',
-    };
-    startPath = folderMap[card.gallery_id] || 'images';
-  } else if (card?.cover_img) {
-    // Ouvrir le dossier parent de l'image courante
+  if (card?.cover_img) {
+    // Ouvrir le dossier parent de l'image courante si déjà définie
     const parts = card.cover_img.split('/');
     if (parts.length > 1) startPath = parts.slice(0, -1).join('/');
+  } else if (card?.link_url && card.link_url.startsWith('clients/')) {
+    // Galerie client : dossier images = clients/<nom> (sans .html)
+    startPath = card.link_url.replace(/\.html$/, '');
+  } else if (card?.gallery_id) {
+    // Mapping gallery_id → dossier connu
+    const folderMap = {
+      portrait:       'images/portrait',
+      gem:            'images/gem',
+      cinema:         'images/cinema',
+      television:     'images/Television',
+      archives:       'images/Television',
+      corporate:      'images/corporate',
+      studio:         'images/ST MELAR',
+      'st-melar':     'images/ST MELAR',
+      'dustin-kolor': 'images/dustin-kolor',
+      'best-of':      'images',
+    };
+    startPath = folderMap[card.gallery_id] || 'images';
   }
   loadPickerFolder(startPath);
 }
@@ -783,12 +786,16 @@ function closePicker() {
 }
 
 function buildBreadcrumb(path) {
-  const parts = path.split('/');
   const bc = document.getElementById('pickerBreadcrumb');
-  bc.innerHTML = parts.map((p, i) => {
-    const fullPath = parts.slice(0, i + 1).join('/');
-    return `<span onclick="loadPickerFolder('${fullPath}')">${p}</span>${i < parts.length - 1 ? '<span class="sep">›</span>' : ''}`;
-  }).join('');
+  let html = `<span onclick="loadPickerFolder('')">racine</span>`;
+  if (path) {
+    const parts = path.split('/');
+    parts.forEach((p, i) => {
+      const fullPath = parts.slice(0, i + 1).join('/');
+      html += `<span class="sep">›</span><span onclick="loadPickerFolder('${fullPath}')">${p}</span>`;
+    });
+  }
+  bc.innerHTML = html;
 }
 
 async function loadPickerFolder(path) {
@@ -798,7 +805,8 @@ async function loadPickerFolder(path) {
   body.innerHTML = '<div class="picker-loading">Chargement…</div>';
 
   try {
-    const url = `https://api.github.com/repos/${GH_REPO}/contents/${encodeURIComponent(path)}?ref=${GH_BRANCH}`;
+    const pathSegment = path ? encodeURIComponent(path).replace(/%2F/g, '/') : '';
+    const url = `https://api.github.com/repos/${GH_REPO}/contents/${pathSegment}?ref=${GH_BRANCH}`;
     const res = await fetch(url, { headers: { 'Accept': 'application/vnd.github.v3+json' } });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const items = await res.json();
