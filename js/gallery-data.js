@@ -923,6 +923,11 @@ function buildTravaillerEnsemblePage(lang) {
           : '« Et vous, vous avez une histoire à raconter, des humains à valoriser, des savoirs à transmettre ?»'
         }</p>
       </div>
+      <div class="page-section">
+        <a href="#" onclick="window.portfolio?.showPage('contact');return false;" class="cta-link-text">
+          ${en ? 'Let\'s talk →' : 'Prendre contact →'}
+        </a>
+      </div>
     </div>`;
 }
 
@@ -933,15 +938,11 @@ function buildContactPage(lang) {
         <div class="page-text">
             <div class="page-section">
                 <h2>${t.form_title}</h2>
+                <p>${en
+                  ? 'Executive, artist, child or grandparent — give yourself a portrait session of at least one hour, a moment of meeting and conversation that puts you in the spotlight. 5 retouched digital photos and an A4 fine art print included. Taking the time and receiving something tangible has become a luxury you can afford.'
+                  : 'Dirigeant, artiste, enfant ou grand-parent — offrez-vous une séance portrait d\'une heure minimum, un temps de rencontre et de conversation qui vous met en valeur. 5 photos numériques retouchées, un tirage A4 sur papier fine art compris. Prendre le temps et recevoir un objet concret, c\'est devenu un luxe que vous pouvez vous offrir.'
+                }</p>
                 <form class="contact-form" onsubmit="portfolio.submitContact(event)">
-                    <div class="form-group">
-                        <label class="form-label">${t.form_label}</label>
-                        <select id="contactType" class="form-select">
-                            <option value="${en ? 'Portrait session' : 'S\u00E9ance portrait'}">Portrait</option>
-                            <option value="${en ? 'Conversation session' : 'S\u00E9ance conversation'}">Conversation</option>
-                            <option value="${en ? 'Immersion session' : 'S\u00E9ance immersion'}">Immersion</option>
-                        </select>
-                    </div>
                     <div class="form-group">
                         <textarea id="contactMessage" class="form-textarea" placeholder="${t.form_placeholder}" rows="4"></textarea>
                     </div>

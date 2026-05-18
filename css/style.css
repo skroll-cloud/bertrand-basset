@@ -2040,6 +2040,20 @@ body {
     color: var(--white);
 }
 
+/* CTA link in page-text sections */
+.cta-link-text {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    color: var(--black);
+    text-decoration: none;
+    border-bottom: 1px solid var(--black);
+    padding-bottom: 0.1rem;
+    transition: opacity 0.2s;
+}
+.cta-link-text:hover { opacity: 0.45; }
+
 /* ================================== */
 /* AUTOPLAY TOGGLE BUTTON             */
 /* ================================== */
