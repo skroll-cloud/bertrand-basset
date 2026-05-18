@@ -3010,8 +3010,7 @@ body {
 .section-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 1px;
-    background: var(--light-gray);
+    gap: 0;
 }
 
 /* Carte */
@@ -3021,6 +3020,11 @@ body {
     position: relative;
     overflow: hidden;
     transition: background 0.2s;
+    border-right: 1px solid var(--light-gray);
+    border-bottom: 1px solid var(--light-gray);
+}
+.section-card:nth-child(3n) {
+    border-right: none;
 }
 .section-card:hover .section-card-img { transform: scale(1.04); }
 .section-card:hover .section-card-overlay { opacity: 1; }
@@ -3093,8 +3097,12 @@ body {
 /* Responsive : 2 colonnes en dessous de 900px */
 @media (max-width: 900px) {
     .section-grid { grid-template-columns: repeat(2, 1fr); }
+    .section-card:nth-child(3n) { border-right: 1px solid var(--light-gray); }
+    .section-card:nth-child(2n) { border-right: none; }
 }
 @media (max-width: 580px) {
     .section-grid { grid-template-columns: 1fr; }
     .section-grid-wrap { padding: 1.5rem 1rem 2rem; }
+    .section-card:nth-child(2n) { border-right: none; }
+    .section-card { border-right: none; }
 }
