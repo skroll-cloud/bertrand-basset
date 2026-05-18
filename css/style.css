@@ -2961,3 +2961,140 @@ body {
     .films-stage { padding: 0.8rem; gap: 0.5rem; }
     .films-playlist-title { font-size: 0.75rem; }
 }
+
+/* ═══════════════════════════════════════════════════════
+   NAVIGATION GRILLE DE SECTIONS
+   ═══════════════════════════════════════════════════════ */
+
+/* Conteneur de la grille — dans galleryContainer en page-mode */
+.section-grid-wrap {
+    padding: 2.5rem 2.5rem 3rem;
+    overflow-y: auto;
+    height: 100%;
+    background: var(--white);
+}
+
+.section-grid-header {
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: baseline;
+    gap: 1.2rem;
+}
+
+.section-grid-title {
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--black);
+    font-weight: 500;
+}
+
+.section-grid-back {
+    font-size: 0.52rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--dim);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    transition: color 0.15s;
+    background: none;
+    border: none;
+    font-family: inherit;
+    padding: 0;
+}
+.section-grid-back:hover { color: var(--black); }
+
+/* Grille 3 colonnes */
+.section-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--light-gray);
+}
+
+/* Carte */
+.section-card {
+    background: var(--white);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.2s;
+}
+.section-card:hover .section-card-img { transform: scale(1.04); }
+.section-card:hover .section-card-overlay { opacity: 1; }
+
+.section-card-img-wrap {
+    aspect-ratio: 3/2;
+    overflow: hidden;
+    position: relative;
+}
+.section-card-img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    display: block;
+    transition: transform 0.5s ease;
+}
+.section-card-placeholder {
+    aspect-ratio: 3/2;
+    background: var(--black);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.45rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.15);
+}
+.section-card-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(10,10,10,0.35);
+    opacity: 0;
+    transition: opacity 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.section-card-overlay-text {
+    font-size: 0.48rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--white);
+    border: 1px solid rgba(255,255,255,0.5);
+    padding: 0.3rem 0.8rem;
+}
+.section-card-body {
+    padding: 0.9rem 1rem 1.1rem;
+    border-top: 1px solid var(--light-gray);
+}
+.section-card-label {
+    font-size: 0.42rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 0.25rem;
+}
+.section-card-title {
+    font-size: 0.88rem;
+    font-weight: 400;
+    color: var(--black);
+    margin-bottom: 0.2rem;
+    line-height: 1.3;
+}
+.section-card-desc {
+    font-size: 0.62rem;
+    color: var(--dim);
+    line-height: 1.5;
+}
+
+/* Responsive : 2 colonnes en dessous de 900px */
+@media (max-width: 900px) {
+    .section-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 580px) {
+    .section-grid { grid-template-columns: 1fr; }
+    .section-grid-wrap { padding: 1.5rem 1rem 2rem; }
+}

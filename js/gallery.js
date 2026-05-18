@@ -38,42 +38,118 @@ const T = {
 };
 
 /* ─── MENU ──────────────────────────────────────────────────── */
+/* type "section" → affiche la grille de vignettes dans le main */
+/* type "gallery"  → ouvre directement une galerie              */
+/* type "page"     → affiche une page texte                     */
+/* type "group"    → groupe avec sous-items dans la sidebar     */
+/* type "link"     → lien href direct                           */
 const MENU_CONFIG = [
+  { "id": "best-of",             "name": "BEST OF",              "type": "gallery", "galleryId": "best-of" },
+  { "id": "photographe",         "name": "PHOTOGRAPHE",          "type": "section", "sectionId": "photographe" },
+  { "id": "realisateur",         "name": "RÉALISATEUR",          "type": "section", "sectionId": "realisateur" },
+  { "id": "auteur",              "name": "AUTEUR",               "type": "page",    "pageId": "auteur" },
+  { "id": "travailler-ensemble", "name": "TRAVAILLER ENSEMBLE",  "type": "page",    "pageId": "travailler-ensemble" },
 
-  /* ── PHOTOGRAPHE ─────────────────────────────────── */
-  { "id": "photographe",    "name": "PHOTOGRAPHE",        "type": "group" },
-  { "id": "ph-portrait",   "name": "PORTRAIT",            "type": "gallery", "galleryId": "portrait",   "parent": "photographe" },
-  { "id": "ph-gem",        "name": "LE GEM S'ENDIMANCHE", "type": "gallery", "galleryId": "gem",        "parent": "photographe" },
-  { "id": "ph-stmelar",    "name": "ST MÉLAR",            "type": "gallery", "galleryId": "st-melar",   "parent": "photographe" },
-  { "id": "ph-immersion",  "name": "IMMERSION",           "type": "gallery", "galleryId": "studio",     "parent": "photographe" },
-  { "id": "ph-galeries",   "name": "GALERIES",            "type": "link",    "url": "clients/index.html","parent": "photographe" },
+  /* ── BOUTIQUE ── groupe avec sous-items dans la sidebar ── */
+  { "id": "boutique",            "name": "BOUTIQUE",             "type": "group" },
+  { "id": "boutique-dk",         "name": "DUST'IN KOLOR",        "type": "link",    "url": "dustin-kolor/index.html", "parent": "boutique" },
+  { "id": "boutique-portrait",   "name": "SÉANCE PORTRAIT",      "type": "page",    "pageId": "contact",              "parent": "boutique" },
+  { "id": "boutique-projet",     "name": "ME PROPOSER UN PROJET","type": "page",    "pageId": "contact",              "parent": "boutique" },
 
-  /* ── RÉALISATEUR ─────────────────────────────────── */
-  { "id": "realisateur",      "name": "RÉALISATEUR",   "type": "group" },
-  { "id": "real-cinema",      "name": "CINÉMA",        "type": "gallery", "galleryId": "cinema",    "parent": "realisateur" },
-  { "id": "real-television",  "name": "TÉLÉVISION",    "type": "gallery", "galleryId": "television","parent": "realisateur" },
-  { "id": "real-corporate",   "name": "CORPORATE & WEB","type": "gallery", "galleryId": "corporate","parent": "realisateur" },
+  { "id": "infos",               "name": "INFOS",                "type": "page",    "pageId": "infos" },
 
-  /* ── AUTEUR ──────────────────────────────────────── */
-  { "id": "auteur",               "name": "AUTEUR",               "type": "page", "pageId": "auteur" },
-
-  /* ── TRAVAILLER ENSEMBLE ─────────────────────────── */
-  { "id": "travailler-ensemble",  "name": "TRAVAILLER ENSEMBLE",  "type": "page", "pageId": "travailler-ensemble" },
-
-  /* ── BOUTIQUE ────────────────────────────────────── */
-  { "id": "boutique",         "name": "BOUTIQUE",                 "type": "group" },
-  { "id": "boutique-dk",      "name": "DUST'IN KOLOR",            "type": "link", "url": "dustin-kolor/index.html", "parent": "boutique" },
-  { "id": "boutique-portrait","name": "SÉANCE PORTRAIT",          "type": "page", "pageId": "contact", "parent": "boutique" },
-  { "id": "boutique-projet",  "name": "ME PROPOSER UN PROJET",    "type": "page", "pageId": "contact", "parent": "boutique" },
-
-  /* ── INFOS ───────────────────────────────────────── */
-  { "id": "infos", "name": "INFOS", "type": "page", "pageId": "infos" },
-
-  /* ── Cachés (conservés) ──────────────────────────── */
-  { "id": "post-production", "name": "POST-PRODUCTION", "type": "page", "pageId": "post-production", "hidden": true },
-  { "id": "films-player",    "name": "VOIR LES FILMS",  "type": "page", "pageId": "films-player",    "hidden": true },
-  { "id": "archives",        "name": "ARCHIVES",        "type": "gallery", "galleryId": "archives",  "hidden": true }
+  /* ── Cachés ── */
+  { "id": "post-production", "name": "POST-PRODUCTION", "type": "page",    "pageId": "post-production", "hidden": true },
+  { "id": "films-player",    "name": "VOIR LES FILMS",  "type": "page",    "pageId": "films-player",    "hidden": true },
+  { "id": "archives",        "name": "ARCHIVES",        "type": "gallery", "galleryId": "archives",     "hidden": true }
 ];
+
+/* ─── SECTIONS CONFIG ────────────────────────────────────────── */
+/* Cartes affichées dans la grille quand on clique sur une section */
+const SECTIONS_CONFIG = {
+    "photographe": {
+        titleFr: "Photographe", titleEn: "Photographer",
+        cards: [
+            {
+                id: "portrait", galleryId: "portrait",
+                labelFr: "Studio · Terrain", labelEn: "Studio · Location",
+                titleFr: "Portrait", titleEn: "Portrait",
+                descFr: "Dirigeant, artiste, acteur, particulier",
+                descEn: "Executive, artist, actor, individual",
+                img: "images/portrait/conversation-02.jpg"
+            },
+            {
+                id: "serie-expo", galleryId: "gem",
+                labelFr: "Projet · Recherche", labelEn: "Project · Research",
+                titleFr: "Série & Exposition", titleEn: "Series & Exhibition",
+                descFr: "GEM, Plougasnou, EHPAD, Carré d'As",
+                descEn: "GEM, Plougasnou, EHPAD, Carré d'As",
+                img: "images/gem/JeanFrancois.jpg"
+            },
+            {
+                id: "lumiere-lente", galleryId: null,
+                labelFr: "Recherche artistique", labelEn: "Artistic research",
+                titleFr: "Lumière Lente", titleEn: "Slow Light",
+                descFr: "Une esthétique en développement",
+                descEn: "An aesthetic in development",
+                img: null
+            },
+            {
+                id: "plateau", galleryId: null,
+                labelFr: "Cinéma · Théâtre", labelEn: "Cinema · Theatre",
+                titleFr: "Shooting plateau & scène", titleEn: "On-set & stage",
+                descFr: "Acteurs, équipes, making-of",
+                descEn: "Actors, crews, making-of",
+                img: null
+            },
+            {
+                id: "immersion", galleryId: "studio",
+                labelFr: "Documentaire", labelEn: "Documentary",
+                titleFr: "Immersion", titleEn: "Immersion",
+                descFr: "EHPAD, territoire, métier",
+                descEn: "Care homes, territory, craft",
+                img: "images/ST MELAR/stmelar-1.jpg"
+            },
+            {
+                id: "galeries", url: "clients/index.html",
+                labelFr: "Accès privé", labelEn: "Private access",
+                titleFr: "Galeries", titleEn: "Galleries",
+                descFr: "Remise de commandes clients",
+                descEn: "Client order delivery",
+                img: null
+            }
+        ]
+    },
+    "realisateur": {
+        titleFr: "Réalisateur", titleEn: "Filmmaker",
+        cards: [
+            {
+                id: "cinema", galleryId: "cinema",
+                labelFr: "Fiction", labelEn: "Fiction",
+                titleFr: "Cinéma", titleEn: "Cinema",
+                descFr: "J'arrive · 40 festivals · 20 prix",
+                descEn: "J'arrive · 40 festivals · 20 awards",
+                img: "images/cinema/1.jpg"
+            },
+            {
+                id: "television", galleryId: "television",
+                labelFr: "Documentaire", labelEn: "Documentary",
+                titleFr: "Télévision", titleEn: "Television",
+                descFr: "France 2 · 13H15 · 20H30",
+                descEn: "France 2 · 13H15 · 20H30",
+                img: "images/Television/05.jpg"
+            },
+            {
+                id: "corporate", galleryId: "corporate",
+                labelFr: "Entreprise · Web", labelEn: "Corporate · Web",
+                titleFr: "Corporate & Web", titleEn: "Corporate & Web",
+                descFr: "Ernest L'Hour · FIA · Monaco",
+                descEn: "Ernest L'Hour · FIA · Monaco",
+                img: "images/Television/02.jpg"
+            }
+        ]
+    }
+};
 
 /* ─── PAGES CONFIG ───────────────────────────────────────────── */
 const PAGES_CONFIG = {
@@ -1007,6 +1083,7 @@ class Portfolio {
 
         const itemHtml = (item, isSub) => {
             const cls = isSub ? 'nav-item nav-sub-item' : 'nav-item';
+            if (item.type === 'section')  return `<div class="${cls}"><a href="#" class="nav-link" data-section="${item.sectionId}">${item.name}</a></div>`;
             if (item.type === 'gallery')  return `<div class="${cls}"><a href="#" class="nav-link" data-gallery="${item.galleryId}">${item.name}</a></div>`;
             if (item.type === 'page')     return `<div class="${cls}"><a href="#" class="nav-link" data-page="${item.pageId}">${item.name}</a></div>`;
             if (item.type === 'link')     return `<div class="${cls}"><a href="${item.url}" class="nav-link">${item.name}</a></div>`;
@@ -1088,6 +1165,8 @@ class Portfolio {
             this.openGallery(this.currentGalleryId);
             this.currentIndex = Math.min(idx, this.currentGallery.items.length - 1);
             this.showItem(this.currentIndex);
+        } else if (this.currentPageId && SECTIONS_CONFIG[this.currentPageId]) {
+            this.showSectionGrid(this.currentPageId);
         } else if (this.currentPageId) {
             this.showPage(this.currentPageId);
         }
@@ -1110,6 +1189,14 @@ class Portfolio {
     }
 
     bindNavEvents() {
+        document.querySelectorAll('[data-section]').forEach(link => {
+            link.addEventListener('click', e => {
+                e.preventDefault();
+                this.showSectionGrid(link.dataset.section);
+                this.setActiveLink(link);
+                this.closeMenu();
+            });
+        });
         document.querySelectorAll('[data-gallery]').forEach(link => {
             link.addEventListener('click', e => {
                 e.preventDefault();
@@ -1684,6 +1771,82 @@ class Portfolio {
         const footerCap = document.getElementById('footerCaption');
         if (footerCap) footerCap.innerHTML = '';
         this.stopAudio();
+    }
+
+    showSectionGrid(sectionId) {
+        const sec = SECTIONS_CONFIG[sectionId];
+        if (!sec) return;
+        this.currentGallery   = null;
+        this.currentGalleryId = null;
+        this.currentPageId    = sectionId;
+        this.stopSlideshow();
+        this.stopAudio();
+        this.exitUniverseMode();
+
+        const container = document.getElementById('galleryContainer');
+        const siteEl    = document.getElementById('site');
+        siteEl?.classList.remove('films-mode');
+        container.classList.add('page-mode');
+        container.classList.remove('grid-mode');
+
+        const lang = this.currentLang;
+        const title = lang === 'en' ? sec.titleEn : sec.titleFr;
+
+        const cardsHtml = sec.cards.map(card => {
+            const label = lang === 'en' ? card.labelEn : card.labelFr;
+            const ctitle = lang === 'en' ? card.titleEn : card.titleFr;
+            const desc  = lang === 'en' ? card.descEn  : card.descFr;
+            const enter = lang === 'en' ? 'Enter' : 'Entrer';
+
+            /* Action au clic */
+            let action = '';
+            if (card.galleryId) {
+                action = `onclick="window.portfolio.openGalleryFromSection('${card.galleryId}')"`;
+            } else if (card.url) {
+                action = `onclick="window.location.href='${card.url}'"`;
+            } else {
+                action = `onclick="void(0)"`;  // placeholder — pas encore de contenu
+            }
+
+            const imgHtml = card.img
+                ? `<div class="section-card-img-wrap">
+                       <img class="section-card-img" src="${encodeURI(card.img)}" alt="${ctitle}" loading="lazy">
+                       <div class="section-card-overlay"><span class="section-card-overlay-text">${enter}</span></div>
+                   </div>`
+                : `<div class="section-card-placeholder">${ctitle}</div>`;
+
+            return `
+                <div class="section-card" ${action}>
+                    ${imgHtml}
+                    <div class="section-card-body">
+                        <div class="section-card-label">${label}</div>
+                        <div class="section-card-title">${ctitle}</div>
+                        <div class="section-card-desc">${desc}</div>
+                    </div>
+                </div>`;
+        }).join('');
+
+        container.innerHTML = `
+            <div class="section-grid-wrap">
+                <div class="section-grid-header">
+                    <span class="section-grid-title">${title.toUpperCase()}</span>
+                    <button class="section-grid-back" onclick="window.portfolio.openHomeGallery();window.portfolio.setActiveLink(null)">← ${lang === 'en' ? 'Back' : 'Retour'}</button>
+                </div>
+                <div class="section-grid">${cardsHtml}</div>
+            </div>`;
+
+        const counter = document.querySelector('.gallery-counter');
+        if (counter) counter.textContent = '';
+        const descEl = document.getElementById('galleryDesc');
+        if (descEl) descEl.innerHTML = '';
+        const footerCap = document.getElementById('footerCaption');
+        if (footerCap) footerCap.innerHTML = '';
+    }
+
+    openGalleryFromSection(galleryId) {
+        this.openGallery(galleryId);
+        const navLink = document.querySelector(`[data-gallery="${galleryId}"]`);
+        /* Ne pas changer l'item actif dans la sidebar — on reste dans la section */
     }
 
     showContactPage() {
