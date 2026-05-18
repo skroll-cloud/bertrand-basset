@@ -44,7 +44,7 @@ const T = {
 /* type "group"    → groupe avec sous-items dans la sidebar     */
 /* type "link"     → lien href direct                           */
 const MENU_CONFIG = [
-  { "id": "best-of",             "name": "BEST OF",              "type": "gallery", "galleryId": "best-of" },
+  { "id": "best-of",             "name": "BEST OF",              "type": "gallery", "galleryId": "best-of", "hidden": true },
   { "id": "photographe",         "name": "PHOTOGRAPHE",          "type": "section", "sectionId": "photographe" },
   { "id": "realisateur",         "name": "RÉALISATEUR",          "type": "section", "sectionId": "realisateur" },
   { "id": "auteur",              "name": "AUTEUR",               "type": "page",    "pageId": "auteur" },
@@ -1048,12 +1048,49 @@ class Portfolio {
             document.getElementById('landing')?.classList.add('hidden');
             document.getElementById('site')?.classList.add('active');
         }
-        this.buildMenu();
         this.bindEvents();
         this.initCursor();
         this.applyLangUI(this.currentLang);
-        if (SITE_CONFIG.showLanding === false) this.openHomeGallery();
         this.updateCartBadge();
+        /* Charger la visibilité depuis Supabase, puis construire le menu */
+        this._loadVisibility().then(() => {
+            this.buildMenu();
+            if (SITE_CONFIG.showLanding === false) this.openHomeGallery();
+        });
+    }
+
+    async _loadVisibility() {
+        const SUPA_URL = 'https://suecslynruuputmujudg.supabase.co';
+        const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN1ZWNzbHlucnV1cHV0bXVqdWRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY1MTYyODcsImV4cCI6MjA5MjA5MjI4N30.c9Pa_x6MEcJdqVekBodSYpu3it-riVU1hYhC-m5iCsU';
+        try {
+            const res  = await fetch(`${SUPA_URL}/rest/v1/section_visibility?select=id,visible`, {
+                headers: { 'apikey': SUPA_KEY, 'Authorization': `Bearer ${SUPA_KEY}` }
+            });
+            if (!res.ok) return; /* Silencieux en cas d'erreur réseau */
+            const rows = await res.json();
+            /* Créer un map id→visible */
+            const map  = {};
+            rows.forEach(r => { map[r.id] = r.visible; });
+            /* Appliquer sur MENU_CONFIG : masquer les items dont visible=false */
+            MENU_CONFIG.forEach(item => {
+                if (Object.prototype.hasOwnProperty.call(map, item.id)) {
+                    if (map[item.id] === false) {
+                        item._hiddenByAdmin = true;
+                    } else {
+                        delete item._hiddenByAdmin;
+                    }
+                }
+            });
+            /* Appliquer sur SECTIONS_CONFIG cards */
+            for (const secId in SECTIONS_CONFIG) {
+                SECTIONS_CONFIG[secId].cards.forEach(card => {
+                    const key = `${secId === 'photographe' ? 'ph' : 'real'}-${card.id}`;
+                    if (Object.prototype.hasOwnProperty.call(map, key)) {
+                        card._hiddenByAdmin = map[key] === false;
+                    }
+                });
+            }
+        } catch(e) { /* Silencieux — le site s'affiche normalement si Supabase inaccessible */ }
     }
 
     updateCartBadge() {
@@ -1071,8 +1108,8 @@ class Portfolio {
         const nav = document.getElementById('mainNav');
         if (!nav) return;
         /* Hidden groups — used to suppress orphan children */
-        const hiddenGroups = new Set(MENU_CONFIG.filter(i => i.type === 'group' && i.hidden).map(i => i.id));
-        const visible = MENU_CONFIG.filter(i => !i.hidden && !(i.parent && hiddenGroups.has(i.parent)));
+        const hiddenGroups = new Set(MENU_CONFIG.filter(i => i.type === 'group' && (i.hidden || i._hiddenByAdmin)).map(i => i.id));
+        const visible = MENU_CONFIG.filter(i => !i.hidden && !i._hiddenByAdmin && !(i.parent && hiddenGroups.has(i.parent)));
 
         /* Build children map so ordering in config doesn't matter */
         const childrenOf = {};
@@ -1792,7 +1829,7 @@ class Portfolio {
         const lang = this.currentLang;
         const title = lang === 'en' ? sec.titleEn : sec.titleFr;
 
-        const cardsHtml = sec.cards.map(card => {
+        const cardsHtml = sec.cards.filter(card => !card._hiddenByAdmin).map(card => {
             const label = lang === 'en' ? card.labelEn : card.labelFr;
             const ctitle = lang === 'en' ? card.titleEn : card.titleFr;
             const desc  = lang === 'en' ? card.descEn  : card.descFr;

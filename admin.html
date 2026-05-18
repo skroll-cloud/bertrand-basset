@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Bertrand Basset</title>
+  <link rel="icon" type="image/svg+xml" href="assets/logo-b.svg">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --black: #0a0a0a; --white: #fafafa; --gray: #555; --dim: #999;
+      --line: #e0e0e0; --red: #c41e1e; --green: #1a8a3c;
+    }
+    html { font-family: 'IBM Plex Sans', sans-serif; color: var(--black); background: var(--white); -webkit-font-smoothing: antialiased; }
+    body { min-height: 100vh; display: flex; flex-direction: column; }
+    a { color: inherit; text-decoration: none; }
+
+    /* ── Header ── */
+    .site-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.2rem 2.5rem; border-bottom: 1px solid var(--line);
+      position: sticky; top: 0; background: var(--white); z-index: 100;
+    }
+    .header-logo { width: 22px; height: 22px; opacity: 0.7; transition: opacity .15s; }
+    .header-logo:hover { opacity: 1; }
+    .header-title { font-size: 0.55rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim); }
+    .header-logout { font-size: 0.52rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim); cursor: pointer; transition: color .15s; background: none; border: none; font-family: inherit; }
+    .header-logout:hover { color: var(--black); }
+
+    /* ── Gate (mot de passe) ── */
+    #gate {
+      flex: 1; display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 1.4rem; padding: 4rem 2rem;
+    }
+    .gate-title { font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); }
+    .gate-input {
+      width: 260px; padding: 0.75rem 1rem;
+      border: 1px solid var(--line); background: transparent;
+      font-family: inherit; font-size: 0.8rem; font-weight: 300;
+      outline: none; transition: border-color .15s;
+    }
+    .gate-input:focus { border-color: var(--black); }
+    .gate-btn {
+      width: 260px; padding: 0.75rem 1rem;
+      background: var(--black); color: var(--white);
+      font-family: inherit; font-size: 0.55rem; font-weight: 400;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      border: none; cursor: pointer; transition: background .2s;
+    }
+    .gate-btn:hover { background: #333; }
+    .gate-error { font-size: 0.62rem; color: var(--red); }
+
+    /* ── App ── */
+    #app { display: none; flex: 1; flex-direction: column; }
+
+    /* ── Status banner ── */
+    .status-banner {
+      background: var(--white); border-bottom: 1px solid var(--line);
+      padding: 0.6rem 2.5rem;
+      font-size: 0.55rem; letter-spacing: 0.08em; color: var(--dim);
+      display: flex; align-items: center; gap: 0.6rem;
+    }
+    .status-dot {
+      width: 6px; height: 6px; border-radius: 50%; background: var(--dim);
+    }
+    .status-dot.ok { background: var(--green); }
+    .status-dot.err { background: var(--red); }
+
+    /* ── Main ── */
+    .admin-wrap { max-width: 640px; margin: 0 auto; padding: 3rem 2rem 5rem; flex: 1; }
+    .admin-section { margin-bottom: 2.5rem; }
+    .admin-section-title {
+      font-size: 0.52rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--dim); margin-bottom: 1rem; padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--line);
+    }
+
+    /* ── Toggle row ── */
+    .toggle-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.65rem 0; border-bottom: 1px solid #f2f2f2;
+      gap: 1rem;
+    }
+    .toggle-label { font-size: 0.72rem; font-weight: 300; color: var(--black); }
+    .toggle-label.child { padding-left: 0.8rem; color: var(--gray); font-size: 0.68rem; }
+    .toggle-label.disabled-label { color: var(--dim); font-style: italic; }
+
+    /* Switch */
+    .toggle-switch { position: relative; width: 36px; height: 20px; flex-shrink: 0; }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+    .toggle-track {
+      position: absolute; inset: 0; background: var(--line);
+      border-radius: 10px; cursor: pointer; transition: background .2s;
+    }
+    .toggle-track::after {
+      content: ''; position: absolute;
+      width: 14px; height: 14px; border-radius: 50%;
+      background: white; top: 3px; left: 3px;
+      transition: transform .2s; box-shadow: 0 1px 3px rgba(0,0,0,.2);
+    }
+    .toggle-switch input:checked + .toggle-track { background: var(--black); }
+    .toggle-switch input:checked + .toggle-track::after { transform: translateX(16px); }
+    .toggle-switch input:disabled + .toggle-track { opacity: 0.4; cursor: not-allowed; }
+
+    /* ── Save button ── */
+    .save-wrap { margin-top: 2.5rem; display: flex; align-items: center; gap: 1.2rem; }
+    .save-btn {
+      padding: 0.8rem 2.4rem; background: var(--black); color: var(--white);
+      font-family: inherit; font-size: 0.55rem; font-weight: 400;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      border: none; cursor: pointer; transition: background .2s;
+    }
+    .save-btn:hover { background: #333; }
+    .save-btn:disabled { background: var(--dim); cursor: not-allowed; }
+    .save-feedback { font-size: 0.62rem; color: var(--green); opacity: 0; transition: opacity .3s; }
+    .save-feedback.err { color: var(--red); }
+    .save-feedback.visible { opacity: 1; }
+
+    /* ── Preview link ── */
+    .preview-link {
+      display: inline-flex; align-items: center; gap: .4rem;
+      font-size: 0.55rem; letter-spacing: .1em; text-transform: uppercase;
+      color: var(--dim); transition: color .15s;
+    }
+    .preview-link:hover { color: var(--black); }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <a href="index.html" title="Retour au site">
+    <img src="assets/logo-b.svg" class="header-logo" alt="B">
+  </a>
+  <span class="header-title">Administration</span>
+  <button class="header-logout" id="logoutBtn" style="display:none" onclick="logout()">Déconnexion</button>
+</header>
+
+<!-- GATE -->
+<div id="gate">
+  <p class="gate-title">Accès administration</p>
+  <input type="password" id="pwdInput" class="gate-input" placeholder="Mot de passe" autocomplete="current-password"
+    onkeydown="if(event.key==='Enter') checkPassword()">
+  <button class="gate-btn" onclick="checkPassword()">Entrer</button>
+  <p class="gate-error" id="gateError" style="display:none">Mot de passe incorrect.</p>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="status-banner">
+    <span class="status-dot" id="statusDot"></span>
+    <span id="statusText">Connexion à Supabase…</span>
+  </div>
+
+  <div class="admin-wrap">
+
+    <div class="admin-section">
+      <div class="admin-section-title">Visibilité des sections</div>
+      <p style="font-size:0.68rem;color:var(--dim);line-height:1.7;margin-bottom:1.4rem">
+        Active ou désactive chaque section pour le public. Les modifications sont effectives immédiatement pour tous les visiteurs.
+      </p>
+      <div id="toggleList">
+        <!-- Généré dynamiquement -->
+      </div>
+    </div>
+
+    <div class="save-wrap">
+      <button class="save-btn" id="saveBtn" onclick="saveVisibility()" disabled>Enregistrer</button>
+      <a href="index.html" class="preview-link">← Voir le site</a>
+      <span class="save-feedback" id="saveFeedback"></span>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ── CONFIG ───────────────────────────────────────────────────────────────────
+const SUPABASE_URL      = 'https://suecslynruuputmujudg.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN1ZWNzbHlucnV1cHV0bXVqdWRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY1MTYyODcsImV4cCI6MjA5MjA5MjI4N30.c9Pa_x6MEcJdqVekBodSYpu3it-riVU1hYhC-m5iCsU';
+
+// !! Mot de passe stocké en hash SHA-256 !!
+// Valeur actuelle = SHA-256 de "bertrand2025"
+// Pour changer : ouvrir la console, taper sha256('nouveau_mot_de_passe') et mettre ici
+const PWD_HASH = 'fd8faf112b549a3c0ace23b2b0c25171195a07494895830426b5cece2ba3796b';
+
+// Labels d'affichage (ordre = ordre d'affichage)
+const SECTIONS_LABELS = [
+  { id: 'photographe',         label: 'PHOTOGRAPHE',              parent: false },
+  { id: 'ph-portrait',         label: 'Portrait',                  parent: true  },
+  { id: 'ph-gem',              label: 'Le GEM s\'endimanche',      parent: true  },
+  { id: 'ph-stmelar',          label: 'St Mélar',                  parent: true  },
+  { id: 'ph-immersion',        label: 'Immersion',                 parent: true  },
+  { id: 'ph-lumiere',          label: 'Lumière Lente',             parent: true  },
+  { id: 'ph-plateau',          label: 'Shooting plateau & scène',  parent: true  },
+  { id: 'realisateur',         label: 'RÉALISATEUR',               parent: false },
+  { id: 'real-cinema',         label: 'Cinéma',                    parent: true  },
+  { id: 'real-television',     label: 'Télévision',                parent: true  },
+  { id: 'real-corporate',      label: 'Corporate & Web',           parent: true  },
+  { id: 'auteur',              label: 'AUTEUR',                    parent: false },
+  { id: 'travailler-ensemble', label: 'TRAVAILLER ENSEMBLE',       parent: false },
+  { id: 'boutique',            label: 'BOUTIQUE',                  parent: false },
+  { id: 'boutique-dk',         label: 'Dust\'in Kolor',            parent: true  },
+  { id: 'boutique-portrait',   label: 'Séance portrait',           parent: true  },
+  { id: 'boutique-projet',     label: 'Me proposer un projet',     parent: true  },
+  { id: 'infos',               label: 'INFOS',                     parent: false },
+];
+
+// ── ÉTAT LOCAL ───────────────────────────────────────────────────────────────
+let currentVisibility = {}; // { id: boolean }
+let hasChanges = false;
+
+// ── AUTHENTIFICATION ─────────────────────────────────────────────────────────
+async function sha256(message) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(message));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+async function checkPassword() {
+  const pwd = document.getElementById('pwdInput').value;
+  const hash = await sha256(pwd);
+  if (hash === PWD_HASH) {
+    sessionStorage.setItem('bb_admin', '1');
+    showApp();
+  } else {
+    document.getElementById('gateError').style.display = '';
+  }
+}
+
+function logout() {
+  sessionStorage.removeItem('bb_admin');
+  location.reload();
+}
+
+function showApp() {
+  document.getElementById('gate').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
+  document.getElementById('logoutBtn').style.display = '';
+  loadVisibility();
+}
+
+// ── SUPABASE ─────────────────────────────────────────────────────────────────
+async function sbFetch(path, options = {}) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
+    ...options,
+    headers: {
+      'apikey': SUPABASE_ANON_KEY,
+      'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=representation',
+      ...(options.headers || {})
+    }
+  });
+  return res;
+}
+
+async function loadVisibility() {
+  const dot  = document.getElementById('statusDot');
+  const txt  = document.getElementById('statusText');
+  try {
+    const res  = await sbFetch('section_visibility?select=id,visible,label&order=id');
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'Erreur réseau');
+    data.forEach(row => { currentVisibility[row.id] = row.visible; });
+    dot.className = 'status-dot ok';
+    txt.textContent = 'Connecté à Supabase — modifications en temps réel';
+    renderToggles();
+    document.getElementById('saveBtn').disabled = false;
+  } catch(e) {
+    dot.className = 'status-dot err';
+    txt.textContent = `Erreur : ${e.message}`;
+    renderTogglesOffline();
+  }
+}
+
+async function saveVisibility() {
+  const btn = document.getElementById('saveBtn');
+  const fb  = document.getElementById('saveFeedback');
+  btn.disabled = true;
+  fb.className = 'save-feedback';
+  fb.textContent = 'Enregistrement…';
+  fb.classList.add('visible');
+
+  // Upsert toutes les lignes modifiées
+  const rows = SECTIONS_LABELS.map(s => ({
+    id:      s.id,
+    label:   s.label,
+    visible: currentVisibility[s.id] !== undefined ? currentVisibility[s.id] : true,
+    updated_at: new Date().toISOString()
+  }));
+
+  try {
+    const res = await sbFetch('section_visibility', {
+      method: 'POST',
+      headers: { 'Prefer': 'resolution=merge-duplicates,return=minimal' },
+      body: JSON.stringify(rows)
+    });
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.message || 'Erreur réseau');
+    }
+    fb.textContent = '✓ Enregistré — visible immédiatement pour tous les visiteurs';
+    fb.className = 'save-feedback visible';
+    hasChanges = false;
+    setTimeout(() => { fb.className = 'save-feedback'; }, 4000);
+  } catch(e) {
+    fb.textContent = `Erreur : ${e.message}`;
+    fb.className = 'save-feedback err visible';
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+// ── RENDU ────────────────────────────────────────────────────────────────────
+function renderToggles() {
+  const list = document.getElementById('toggleList');
+  list.innerHTML = SECTIONS_LABELS.map(s => {
+    const checked = currentVisibility[s.id] !== false; // true par défaut
+    const labelCls = s.parent ? 'toggle-label child' : 'toggle-label';
+    return `
+      <div class="toggle-row">
+        <span class="${labelCls}">${s.label}</span>
+        <label class="toggle-switch" title="${s.id}">
+          <input type="checkbox" id="chk_${s.id}" ${checked ? 'checked' : ''}
+            onchange="onToggle('${s.id}', this.checked)">
+          <span class="toggle-track"></span>
+        </label>
+      </div>`;
+  }).join('');
+}
+
+function renderTogglesOffline() {
+  // Mode hors-ligne : afficher les toggles avec état par défaut, désactivés
+  const list = document.getElementById('toggleList');
+  list.innerHTML = `<p style="font-size:.68rem;color:var(--red)">
+    Impossible de charger la configuration depuis Supabase.<br>
+    Vérifie ta connexion internet et recharge la page.
+  </p>`;
+}
+
+function onToggle(id, checked) {
+  currentVisibility[id] = checked;
+  hasChanges = true;
+}
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
+if (sessionStorage.getItem('bb_admin') === '1') {
+  showApp();
+} else {
+  document.getElementById('gate').style.display = '';
+}
+
+// Entrer avec Enter sur le champ mdp
+document.getElementById('pwdInput')?.addEventListener('keydown', e => {
+  if (e.key === 'Enter') checkPassword();
+});
+</script>
+</body>
+</html>
