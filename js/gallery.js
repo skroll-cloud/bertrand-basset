@@ -2191,4 +2191,8 @@ class Portfolio {
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => window.portfolio = new Portfolio());
+document.addEventListener('DOMContentLoaded', () => {
+    // Guard : ne pas initialiser le Portfolio sur admin.html (pas de #galleryContainer)
+    if (!document.getElementById('galleryContainer')) return;
+    window.portfolio = new Portfolio();
+});
