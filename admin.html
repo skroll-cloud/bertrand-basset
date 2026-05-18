@@ -81,12 +81,22 @@
 
     .card-row {
       display: grid;
-      grid-template-columns: 52px 1fr auto;
+      grid-template-columns: 22px 52px 1fr auto;
       gap: 0.7rem;
       align-items: start;
       padding: 0.7rem 0;
       border-bottom: 1px solid #f5f5f5;
+      cursor: default;
     }
+    .card-row.drag-over { background: #f0f4ff; border-radius: 2px; }
+    .drag-handle {
+      display: flex; align-items: flex-start; justify-content: center;
+      padding-top: 0.6rem; color: var(--line); font-size: 0.9rem;
+      cursor: grab; user-select: none; line-height: 1;
+      transition: color .15s;
+    }
+    .drag-handle:hover { color: var(--dim); }
+    .drag-handle:active { cursor: grabbing; }
     .card-thumb { width: 52px; height: 36px; object-fit: cover; object-position: center top; background: #eee; display: block; flex-shrink: 0; }
     .card-thumb-placeholder { width: 52px; height: 36px; background: var(--black); flex-shrink: 0; }
     .card-fields { display: flex; flex-direction: column; gap: 0.35rem; }
@@ -380,11 +390,13 @@ function renderCards() {
       const dbRow = dbCards[dbId] || {};
       allBySec[secId].push({
         dbId,
-        titleFr:  dbRow.title_fr  || card.titleFr || '',
-        labelFr:  dbRow.label_fr  || card.labelFr || '',
-        descFr:   dbRow.desc_fr   || card.descFr  || '',
-        coverImg: dbRow.cover_img || card.img      || '',
-        visible:  dbRow.visible !== undefined ? dbRow.visible : true,
+        secId,
+        titleFr:   dbRow.title_fr   || card.titleFr || '',
+        labelFr:   dbRow.label_fr   || card.labelFr || '',
+        descFr:    dbRow.desc_fr    || card.descFr  || '',
+        coverImg:  dbRow.cover_img  || card.img     || '',
+        parentId:  dbRow.parent_id  || null,
+        visible:   dbRow.visible !== undefined ? dbRow.visible : true,
         sortOrder: dbRow.sort_order ?? 999
       });
     });
@@ -396,7 +408,7 @@ function renderCards() {
     if (!allBySec[sec]) return;
     const known = SECTIONS_CONFIG[sec]?.cards?.some(c => `${PREFIX[sec]||sec}-${c.id}` === row.id);
     if (!known) {
-      allBySec[sec].push({ dbId: row.id, titleFr: row.title_fr||'', labelFr: row.label_fr||'', descFr: row.desc_fr||'', coverImg: row.cover_img||'', visible: row.visible!==false, sortOrder: row.sort_order??999, _supabase: true });
+      allBySec[sec].push({ dbId: row.id, secId: sec, titleFr: row.title_fr||'', labelFr: row.label_fr||'', descFr: row.desc_fr||'', coverImg: row.cover_img||'', parentId: row.parent_id||null, visible: row.visible!==false, sortOrder: row.sort_order??999, _supabase: true });
     }
   });
 
@@ -404,20 +416,32 @@ function renderCards() {
     if (!cards.length) return '';
     const sorted = [...cards].sort((a,b) => a.sortOrder - b.sortOrder);
     return `
-      <div class="section-group">
+      <div class="section-group" data-sec="${secId}">
         <div class="section-group-title">${SEC_NAME[secId] || secId}</div>
-        ${sorted.map(c => cardRowHtml(c)).join('')}
+        ${sorted.map(c => cardRowHtml(c, sorted)).join('')}
       </div>`;
   }).join('');
+
+  // Attacher les événements drag-and-drop
+  attachDragHandlers();
 }
 
-function cardRowHtml(c) {
+function cardRowHtml(c, siblings) {
   const vis   = c.visible !== false;
   const thumb = c.coverImg
     ? `<img class="card-thumb" src="${c.coverImg}" alt="" loading="lazy" onerror="this.style.opacity='.2'">`
     : `<div class="card-thumb-placeholder"></div>`;
+
+  // Options pour "Sous-galerie de" : toutes les autres cartes de même section
+  const parentOpts = `<option value="">— aucune —</option>` +
+    (siblings || [])
+      .filter(s => s.dbId !== c.dbId)
+      .map(s => `<option value="${s.dbId}" ${c.parentId === s.dbId ? 'selected' : ''}>${esc(s.titleFr || s.dbId)}</option>`)
+      .join('');
+
   return `
-    <div class="card-row" id="row-${c.dbId}">
+    <div class="card-row" id="row-${c.dbId}" draggable="true" data-id="${c.dbId}" data-sec="${c.secId||''}">
+      <div class="drag-handle" title="Glisser pour réordonner">⠿</div>
       ${thumb}
       <div class="card-fields">
         <div class="card-field-row">
@@ -438,6 +462,12 @@ function cardRowHtml(c) {
             onchange="updateThumb('${c.dbId}', this.value)">
           <button class="pick-btn" onclick="openPicker('${c.dbId}')">Choisir…</button>
         </div>
+        <div class="card-field-row">
+          <span class="field-label">Parent</span>
+          <select class="field-input" id="f-parent-${c.dbId}" style="padding:0.3rem 0.4rem;font-size:0.65rem">
+            ${parentOpts}
+          </select>
+        </div>
       </div>
       <div class="card-actions">
         <button class="card-save-btn" onclick="saveCard('${c.dbId}')">Enregistrer</button>
@@ -447,6 +477,83 @@ function cardRowHtml(c) {
         </button>
       </div>
     </div>`;
+}
+
+// ── Drag-and-drop pour réordonner ────────────────────────────────────────────
+let dragSrcId = null;
+
+function attachDragHandlers() {
+  document.querySelectorAll('.card-row[draggable]').forEach(row => {
+    row.addEventListener('dragstart', e => {
+      dragSrcId = row.dataset.id;
+      e.dataTransfer.effectAllowed = 'move';
+      row.style.opacity = '0.4';
+    });
+    row.addEventListener('dragend', () => {
+      dragSrcId = null;
+      row.style.opacity = '';
+      document.querySelectorAll('.card-row.drag-over').forEach(r => r.classList.remove('drag-over'));
+    });
+    row.addEventListener('dragover', e => {
+      if (!dragSrcId || dragSrcId === row.dataset.id) return;
+      // Only allow drop within same section
+      const srcRow = document.getElementById(`row-${dragSrcId}`);
+      if (srcRow?.dataset.sec !== row.dataset.sec) return;
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      document.querySelectorAll('.card-row.drag-over').forEach(r => r.classList.remove('drag-over'));
+      row.classList.add('drag-over');
+    });
+    row.addEventListener('dragleave', () => row.classList.remove('drag-over'));
+    row.addEventListener('drop', async e => {
+      e.preventDefault();
+      row.classList.remove('drag-over');
+      if (!dragSrcId || dragSrcId === row.dataset.id) return;
+      const srcRow = document.getElementById(`row-${dragSrcId}`);
+      if (!srcRow || srcRow.dataset.sec !== row.dataset.sec) return;
+
+      const group = row.closest('.section-group');
+      if (!group) return;
+
+      // Réordonner dans le DOM
+      const allRows = [...group.querySelectorAll('.card-row')];
+      const srcIdx  = allRows.indexOf(srcRow);
+      const tgtIdx  = allRows.indexOf(row);
+      if (srcIdx < 0 || tgtIdx < 0) return;
+
+      if (srcIdx < tgtIdx) row.after(srcRow);
+      else row.before(srcRow);
+
+      // Recalculer et sauvegarder le sort_order
+      await saveSortOrder(group);
+    });
+  });
+}
+
+async function saveSortOrder(group) {
+  const rows   = [...group.querySelectorAll('.card-row')];
+  const secId  = group.dataset.sec;
+  const updates = rows.map((r, i) => ({
+    id: r.dataset.id,
+    section: secId,
+    sort_order: (i + 1) * 10,
+    updated_at: new Date().toISOString()
+  }));
+
+  // Mettre à jour dbCards localement
+  updates.forEach(u => {
+    if (dbCards[u.id]) dbCards[u.id].sort_order = u.sort_order;
+    else dbCards[u.id] = { id: u.id, section: secId, sort_order: u.sort_order };
+  });
+
+  try {
+    const res = await sb('gallery_cards', {
+      method: 'POST',
+      headers: { 'Prefer': 'resolution=merge-duplicates,return=minimal' },
+      body: JSON.stringify(updates)
+    });
+    if (!res.ok) console.error('Erreur tri:', await res.text());
+  } catch(e) { console.error('Erreur tri:', e); }
 }
 
 function esc(s) { return (s||'').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
@@ -467,6 +574,7 @@ async function saveCard(dbId) {
   const btn = document.querySelector(`#row-${dbId} .card-save-btn`);
   btn.textContent = '…'; btn.className = 'card-save-btn saving';
 
+  const parentVal = document.getElementById(`f-parent-${dbId}`)?.value || '';
   const row = {
     id:        dbId,
     section:   dbId.startsWith('ph-') ? 'photographe' : dbId.startsWith('real-') ? 'realisateur' : 'boutique',
@@ -474,6 +582,7 @@ async function saveCard(dbId) {
     label_fr:  document.getElementById(`f-label-${dbId}`).value,
     desc_fr:   document.getElementById(`f-desc-${dbId}`).value,
     cover_img: document.getElementById(`f-img-${dbId}`).value,
+    parent_id: parentVal || null,
     visible:   dbCards[dbId]?.visible !== false,
     updated_at: new Date().toISOString()
   };

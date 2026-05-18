@@ -121,14 +121,13 @@ class Portfolio {
                 });
             }
 
-            /* ── 2. gallery_cards → métadonnées et ordre des cartes ── */
+            /* ── 2. gallery_cards → métadonnées, ordre, sous-galeries ── */
             const cardsRes = await fetch(
                 `${SUPA_URL}/rest/v1/gallery_cards?select=*&order=sort_order.asc`, { headers: hdrs }
             );
             if (cardsRes.ok) {
                 const dbCards = await cardsRes.json();
-                /* Map id → row Supabase */
-                const dbMap = {};
+                const dbMap   = {};
                 dbCards.forEach(r => { dbMap[r.id] = r; });
 
                 const prefixMap = { photographe: 'ph', realisateur: 'real', boutique: 'shop' };
@@ -142,18 +141,19 @@ class Portfolio {
                         const key = `${prefix}-${card.id}`;
                         const row = dbMap[key];
                         if (!row) return;
-                        /* Overrides de présentation */
-                        if (row.title_fr)   card.titleFr  = row.title_fr;
-                        if (row.title_en)   card.titleEn  = row.title_en;
-                        if (row.label_fr)   card.labelFr  = row.label_fr;
-                        if (row.label_en)   card.labelEn  = row.label_en;
-                        if (row.desc_fr)    card.descFr   = row.desc_fr;
-                        if (row.desc_en)    card.descEn   = row.desc_en;
-                        if (row.cover_img)  card.img      = row.cover_img;
+                        if (row.title_fr)   card.titleFr   = row.title_fr;
+                        if (row.title_en)   card.titleEn   = row.title_en;
+                        if (row.label_fr)   card.labelFr   = row.label_fr;
+                        if (row.label_en)   card.labelEn   = row.label_en;
+                        if (row.desc_fr)    card.descFr    = row.desc_fr;
+                        if (row.desc_en)    card.descEn    = row.desc_en;
+                        if (row.cover_img)  card.img       = row.cover_img;
                         if (row.gallery_id) card.galleryId = row.gallery_id;
-                        if (row.link_url)   card.url      = row.link_url;
-                        card._sortOrder      = row.sort_order ?? 999;
-                        card._hiddenByAdmin  = row.visible === false;
+                        if (row.link_url)   card.url       = row.link_url;
+                        if (row.parent_id)  card.parentId  = row.parent_id;
+                        card._dbId          = key;
+                        card._sortOrder     = row.sort_order ?? 999;
+                        card._hiddenByAdmin = row.visible === false;
                     });
 
                     /* Injecter les cartes Supabase qui n'existent pas dans gallery-data.js */
@@ -161,29 +161,30 @@ class Portfolio {
                         .filter(r => r.section === secId && !sec.cards.find(c => `${prefix}-${c.id}` === r.id))
                         .forEach(r => {
                             sec.cards.push({
-                                id:        r.id.replace(`${prefix}-`, ''),
-                                titleFr:   r.title_fr  || '',
-                                titleEn:   r.title_en  || '',
-                                labelFr:   r.label_fr  || '',
-                                labelEn:   r.label_en  || '',
-                                descFr:    r.desc_fr   || '',
-                                descEn:    r.desc_en   || '',
-                                img:       r.cover_img || null,
+                                id:        r.id.replace(new RegExp(`^${prefix}-`), ''),
+                                titleFr:   r.title_fr   || '',
+                                titleEn:   r.title_en   || '',
+                                labelFr:   r.label_fr   || '',
+                                labelEn:   r.label_en   || '',
+                                descFr:    r.desc_fr    || '',
+                                descEn:    r.desc_en    || '',
+                                img:       r.cover_img  || null,
                                 galleryId: r.gallery_id || null,
-                                url:       r.link_url  || null,
+                                url:       r.link_url   || null,
+                                parentId:  r.parent_id  || null,
+                                _dbId:         r.id,
                                 _sortOrder:    r.sort_order ?? 999,
                                 _hiddenByAdmin: r.visible === false,
                                 _fromSupabase: true
                             });
                         });
 
-                    /* Trier les cartes par sort_order Supabase si présent */
-                    sec.cards.sort((a, b) => {
-                        const ao = a._sortOrder ?? 999;
-                        const bo = b._sortOrder ?? 999;
-                        return ao - bo;
-                    });
+                    /* Trier par sort_order */
+                    sec.cards.sort((a, b) => (a._sortOrder ?? 999) - (b._sortOrder ?? 999));
                 }
+
+                /* Stocker dbCards globalement pour showSectionGrid (sous-galeries) */
+                this._dbCards = dbMap;
             }
         } catch(e) { /* Silencieux — site fonctionnel même si Supabase inaccessible */ }
     }
@@ -921,16 +922,104 @@ class Portfolio {
         container.classList.add('page-mode');
         container.classList.remove('grid-mode');
 
-        const lang = this.currentLang;
+        const lang  = this.currentLang;
         const title = lang === 'en' ? sec.titleEn : sec.titleFr;
 
-        const cardsHtml = sec.cards.filter(card => !card._hiddenByAdmin).map(card => {
-            const label = lang === 'en' ? card.labelEn : card.labelFr;
+        /* Construire la map des enfants : parentDbId → [cartes enfants] */
+        const childrenOf = {};
+        sec.cards.forEach(card => {
+            if (card.parentId && !card._hiddenByAdmin) {
+                if (!childrenOf[card.parentId]) childrenOf[card.parentId] = [];
+                childrenOf[card.parentId].push(card);
+            }
+        });
+
+        /* Seules les cartes de premier niveau (sans parentId) sont affichées */
+        const topCards = sec.cards.filter(card => !card._hiddenByAdmin && !card.parentId);
+
+        const cardsHtml = topCards.map(card => {
+            const label  = lang === 'en' ? card.labelEn : card.labelFr;
             const ctitle = lang === 'en' ? card.titleEn : card.titleFr;
-            const desc  = lang === 'en' ? card.descEn  : card.descFr;
-            const enter = lang === 'en' ? 'Enter' : 'Entrer';
+            const desc   = lang === 'en' ? card.descEn  : card.descFr;
+            const enter  = lang === 'en' ? 'Enter' : 'Entrer';
+            const hasChildren = card._dbId && childrenOf[card._dbId]?.length > 0;
 
             /* Action au clic */
+            let action = '';
+            if (hasChildren) {
+                action = `onclick="window.portfolio.showSubGrid('${card._dbId}','${sectionId}')"`;
+            } else if (card.galleryId) {
+                action = `onclick="window.portfolio.openGalleryFromSection('${card.galleryId}')"`;
+            } else if (card.url) {
+                action = `onclick="window.location.href='${card.url}'"`;
+            } else if (card.pageId) {
+                action = `onclick="window.portfolio.showPage('${card.pageId}')"`;
+            } else {
+                action = `onclick="void(0)"`;
+            }
+
+            const imgHtml = card.img
+                ? `<div class="section-card-img-wrap">
+                       <img class="section-card-img" src="${encodeURI(card.img)}" alt="${ctitle}" loading="lazy">
+                       <div class="section-card-overlay"><span class="section-card-overlay-text">${enter}</span></div>
+                   </div>`
+                : `<div class="section-card-placeholder">${ctitle}</div>`;
+
+            return `
+                <div class="section-card" ${action}>
+                    ${imgHtml}
+                    <div class="section-card-body">
+                        <div class="section-card-label">${label}${hasChildren ? ' ›' : ''}</div>
+                        <div class="section-card-title">${ctitle}</div>
+                        <div class="section-card-desc">${desc}</div>
+                    </div>
+                </div>`;
+        }).join('');
+
+        container.innerHTML = `
+            <div class="section-grid-wrap">
+                <div class="section-grid-header">
+                    <span class="section-grid-title">${title.toUpperCase()}</span>
+                    <button class="section-grid-back" onclick="window.portfolio.openHomeGallery();window.portfolio.setActiveLink(null)">← ${lang === 'en' ? 'Back' : 'Retour'}</button>
+                </div>
+                <div class="section-grid">${cardsHtml}</div>
+            </div>`;
+
+        const counter = document.querySelector('.gallery-counter');
+        if (counter) counter.textContent = '';
+        const descEl = document.getElementById('galleryDesc');
+        if (descEl) descEl.innerHTML = '';
+        const footerCap = document.getElementById('footerCaption');
+        if (footerCap) footerCap.innerHTML = '';
+    }
+
+    showSubGrid(parentDbId, sectionId) {
+        const sec = SECTIONS_CONFIG[sectionId];
+        if (!sec) return;
+        this.currentGallery   = null;
+        this.currentGalleryId = null;
+        this.currentPageId    = sectionId + ':' + parentDbId;
+        this.stopSlideshow();
+        this.stopAudio();
+
+        const container = document.getElementById('galleryContainer');
+        container.classList.add('page-mode');
+        container.classList.remove('grid-mode');
+
+        const lang = this.currentLang;
+        const parentCard = sec.cards.find(c => c._dbId === parentDbId);
+        const parentTitle = parentCard ? (lang === 'en' ? parentCard.titleEn : parentCard.titleFr) : '';
+
+        /* Enfants : cartes dont parentId === parentDbId, non masquées */
+        const children = sec.cards.filter(c => c.parentId === parentDbId && !c._hiddenByAdmin);
+        const enter = lang === 'en' ? 'Enter' : 'Entrer';
+        const back  = lang === 'en' ? 'Back'  : 'Retour';
+
+        const cardsHtml = children.map(card => {
+            const label  = lang === 'en' ? card.labelEn : card.labelFr;
+            const ctitle = lang === 'en' ? card.titleEn : card.titleFr;
+            const desc   = lang === 'en' ? card.descEn  : card.descFr;
+
             let action = '';
             if (card.galleryId) {
                 action = `onclick="window.portfolio.openGalleryFromSection('${card.galleryId}')"`;
@@ -939,7 +1028,7 @@ class Portfolio {
             } else if (card.pageId) {
                 action = `onclick="window.portfolio.showPage('${card.pageId}')"`;
             } else {
-                action = `onclick="void(0)"`;  // placeholder — pas encore de contenu
+                action = `onclick="void(0)"`;
             }
 
             const imgHtml = card.img
@@ -963,10 +1052,10 @@ class Portfolio {
         container.innerHTML = `
             <div class="section-grid-wrap">
                 <div class="section-grid-header">
-                    <span class="section-grid-title">${title.toUpperCase()}</span>
-                    <button class="section-grid-back" onclick="window.portfolio.openHomeGallery();window.portfolio.setActiveLink(null)">← ${lang === 'en' ? 'Back' : 'Retour'}</button>
+                    <span class="section-grid-title">${parentTitle.toUpperCase()}</span>
+                    <button class="section-grid-back" onclick="window.portfolio.showSectionGrid('${sectionId}')">← ${back}</button>
                 </div>
-                <div class="section-grid">${cardsHtml}</div>
+                <div class="section-grid">${cardsHtml || `<div style="padding:2rem;font-size:0.75rem;color:#999">Aucune sous-galerie visible.</div>`}</div>
             </div>`;
 
         const counter = document.querySelector('.gallery-counter');
