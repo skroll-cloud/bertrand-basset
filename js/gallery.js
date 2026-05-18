@@ -50,11 +50,12 @@ const MENU_CONFIG = [
   { "id": "auteur",              "name": "AUTEUR",               "type": "page",    "pageId": "auteur" },
   { "id": "travailler-ensemble", "name": "TRAVAILLER ENSEMBLE",  "type": "page",    "pageId": "travailler-ensemble" },
 
-  /* ── BOUTIQUE ── groupe avec sous-items dans la sidebar ── */
-  { "id": "boutique",            "name": "BOUTIQUE",             "type": "group" },
-  { "id": "boutique-dk",         "name": "DUST'IN KOLOR",        "type": "link",    "url": "dustin-kolor/index.html", "parent": "boutique" },
-  { "id": "boutique-portrait",   "name": "SÉANCE PORTRAIT",      "type": "page",    "pageId": "contact",              "parent": "boutique" },
-  { "id": "boutique-projet",     "name": "ME PROPOSER UN PROJET","type": "page",    "pageId": "contact",              "parent": "boutique" },
+  /* ── BOUTIQUE ── grille de vignettes (comme PHOTOGRAPHE/RÉALISATEUR) ── */
+  { "id": "boutique",            "name": "BOUTIQUE",             "type": "section", "sectionId": "boutique" },
+  /* sous-items cachés — conservés pour référence */
+  { "id": "boutique-dk",         "name": "DUST'IN KOLOR",        "type": "link",    "url": "dustin-kolor/index.html", "hidden": true },
+  { "id": "boutique-portrait",   "name": "SÉANCE PORTRAIT",      "type": "page",    "pageId": "contact",              "hidden": true },
+  { "id": "boutique-projet",     "name": "ME PROPOSER UN PROJET","type": "page",    "pageId": "contact",              "hidden": true },
 
   { "id": "infos",               "name": "INFOS",                "type": "page",    "pageId": "infos" },
 
@@ -82,9 +83,49 @@ const SECTIONS_CONFIG = {
                 id: "serie-expo", galleryId: "gem",
                 labelFr: "Projet · Recherche", labelEn: "Project · Research",
                 titleFr: "Série & Exposition", titleEn: "Series & Exhibition",
-                descFr: "GEM, Plougasnou, EHPAD, Carré d'As",
-                descEn: "GEM, Plougasnou, EHPAD, Carré d'As",
+                descFr: "Projets photo documentaires et expositions",
+                descEn: "Documentary photo projects and exhibitions",
                 img: "images/gem/JeanFrancois.jpg"
+            },
+            {
+                id: "gem", galleryId: "gem",
+                labelFr: "Santé mentale · Morlaix", labelEn: "Mental health · Morlaix",
+                titleFr: "GEM", titleEn: "GEM",
+                descFr: "Grande Cause Nationale 2025",
+                descEn: "Grande Cause Nationale 2025",
+                img: "images/gem/JeanFrancois.jpg"
+            },
+            {
+                id: "dustin-kolor-ph", url: "dustin-kolor/index.html",
+                labelFr: "Burning Man · Nevada", labelEn: "Burning Man · Nevada",
+                titleFr: "Dust'in Kolor", titleEn: "Dust'in Kolor",
+                descFr: "Série chromatique · Tempêtes de sable",
+                descEn: "Chromatic series · Sandstorms",
+                img: "images/dustin-kolor/01.jpg"
+            },
+            {
+                id: "plougasnou", url: "clients/plougasnou.html",
+                labelFr: "Finistère · Bretagne", labelEn: "Finistère · Brittany",
+                titleFr: "Plougasnou", titleEn: "Plougasnou",
+                descFr: "Série documentaire · territoire",
+                descEn: "Documentary series · territory",
+                img: "images/ST MELAR/stmelar-1.jpg"
+            },
+            {
+                id: "salarie-ehpad", galleryId: null,
+                labelFr: "Immersion · Travail", labelEn: "Immersion · Work",
+                titleFr: "Salarié EHPAD", titleEn: "Care home worker",
+                descFr: "Le quotidien des soignants",
+                descEn: "A caregiver's daily life",
+                img: null
+            },
+            {
+                id: "carre-das", galleryId: null,
+                labelFr: "Projet · Série", labelEn: "Project · Series",
+                titleFr: "Carré d'As", titleEn: "Carré d'As",
+                descFr: "Série photographique",
+                descEn: "Photography series",
+                img: null
             },
             {
                 id: "lumiere", galleryId: null,
@@ -111,9 +152,25 @@ const SECTIONS_CONFIG = {
                 img: "images/ST MELAR/stmelar-1.jpg"
             },
             {
-                id: "galeries", url: "clients/index.html",
+                id: "st-melar", galleryId: "st-melar",
+                labelFr: "Résidence · EHPAD Lanmeur", labelEn: "Residency · EHPAD Lanmeur",
+                titleFr: "St Mélar", titleEn: "St Mélar",
+                descFr: "Une semaine dans un EHPAD",
+                descEn: "A week in a care home",
+                img: "images/ST MELAR/stmelar-1.jpg"
+            },
+            {
+                id: "burning-man", galleryId: null,
+                labelFr: "Nevada · 2016", labelEn: "Nevada · 2016",
+                titleFr: "Burning Man", titleEn: "Burning Man",
+                descFr: "Désert du Nevada · Black Rock City",
+                descEn: "Nevada desert · Black Rock City",
+                img: "images/dustin-kolor/04.jpg"
+            },
+            {
+                id: "galeries-client", url: "clients/index.html",
                 labelFr: "Accès privé", labelEn: "Private access",
-                titleFr: "Galeries", titleEn: "Galleries",
+                titleFr: "Galeries Client", titleEn: "Client Galleries",
                 descFr: "Remise de commandes clients",
                 descEn: "Client order delivery",
                 img: null
@@ -140,12 +197,58 @@ const SECTIONS_CONFIG = {
                 img: "images/Television/05.jpg"
             },
             {
+                id: "portrait-invite", galleryId: "archives",
+                labelFr: "Documentaire", labelEn: "Documentary",
+                titleFr: "Portrait invité 20H30 France 2", titleEn: "Guest portrait France 2",
+                descFr: "Jean Rochefort · Woody Allen · José Garcia",
+                descEn: "Jean Rochefort · Woody Allen · José Garcia",
+                img: "images/Television/06.jpg"
+            },
+            {
                 id: "corporate", galleryId: "corporate",
                 labelFr: "Entreprise · Web", labelEn: "Corporate · Web",
                 titleFr: "Corporate & Web", titleEn: "Corporate & Web",
                 descFr: "Ernest L'Hour · FIA · Monaco",
                 descEn: "Ernest L'Hour · FIA · Monaco",
                 img: "images/Television/02.jpg"
+            }
+        ]
+    },
+
+    "boutique": {
+        titleFr: "Boutique", titleEn: "Shop",
+        cards: [
+            {
+                id: "boutique-dk", url: "dustin-kolor/index.html",
+                labelFr: "Tirages d'art numérotés", labelEn: "Limited edition prints",
+                titleFr: "Dust'in Kolor", titleEn: "Dust'in Kolor",
+                descFr: "7 œuvres · Édition limitée",
+                descEn: "7 artworks · Limited edition",
+                img: "images/dustin-kolor/01.jpg"
+            },
+            {
+                id: "boutique-portrait", pageId: "contact",
+                labelFr: "Sur rendez-vous", labelEn: "By appointment",
+                titleFr: "Séance Portrait", titleEn: "Portrait Session",
+                descFr: "Studio ou extérieur · Remise numérique",
+                descEn: "Studio or outdoor · Digital delivery",
+                img: "images/portrait/conversation-02.jpg"
+            },
+            {
+                id: "boutique-studio-mobile", pageId: "contact",
+                labelFr: "Sur site · Bretagne & Paris", labelEn: "On location",
+                titleFr: "Studio Mobile", titleEn: "Mobile Studio",
+                descFr: "Je viens chez vous avec mon équipement",
+                descEn: "I come to you with my equipment",
+                img: null
+            },
+            {
+                id: "boutique-projet", pageId: "contact",
+                labelFr: "Sur mesure", labelEn: "Custom project",
+                titleFr: "Projet sur mesure", titleEn: "Custom Project",
+                descFr: "Film, podcast, exposition, reportage",
+                descEn: "Film, podcast, exhibition, reportage",
+                img: null
             }
         ]
     }
@@ -510,8 +613,8 @@ const GALLERIES_CONFIG = {
             {
                 "cid": "best-of-phrase",
                 "position": 1,
-                "titleFr": "Je fabrique des images, je raconte des histoires, parfois en même temps.",
-                "titleEn": "I make images, I tell stories, sometimes at the same time.",
+                "titleFr": "Je fabrique des images,<br>je raconte des histoires,<br>parfois en même temps.",
+                "titleEn": "I make images,<br>I tell stories,<br>sometimes at the same time.",
                 "subtitleFr": "",
                 "subtitleEn": "",
                 "descFr": "",
@@ -521,7 +624,8 @@ const GALLERIES_CONFIG = {
                 "categoryFr": "Bertrand Basset · Carantec, Bretagne",
                 "categoryEn": "Bertrand Basset · Carantec, Brittany",
                 "sidebarFr": "",
-                "sidebarEn": ""
+                "sidebarEn": "",
+                "noSidebarTitle": true
             }
         ],
         images: [
@@ -1082,9 +1186,11 @@ class Portfolio {
                 }
             });
             /* Appliquer sur SECTIONS_CONFIG cards */
+            const prefixMap = { photographe: 'ph', realisateur: 'real', boutique: 'shop' };
             for (const secId in SECTIONS_CONFIG) {
+                const prefix = prefixMap[secId] || secId;
                 SECTIONS_CONFIG[secId].cards.forEach(card => {
-                    const key = `${secId === 'photographe' ? 'ph' : 'real'}-${card.id}`;
+                    const key = `${prefix}-${card.id}`;
                     if (Object.prototype.hasOwnProperty.call(map, key)) {
                         card._hiddenByAdmin = map[key] === false;
                     }
@@ -1488,7 +1594,7 @@ class Portfolio {
             if (galleryDesc) {
                 let h = '';
                 if (category)   h += `<p class="sidebar-item-subtitle">${category}</p>`;
-                if (title)      h += `<h2 class="sidebar-item-title">${title}</h2>`;
+                if (title && !item.noSidebarTitle) h += `<h2 class="sidebar-item-title">${title}</h2>`;
                 if (sidebarTxt) h += `<p class="sidebar-main-desc">${sidebarTxt.replace(/\n/g,'<br>')}</p>`;
                 galleryDesc.innerHTML = h ? `<div class="gallery-desc-content">${h}</div>` : '';
             }
@@ -1841,6 +1947,8 @@ class Portfolio {
                 action = `onclick="window.portfolio.openGalleryFromSection('${card.galleryId}')"`;
             } else if (card.url) {
                 action = `onclick="window.location.href='${card.url}'"`;
+            } else if (card.pageId) {
+                action = `onclick="window.portfolio.showPage('${card.pageId}')"`;
             } else {
                 action = `onclick="void(0)"`;  // placeholder — pas encore de contenu
             }
