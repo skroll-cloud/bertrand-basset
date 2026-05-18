@@ -130,6 +130,68 @@
     .form-full { grid-column: 1 / -1; }
     .form-select { padding: 0.55rem 0.7rem; border: 1px solid var(--line); font-family: inherit; font-size: 0.7rem; font-weight: 300; background: var(--white); outline: none; width: 100%; cursor: pointer; }
     .info-box { background: #f4f4f4; border-left: 2px solid var(--line); padding: 0.75rem 1rem; font-size: 0.65rem; color: var(--gray); line-height: 1.7; margin-bottom: 1.2rem; }
+
+    /* ── Bouton choisir image ── */
+    .pick-btn {
+      padding: 0.32rem 0.6rem; font-family: inherit; font-size: 0.46rem; letter-spacing: 0.1em;
+      text-transform: uppercase; border: 1px solid var(--line); background: transparent;
+      color: var(--dim); cursor: pointer; transition: all .15s; white-space: nowrap; flex-shrink: 0;
+    }
+    .pick-btn:hover { border-color: var(--black); color: var(--black); }
+
+    /* ── Modal sélecteur d'images ── */
+    #imgPickerOverlay {
+      display: none; position: fixed; inset: 0; background: rgba(10,10,10,.6);
+      z-index: 1000; align-items: center; justify-content: center;
+    }
+    #imgPickerOverlay.open { display: flex; }
+    #imgPickerModal {
+      background: var(--white); width: min(860px, 96vw); max-height: 88vh;
+      display: flex; flex-direction: column; overflow: hidden;
+    }
+    .picker-header {
+      display: flex; align-items: center; gap: 0.8rem;
+      padding: 1rem 1.4rem; border-bottom: 1px solid var(--line); flex-shrink: 0;
+    }
+    .picker-breadcrumb {
+      flex: 1; font-size: 0.58rem; letter-spacing: 0.08em; color: var(--dim);
+      display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;
+    }
+    .picker-breadcrumb span { cursor: pointer; transition: color .15s; }
+    .picker-breadcrumb span:hover { color: var(--black); }
+    .picker-breadcrumb .sep { color: var(--line); }
+    .picker-close {
+      background: none; border: none; cursor: pointer; font-size: 1.2rem;
+      color: var(--dim); line-height: 1; padding: 0.2rem; transition: color .15s;
+    }
+    .picker-close:hover { color: var(--black); }
+    .picker-body { flex: 1; overflow-y: auto; padding: 1rem 1.4rem; }
+    .picker-loading { font-size: 0.65rem; color: var(--dim); padding: 2rem 0; text-align: center; }
+    .picker-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 6px;
+    }
+    .picker-folder {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.55rem 0.7rem; border: 1px solid var(--line); cursor: pointer;
+      font-size: 0.65rem; font-weight: 300; transition: border-color .15s, background .15s;
+    }
+    .picker-folder:hover { border-color: var(--black); background: #f8f8f8; }
+    .picker-folder-icon { font-size: 0.9rem; }
+    .picker-img-item {
+      position: relative; cursor: pointer; overflow: hidden;
+      border: 2px solid transparent; transition: border-color .15s;
+    }
+    .picker-img-item:hover { border-color: var(--black); }
+    .picker-img-item img { width: 100%; aspect-ratio: 3/2; object-fit: cover; display: block; }
+    .picker-img-name {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: rgba(10,10,10,.6); color: #fff;
+      font-size: 0.42rem; padding: 0.2rem 0.35rem;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      opacity: 0; transition: opacity .15s;
+    }
+    .picker-img-item:hover .picker-img-name { opacity: 1; }
+    .picker-empty { font-size: 0.65rem; color: var(--dim); padding: 2rem 0; text-align: center; }
   </style>
 </head>
 <body>
@@ -139,6 +201,19 @@
   <span class="header-title">Administration</span>
   <button class="header-logout" id="logoutBtn" style="display:none" onclick="logout()">Déconnexion</button>
 </header>
+
+<!-- ── Modal sélecteur d'images ── -->
+<div id="imgPickerOverlay" onclick="if(event.target===this)closePicker()">
+  <div id="imgPickerModal">
+    <div class="picker-header">
+      <div class="picker-breadcrumb" id="pickerBreadcrumb"></div>
+      <button class="picker-close" onclick="closePicker()">✕</button>
+    </div>
+    <div class="picker-body" id="pickerBody">
+      <div class="picker-loading">Chargement…</div>
+    </div>
+  </div>
+</div>
 
 <div id="gate" style="display:none">
   <p class="gate-title">Accès administration</p>
@@ -188,7 +263,13 @@
               <option value="boutique">Boutique</option>
             </select>
           </div>
-          <div class="form-field form-full"><label>Image de couverture (chemin relatif)</label><input class="form-input" id="nc-img" placeholder="ex. images/mon-dossier/photo-01.jpg"></div>
+          <div class="form-field form-full">
+            <label>Image de couverture</label>
+            <div style="display:flex;gap:0.5rem;align-items:center">
+              <input class="form-input" id="nc-img" placeholder="ex. images/mon-dossier/photo-01.jpg" style="flex:1">
+              <button class="pick-btn" onclick="openPickerForNew()" style="padding:0.55rem 0.8rem">Choisir…</button>
+            </div>
+          </div>
           <div class="form-field form-full"><label>Lien au clic (laisser vide si pas encore de contenu)</label><input class="form-input" id="nc-url" placeholder="ex. clients/plougasnou.html  ou  laisser vide"></div>
         </div>
         <button class="btn btn-dark" onclick="addCard()">Ajouter la carte</button>
@@ -355,6 +436,7 @@ function cardRowHtml(c) {
           <span class="field-label">Couverture</span>
           <input class="field-input" id="f-img-${c.dbId}" value="${esc(c.coverImg)}" placeholder="images/dossier/photo.jpg"
             onchange="updateThumb('${c.dbId}', this.value)">
+          <button class="pick-btn" onclick="openPicker('${c.dbId}')">Choisir…</button>
         </div>
       </div>
       <div class="card-actions">
@@ -541,6 +623,126 @@ async function saveVisibility() {
   } finally {
     btn.disabled = false;
   }
+}
+
+// ── Image Picker ──────────────────────────────────────────────────────────────
+const GH_REPO   = 'skroll-cloud/bertrand-basset';
+const GH_BRANCH = 'main';
+const SITE_URL  = 'https://skroll-cloud.github.io/bertrand-basset'; // pour les miniatures
+
+let pickerTargetId  = null;   // dbId de la carte en cours d'édition
+let pickerCurPath   = 'images'; // chemin GitHub courant
+
+function openPickerForNew() {
+  pickerTargetId = 'new-card';
+  document.getElementById('imgPickerOverlay').classList.add('open');
+  loadPickerFolder('images');
+}
+
+function openPicker(dbId) {
+  pickerTargetId = dbId;
+  document.getElementById('imgPickerOverlay').classList.add('open');
+  // Essayer d'ouvrir directement le bon dossier selon la carte
+  const card = dbCards[dbId];
+  let startPath = 'images';
+  if (card?.gallery_id) {
+    // Mapping gallery_id → dossier connu
+    const folderMap = {
+      portrait:    'images/portrait',
+      gem:         'images/gem',
+      cinema:      'images/cinema',
+      television:  'images/Television',
+      archives:    'images/Television',
+      corporate:   'images/corporate',
+      studio:      'images/ST MELAR',
+      'st-melar':  'images/ST MELAR',
+      'dustin-kolor': 'images/dustin-kolor',
+      'best-of':   'images',
+    };
+    startPath = folderMap[card.gallery_id] || 'images';
+  } else if (card?.cover_img) {
+    // Ouvrir le dossier parent de l'image courante
+    const parts = card.cover_img.split('/');
+    if (parts.length > 1) startPath = parts.slice(0, -1).join('/');
+  }
+  loadPickerFolder(startPath);
+}
+
+function closePicker() {
+  document.getElementById('imgPickerOverlay').classList.remove('open');
+  pickerTargetId = null;
+}
+
+function buildBreadcrumb(path) {
+  const parts = path.split('/');
+  const bc = document.getElementById('pickerBreadcrumb');
+  bc.innerHTML = parts.map((p, i) => {
+    const fullPath = parts.slice(0, i + 1).join('/');
+    return `<span onclick="loadPickerFolder('${fullPath}')">${p}</span>${i < parts.length - 1 ? '<span class="sep">›</span>' : ''}`;
+  }).join('');
+}
+
+async function loadPickerFolder(path) {
+  pickerCurPath = path;
+  buildBreadcrumb(path);
+  const body = document.getElementById('pickerBody');
+  body.innerHTML = '<div class="picker-loading">Chargement…</div>';
+
+  try {
+    const url = `https://api.github.com/repos/${GH_REPO}/contents/${encodeURIComponent(path)}?ref=${GH_BRANCH}`;
+    const res = await fetch(url, { headers: { 'Accept': 'application/vnd.github.v3+json' } });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const items = await res.json();
+
+    if (!Array.isArray(items)) throw new Error('Réponse inattendue');
+
+    const folders = items.filter(i => i.type === 'dir').sort((a,b) => a.name.localeCompare(b.name));
+    const images  = items.filter(i => i.type === 'file' && /\.(jpe?g|png|webp|gif)$/i.test(i.name))
+                         .sort((a,b) => a.name.localeCompare(b.name));
+
+    if (!folders.length && !images.length) {
+      body.innerHTML = '<div class="picker-empty">Dossier vide ou aucune image trouvée.</div>';
+      return;
+    }
+
+    let html = '<div class="picker-grid">';
+
+    // Dossiers
+    folders.forEach(f => {
+      html += `<div class="picker-folder" onclick="loadPickerFolder('${path}/${f.name}')">
+        <span class="picker-folder-icon">📁</span>${f.name}
+      </div>`;
+    });
+
+    // Images
+    images.forEach(img => {
+      const relPath  = `${path}/${img.name}`;
+      // Miniature via GitHub Pages (déjà déployé)
+      const thumbSrc = `/${relPath}`;
+      html += `<div class="picker-img-item" onclick="selectImage('${relPath}')">
+        <img src="${thumbSrc}" alt="${img.name}" loading="lazy"
+          onerror="this.src='https://raw.githubusercontent.com/${GH_REPO}/${GH_BRANCH}/${relPath}'">
+        <div class="picker-img-name">${img.name}</div>
+      </div>`;
+    });
+
+    html += '</div>';
+    body.innerHTML = html;
+  } catch(e) {
+    body.innerHTML = `<div class="picker-empty">Erreur : ${e.message}<br><small>Vérifie ta connexion ou réessaie.</small></div>`;
+  }
+}
+
+function selectImage(relPath) {
+  if (!pickerTargetId) return;
+  if (pickerTargetId === 'new-card') {
+    const ncImg = document.getElementById('nc-img');
+    if (ncImg) ncImg.value = relPath;
+  } else {
+    const input = document.getElementById(`f-img-${pickerTargetId}`);
+    if (input) { input.value = relPath; updateThumb(pickerTargetId, relPath); }
+  }
+  closePicker();
 }
 
 // ── Init ───────────────────────────────────────────────────────────────────────
