@@ -39,161 +39,40 @@ const T = {
 
 /* ─── MENU ──────────────────────────────────────────────────── */
 const MENU_CONFIG = [
-  {
-    "id": "item-1773178057178",
-    "name": "PORTRAIT",
-    "type": "gallery",
-    "galleryId": "portrait"
-  },
-  {
-    "id": "immersion",
-    "name": "IMMERSION",
-    "type": "group",
-    "galleryId": "gem"
-  },
-  {
-    "id": "st-melar",
-    "name": "ST MELAR",
-    "type": "gallery",
-    "galleryId": "st-melar",
-    "parent": "immersion"
-  },
-  {
-    "id": "item-1773178125975",
-    "name": "LE GEM S'ENDIMANCHE",
-    "type": "gallery",
-    "galleryId": "gem",
-    "parent": "immersion"
-  },
-  {
-    "id": "group-1773158227466",
-    "name": "FILM",
-    "type": "group"
-  },
-  {
-    "id": "item-1773158247053",
-    "name": "CINEMA",
-    "type": "gallery",
-    "galleryId": "cinema",
-    "parent": "group-1773158227466"
-  },
-  {
-    "id": "item-1773174967818",
-    "name": "TELEVISION",
-    "type": "gallery",
-    "galleryId": "television",
-    "parent": "group-1773158227466"
-  },
-  {
-    "id": "post-production",
-    "name": "POST-PRODUCTION",
-    "type": "page",
-    "pageId": "post-production",
-    "parent": "group-1773158227466",
-    "hidden": true
-  },
-  {
-    "id": "auteur",
-    "name": "AUTEUR",
-    "type": "page",
-    "pageId": "auteur",
-    "parent": "group-1773158227466",
-    "hidden": true
-  },
-  {
-    "id": "films-player",
-    "name": "VOIR LES FILMS",
-    "type": "page",
-    "pageId": "films-player",
-    "parent": "group-1773158227466",
-    "hidden": true
-  },
-  {
-    "id": "galeries",
-    "name": "GALERIES",
-    "type": "link",
-    "url": "clients/index.html"
-  },
-  {
-    "id": "boutique",
-    "name": "BOUTIQUE",
-    "type": "group"
-  },
-  {
-    "id": "dustin-kolor-link",
-    "name": "DUST'IN KOLOR",
-    "type": "link",
-    "url": "dustin-kolor/index.html",
-    "parent": "boutique"
-  },
-  {
-    "id": "infos",
-    "name": "INFOS",
-    "type": "page",
-    "pageId": "infos"
-  },
-  {
-    "id": "item-1773174917949",
-    "name": "METIER",
-    "type": "gallery",
-    "galleryId": "studio",
-    "parent": "group-1773174817135",
-    "hidden": true
-  },
-  {
-    "id": "item-1773174948772",
-    "name": "SERIE",
-    "type": "gallery",
-    "galleryId": "gem",
-    "parent": "group-1773174817135",
-    "hidden": true
-  },
-  {
-    "id": "item-1773174901597",
-    "name": "STUDIO",
-    "type": "gallery",
-    "galleryId": "studio",
-    "parent": "group-1773174817135",
-    "hidden": true
-  },
-  {
-    "id": "portrait",
-    "name": "ACTEUR",
-    "type": "gallery",
-    "galleryId": "portrait",
-    "parent": "group-1773174817135",
-    "hidden": true
-  },
-  {
-    "id": "item-1773158098062",
-    "name": "Burning Man",
-    "type": "gallery",
-    "galleryId": "portrait",
-    "parent": "immersion",
-    "hidden": true
-  },
-  {
-    "id": "item-1773158051230",
-    "name": "Carré d'AS",
-    "type": "gallery",
-    "galleryId": "portrait",
-    "parent": "group-1773157969699",
-    "hidden": true
-  },
-  {
-    "id": "item-1773175848292",
-    "name": "ARCHIVES",
-    "type": "gallery",
-    "galleryId": "television",
-    "hidden": true
-  },
-  {
-    "id": "archives",
-    "name": "ARCHIVES",
-    "type": "gallery",
-    "galleryId": "archives",
-    "hidden": true
-  }
+
+  /* ── PHOTOGRAPHE ─────────────────────────────────── */
+  { "id": "photographe",    "name": "PHOTOGRAPHE",        "type": "group" },
+  { "id": "ph-portrait",   "name": "PORTRAIT",            "type": "gallery", "galleryId": "portrait",   "parent": "photographe" },
+  { "id": "ph-gem",        "name": "LE GEM S'ENDIMANCHE", "type": "gallery", "galleryId": "gem",        "parent": "photographe" },
+  { "id": "ph-stmelar",    "name": "ST MÉLAR",            "type": "gallery", "galleryId": "st-melar",   "parent": "photographe" },
+  { "id": "ph-immersion",  "name": "IMMERSION",           "type": "gallery", "galleryId": "studio",     "parent": "photographe" },
+  { "id": "ph-galeries",   "name": "GALERIES",            "type": "link",    "url": "clients/index.html","parent": "photographe" },
+
+  /* ── RÉALISATEUR ─────────────────────────────────── */
+  { "id": "realisateur",      "name": "RÉALISATEUR",   "type": "group" },
+  { "id": "real-cinema",      "name": "CINÉMA",        "type": "gallery", "galleryId": "cinema",    "parent": "realisateur" },
+  { "id": "real-television",  "name": "TÉLÉVISION",    "type": "gallery", "galleryId": "television","parent": "realisateur" },
+  { "id": "real-corporate",   "name": "CORPORATE & WEB","type": "gallery", "galleryId": "corporate","parent": "realisateur" },
+
+  /* ── AUTEUR ──────────────────────────────────────── */
+  { "id": "auteur",               "name": "AUTEUR",               "type": "page", "pageId": "auteur" },
+
+  /* ── TRAVAILLER ENSEMBLE ─────────────────────────── */
+  { "id": "travailler-ensemble",  "name": "TRAVAILLER ENSEMBLE",  "type": "page", "pageId": "travailler-ensemble" },
+
+  /* ── BOUTIQUE ────────────────────────────────────── */
+  { "id": "boutique",         "name": "BOUTIQUE",                 "type": "group" },
+  { "id": "boutique-dk",      "name": "DUST'IN KOLOR",            "type": "link", "url": "dustin-kolor/index.html", "parent": "boutique" },
+  { "id": "boutique-portrait","name": "SÉANCE PORTRAIT",          "type": "page", "pageId": "contact", "parent": "boutique" },
+  { "id": "boutique-projet",  "name": "ME PROPOSER UN PROJET",    "type": "page", "pageId": "contact", "parent": "boutique" },
+
+  /* ── INFOS ───────────────────────────────────────── */
+  { "id": "infos", "name": "INFOS", "type": "page", "pageId": "infos" },
+
+  /* ── Cachés (conservés) ──────────────────────────── */
+  { "id": "post-production", "name": "POST-PRODUCTION", "type": "page", "pageId": "post-production", "hidden": true },
+  { "id": "films-player",    "name": "VOIR LES FILMS",  "type": "page", "pageId": "films-player",    "hidden": true },
+  { "id": "archives",        "name": "ARCHIVES",        "type": "gallery", "galleryId": "archives",  "hidden": true }
 ];
 
 /* ─── PAGES CONFIG ───────────────────────────────────────────── */
@@ -427,8 +306,8 @@ const GALLERIES_CONFIG = {
                 "titleEn": "",
                 "subtitleFr": "",
                 "subtitleEn": "",
-                "descFr": "Série de portraits réalisée au GEM de Morlaix.\nChaque portrait est accompagné d’un témoignage audio.",
-                "descEn": "Portrait series made at the GEM in Morlaix.\nEach portrait comes with an audio testimony.",
+                "descFr": "J’ai rencontré l’association par hasard. Très vite, une envie commune : mettre en avant leurs adhérents — des personnes aux parcours souvent difficiles, qui avaient réussi à reprendre une vie presque normale.\n\nLa confiance construite dans le temps m’a permis de réaliser des photos qui ont une vraie puissance, une âme, un regard.\n\nRésultat : Exposition permanente au GEM de Morlaix · Label Ministère de la Santé « Grande Cause Nationale 2025 — Parlons Santé Mentale »",
+                "descEn": "I met the association by chance. Very quickly, a shared idea emerged: to highlight their members — people with often difficult backgrounds who had managed to rebuild a near-normal life.\n\nThe trust built over time allowed me to create photographs with real power, a soul, a gaze.\n\nResult: Permanent exhibition at the GEM in Morlaix · Ministry of Health label \"Grande Cause Nationale 2025 — Parlons Santé Mentale\"",
                 "ctaLabel": "",
                 "ctaUrl": "",
                 "categoryFr": "",
@@ -459,6 +338,24 @@ const GALLERIES_CONFIG = {
         path:          "images/ST MELAR",
         autoplay:      false,
         autoplayDelay: 4,
+        cartons: [
+            {
+                "cid": "stmelar-intro",
+                "position": 0,
+                "titleFr": "",
+                "titleEn": "",
+                "subtitleFr": "",
+                "subtitleEn": "",
+                "descFr": "Une semaine avec mon appareil dans un EHPAD. J'ai pris une chambre. J'ai dormi sur place, à Lanmeur. Pour montrer les soignants — leur quotidien, leurs gestes, leur façon d'être là. Ce travail qu'on ne voit jamais parce qu'il se passe derrière des portes fermées.\n\nPour que quelqu'un te laisse vraiment entrer dans son monde, il faut y être. Pas passer. Être.",
+                "descEn": "A week with my camera in a care home. I rented a room. I slept on site, in Lanmeur. To show the caregivers — their daily routine, their gestures, the way they show up. The work no one ever sees because it happens behind closed doors.\n\nFor someone to truly let you into their world, you have to be there. Not pass through. Be there.",
+                "ctaLabel": "",
+                "ctaUrl": "",
+                "categoryFr": "Immersion · EHPAD de Lanmeur",
+                "categoryEn": "Immersion · Lanmeur care home",
+                "sidebarFr": "Résidence photographique · 6 planches · Exposition à l'hôpital",
+                "sidebarEn": "Photography residency · 6 plates · Hospital exhibition"
+            }
+        ],
         images: [
             {"filename":"stmelar-1.jpg"},
             {"filename":"stmelar-2.jpg"},
@@ -467,6 +364,32 @@ const GALLERIES_CONFIG = {
             {"filename":"stmelar-5.jpg"},
             {"filename":"stmelar-6.jpg"}
         ],
+        captions: {}
+    },
+
+    "corporate": {
+        path:          "images/corporate",
+        autoplay:      false,
+        autoplayDelay: 4,
+        cartons: [
+            {
+                "cid": "corporate-intro",
+                "position": 0,
+                "titleFr": "Ernest L'Hour, dernier goémonier",
+                "titleEn": "Ernest L'Hour, last seaweed harvester",
+                "subtitleFr": "",
+                "subtitleEn": "",
+                "descFr": "Le Musée de la Mer de Carantec ouvre ses portes et veut créer un contenu sur la pêche au goémon sur l'Île Callot. J'ai rencontré Ernest L'Hour, dernier goémonier vivant. Après plusieurs rencontres et des semaines de recherche documentaire, je l'ai invité en studio pour recueillir sa parole, lui montrer des images de la Cinémathèque.\n\nEt pour le surprendre — des photos de famille que ses enfants m'avaient confiées en secret.\n\nCe qui s'est passé dans cette pièce ne se commande pas.",
+                "descEn": "The Musée de la Mer in Carantec commissioned a film about seaweed harvesting on Île Callot. I met Ernest L'Hour, the last living seaweed harvester. After several meetings and weeks of documentary research, I invited him into the studio to record his testimony and show him archival footage.\n\nAnd to surprise him — family photos his children had secretly given me.\n\nWhat happened in that room cannot be directed.",
+                "ctaLabel": "Voir le film",
+                "ctaUrl": "https://u.pcloud.link/publink/show?code=XZp3uEVZjUbUhjJXBJ59YjYjyOoee0fsmXGX",
+                "categoryFr": "Corporate & Web · Musée de la Mer de Carantec",
+                "categoryEn": "Corporate & Web · Musée de la Mer de Carantec",
+                "sidebarFr": "Film historique · Visible en permanence au Musée de la Mer",
+                "sidebarEn": "Historical film · On permanent display at the Musée de la Mer"
+            }
+        ],
+        images: [],
         captions: {}
     },
 
@@ -507,6 +430,24 @@ const GALLERIES_CONFIG = {
         path:          ".",
         autoplay:      false,
         autoplayDelay: 4,
+        cartons: [
+            {
+                "cid": "best-of-phrase",
+                "position": 1,
+                "titleFr": "Je fabrique des images, je raconte des histoires, parfois en même temps.",
+                "titleEn": "I make images, I tell stories, sometimes at the same time.",
+                "subtitleFr": "",
+                "subtitleEn": "",
+                "descFr": "",
+                "descEn": "",
+                "ctaLabel": "",
+                "ctaUrl": "",
+                "categoryFr": "Bertrand Basset · Carantec, Bretagne",
+                "categoryEn": "Bertrand Basset · Carantec, Brittany",
+                "sidebarFr": "",
+                "sidebarEn": ""
+            }
+        ],
         images: [
             {"filename":"images/portrait/conversation-02.jpg","title":"Antoine Asnar","subtitle":"Portrait Studio"},
             {"filename":"images/dustin-kolor/04.jpg","title":"Lost in the dust","subtitle":"Exposition"},
@@ -765,6 +706,45 @@ function buildAuteurPage(lang) {
     </div>`;
 }
 
+function buildTravaillerEnsemblePage(lang) {
+    const en = lang === 'en';
+    return `<div class="page-text">
+      <div class="page-section">
+        <h2>${en ? 'Working together' : 'Travailler ensemble'}</h2>
+        <p>${en
+          ? 'You have a story to tell, people to highlight, knowledge to pass on.'
+          : 'Vous avez une histoire à raconter, des humains à valoriser, des savoirs à transmettre.'
+        }</p>
+        <p>${en
+          ? "It's been 20 years that my job is to help you do that."
+          : "Ça fait 20 ans que mon métier est de vous aider à le faire."
+        }</p>
+        <p>${en
+          ? 'Business owner, volunteer, artist or grandparent — whatever you want to tell, I adapt and co-create with you what needs to exist: a photo, a film, a podcast.'
+          : "Dirigeant, bénévole, artiste ou grand-parent — peu importe qui vous êtes et ce que vous voulez raconter, je m'adapte et je crée avec vous ce qui doit exister : une photo, un film, un podcast."
+        }</p>
+      </div>
+      <div class="page-section">
+        <h2>${en ? 'Made to measure' : 'Sur mesure'}</h2>
+        <p>${en
+          ? "For every project I'm entrusted with, I invent a new solution. I never reproduce a ready-made recipe. I co-build with you the solution that fits your problem."
+          : "Pour chaque projet qu'on me confie, j'invente une solution nouvelle. Jamais je ne reproduis une recette toute faite. Je co-construis avec vous la solution qui convient à votre problème."
+        }</p>
+        <p>${en
+          ? "If we work together, you're not buying a service — you're buying a custom creation."
+          : "Si on travaille ensemble, vous n'achetez pas une solution — vous achetez une création sur mesure."
+        }</p>
+      </div>
+      <div class="page-section">
+        <h2>${en ? 'And you?' : 'Et vous ?'}</h2>
+        <p style="font-style:italic">${en
+          ? '\"Do you have a story to tell, people to highlight, knowledge to pass on?\"'
+          : '« Et vous, vous avez une histoire à raconter, des humains à valoriser, des savoirs à transmettre ?»'
+        }</p>
+      </div>
+    </div>`;
+}
+
 function buildContactPage(lang) {
     const t  = T[lang];
     const en = lang === 'en';
@@ -1004,7 +984,7 @@ class Portfolio {
         const badge = document.getElementById('mobileCartBadge');
         if (!badge) return;
         try {
-            const cart = JSON.parse(localStorage.getItem('dk_cart') || '[]');
+            const cart = JSON.parse(localStorage.getItem('bb_cart') || '[]');
             const count = cart.reduce((s, i) => s + (i.qty || 1), 0);
             badge.textContent = count > 0 ? count : '';
             badge.classList.toggle('has-items', count > 0);
@@ -1690,10 +1670,11 @@ class Portfolio {
             siteEl?.classList.remove('films-mode');
             container.classList.add('page-mode');
             let html = '';
-            if (id === 'infos')           html = buildInfosPage(this.currentLang);
-            if (id === 'contact')         html = buildContactPage(this.currentLang);
-            if (id === 'post-production') html = buildPostProductionPage(this.currentLang);
-            if (id === 'auteur')          html = buildAuteurPage(this.currentLang);
+            if (id === 'infos')                 html = buildInfosPage(this.currentLang);
+            if (id === 'contact')               html = buildContactPage(this.currentLang);
+            if (id === 'post-production')       html = buildPostProductionPage(this.currentLang);
+            if (id === 'auteur')                html = buildAuteurPage(this.currentLang);
+            if (id === 'travailler-ensemble')   html = buildTravaillerEnsemblePage(this.currentLang);
             container.innerHTML = `<div class="page-content">${html}</div>`;
         }
         const counter = document.querySelector('.gallery-counter');
@@ -1858,14 +1839,14 @@ class Portfolio {
     }
 
     addToCart(filename, titre, format, prix) {
-        let cart = JSON.parse(localStorage.getItem('dk_cart') || '[]');
+        let cart = JSON.parse(localStorage.getItem('bb_cart') || '[]');
         const existing = cart.find(i => i.filename === filename && i.format === format);
         if (existing) {
             existing.qty = (existing.qty || 1) + 1;
         } else {
             cart.push({ filename, titre, format, prix, qty: 1 });
         }
-        localStorage.setItem('dk_cart', JSON.stringify(cart));
+        localStorage.setItem('bb_cart', JSON.stringify(cart));
         this.updateCartBadge();
         // Visual feedback
         const btn = document.querySelector('.bq-btn-add');
@@ -1878,7 +1859,7 @@ class Portfolio {
     }
 
     updateCartBadge() {
-        const cart  = JSON.parse(localStorage.getItem('dk_cart') || '[]');
+        const cart  = JSON.parse(localStorage.getItem('bb_cart') || '[]');
         const total = cart.reduce((s, i) => s + (i.qty || 1), 0);
         const badge = document.getElementById('cartBadge');
         if (badge) {
