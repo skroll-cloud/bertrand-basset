@@ -87,7 +87,7 @@ const SECTIONS_CONFIG = {
                 img: "images/gem/JeanFrancois.jpg"
             },
             {
-                id: "lumiere-lente", galleryId: null,
+                id: "lumiere", galleryId: null,
                 labelFr: "Recherche artistique", labelEn: "Artistic research",
                 titleFr: "Lumière Lente", titleEn: "Slow Light",
                 descFr: "Une esthétique en développement",
