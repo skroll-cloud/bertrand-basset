@@ -6,224 +6,140 @@
   <title>Admin — Bertrand Basset</title>
   <link rel="icon" type="image/svg+xml" href="assets/logo-b.svg">
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
-  <!-- gallery.js chargé pour accéder à MENU_CONFIG + SECTIONS_CONFIG -->
-  <script src="js/gallery.js"></script>
+  <script src="js/gallery-data.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --black: #0a0a0a; --white: #fafafa; --gray: #555; --dim: #999;
-      --line: #e0e0e0; --red: #c41e1e; --green: #1a8a3c;
-    }
+    :root { --black: #0a0a0a; --white: #fafafa; --gray: #555; --dim: #999; --line: #e0e0e0; --red: #c41e1e; --green: #1a8a3c; }
     html { font-family: 'IBM Plex Sans', sans-serif; color: var(--black); background: var(--white); -webkit-font-smoothing: antialiased; }
     body { min-height: 100vh; display: flex; flex-direction: column; }
     a { color: inherit; text-decoration: none; }
 
-    /* ── Header ── */
-    .site-header {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 1.2rem 2.5rem; border-bottom: 1px solid var(--line);
-      position: sticky; top: 0; background: var(--white); z-index: 100;
-    }
+    /* Header */
+    .site-header { display: flex; align-items: center; justify-content: space-between; padding: 1.2rem 2.5rem; border-bottom: 1px solid var(--line); position: sticky; top: 0; background: var(--white); z-index: 100; }
     .header-logo { width: 22px; height: 22px; opacity: 0.7; transition: opacity .15s; }
     .header-logo:hover { opacity: 1; }
     .header-title { font-size: 0.55rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim); }
     .header-logout { font-size: 0.52rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim); cursor: pointer; transition: color .15s; background: none; border: none; font-family: inherit; }
     .header-logout:hover { color: var(--black); }
 
-    /* ── Gate (mot de passe) ── */
-    #gate {
-      flex: 1; display: flex; align-items: center; justify-content: center;
-      flex-direction: column; gap: 1.4rem; padding: 4rem 2rem;
-    }
+    /* Gate */
+    #gate { flex: 1; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 1.4rem; padding: 4rem 2rem; }
     .gate-title { font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); }
-    .gate-input {
-      width: 260px; padding: 0.75rem 1rem;
-      border: 1px solid var(--line); background: transparent;
-      font-family: inherit; font-size: 0.8rem; font-weight: 300;
-      outline: none; transition: border-color .15s;
-    }
+    .gate-input { width: 260px; padding: 0.75rem 1rem; border: 1px solid var(--line); background: transparent; font-family: inherit; font-size: 0.8rem; font-weight: 300; outline: none; transition: border-color .15s; }
     .gate-input:focus { border-color: var(--black); }
-    .gate-btn {
-      width: 260px; padding: 0.75rem 1rem;
-      background: var(--black); color: var(--white);
-      font-family: inherit; font-size: 0.55rem; font-weight: 400;
-      letter-spacing: 0.14em; text-transform: uppercase;
-      border: none; cursor: pointer; transition: background .2s;
-    }
-    .gate-btn:hover { background: #333; }
+    .gate-btn { width: 260px; padding: 0.75rem 1rem; background: var(--black); color: var(--white); font-family: inherit; font-size: 0.55rem; font-weight: 400; letter-spacing: 0.14em; text-transform: uppercase; border: none; cursor: pointer; }
     .gate-error { font-size: 0.62rem; color: var(--red); }
 
-    /* ── App ── */
+    /* App */
     #app { display: none; flex: 1; flex-direction: column; }
-
-    /* ── Status banner ── */
-    .status-banner {
-      background: var(--white); border-bottom: 1px solid var(--line);
-      padding: 0.6rem 2.5rem;
-      font-size: 0.55rem; letter-spacing: 0.08em; color: var(--dim);
-      display: flex; align-items: center; gap: 0.6rem;
-    }
+    .status-banner { background: var(--white); border-bottom: 1px solid var(--line); padding: 0.6rem 2.5rem; font-size: 0.55rem; letter-spacing: 0.08em; color: var(--dim); display: flex; align-items: center; gap: 0.6rem; }
     .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--dim); }
-    .status-dot.ok  { background: var(--green); }
+    .status-dot.ok { background: var(--green); }
     .status-dot.err { background: var(--red); }
 
-    /* ── Main ── */
-    .admin-wrap { max-width: 680px; margin: 0 auto; padding: 3rem 2rem 5rem; flex: 1; }
-
-    /* ── Tabs ── */
-    .admin-tabs {
-      display: flex; gap: 0; border-bottom: 1px solid var(--line);
-      margin-bottom: 2.5rem;
-    }
-    .admin-tab {
-      padding: 0.75rem 1.4rem; font-size: 0.52rem; letter-spacing: 0.14em;
-      text-transform: uppercase; color: var(--dim); cursor: pointer;
-      border-bottom: 2px solid transparent; transition: color .15s, border-color .15s;
-      background: none; border-top: none; border-left: none; border-right: none;
-      font-family: inherit;
-    }
+    /* Tabs */
+    .admin-wrap { max-width: 780px; margin: 0 auto; padding: 2.5rem 2rem 5rem; flex: 1; width: 100%; }
+    .admin-tabs { display: flex; border-bottom: 1px solid var(--line); margin-bottom: 2rem; }
+    .admin-tab { padding: 0.75rem 1.4rem; font-size: 0.52rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); cursor: pointer; border: none; border-bottom: 2px solid transparent; background: none; font-family: inherit; transition: color .15s, border-color .15s; }
     .admin-tab:hover { color: var(--black); }
     .admin-tab.active { color: var(--black); border-bottom-color: var(--black); }
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
 
-    /* ── Section blocks ── */
-    .admin-section { margin-bottom: 2rem; }
-    .admin-section-title {
-      font-size: 0.52rem; letter-spacing: 0.18em; text-transform: uppercase;
-      color: var(--dim); margin-bottom: 0.8rem; padding-bottom: 0.5rem;
-      border-bottom: 1px solid var(--line);
-    }
-    .admin-section-desc {
-      font-size: 0.68rem; color: var(--dim); line-height: 1.7; margin-bottom: 1.2rem;
-    }
+    /* Section */
+    .admin-section-title { font-size: 0.52rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim); margin-bottom: 0.8rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--line); }
+    .admin-section-desc { font-size: 0.68rem; color: var(--dim); line-height: 1.7; margin-bottom: 1.2rem; }
 
-    /* ── Toggle row ── */
-    .toggle-row {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0.65rem 0; border-bottom: 1px solid #f2f2f2; gap: 1rem;
-    }
-    .toggle-label { font-size: 0.72rem; font-weight: 300; color: var(--black); }
+    /* Toggle row (onglet Visibilité) */
+    .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 0.65rem 0; border-bottom: 1px solid #f2f2f2; gap: 1rem; }
+    .toggle-label { font-size: 0.72rem; font-weight: 300; }
     .toggle-label.child { padding-left: 0.8rem; color: var(--gray); font-size: 0.68rem; }
-    .toggle-group-header {
-      font-size: 0.52rem; letter-spacing: 0.14em; text-transform: uppercase;
-      color: var(--dim); padding: 1rem 0 0.4rem; font-weight: 400;
-    }
-
-    /* Switch */
     .toggle-switch { position: relative; width: 36px; height: 20px; flex-shrink: 0; }
     .toggle-switch input { opacity: 0; width: 0; height: 0; }
-    .toggle-track {
-      position: absolute; inset: 0; background: var(--line);
-      border-radius: 10px; cursor: pointer; transition: background .2s;
-    }
-    .toggle-track::after {
-      content: ''; position: absolute;
-      width: 14px; height: 14px; border-radius: 50%;
-      background: white; top: 3px; left: 3px;
-      transition: transform .2s; box-shadow: 0 1px 3px rgba(0,0,0,.2);
-    }
+    .toggle-track { position: absolute; inset: 0; background: var(--line); border-radius: 10px; cursor: pointer; transition: background .2s; }
+    .toggle-track::after { content: ''; position: absolute; width: 14px; height: 14px; border-radius: 50%; background: white; top: 3px; left: 3px; transition: transform .2s; box-shadow: 0 1px 3px rgba(0,0,0,.2); }
     .toggle-switch input:checked + .toggle-track { background: var(--black); }
     .toggle-switch input:checked + .toggle-track::after { transform: translateX(16px); }
-    .toggle-switch input:disabled + .toggle-track { opacity: 0.4; cursor: not-allowed; }
 
-    /* ── Save button ── */
-    .save-wrap { margin-top: 2.5rem; display: flex; align-items: center; gap: 1.2rem; flex-wrap: wrap; }
-    .save-btn {
-      padding: 0.8rem 2.4rem; background: var(--black); color: var(--white);
-      font-family: inherit; font-size: 0.55rem; font-weight: 400;
-      letter-spacing: 0.14em; text-transform: uppercase;
-      border: none; cursor: pointer; transition: background .2s;
-    }
-    .save-btn:hover { background: #333; }
-    .save-btn:disabled { background: var(--dim); cursor: not-allowed; }
-    .save-feedback { font-size: 0.62rem; color: var(--green); opacity: 0; transition: opacity .3s; }
-    .save-feedback.err { color: var(--red); }
-    .save-feedback.visible { opacity: 1; }
-
-    /* ── Preview link ── */
-    .preview-link {
-      display: inline-flex; align-items: center; gap: .4rem;
-      font-size: 0.55rem; letter-spacing: .1em; text-transform: uppercase;
-      color: var(--dim); transition: color .15s;
-    }
+    /* Boutons */
+    .save-wrap { margin-top: 2rem; display: flex; align-items: center; gap: 1.2rem; flex-wrap: wrap; }
+    .btn { padding: 0.75rem 2rem; font-family: inherit; font-size: 0.52rem; font-weight: 400; letter-spacing: 0.14em; text-transform: uppercase; border: none; cursor: pointer; transition: background .2s; }
+    .btn-dark { background: var(--black); color: var(--white); }
+    .btn-dark:hover { background: #333; }
+    .btn-dark:disabled { background: var(--dim); cursor: not-allowed; }
+    .btn-outline { background: transparent; color: var(--black); border: 1px solid var(--line); }
+    .btn-outline:hover { border-color: var(--black); }
+    .feedback { font-size: 0.62rem; color: var(--green); opacity: 0; transition: opacity .3s; }
+    .feedback.err { color: var(--red); }
+    .feedback.visible { opacity: 1; }
+    .preview-link { font-size: 0.55rem; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); transition: color .15s; }
     .preview-link:hover { color: var(--black); }
 
-    /* ── Galeries manager ── */
-    .gallery-card-list { display: flex; flex-direction: column; gap: 0.4rem; margin-top: 0.8rem; }
-    .gallery-card-item {
-      display: flex; align-items: center; gap: 0.8rem;
-      padding: 0.65rem 0.8rem; border: 1px solid var(--line);
-      background: var(--white); cursor: default;
+    /* ── Onglet Cartes ────────────────────────────────── */
+    .section-group { margin-bottom: 2rem; }
+    .section-group-title { font-size: 0.5rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); padding: 0.6rem 0; border-bottom: 1px solid var(--line); margin-bottom: 0.5rem; }
+
+    .card-row {
+      display: grid;
+      grid-template-columns: 52px 1fr auto;
+      gap: 0.7rem;
+      align-items: start;
+      padding: 0.7rem 0;
+      border-bottom: 1px solid #f5f5f5;
     }
-    .gallery-card-img {
-      width: 48px; height: 32px; object-fit: cover; object-position: center;
-      background: #eee; flex-shrink: 0;
+    .card-thumb { width: 52px; height: 36px; object-fit: cover; object-position: center top; background: #eee; display: block; flex-shrink: 0; }
+    .card-thumb-placeholder { width: 52px; height: 36px; background: var(--black); flex-shrink: 0; }
+    .card-fields { display: flex; flex-direction: column; gap: 0.35rem; }
+    .card-field-row { display: flex; gap: 0.5rem; align-items: center; }
+    .field-label { font-size: 0.48rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); width: 56px; flex-shrink: 0; padding-top: 0.45rem; }
+    .field-input {
+      flex: 1; padding: 0.38rem 0.55rem;
+      border: 1px solid transparent; background: transparent;
+      font-family: inherit; font-size: 0.7rem; font-weight: 300; color: var(--black);
+      outline: none; transition: border-color .15s, background .15s;
+      border-radius: 0;
     }
-    .gallery-card-img-placeholder {
-      width: 48px; height: 32px; background: var(--black); flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center;
+    .field-input:hover { background: #f9f9f9; border-color: var(--line); }
+    .field-input:focus { background: #fff; border-color: var(--black); }
+    .field-input.title { font-weight: 400; font-size: 0.75rem; }
+    .card-actions { display: flex; flex-direction: column; gap: 0.4rem; padding-top: 0.3rem; }
+    .card-save-btn {
+      padding: 0.3rem 0.7rem; font-family: inherit; font-size: 0.48rem; letter-spacing: 0.1em;
+      text-transform: uppercase; border: 1px solid var(--line); background: transparent;
+      color: var(--dim); cursor: pointer; transition: all .15s; white-space: nowrap;
     }
-    .gallery-card-info { flex: 1; min-width: 0; }
-    .gallery-card-title { font-size: 0.7rem; font-weight: 400; }
-    .gallery-card-sub { font-size: 0.58rem; color: var(--dim); margin-top: 0.1rem; }
-    .gallery-card-section {
-      font-size: 0.52rem; letter-spacing: 0.1em; text-transform: uppercase;
-      color: var(--dim); padding: 0.2rem 0.5rem; border: 1px solid var(--line);
-      white-space: nowrap;
+    .card-save-btn:hover { border-color: var(--black); color: var(--black); }
+    .card-save-btn.saving { border-color: var(--dim); color: var(--dim); }
+    .card-save-btn.saved { border-color: var(--green); color: var(--green); }
+    .card-vis-btn {
+      padding: 0.3rem 0.7rem; font-family: inherit; font-size: 0.48rem; letter-spacing: 0.1em;
+      text-transform: uppercase; border: 1px solid var(--line); background: transparent;
+      color: var(--dim); cursor: pointer; transition: all .15s; white-space: nowrap;
     }
-    .section-select {
-      font-size: 0.6rem; font-family: inherit; border: 1px solid var(--line);
-      padding: 0.25rem 0.4rem; background: var(--white); color: var(--black);
-      cursor: pointer; outline: none;
-    }
-    .section-select:focus { border-color: var(--black); }
-    .add-gallery-form {
-      margin-top: 1.5rem; padding: 1.2rem; border: 1px solid var(--line);
-    }
-    .add-gallery-form h3 {
-      font-size: 0.52rem; letter-spacing: 0.14em; text-transform: uppercase;
-      color: var(--dim); margin-bottom: 1rem;
-    }
-    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-bottom: 0.8rem; }
+    .card-vis-btn.hidden-card { border-color: var(--red); color: var(--red); }
+    .card-vis-btn:hover { border-color: var(--black); color: var(--black); }
+
+    /* Formulaire ajout carte */
+    .add-card-form { margin-top: 1.5rem; padding: 1.2rem; border: 1px solid var(--line); background: #fafafa; }
+    .add-card-form h3 { font-size: 0.5rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); margin-bottom: 1rem; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; margin-bottom: 0.8rem; }
     .form-field { display: flex; flex-direction: column; gap: 0.3rem; }
-    .form-field label { font-size: 0.55rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim); }
-    .form-input {
-      padding: 0.55rem 0.7rem; border: 1px solid var(--line);
-      font-family: inherit; font-size: 0.72rem; font-weight: 300;
-      background: transparent; outline: none; transition: border-color .15s;
-      width: 100%;
-    }
+    .form-field label { font-size: 0.48rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim); }
+    .form-input { padding: 0.55rem 0.7rem; border: 1px solid var(--line); font-family: inherit; font-size: 0.7rem; font-weight: 300; background: transparent; outline: none; transition: border-color .15s; width: 100%; }
     .form-input:focus { border-color: var(--black); }
     .form-full { grid-column: 1 / -1; }
-    .add-btn {
-      padding: 0.6rem 1.6rem; background: var(--black); color: var(--white);
-      font-family: inherit; font-size: 0.52rem; font-weight: 400;
-      letter-spacing: 0.12em; text-transform: uppercase;
-      border: none; cursor: pointer; transition: background .2s; margin-top: 0.4rem;
-    }
-    .add-btn:hover { background: #333; }
-    .add-btn:disabled { background: var(--dim); cursor: not-allowed; }
-
-    .info-box {
-      background: #f8f8f8; border-left: 2px solid var(--line);
-      padding: 0.8rem 1rem; font-size: 0.65rem; color: var(--gray); line-height: 1.7;
-      margin-bottom: 1.2rem;
-    }
-    .info-box strong { font-weight: 400; color: var(--black); }
+    .form-select { padding: 0.55rem 0.7rem; border: 1px solid var(--line); font-family: inherit; font-size: 0.7rem; font-weight: 300; background: var(--white); outline: none; width: 100%; cursor: pointer; }
+    .info-box { background: #f4f4f4; border-left: 2px solid var(--line); padding: 0.75rem 1rem; font-size: 0.65rem; color: var(--gray); line-height: 1.7; margin-bottom: 1.2rem; }
   </style>
 </head>
 <body>
 
 <header class="site-header">
-  <a href="index.html" title="Retour au site">
-    <img src="assets/logo-b.svg" class="header-logo" alt="B">
-  </a>
+  <a href="index.html" title="Retour au site"><img src="assets/logo-b.svg" class="header-logo" alt="B"></a>
   <span class="header-title">Administration</span>
   <button class="header-logout" id="logoutBtn" style="display:none" onclick="logout()">Déconnexion</button>
 </header>
 
-<!-- GATE -->
 <div id="gate" style="display:none">
   <p class="gate-title">Accès administration</p>
   <input type="password" id="pwdInput" class="gate-input" placeholder="Mot de passe" autocomplete="current-password">
@@ -231,429 +147,406 @@
   <p class="gate-error" id="gateError" style="display:none">Mot de passe incorrect.</p>
 </div>
 
-<!-- APP -->
 <div id="app" style="display:none">
   <div class="status-banner">
     <span class="status-dot" id="statusDot"></span>
-    <span id="statusText">Connexion à Supabase…</span>
+    <span id="statusText">Connexion…</span>
   </div>
 
   <div class="admin-wrap">
-
-    <!-- Tabs -->
     <div class="admin-tabs">
-      <button class="admin-tab active" onclick="switchTab('visibility')">Visibilité</button>
-      <button class="admin-tab" onclick="switchTab('galleries')">Galeries</button>
+      <button class="admin-tab active" onclick="switchTab('cartes')">Cartes &amp; galeries</button>
+      <button class="admin-tab" onclick="switchTab('visibility')">Visibilité menu</button>
     </div>
 
-    <!-- ── TAB : Visibilité ── -->
-    <div class="tab-panel active" id="tab-visibility">
-      <div class="admin-section">
-        <div class="admin-section-title">Visibilité des sections</div>
-        <p class="admin-section-desc">
-          Active ou désactive chaque section pour le public. Les modifications sont effectives immédiatement pour tous les visiteurs.
-        </p>
-        <div id="toggleList">
-          <!-- Généré dynamiquement depuis MENU_CONFIG + SECTIONS_CONFIG de gallery.js -->
-        </div>
+    <!-- ── TAB : Cartes ── -->
+    <div class="tab-panel active" id="tab-cartes">
+      <p class="admin-section-desc">
+        Modifie directement titre, label, description et image de couverture de chaque carte.
+        Clique sur <strong>Enregistrer</strong> à droite de la carte pour sauvegarder.
+        Les changements sont immédiats sur le site, et persistent même quand Claude met à jour le code.
+      </p>
+      <div id="cardSections">
+        <!-- Généré dynamiquement -->
       </div>
 
-      <div class="save-wrap">
-        <button class="save-btn" id="saveBtn" onclick="saveVisibility()" disabled>Enregistrer</button>
-        <a href="index.html" class="preview-link">← Voir le site</a>
-        <span class="save-feedback" id="saveFeedback"></span>
-      </div>
-    </div>
-
-    <!-- ── TAB : Galeries ── -->
-    <div class="tab-panel" id="tab-galleries">
-      <div class="admin-section">
-        <div class="admin-section-title">Gérer les galeries</div>
+      <div class="add-card-form">
+        <h3>Ajouter une nouvelle carte</h3>
         <div class="info-box">
-          <strong>Comment ça marche :</strong> Les galeries que tu crées ici sont stockées dans Supabase et apparaissent dans la grille de navigation du site. Pour chaque galerie, tu définis le titre, la section (Photographe, Réalisateur…), et l'image de couverture. Les photos restent hébergées sur GitHub (via moi) — je génère la config dès que tu m'envoies les images.
+          Crée ici une carte vide dans une section. Elle s'affichera sur le site.
+          Quand les photos sont prêtes (dossier pCloud), donne-moi le lien et j'intègre les images.
         </div>
-
-        <div id="galleryCardList" class="gallery-card-list">
-          <!-- Généré dynamiquement -->
-        </div>
-      </div>
-
-      <div class="add-gallery-form" id="addGalleryForm">
-        <h3>Ajouter une galerie</h3>
         <div class="form-grid">
-          <div class="form-field">
-            <label>Titre</label>
-            <input class="form-input" id="fg-title" placeholder="ex. Burning Man">
-          </div>
-          <div class="form-field">
-            <label>Label (petite ligne au-dessus)</label>
-            <input class="form-input" id="fg-label" placeholder="ex. Nevada · 2016">
-          </div>
-          <div class="form-field">
-            <label>Description courte</label>
-            <input class="form-input" id="fg-desc" placeholder="ex. Désert du Nevada">
-          </div>
+          <div class="form-field"><label>Titre</label><input class="form-input" id="nc-title" placeholder="ex. Plougasnou"></div>
+          <div class="form-field"><label>Label (petite ligne)</label><input class="form-input" id="nc-label" placeholder="ex. Finistère · Bretagne"></div>
+          <div class="form-field"><label>Description courte</label><input class="form-input" id="nc-desc" placeholder="ex. Série documentaire"></div>
           <div class="form-field">
             <label>Section</label>
-            <select class="form-input section-select" id="fg-section">
+            <select class="form-select" id="nc-section">
               <option value="photographe">Photographe</option>
               <option value="realisateur">Réalisateur</option>
               <option value="boutique">Boutique</option>
             </select>
           </div>
-          <div class="form-field form-full">
-            <label>URL image de couverture (relative ou absolue)</label>
-            <input class="form-input" id="fg-img" placeholder="ex. images/dustin-kolor/01.jpg">
-          </div>
-          <div class="form-field form-full">
-            <label>Destination au clic (laisser vide si pas encore de contenu)</label>
-            <input class="form-input" id="fg-url" placeholder="ex. dustin-kolor/index.html  ou  laisser vide">
-          </div>
+          <div class="form-field form-full"><label>Image de couverture (chemin relatif)</label><input class="form-input" id="nc-img" placeholder="ex. images/mon-dossier/photo-01.jpg"></div>
+          <div class="form-field form-full"><label>Lien au clic (laisser vide si pas encore de contenu)</label><input class="form-input" id="nc-url" placeholder="ex. clients/plougasnou.html  ou  laisser vide"></div>
         </div>
-        <button class="add-btn" id="addGalleryBtn" onclick="addGallery()">Ajouter</button>
-        <span class="save-feedback" id="addFeedback" style="margin-left:1rem"></span>
-      </div>
-
-      <div class="save-wrap" style="margin-top:1.5rem">
-        <a href="index.html" class="preview-link">← Voir le site</a>
+        <button class="btn btn-dark" onclick="addCard()">Ajouter la carte</button>
+        <span class="feedback" id="addCardFb" style="margin-left:1rem"></span>
       </div>
     </div>
 
+    <!-- ── TAB : Visibilité ── -->
+    <div class="tab-panel" id="tab-visibility">
+      <p class="admin-section-desc">Active ou désactive chaque section du menu principal.</p>
+      <div id="toggleList"></div>
+      <div class="save-wrap">
+        <button class="btn btn-dark" id="saveVisBtn" onclick="saveVisibility()" disabled>Enregistrer</button>
+        <a href="index.html" class="preview-link">← Voir le site</a>
+        <span class="feedback" id="visFeedback"></span>
+      </div>
+    </div>
   </div>
 </div>
 
 <script>
-// ── CONFIG ───────────────────────────────────────────────────────────────────
-const SUPABASE_URL      = 'https://suecslynruuputmujudg.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN1ZWNzbHlucnV1cHV0bXVqdWRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY1MTYyODcsImV4cCI6MjA5MjA5MjI4N30.c9Pa_x6MEcJdqVekBodSYpu3it-riVU1hYhC-m5iCsU';
-
-// !! Mot de passe stocké en hash SHA-256 !!
+const SUPA_URL = 'https://suecslynruuputmujudg.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN1ZWNzbHlucnV1cHV0bXVqdWRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY1MTYyODcsImV4cCI6MjA5MjA5MjI4N30.c9Pa_x6MEcJdqVekBodSYpu3it-riVU1hYhC-m5iCsU';
 const PWD_HASH = 'fd8faf112b549a3c0ace23b2b0c25171195a07494895830426b5cece2ba3796b';
+const PREFIX   = { photographe: 'ph', realisateur: 'real', boutique: 'shop' };
+const SEC_NAME = { photographe: 'PHOTOGRAPHE', realisateur: 'RÉALISATEUR', boutique: 'BOUTIQUE' };
 
-// Mapping section → préfixe Supabase (doit correspondre à gallery.js)
-const PREFIX_MAP = { photographe: 'ph', realisateur: 'real', boutique: 'shop' };
+let dbCards      = {};  // id → row Supabase gallery_cards
+let visState     = {};  // id → boolean (section_visibility)
+let dynamicSecs  = [];  // liste pour onglet visibilité
 
-// ── ÉTAT LOCAL ───────────────────────────────────────────────────────────────
-let currentVisibility = {}; // { id: boolean }
-let dynamicSections   = []; // liste générée depuis MENU_CONFIG + SECTIONS_CONFIG
-let supabaseGalleries = []; // galeries ajoutées via l'admin
+// ── Auth ─────────────────────────────────────────────────────────────────────
+async function sha256(m) {
+  const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(m));
+  return Array.from(new Uint8Array(b)).map(x => x.toString(16).padStart(2,'0')).join('');
+}
+async function checkPassword() {
+  const h = await sha256(document.getElementById('pwdInput').value);
+  if (h === PWD_HASH) { sessionStorage.setItem('bb_admin','1'); showApp(); }
+  else document.getElementById('gateError').style.display = '';
+}
+function logout() { sessionStorage.removeItem('bb_admin'); location.reload(); }
 
-// ── TABS ─────────────────────────────────────────────────────────────────────
+function showApp() {
+  document.getElementById('gate').style.display = 'none';
+  document.getElementById('app').style.display  = 'flex';
+  document.getElementById('logoutBtn').style.display = '';
+  loadAll();
+}
+
+// ── Tabs ─────────────────────────────────────────────────────────────────────
 function switchTab(name) {
-  document.querySelectorAll('.admin-tab').forEach((t, i) => {
-    const panels = ['visibility', 'galleries'];
-    t.classList.toggle('active', panels[i] === name);
+  document.querySelectorAll('.admin-tab').forEach((t,i) => {
+    t.classList.toggle('active', ['cartes','visibility'][i] === name);
   });
   document.querySelectorAll('.tab-panel').forEach(p => {
     p.classList.toggle('active', p.id === `tab-${name}`);
   });
-  if (name === 'galleries') renderGalleries();
 }
 
-// ── GÉNÉRATION DYNAMIQUE depuis gallery.js ───────────────────────────────────
-function buildDynamicSections() {
-  const list = [];
-
-  MENU_CONFIG.forEach(item => {
-    // Sauter les éléments cachés ou enfants d'un groupe
-    if (item.hidden) return;
-    if (item.parent) return; // enfant d'un ancien groupe → sauté
-
-    list.push({ id: item.id, label: item.name, parent: false });
-
-    // Si c'est une section avec des cartes → ajouter les cartes
-    if (item.type === 'section' && item.sectionId && SECTIONS_CONFIG[item.sectionId]) {
-      const sec    = SECTIONS_CONFIG[item.sectionId];
-      const prefix = PREFIX_MAP[item.sectionId] || item.sectionId;
-      sec.cards.forEach(card => {
-        const titleLabel = card.titleFr || card.titleEn || card.id;
-        list.push({ id: `${prefix}-${card.id}`, label: titleLabel, parent: true });
-      });
-    }
+// ── Supabase ─────────────────────────────────────────────────────────────────
+async function sb(path, opts = {}) {
+  return fetch(`${SUPA_URL}/rest/v1/${path}`, {
+    ...opts,
+    headers: { apikey: SUPA_KEY, Authorization: `Bearer ${SUPA_KEY}`,
+      'Content-Type': 'application/json', 'Prefer': 'return=representation', ...(opts.headers||{}) }
   });
-
-  return list;
 }
 
-// ── AUTHENTIFICATION ─────────────────────────────────────────────────────────
-async function sha256(message) {
-  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(message));
-  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
-}
-
-async function checkPassword() {
-  const pwd = document.getElementById('pwdInput').value;
-  const hash = await sha256(pwd);
-  if (hash === PWD_HASH) {
-    sessionStorage.setItem('bb_admin', '1');
-    showApp();
-  } else {
-    document.getElementById('gateError').style.display = '';
-  }
-}
-
-function logout() {
-  sessionStorage.removeItem('bb_admin');
-  location.reload();
-}
-
-function showApp() {
-  document.getElementById('gate').style.display   = 'none';
-  document.getElementById('app').style.display    = 'flex';
-  document.getElementById('logoutBtn').style.display = '';
-  dynamicSections = buildDynamicSections();
-  loadVisibility();
-  loadSupabaseGalleries();
-}
-
-// ── SUPABASE ─────────────────────────────────────────────────────────────────
-async function sbFetch(path, options = {}) {
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
-    ...options,
-    headers: {
-      'apikey': SUPABASE_ANON_KEY,
-      'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-      'Content-Type': 'application/json',
-      'Prefer': 'return=representation',
-      ...(options.headers || {})
-    }
-  });
-  return res;
-}
-
-// ── VISIBILITÉ ───────────────────────────────────────────────────────────────
-async function loadVisibility() {
+async function loadAll() {
   const dot = document.getElementById('statusDot');
   const txt = document.getElementById('statusText');
   try {
-    const res  = await sbFetch('section_visibility?select=id,visible&order=id');
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message || 'Erreur réseau');
-    data.forEach(row => { currentVisibility[row.id] = row.visible; });
-    dot.className   = 'status-dot ok';
-    txt.textContent = 'Connecté à Supabase — modifications en temps réel';
-    renderToggles();
-    document.getElementById('saveBtn').disabled = false;
+    // Charger gallery_cards
+    const r1 = await sb('gallery_cards?select=*&order=sort_order.asc');
+    if (!r1.ok) throw new Error('gallery_cards inaccessible');
+    const cards = await r1.json();
+    cards.forEach(c => { dbCards[c.id] = c; });
+
+    // Charger section_visibility
+    const r2 = await sb('section_visibility?select=id,visible');
+    if (r2.ok) { const rows = await r2.json(); rows.forEach(r => { visState[r.id] = r.visible; }); }
+
+    dot.className = 'status-dot ok';
+    txt.textContent = 'Connecté — modifications effectives immédiatement';
+
+    renderCards();
+    renderVisibility();
+    document.getElementById('saveVisBtn').disabled = false;
   } catch(e) {
-    dot.className   = 'status-dot err';
-    txt.textContent = `Erreur de connexion : ${e.message}`;
-    renderTogglesOffline();
+    dot.className = 'status-dot err';
+    txt.textContent = `Erreur : ${e.message}`;
   }
 }
 
-async function saveVisibility() {
-  const btn = document.getElementById('saveBtn');
-  const fb  = document.getElementById('saveFeedback');
-  btn.disabled = true;
-  fb.className = 'save-feedback visible';
-  fb.textContent = 'Enregistrement…';
+// ── Rendu cartes ─────────────────────────────────────────────────────────────
+function renderCards() {
+  const wrap = document.getElementById('cardSections');
 
-  // Construire les rows à partir de la liste dynamique
-  const rows = dynamicSections.map(s => ({
-    id:         s.id,
-    label:      s.label,
-    visible:    currentVisibility[s.id] !== false,
+  // Pour chaque section, fusionner cartes gallery-data.js + cartes Supabase non présentes
+  const allBySec = { photographe: [], realisateur: [], boutique: [] };
+
+  for (const secId in SECTIONS_CONFIG) {
+    if (!allBySec[secId]) allBySec[secId] = [];
+    const prefix = PREFIX[secId] || secId;
+    SECTIONS_CONFIG[secId].cards.forEach(card => {
+      const dbId  = `${prefix}-${card.id}`;
+      const dbRow = dbCards[dbId] || {};
+      allBySec[secId].push({
+        dbId,
+        titleFr:  dbRow.title_fr  || card.titleFr || '',
+        labelFr:  dbRow.label_fr  || card.labelFr || '',
+        descFr:   dbRow.desc_fr   || card.descFr  || '',
+        coverImg: dbRow.cover_img || card.img      || '',
+        visible:  dbRow.visible !== undefined ? dbRow.visible : true,
+        sortOrder: dbRow.sort_order ?? 999
+      });
+    });
+  }
+
+  // Injecter cartes Supabase inconnues de gallery-data.js
+  Object.values(dbCards).forEach(row => {
+    const sec = row.section;
+    if (!allBySec[sec]) return;
+    const known = SECTIONS_CONFIG[sec]?.cards?.some(c => `${PREFIX[sec]||sec}-${c.id}` === row.id);
+    if (!known) {
+      allBySec[sec].push({ dbId: row.id, titleFr: row.title_fr||'', labelFr: row.label_fr||'', descFr: row.desc_fr||'', coverImg: row.cover_img||'', visible: row.visible!==false, sortOrder: row.sort_order??999, _supabase: true });
+    }
+  });
+
+  wrap.innerHTML = Object.entries(allBySec).map(([secId, cards]) => {
+    if (!cards.length) return '';
+    const sorted = [...cards].sort((a,b) => a.sortOrder - b.sortOrder);
+    return `
+      <div class="section-group">
+        <div class="section-group-title">${SEC_NAME[secId] || secId}</div>
+        ${sorted.map(c => cardRowHtml(c)).join('')}
+      </div>`;
+  }).join('');
+}
+
+function cardRowHtml(c) {
+  const vis   = c.visible !== false;
+  const thumb = c.coverImg
+    ? `<img class="card-thumb" src="${c.coverImg}" alt="" loading="lazy" onerror="this.style.opacity='.2'">`
+    : `<div class="card-thumb-placeholder"></div>`;
+  return `
+    <div class="card-row" id="row-${c.dbId}">
+      ${thumb}
+      <div class="card-fields">
+        <div class="card-field-row">
+          <span class="field-label">Titre</span>
+          <input class="field-input title" id="f-title-${c.dbId}" value="${esc(c.titleFr)}" placeholder="Titre de la carte">
+        </div>
+        <div class="card-field-row">
+          <span class="field-label">Label</span>
+          <input class="field-input" id="f-label-${c.dbId}" value="${esc(c.labelFr)}" placeholder="Ex. Studio · Terrain">
+        </div>
+        <div class="card-field-row">
+          <span class="field-label">Description</span>
+          <input class="field-input" id="f-desc-${c.dbId}" value="${esc(c.descFr)}" placeholder="Courte description">
+        </div>
+        <div class="card-field-row">
+          <span class="field-label">Couverture</span>
+          <input class="field-input" id="f-img-${c.dbId}" value="${esc(c.coverImg)}" placeholder="images/dossier/photo.jpg"
+            onchange="updateThumb('${c.dbId}', this.value)">
+        </div>
+      </div>
+      <div class="card-actions">
+        <button class="card-save-btn" onclick="saveCard('${c.dbId}')">Enregistrer</button>
+        <button class="card-vis-btn ${vis ? '' : 'hidden-card'}" id="vis-${c.dbId}"
+          onclick="toggleCardVis('${c.dbId}', ${vis})">
+          ${vis ? 'Visible' : 'Masquée'}
+        </button>
+      </div>
+    </div>`;
+}
+
+function esc(s) { return (s||'').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+
+function updateThumb(dbId, src) {
+  const row = document.getElementById(`row-${dbId}`);
+  if (!row) return;
+  const existing = row.querySelector('.card-thumb, .card-thumb-placeholder');
+  if (src) {
+    const img = document.createElement('img');
+    img.className = 'card-thumb'; img.src = src; img.alt = '';
+    img.onerror = () => img.style.opacity = '.2';
+    existing.replaceWith(img);
+  }
+}
+
+async function saveCard(dbId) {
+  const btn = document.querySelector(`#row-${dbId} .card-save-btn`);
+  btn.textContent = '…'; btn.className = 'card-save-btn saving';
+
+  const row = {
+    id:        dbId,
+    section:   dbId.startsWith('ph-') ? 'photographe' : dbId.startsWith('real-') ? 'realisateur' : 'boutique',
+    title_fr:  document.getElementById(`f-title-${dbId}`).value,
+    label_fr:  document.getElementById(`f-label-${dbId}`).value,
+    desc_fr:   document.getElementById(`f-desc-${dbId}`).value,
+    cover_img: document.getElementById(`f-img-${dbId}`).value,
+    visible:   dbCards[dbId]?.visible !== false,
     updated_at: new Date().toISOString()
-  }));
+  };
 
   try {
-    const res = await sbFetch('section_visibility', {
+    const res = await sb('gallery_cards', {
       method: 'POST',
       headers: { 'Prefer': 'resolution=merge-duplicates,return=minimal' },
-      body: JSON.stringify(rows)
+      body: JSON.stringify([row])
     });
-    if (!res.ok) { const err = await res.json(); throw new Error(err.message || 'Erreur réseau'); }
-    fb.textContent = '✓ Enregistré — visible immédiatement';
-    fb.className   = 'save-feedback visible';
-    setTimeout(() => { fb.className = 'save-feedback'; }, 4000);
+    if (!res.ok) throw new Error(await res.text());
+    dbCards[dbId] = { ...(dbCards[dbId]||{}), ...row };
+    btn.textContent = '✓ Sauvegardé'; btn.className = 'card-save-btn saved';
+    setTimeout(() => { btn.textContent = 'Enregistrer'; btn.className = 'card-save-btn'; }, 2500);
+    // Mettre à jour l'aperçu miniature
+    updateThumb(dbId, row.cover_img);
   } catch(e) {
-    fb.textContent = `Erreur : ${e.message}`;
-    fb.className   = 'save-feedback err visible';
-  } finally {
-    btn.disabled = false;
+    btn.textContent = 'Erreur'; btn.className = 'card-save-btn';
+    console.error(e);
   }
 }
 
-// ── RENDU TOGGLES ────────────────────────────────────────────────────────────
-function renderToggles() {
-  const list = document.getElementById('toggleList');
-  list.innerHTML = dynamicSections.map(s => {
-    const checked   = currentVisibility[s.id] !== false;
-    const labelCls  = s.parent ? 'toggle-label child' : 'toggle-label';
+async function toggleCardVis(dbId, currentlyVisible) {
+  const newVis = !currentlyVisible;
+  const row = { id: dbId, section: dbCards[dbId]?.section || 'photographe', visible: newVis, updated_at: new Date().toISOString() };
+  try {
+    const res = await sb('gallery_cards', {
+      method: 'POST',
+      headers: { 'Prefer': 'resolution=merge-duplicates,return=minimal' },
+      body: JSON.stringify([row])
+    });
+    if (!res.ok) throw new Error();
+    dbCards[dbId] = { ...(dbCards[dbId]||{}), ...row };
+    const btn = document.getElementById(`vis-${dbId}`);
+    btn.textContent = newVis ? 'Visible' : 'Masquée';
+    btn.className   = newVis ? 'card-vis-btn' : 'card-vis-btn hidden-card';
+    // Mettre à jour l'attribut onclick pour refléter le nouvel état
+    btn.onclick = () => toggleCardVis(dbId, newVis);
+  } catch(e) { console.error(e); }
+}
+
+// ── Ajouter une carte ─────────────────────────────────────────────────────────
+async function addCard() {
+  const title   = document.getElementById('nc-title').value.trim();
+  const label   = document.getElementById('nc-label').value.trim();
+  const desc    = document.getElementById('nc-desc').value.trim();
+  const section = document.getElementById('nc-section').value;
+  const img     = document.getElementById('nc-img').value.trim();
+  const url     = document.getElementById('nc-url').value.trim();
+  const fb      = document.getElementById('addCardFb');
+
+  if (!title) { showFb(fb, 'Un titre est requis.', true); return; }
+
+  // Générer un id à partir du titre
+  const slug = title.toLowerCase()
+    .normalize('NFD').replace(/[̀-ͯ]/g,'')
+    .replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+  const prefix = PREFIX[section] || section;
+  const id     = `${prefix}-${slug}`;
+
+  if (dbCards[id]) { showFb(fb, 'Une carte avec cet ID existe déjà.', true); return; }
+
+  const row = {
+    id, section,
+    title_fr:  title, label_fr: label, desc_fr: desc,
+    cover_img: img || null, link_url: url || null,
+    visible: true, sort_order: 900,
+    updated_at: new Date().toISOString()
+  };
+
+  try {
+    const res = await sb('gallery_cards', {
+      method: 'POST',
+      headers: { 'Prefer': 'resolution=merge-duplicates,return=minimal' },
+      body: JSON.stringify([row])
+    });
+    if (!res.ok) throw new Error(await res.text());
+    dbCards[id] = row;
+    showFb(fb, '✓ Carte ajoutée — rechargez le site pour la voir', false);
+    ['nc-title','nc-label','nc-desc','nc-img','nc-url'].forEach(i => document.getElementById(i).value = '');
+    renderCards();
+  } catch(e) {
+    showFb(fb, `Erreur : ${e.message}`, true);
+  }
+}
+
+function showFb(el, msg, isErr) {
+  el.textContent = msg;
+  el.className   = `feedback visible${isErr?' err':''}`;
+  if (!isErr) setTimeout(() => { el.className = 'feedback'; }, 4000);
+}
+
+// ── Visibilité menu ────────────────────────────────────────────────────────────
+function buildDynamicSecs() {
+  const list = [];
+  MENU_CONFIG.forEach(item => {
+    if (item.hidden || item.parent) return;
+    list.push({ id: item.id, label: item.name, parent: false });
+    if (item.type === 'section' && SECTIONS_CONFIG[item.sectionId]) {
+      const prefix = PREFIX[item.sectionId] || item.sectionId;
+      SECTIONS_CONFIG[item.sectionId].cards.forEach(c => {
+        list.push({ id: `${prefix}-${c.id}`, label: c.titleFr || c.id, parent: true });
+      });
+    }
+  });
+  return list;
+}
+
+function renderVisibility() {
+  dynamicSecs = buildDynamicSecs();
+  const list  = document.getElementById('toggleList');
+  list.innerHTML = dynamicSecs.map(s => {
+    const checked = visState[s.id] !== false;
     return `
       <div class="toggle-row">
-        <span class="${labelCls}">${s.label}</span>
-        <label class="toggle-switch" title="${s.id}">
-          <input type="checkbox" id="chk_${s.id}" ${checked ? 'checked' : ''}
-            onchange="currentVisibility['${s.id}'] = this.checked">
+        <span class="toggle-label${s.parent?' child':''}">${s.label}</span>
+        <label class="toggle-switch">
+          <input type="checkbox" ${checked?'checked':''} onchange="visState['${s.id}']=this.checked">
           <span class="toggle-track"></span>
         </label>
       </div>`;
   }).join('');
 }
 
-function renderTogglesOffline() {
-  const list = document.getElementById('toggleList');
-  list.innerHTML = `<p style="font-size:.68rem;color:var(--red)">
-    Impossible de charger la configuration depuis Supabase.<br>Vérifie ta connexion et recharge la page.
-  </p>`;
-}
-
-// ── GALERIES SUPABASE ─────────────────────────────────────────────────────────
-async function loadSupabaseGalleries() {
-  try {
-    const res  = await sbFetch('admin_galleries?select=*&order=created_at.desc');
-    if (!res.ok) return; // table peut ne pas exister encore
-    supabaseGalleries = await res.json();
-  } catch(e) { /* silencieux */ }
-}
-
-async function addGallery() {
-  const title   = document.getElementById('fg-title').value.trim();
-  const label   = document.getElementById('fg-label').value.trim();
-  const desc    = document.getElementById('fg-desc').value.trim();
-  const section = document.getElementById('fg-section').value;
-  const img     = document.getElementById('fg-img').value.trim();
-  const url     = document.getElementById('fg-url').value.trim();
-
-  if (!title) { showAddFeedback('Un titre est requis.', true); return; }
-
-  const btn = document.getElementById('addGalleryBtn');
+async function saveVisibility() {
+  const btn = document.getElementById('saveVisBtn');
+  const fb  = document.getElementById('visFeedback');
   btn.disabled = true;
-  showAddFeedback('Enregistrement…', false);
+  showFb(fb, 'Enregistrement…', false);
 
-  const row = {
-    id:       `${PREFIX_MAP[section] || section}-${title.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g,'-')}`,
-    title_fr: title,
-    label_fr: label,
-    desc_fr:  desc,
-    section:  section,
-    img:      img || null,
-    url:      url || null,
-    visible:  true,
-    created_at: new Date().toISOString()
-  };
+  const rows = dynamicSecs.map(s => ({
+    id: s.id, label: s.label,
+    visible: visState[s.id] !== false,
+    updated_at: new Date().toISOString()
+  }));
 
   try {
-    const res = await sbFetch('admin_galleries', {
+    const res = await sb('section_visibility', {
       method: 'POST',
       headers: { 'Prefer': 'resolution=merge-duplicates,return=minimal' },
-      body: JSON.stringify([row])
+      body: JSON.stringify(rows)
     });
-    if (!res.ok) {
-      // Table n'existe pas encore — on propose de la créer
-      if (res.status === 404 || res.status === 400) {
-        showAddFeedback('La table admin_galleries n\'existe pas encore. Crée-la dans Supabase ou contacte-moi.', true);
-      } else {
-        const err = await res.json();
-        throw new Error(err.message || 'Erreur');
-      }
-    } else {
-      showAddFeedback('✓ Galerie ajoutée', false);
-      supabaseGalleries.unshift(row);
-      renderGalleries();
-      // Vider le formulaire
-      ['fg-title','fg-label','fg-desc','fg-img','fg-url'].forEach(id => { document.getElementById(id).value = ''; });
-    }
+    if (!res.ok) throw new Error(await res.text());
+    showFb(fb, '✓ Enregistré', false);
   } catch(e) {
-    showAddFeedback(`Erreur : ${e.message}`, true);
+    showFb(fb, `Erreur : ${e.message}`, true);
   } finally {
     btn.disabled = false;
   }
 }
 
-function showAddFeedback(msg, isErr) {
-  const fb = document.getElementById('addFeedback');
-  fb.textContent = msg;
-  fb.className   = `save-feedback visible${isErr ? ' err' : ''}`;
-  if (!isErr) setTimeout(() => { fb.className = 'save-feedback'; }, 4000);
-}
-
-// ── RENDU GALERIES ────────────────────────────────────────────────────────────
-function renderGalleries() {
-  const list = document.getElementById('galleryCardList');
-
-  // Combiner cartes natives (SECTIONS_CONFIG) + cartes Supabase
-  const allCards = [];
-
-  // Cartes natives de chaque section
-  for (const secId in SECTIONS_CONFIG) {
-    const sec    = SECTIONS_CONFIG[secId];
-    const prefix = PREFIX_MAP[secId] || secId;
-    sec.cards.forEach(card => {
-      allCards.push({
-        id:       `${prefix}-${card.id}`,
-        title:    card.titleFr || card.titleEn || card.id,
-        label:    card.labelFr || '',
-        desc:     card.descFr  || '',
-        section:  secId,
-        img:      card.img || null,
-        url:      card.url || (card.galleryId ? `#galerie:${card.galleryId}` : null),
-        isNative: true
-      });
-    });
-  }
-
-  // Cartes Supabase (ajoutées via admin)
-  supabaseGalleries.forEach(g => {
-    allCards.push({
-      id:       g.id,
-      title:    g.title_fr,
-      label:    g.label_fr || '',
-      desc:     g.desc_fr  || '',
-      section:  g.section,
-      img:      g.img,
-      url:      g.url,
-      isNative: false
-    });
-  });
-
-  if (!allCards.length) {
-    list.innerHTML = '<p style="font-size:.68rem;color:var(--dim)">Aucune galerie définie.</p>';
-    return;
-  }
-
-  // Grouper par section
-  const bySection = {};
-  allCards.forEach(c => {
-    if (!bySection[c.section]) bySection[c.section] = [];
-    bySection[c.section].push(c);
-  });
-
-  const sectionNames = { photographe: 'PHOTOGRAPHE', realisateur: 'RÉALISATEUR', boutique: 'BOUTIQUE' };
-
-  list.innerHTML = Object.entries(bySection).map(([sec, cards]) => `
-    <div class="toggle-group-header">${sectionNames[sec] || sec.toUpperCase()}</div>
-    ${cards.map(c => {
-      const imgEl = c.img
-        ? `<img class="gallery-card-img" src="${c.img}" alt="${c.title}" loading="lazy" onerror="this.style.display='none'">`
-        : `<div class="gallery-card-img-placeholder"></div>`;
-      const badge = c.isNative
-        ? `<span class="gallery-card-section">natif</span>`
-        : `<span class="gallery-card-section" style="border-color:var(--green);color:var(--green)">supabase</span>`;
-      return `
-        <div class="gallery-card-item">
-          ${imgEl}
-          <div class="gallery-card-info">
-            <div class="gallery-card-title">${c.title}</div>
-            <div class="gallery-card-sub">${c.label}${c.label && c.desc ? ' · ' : ''}${c.desc}</div>
-          </div>
-          ${badge}
-        </div>`;
-    }).join('')}
-  `).join('');
-}
-
-// ── INIT ─────────────────────────────────────────────────────────────────────
-if (sessionStorage.getItem('bb_admin') === '1') {
-  showApp();
-} else {
-  document.getElementById('gate').style.display = 'flex';
-}
-
-document.getElementById('pwdInput')?.addEventListener('keydown', e => {
-  if (e.key === 'Enter') checkPassword();
-});
+// ── Init ───────────────────────────────────────────────────────────────────────
+if (sessionStorage.getItem('bb_admin') === '1') showApp();
+else document.getElementById('gate').style.display = 'flex';
+document.getElementById('pwdInput')?.addEventListener('keydown', e => { if (e.key === 'Enter') checkPassword(); });
 </script>
 </body>
 </html>
