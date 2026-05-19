@@ -7,6 +7,7 @@
   <link rel="icon" type="image/svg+xml" href="../assets/logo-b.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -87,6 +88,16 @@
     }
     .btn-envoyer.active { opacity: 1; pointer-events: auto; }
     .btn-envoyer:hover.active { opacity: 0.85; }
+    .btn-dl-sel {
+      padding: 0.6rem 1rem; background: transparent; color: var(--gris);
+      font-family: var(--font); font-size: 0.6rem; font-weight: 400;
+      letter-spacing: 0.12em; text-transform: uppercase; border: 1px solid var(--ligne);
+      cursor: pointer; opacity: 0.4; pointer-events: none; transition: opacity 0.2s, color 0.2s;
+      display: inline-flex; align-items: center; gap: 4px;
+    }
+    .btn-dl-sel.active { opacity: 1; pointer-events: auto; color: var(--gris); }
+    .btn-dl-sel.active:hover { color: var(--blanc); border-color: var(--blanc); }
+    .btn-dl-sel.loading { opacity: 0.7; color: var(--ocre); border-color: var(--ocre); }
 
     /* ── GALERIE ── */
     .galerie { padding: 2rem; }
@@ -325,6 +336,10 @@
     </div>
     <div class="header-right">
       <span class="sel-count" id="selCount">0 photo sélectionnée</span>
+      <button class="btn-dl-sel" id="btnDlSel" onclick="downloadSelection()" title="Télécharger toutes les photos sélectionnées en ZIP">
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span id="btnDlSelLabel">Télécharger ma sélection</span>
+      </button>
       <button class="btn-envoyer" id="btnEnvoyer" onclick="openPanel()">Envoyer ma sélection →</button>
     </div>
   </header>
@@ -568,6 +583,10 @@ function updateCounter() {
   document.getElementById('selCount').textContent = txt;
   document.getElementById('selCount').classList.toggle('active', n > 0);
   document.getElementById('btnEnvoyer').classList.toggle('active', n > 0);
+  const dlBtn = document.getElementById('btnDlSel');
+  if (dlBtn && !dlBtn.classList.contains('loading')) {
+    dlBtn.classList.toggle('active', n > 0);
+  }
 }
 
 /* ── LIGHTBOX ── */
@@ -640,6 +659,61 @@ function lbDownload() {
       /* Fallback : ouvre dans un nouvel onglet */
       window.open(src, '_blank');
     });
+}
+
+/* ── TÉLÉCHARGEMENT SÉLECTION (ZIP) ── */
+async function downloadSelection() {
+  if (selected.size === 0) return;
+
+  const btn   = document.getElementById('btnDlSel');
+  const label = document.getElementById('btnDlSelLabel');
+  btn.classList.add('loading');
+  btn.classList.remove('active');
+  btn.disabled = true;
+
+  /* Récupérer la liste ordonnée des photos sélectionnées */
+  const photos = [];
+  SECTIONS.forEach(sec => {
+    sec.photos.forEach(file => {
+      if (selected.has(photoId(sec.id, file))) {
+        photos.push({ file, url: `${BASE}${encodeFile(file)}` });
+      }
+    });
+  });
+
+  try {
+    const zip = new JSZip();
+    let done = 0;
+    for (const { file, url } of photos) {
+      label.textContent = `${done + 1} / ${photos.length}…`;
+      try {
+        const r = await fetch(url);
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        const blob = await r.blob();
+        zip.file(file, blob);
+      } catch (e) {
+        console.warn('Impossible de récupérer :', file, e);
+      }
+      done++;
+    }
+    label.textContent = 'Compression…';
+    const zipBlob = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE', compressionOptions: { level: 3 } });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(zipBlob);
+    a.download = `gilmerton-selection-${photos.length}photos.zip`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(a.href), 15000);
+  } catch (e) {
+    console.error('Erreur ZIP :', e);
+    alert('Une erreur est survenue lors de la création du ZIP. Essayez de télécharger les photos une par une depuis la lightbox.');
+  }
+
+  btn.disabled = false;
+  btn.classList.remove('loading');
+  label.textContent = 'Télécharger ma sélection';
+  updateCounter(); /* restaure l'état active/inactive */
 }
 
 /* ── FULLSCREEN ── */

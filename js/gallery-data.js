@@ -169,6 +169,14 @@ const SECTIONS_CONFIG = {
                 img: "images/dustin-kolor/04.jpg"
             },
             {
+                id: "gilmerton", url: "clients/gilmerton.html",
+                labelFr: "Galerie privée", labelEn: "Private gallery",
+                titleFr: "Gilmerton", titleEn: "Gilmerton",
+                descFr: "Sélection · accès protégé",
+                descEn: "Selection · protected access",
+                img: null
+            },
+            {
                 id: "galeries-client", url: "clients/index.html",
                 labelFr: "Accès privé", labelEn: "Private access",
                 titleFr: "Galeries Client", titleEn: "Client Galleries",
