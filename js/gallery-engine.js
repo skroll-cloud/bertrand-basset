@@ -925,6 +925,10 @@ class Portfolio {
         const lang  = this.currentLang;
         const title = lang === 'en' ? sec.titleEn : sec.titleFr;
 
+        /* Préfixe de section pour dériver les clés sans Supabase */
+        const prefixMap = { photographe: 'ph', realisateur: 'real', boutique: 'shop' };
+        const secPrefix = prefixMap[sectionId] || sectionId;
+
         /* Construire la map des enfants : parentDbId → [cartes enfants] */
         const childrenOf = {};
         sec.cards.forEach(card => {
@@ -942,12 +946,14 @@ class Portfolio {
             const ctitle = lang === 'en' ? card.titleEn : card.titleFr;
             const desc   = lang === 'en' ? card.descEn  : card.descFr;
             const enter  = lang === 'en' ? 'Enter' : 'Entrer';
-            const hasChildren = card._dbId && childrenOf[card._dbId]?.length > 0;
+            /* Clé stable même sans row Supabase */
+            const cardKey = card._dbId || `${secPrefix}-${card.id}`;
+            const hasChildren = childrenOf[cardKey]?.length > 0;
 
             /* Action au clic */
             let action = '';
             if (hasChildren) {
-                action = `onclick="window.portfolio.showSubGrid('${card._dbId}','${sectionId}')"`;
+                action = `onclick="window.portfolio.showSubGrid('${cardKey}','${sectionId}')"`;
             } else if (card.galleryId) {
                 action = `onclick="window.portfolio.openGalleryFromSection('${card.galleryId}')"`;
             } else if (card.url) {
@@ -1007,7 +1013,9 @@ class Portfolio {
         container.classList.remove('grid-mode');
 
         const lang = this.currentLang;
-        const parentCard = sec.cards.find(c => c._dbId === parentDbId);
+        const prefixMap2 = { photographe: 'ph', realisateur: 'real', boutique: 'shop' };
+        const secPrefix2 = prefixMap2[sectionId] || sectionId;
+        const parentCard = sec.cards.find(c => c._dbId === parentDbId || `${secPrefix2}-${c.id}` === parentDbId);
         const parentTitle = parentCard ? (lang === 'en' ? parentCard.titleEn : parentCard.titleFr) : '';
 
         /* Enfants : cartes dont parentId === parentDbId, non masquées */

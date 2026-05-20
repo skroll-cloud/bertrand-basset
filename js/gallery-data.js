@@ -110,7 +110,8 @@ const SECTIONS_CONFIG = {
                 titleFr: "Plougasnou", titleEn: "Plougasnou",
                 descFr: "Série documentaire · territoire",
                 descEn: "Documentary series · territory",
-                img: "images/ST MELAR/stmelar-1.jpg"
+                img: "images/ST MELAR/stmelar-1.jpg",
+                parentId: "ph-galeries-client"
             },
             {
                 id: "salarie-ehpad", galleryId: null,
@@ -174,7 +175,8 @@ const SECTIONS_CONFIG = {
                 titleFr: "Gilmerton", titleEn: "Gilmerton",
                 descFr: "Sélection · accès protégé",
                 descEn: "Selection · protected access",
-                img: null
+                img: null,
+                parentId: "ph-galeries-client", _hiddenByAdmin: true
             },
             {
                 id: "leo-brasserie", url: "clients/leo-brasserie.html",
@@ -182,7 +184,8 @@ const SECTIONS_CONFIG = {
                 titleFr: "Léo Brasserie", titleEn: "Léo Brasserie",
                 descFr: "Sélection · accès protégé",
                 descEn: "Selection · protected access",
-                img: null
+                img: null,
+                parentId: "ph-galeries-client", _hiddenByAdmin: true
             },
             {
                 id: "galeries-client", url: "clients/index.html",

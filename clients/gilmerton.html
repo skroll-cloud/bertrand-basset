@@ -402,15 +402,15 @@ async function checkPwd() {
 document.getElementById('gateInput').addEventListener('keydown', e => { if (e.key === 'Enter') checkPwd(); });
 
 /* ══════════════════════ PCLOUD ══════════════════════ */
-async function pcloudDirectUrl(filename) {
-  if (urlCache[filename]) return urlCache[filename];
+async function pcloudDirectUrl(fileId) {
+  if (urlCache[fileId]) return urlCache[fileId];
   const r = await fetch(
-    `https://api.pcloud.com/getpublinkdownload?code=${PCLOUD_CODE}&filename=${encodeURIComponent(filename)}&forcedownload=0`
+    `https://api.pcloud.com/getpublinkdownload?code=${PCLOUD_CODE}&fileid=${fileId}&forcedownload=0`
   );
   const d = await r.json();
   if (d.result !== 0) throw new Error('pCloud error ' + d.result);
   const url = 'https://' + d.hosts[0] + d.path;
-  urlCache[filename] = url;
+  urlCache[fileId] = url;
   return url;
 }
 
@@ -420,18 +420,36 @@ async function loadFromPCloud() {
   loadEl.style.display = 'flex';
   msgEl.textContent = 'Chargement de la galerie…';
 
-  try {
-    const r = await fetch(`https://api.pcloud.com/showpublink?code=${PCLOUD_CODE}`);
+  async function scanFolder(folderid) {
+    let url = `https://api.pcloud.com/showpublink?code=${PCLOUD_CODE}`;
+    if (folderid) url += `&folderid=${folderid}`;
+    const r = await fetch(url);
     const d = await r.json();
     if (d.result !== 0) throw new Error('Erreur pCloud : ' + d.result);
+    return d.metadata.contents || [];
+  }
 
-    const files = (d.metadata.contents || [])
-      .filter(f => !f.isfolder && /\.(jpg|jpeg|png|webp)$/i.test(f.name))
-      .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }));
+  try {
+    const rootContents = await scanFolder(null);
+    let fileList = rootContents.filter(f => !f.isfolder && /\.(jpg|jpeg|png|webp)$/i.test(f.name));
 
-    if (!files.length) throw new Error('Aucune photo trouvée dans le dossier partagé.');
+    /* Si pas d\'images directes, scanner les sous-dossiers (1 niveau) */
+    if (!fileList.length) {
+      const subfolders = rootContents.filter(f => f.isfolder);
+      for (const sf of subfolders) {
+        try {
+          msgEl.textContent = `Chargement — ${sf.name}…`;
+          const sub = await scanFolder(sf.folderid);
+          const imgs = sub.filter(f => !f.isfolder && /\.(jpg|jpeg|png|webp)$/i.test(f.name));
+          fileList = fileList.concat(imgs);
+        } catch(e) { console.warn('Sous-dossier error:', sf.name, e); }
+      }
+    }
 
-    photos = files.map(f => ({ name: f.name, label: photoLabel(f.name) }));
+    if (!fileList.length) throw new Error('Aucune photo trouvée dans le dossier partagé.');
+
+    fileList.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }));
+    photos = fileList.map(f => ({ id: f.fileid, name: f.name, label: photoLabel(f.name) }));
     buildGallery();
     document.getElementById('app').style.display = 'flex';
   } catch (e) {
@@ -466,7 +484,7 @@ function buildGallery() {
     item.className = 'photo-item';
     item.dataset.idx = i;
     item.innerHTML = `
-      <img class="photo-img" data-filename="${p.name.replace(/"/g,'&quot;')}" alt="${p.label}" loading="lazy">
+      <img class="photo-img" data-fileid="${p.id}" alt="${p.label}" loading="lazy">
       <div class="overlay">
         <div class="photo-check">
           <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="11" height="11"><polyline points="20,6 9,17 4,12"/></svg>
@@ -482,8 +500,8 @@ function buildGallery() {
     entries.forEach(entry => {
       if (!entry.isIntersecting) return;
       const img = entry.target;
-      if (!img.src && img.dataset.filename) {
-        pcloudDirectUrl(img.dataset.filename)
+      if (!img.src && img.dataset.fileid) {
+        pcloudDirectUrl(img.dataset.fileid)
           .then(url => { img.src = url; })
           .catch(() => {});
         obs.unobserve(img);
@@ -574,7 +592,7 @@ async function renderLb() {
 
   /* Charger l'URL si pas en cache */
   try {
-    const url = await pcloudDirectUrl(p.name);
+    const url = await pcloudDirectUrl(p.id);
     if (lbPhoto === photos.indexOf(p) || photos[lbPhoto]?.name === p.name) {
       img.src = url;
     }
@@ -591,7 +609,7 @@ function lbToggleSel() {
 async function lbDownload() {
   const p = photos[lbPhoto];
   try {
-    const url = await pcloudDirectUrl(p.name);
+    const url = await pcloudDirectUrl(p.id);
     const r = await fetch(url);
     const blob = await r.blob();
     const a = document.createElement('a');
@@ -603,7 +621,7 @@ async function lbDownload() {
     setTimeout(() => URL.revokeObjectURL(a.href), 10000);
   } catch (e) {
     /* Fallback : ouvrir dans un nouvel onglet */
-    pcloudDirectUrl(p.name).then(url => window.open(url, '_blank')).catch(() => {});
+    pcloudDirectUrl(p.id).then(url => window.open(url, '_blank')).catch(() => {});
   }
 }
 
@@ -634,7 +652,7 @@ async function downloadSelection() {
     const p = photos[idx];
     setLoading(true, `${done + 1} / ${indices.length}…`);
     try {
-      const url = await pcloudDirectUrl(p.name);
+      const url = await pcloudDirectUrl(p.id);
       const r = await fetch(url);
       if (!r.ok) throw new Error('HTTP ' + r.status);
       const blob = await r.blob();
