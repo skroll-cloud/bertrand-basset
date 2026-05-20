@@ -242,7 +242,7 @@ Pour vérifier : si le titre de la page pCloud se termine en `.jpg`, c'est un fi
 | Galerie | Code pCloud | Type | Serveur API |
 |---------|------------|------|-------------|
 | Léo Brasserie | `kZQ1EU5ZzBL5BcesXwzTqgy0uauzhu35EtS7` | Dossier ✓ | api.pcloud.com (US) |
-| Gilmerton | **EN ATTENTE** — lien reçu pointe vers un fichier, pas le dossier | — | — |
+| Gilmerton | `kZo1EU5ZLLpXW8fr6xzJNJW0gPuU1B6fdsuy` | Dossier ✓ | api.pcloud.com (US) |
 
 ### Mot de passe des galeries
 Stocké en SHA-256 dans `gallery_cards.desc_en` (Supabase). Modifiable via admin.html.
