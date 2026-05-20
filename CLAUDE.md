@@ -225,7 +225,48 @@ Dans `GALLERIES_CONFIG`, dans la liste `images` :
 
 ---
 
-## 9. Hébergement vidéo
+## 9. Galeries clients pCloud — protocole
+
+Les galeries clients privées (Gilmerton, Léo Brasserie) chargent leurs photos depuis
+pCloud via l'API publique. Ce protocole **doit être documenté ici** à chaque ajout.
+
+### Règle absolue : ne jamais inventer un code pCloud
+Le code s'obtient UNIQUEMENT depuis l'URL que Bertrand partage :
+`https://u.pcloud.link/publink/show?code=XXXXXX` → le code est la partie après `code=`.
+
+**IMPORTANT : le lien doit pointer vers un DOSSIER, pas un fichier.**
+Pour vérifier : si le titre de la page pCloud se termine en `.jpg`, c'est un fichier → demander le lien du dossier parent.
+
+### Codes actuels (à maintenir à jour)
+
+| Galerie | Code pCloud | Type | Serveur API |
+|---------|------------|------|-------------|
+| Léo Brasserie | `kZQ1EU5ZzBL5BcesXwzTqgy0uauzhu35EtS7` | Dossier ✓ | api.pcloud.com (US) |
+| Gilmerton | **EN ATTENTE** — lien reçu pointe vers un fichier, pas le dossier | — | — |
+
+### Mot de passe des galeries
+Stocké en SHA-256 dans `gallery_cards.desc_en` (Supabase). Modifiable via admin.html.
+Valeurs initiales : Gilmerton = SHA256("Gilmerton"), Léo = SHA256("Léo").
+
+### Structure d'un fichier galerie client pCloud
+```js
+const PCLOUD_CODE  = 'CODE_ICI';          // Code du DOSSIER partagé
+const PWD_HASH     = 'sha256_du_mdp';     // Hash SHA-256 du mot de passe
+const GALLERY_NAME = 'Nom Galerie';
+const NOTIF_EMAIL  = 'yellowshoesstudio@gmail.com';
+const CARD_ID      = 'ph-nom-galerie';    // ID dans gallery_cards Supabase
+```
+
+### API pCloud utilisée
+- Endpoint : `showpublink?code=CODE` (EU first: `eapi.pcloud.com`, fallback US: `api.pcloud.com`)
+- Le compte pCloud de Bertrand est sur le serveur **US** (`api.pcloud.com`)
+- Pour lister les fichiers : `showpublink?code=CODE` → `metadata.contents`
+- Si `contents` vide → 2e appel avec `folderid`: `showpublink?code=CODE&folderid=ID`
+- Pour les URLs de téléchargement : `getpublinkdownload?code=CODE&fileid=FILEID`
+
+---
+
+## 10. Hébergement vidéo
 
 - **YouTube non-répertorié** : recommandé (gratuit, permanent, embeddable)
 - Vimeo (ID 240574987) : fonctionne tant que l'abonnement est actif
