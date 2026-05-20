@@ -177,6 +177,14 @@ const SECTIONS_CONFIG = {
                 img: null
             },
             {
+                id: "leo-brasserie", url: "clients/leo-brasserie.html",
+                labelFr: "Galerie privée", labelEn: "Private gallery",
+                titleFr: "Léo Brasserie", titleEn: "Léo Brasserie",
+                descFr: "Sélection · accès protégé",
+                descEn: "Selection · protected access",
+                img: null
+            },
+            {
                 id: "galeries-client", url: "clients/index.html",
                 labelFr: "Accès privé", labelEn: "Private access",
                 titleFr: "Galeries Client", titleEn: "Client Galleries",

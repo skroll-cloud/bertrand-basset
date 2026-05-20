@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gilmerton — Sélection · Bertrand Basset</title>
+  <title>Léo Brasserie — Sélection · Bertrand Basset</title>
   <link rel="icon" type="image/svg+xml" href="../assets/logo-b.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -208,8 +208,7 @@
     .lb-nav {
       position: absolute; top: 50%; transform: translateY(-50%);
       background: none; border: none; color: rgba(255,255,255,0.35);
-      font-size: 2.5rem; cursor: pointer; padding: 0 1rem; z-index: 1;
-      transition: color 0.2s;
+      font-size: 2.5rem; cursor: pointer; padding: 0 1rem; z-index: 1; transition: color 0.2s;
     }
     .lb-nav:hover { color: var(--blanc); }
     .lb-prev { left: 0; }
@@ -250,7 +249,7 @@
 <!-- ── GATE ── -->
 <div id="gate">
   <span class="gate-logo">Bertrand Basset · Studio</span>
-  <h1 class="gate-titre">Gilmerton</h1>
+  <h1 class="gate-titre">Léo Brasserie</h1>
   <p class="gate-sous">Galerie de sélection — accès protégé</p>
   <div class="gate-form">
     <input type="password" class="gate-input" id="gateInput" placeholder="Mot de passe" autocomplete="off">
@@ -273,7 +272,7 @@
     </a>
     <div class="header-sep"></div>
     <div class="header-left">
-      <span class="header-shooting">Sélection · Gilmerton</span>
+      <span class="header-shooting">Sélection · Léo Brasserie</span>
     </div>
     <div class="header-right">
       <span class="sel-count" id="selCount">0 photo sélectionnée</span>
@@ -369,15 +368,15 @@
 /* ═══════════════════════════════════════════════════
    CONFIG — modifier uniquement ces constantes
    ═══════════════════════════════════════════════════ */
-const PCLOUD_CODE  = 'XZlXEU5ZYFUt0NVeJgXe8qIOT7VOxkWkquAk';
-const PWD_HASH     = '3667109fdbc1660a88aef3916dd92254115e6722f239210503975da4005d6d3b'; /* "Gilmerton" */
-const GALLERY_NAME = 'Gilmerton';
+const PCLOUD_CODE  = 'XZEHEU5ZwOozkMB0uY7h5MVADLJaJHNx1rcV';
+const PWD_HASH     = 'd0b6e705c11c35cdc3c79c22b173d254445bff882876b932515bb011f42f56af'; /* "Léo" */
+const GALLERY_NAME = 'Léo Brasserie';
 const NOTIF_EMAIL  = 'yellowshoesstudio@gmail.com';
 
 /* ── STATE ── */
-let photos  = [];   /* [{name, label}] chargés depuis pCloud */
+let photos  = [];
 const selected = new Set();
-const urlCache = {};  /* filename → direct pCloud URL */
+const urlCache = {};
 let lbPhoto = 0;
 
 /* ══════════════════════ PASSWORD ══════════════════════ */
@@ -446,7 +445,6 @@ async function loadFromPCloud() {
 
 /* ══════════════════════ LABEL ══════════════════════ */
 function photoLabel(name) {
-  /* Essaie d'extraire un numéro de séquence dans le nom de fichier */
   const m = name.match(/\s(\d+)\s*\.\w+$/);
   if (m) return 'Photo ' + parseInt(m[1], 10);
   const m2 = name.match(/(\d+)/);
@@ -477,7 +475,6 @@ function buildGallery() {
     grid.appendChild(item);
   });
 
-  /* IntersectionObserver — charge les URLs pCloud au défilé */
   const io = new IntersectionObserver((entries, obs) => {
     entries.forEach(entry => {
       if (!entry.isIntersecting) return;
@@ -571,13 +568,9 @@ async function renderLb() {
   document.getElementById('lbSelBtn').textContent = selected.has(lbPhoto) ? 'Désélectionner' : 'Sélectionner';
   document.getElementById('lbSelBtn').classList.toggle('selected', selected.has(lbPhoto));
   updateFsIcon();
-
-  /* Charger l'URL si pas en cache */
   try {
     const url = await pcloudDirectUrl(p.name);
-    if (lbPhoto === photos.indexOf(p) || photos[lbPhoto]?.name === p.name) {
-      img.src = url;
-    }
+    if (photos[lbPhoto]?.name === p.name) img.src = url;
   } catch (e) { console.warn('Lightbox load error:', e); }
 }
 
@@ -602,7 +595,6 @@ async function lbDownload() {
     document.body.removeChild(a);
     setTimeout(() => URL.revokeObjectURL(a.href), 10000);
   } catch (e) {
-    /* Fallback : ouvrir dans un nouvel onglet */
     pcloudDirectUrl(p.name).then(url => window.open(url, '_blank')).catch(() => {});
   }
 }
@@ -611,7 +603,6 @@ async function lbDownload() {
 async function downloadSelection() {
   if (selected.size === 0) return;
 
-  /* UI : état chargement */
   const setLoading = (on, msg) => {
     ['btnDlSel','panelDlZip'].forEach(id => {
       const el = document.getElementById(id);
@@ -625,7 +616,6 @@ async function downloadSelection() {
   };
 
   setLoading(true, '…');
-
   const indices = [...selected].sort((a, b) => a - b);
   const zip = new JSZip();
   let done = 0;
@@ -650,7 +640,7 @@ async function downloadSelection() {
     const zipBlob = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE', compressionOptions: { level: 3 } });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(zipBlob);
-    a.download = `${GALLERY_NAME.toLowerCase()}-selection-${indices.length}photos.zip`;
+    a.download = `leo-brasserie-selection-${indices.length}photos.zip`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
