@@ -579,11 +579,14 @@ function buildGallery() {
     photos.length + ' photo' + (photos.length > 1 ? 's' : '');
 
   photos.forEach((p, i) => {
+    /* Miniature directe via getpubthumb — fiable, pas besoin d'IntersectionObserver */
+    const thumbUrl = `https://api.pcloud.com/getpubthumb?code=${PCLOUD_CODE}&fileid=${p.id}&size=1200x900&type=jpg`;
     const item = document.createElement('div');
     item.className = 'photo-item';
     item.dataset.idx = i;
+    item.dataset.fileid = p.id;
     item.innerHTML = `
-      <img class="photo-img" data-fileid="${p.id}" alt="${p.label}" loading="lazy">
+      <img class="photo-img" src="${thumbUrl}" alt="${p.label}" loading="lazy">
       <div class="overlay">
         <div class="photo-check">
           <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="11" height="11"><polyline points="20,6 9,17 4,12"/></svg>
@@ -594,21 +597,6 @@ function buildGallery() {
     grid.appendChild(item);
   });
 
-  /* IntersectionObserver — charge les URLs pCloud au défilé */
-  const io = new IntersectionObserver((entries, obs) => {
-    entries.forEach(entry => {
-      if (!entry.isIntersecting) return;
-      const img = entry.target;
-      if (!img.src && img.dataset.fileid) {
-        pcloudDirectUrl(img.dataset.fileid)
-          .then(url => { img.src = url; })
-          .catch(() => {});
-        obs.unobserve(img);
-      }
-    });
-  }, { rootMargin: '400px 0px' });
-
-  grid.querySelectorAll('.photo-img').forEach(img => io.observe(img));
   updateCounter();
 }
 
@@ -689,13 +677,13 @@ async function renderLb() {
   document.getElementById('lbSelBtn').classList.toggle('selected', selected.has(lbPhoto));
   updateFsIcon();
 
-  /* Charger l'URL si pas en cache */
+  /* Lightbox : essaie l'original via getpublinkdownload, fallback getpubthumb haute-res */
   try {
     const url = await pcloudDirectUrl(p.id);
-    if (lbPhoto === photos.indexOf(p) || photos[lbPhoto]?.name === p.name) {
-      img.src = url;
-    }
-  } catch (e) { console.warn('Lightbox load error:', e); }
+    img.src = url;
+  } catch (e) {
+    img.src = `https://api.pcloud.com/getpubthumb?code=${PCLOUD_CODE}&fileid=${p.id}&size=2048x2048&type=jpg`;
+  }
 }
 
 function lbToggleSel() {
