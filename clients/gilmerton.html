@@ -374,12 +374,18 @@ const PWD_HASH     = '3667109fdbc1660a88aef3916dd92254115e6722f239210503975da400
 const GALLERY_NAME = 'Gilmerton';
 const NOTIF_EMAIL  = 'yellowshoesstudio@gmail.com';
 
+/* ── CONFIG SUPABASE ── */
+const SUPA_URL = 'https://suecslynruuputmujudg.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN1ZWNzbHlucnV1cHV0bXVqdWRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY1MTYyODcsImV4cCI6MjA5MjA5MjI4N30.c9Pa_x6MEcJdqVekBodSYpu3it-riVU1hYhC-m5iCsU';
+const CARD_ID  = 'ph-gilmerton';
+
 /* ── STATE ── */
 let photos  = [];   /* [{id, name, label}] chargés depuis pCloud */
 const selected = new Set();
 const urlCache = {};  /* fileId → direct pCloud URL */
 let lbPhoto = 0;
-let pcloudHost = null; /* host résolu : api.pcloud.com ou eapi.pcloud.com */
+let pcloudHost = null; /* host résolu : eapi.pcloud.com ou api.pcloud.com */
+let resolvedPwdHash = PWD_HASH; /* hash chargé depuis Supabase, sinon valeur par défaut */
 
 /* ══════════════════════ PASSWORD ══════════════════════ */
 async function sha256(str) {
@@ -390,7 +396,7 @@ async function sha256(str) {
 async function checkPwd() {
   const val = document.getElementById('gateInput').value.trim();
   const hash = await sha256(val);
-  if (hash === PWD_HASH) {
+  if (hash === resolvedPwdHash) {
     sessionStorage.setItem('gallery_auth_' + GALLERY_NAME, '1');
     document.getElementById('gate').style.display = 'none';
     loadFromPCloud();
@@ -404,10 +410,13 @@ document.getElementById('gateInput').addEventListener('keydown', e => { if (e.ke
 
 /* ══════════════════════ PCLOUD ══════════════════════ */
 
-/* Essaie US puis EU — mémorise le host qui fonctionne */
+/* Essaie EU puis US — comptes pCloud.com créés depuis l'Europe sont sur eapi */
 async function pcloudFetch(endpoint, params) {
   const qs = new URLSearchParams(params).toString();
-  const hosts = pcloudHost ? [pcloudHost] : ['api.pcloud.com', 'eapi.pcloud.com'];
+  const allHosts = ['eapi.pcloud.com', 'api.pcloud.com'];
+  const hosts = pcloudHost
+    ? [pcloudHost, ...allHosts.filter(h => h !== pcloudHost)]
+    : allHosts;
   for (const host of hosts) {
     try {
       const r = await fetch(`https://${host}/${endpoint}?${qs}`);
@@ -416,7 +425,7 @@ async function pcloudFetch(endpoint, params) {
       if (d.result === 0) { pcloudHost = host; return d; }
     } catch(e) { /* essaie le suivant */ }
   }
-  throw new Error('pCloud API inaccessible (US et EU)');
+  throw new Error('pCloud API inaccessible (EU et US essayés)');
 }
 
 async function pcloudDirectUrl(fileId) {
@@ -433,11 +442,20 @@ async function loadFromPCloud() {
   loadEl.style.display = 'flex';
   msgEl.textContent = 'Chargement de la galerie…';
 
-  async function scanFolder(folderid) {
+  async function scanFolder(folderid, folderName) {
     const params = { code: PCLOUD_CODE };
-    if (folderid) params.folderid = folderid;
-    const d = await pcloudFetch('showpublink', params);
-    return d.metadata.contents || [];
+    if (folderid != null) params.folderid = folderid;
+    try {
+      const d = await pcloudFetch('showpublink', params);
+      return d.metadata?.contents || [];
+    } catch(e) {
+      /* Fallback : navigation par nom de dossier si folderid échoue */
+      if (folderid != null && folderName) {
+        const d2 = await pcloudFetch('showpublink', { code: PCLOUD_CODE, path: '/' + folderName });
+        return d2.metadata?.contents || [];
+      }
+      throw e;
+    }
   }
 
   try {
@@ -450,7 +468,7 @@ async function loadFromPCloud() {
       for (const sf of subfolders) {
         try {
           msgEl.textContent = `Chargement — ${sf.name}…`;
-          const sub = await scanFolder(sf.folderid);
+          const sub = await scanFolder(sf.folderid, sf.name);
           const imgs = sub.filter(f => !f.isfolder && /\.(jpg|jpeg|png|webp)$/i.test(f.name));
           fileList = fileList.concat(imgs);
         } catch(e) { console.warn('Sous-dossier error:', sf.name, e); }
@@ -749,10 +767,28 @@ function envoyer() {
 }
 
 /* ══════════════════════ INIT ══════════════════════ */
-if (sessionStorage.getItem('gallery_auth_' + GALLERY_NAME) === '1') {
-  document.getElementById('gate').style.display = 'none';
-  loadFromPCloud();
+/* Charge le hash du mot de passe depuis Supabase (admin peut le changer) */
+async function loadPwdHash() {
+  try {
+    const r = await fetch(
+      `${SUPA_URL}/rest/v1/gallery_cards?select=desc_en&id=eq.${CARD_ID}`,
+      { headers: { 'apikey': SUPA_KEY, 'Authorization': `Bearer ${SUPA_KEY}` } }
+    );
+    if (r.ok) {
+      const rows = await r.json();
+      const h = rows[0]?.desc_en || '';
+      if (/^[a-f0-9]{64}$/i.test(h)) resolvedPwdHash = h;
+    }
+  } catch(e) { /* silencieux — utilise PWD_HASH par défaut */ }
 }
+
+(async () => {
+  await loadPwdHash();
+  if (sessionStorage.getItem('gallery_auth_' + GALLERY_NAME) === '1') {
+    document.getElementById('gate').style.display = 'none';
+    loadFromPCloud();
+  }
+})();
 </script>
 </body>
 </html>

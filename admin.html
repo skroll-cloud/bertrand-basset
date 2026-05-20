@@ -128,6 +128,9 @@
     }
     .card-vis-btn.hidden-card { border-color: var(--red); color: var(--red); }
     .card-vis-btn:hover { border-color: var(--black); color: var(--black); }
+    .pwd-status { font-size: 0.5rem; letter-spacing: 0.06em; color: var(--dim); white-space: nowrap; }
+    .pwd-status.set { color: var(--green); }
+    .card-pwd-row { background: #fafafa; border-radius: 2px; padding: 0.3rem 0; }
 
     /* Formulaire ajout carte */
     .add-card-form { margin-top: 1.5rem; padding: 1.2rem; border: 1px solid var(--line); background: #fafafa; }
@@ -422,8 +425,9 @@ function renderCards() {
         titleFr:   dbRow.title_fr   || card.titleFr || '',
         labelFr:   dbRow.label_fr   || card.labelFr || '',
         descFr:    dbRow.desc_fr    || card.descFr  || '',
+        descEn:    dbRow.desc_en    || '',
         coverImg:  dbRow.cover_img  || card.img     || '',
-        parentId:  dbRow.parent_id  || null,
+        parentId:  dbRow.parent_id  || card.parentId || null,
         visible:   dbRow.visible !== undefined ? dbRow.visible : true,
         sortOrder: dbRow.sort_order ?? 999
       });
@@ -436,7 +440,7 @@ function renderCards() {
     if (!allBySec[sec]) return;
     const known = SECTIONS_CONFIG[sec]?.cards?.some(c => `${PREFIX[sec]||sec}-${c.id}` === row.id);
     if (!known) {
-      allBySec[sec].push({ dbId: row.id, secId: sec, titleFr: row.title_fr||'', labelFr: row.label_fr||'', descFr: row.desc_fr||'', coverImg: row.cover_img||'', parentId: row.parent_id||null, visible: row.visible!==false, sortOrder: row.sort_order??999, _supabase: true });
+      allBySec[sec].push({ dbId: row.id, secId: sec, titleFr: row.title_fr||'', labelFr: row.label_fr||'', descFr: row.desc_fr||'', descEn: row.desc_en||'', coverImg: row.cover_img||'', parentId: row.parent_id||null, visible: row.visible!==false, sortOrder: row.sort_order??999, _supabase: true });
     }
   });
 
@@ -459,6 +463,9 @@ function cardRowHtml(c, siblings) {
   const thumb = c.coverImg
     ? `<img class="card-thumb" src="${c.coverImg}" alt="" loading="lazy" onerror="this.style.opacity='.2'">`
     : `<div class="card-thumb-placeholder"></div>`;
+
+  const isPrivate = c.parentId === 'ph-galeries-client';
+  const hasPwd    = isPrivate && /^[a-f0-9]{64}$/i.test(c.descEn || '');
 
   // Options pour "Sous-galerie de" : toutes les autres cartes de même section
   const parentOpts = `<option value="">— aucune —</option>` +
@@ -484,6 +491,12 @@ function cardRowHtml(c, siblings) {
           <span class="field-label">Description</span>
           <input class="field-input" id="f-desc-${c.dbId}" value="${esc(c.descFr)}" placeholder="Courte description">
         </div>
+        ${isPrivate ? `<div class="card-field-row card-pwd-row">
+          <span class="field-label">Mot de passe</span>
+          <input type="password" class="field-input" id="f-pwd-${c.dbId}" placeholder="Nouveau mot de passe…" autocomplete="new-password" style="flex:1">
+          <button class="pick-btn" onclick="saveCardPwd('${c.dbId}')">Définir</button>
+          <span id="pwd-status-${c.dbId}" class="pwd-status ${hasPwd ? 'set' : ''}">${hasPwd ? '● Défini' : '○ Non défini'}</span>
+        </div>` : ''}
         <div class="card-field-row">
           <span class="field-label">Couverture</span>
           <input class="field-input" id="f-img-${c.dbId}" value="${esc(c.coverImg)}" placeholder="images/dossier/photo.jpg"
@@ -631,6 +644,35 @@ async function saveCard(dbId) {
     btn.textContent = 'Erreur'; btn.className = 'card-save-btn';
     console.error(e);
   }
+}
+
+async function saveCardPwd(dbId) {
+  const input = document.getElementById(`f-pwd-${dbId}`);
+  const pwd = input?.value?.trim();
+  if (!pwd) return;
+
+  /* Hachage SHA-256 côté client */
+  const buf  = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pwd));
+  const hash = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+
+  const row = {
+    id:         dbId,
+    section:    dbId.startsWith('ph-') ? 'photographe' : dbId.startsWith('real-') ? 'realisateur' : 'boutique',
+    desc_en:    hash,
+    updated_at: new Date().toISOString()
+  };
+  try {
+    const res = await sb('gallery_cards', {
+      method: 'POST',
+      headers: { 'Prefer': 'resolution=merge-duplicates,return=minimal' },
+      body: JSON.stringify([row])
+    });
+    if (!res.ok) throw new Error(await res.text());
+    dbCards[dbId] = { ...(dbCards[dbId]||{}), desc_en: hash };
+    const status = document.getElementById(`pwd-status-${dbId}`);
+    if (status) { status.textContent = '● Défini'; status.className = 'pwd-status set'; }
+    input.value = '';
+  } catch(e) { console.error('saveCardPwd:', e); }
 }
 
 async function toggleCardVis(dbId, currentlyVisible) {
@@ -787,8 +829,8 @@ function openPicker(dbId) {
     const parts = card.cover_img.split('/');
     if (parts.length > 1) startPath = parts.slice(0, -1).join('/');
   } else if (card?.link_url && card.link_url.startsWith('clients/')) {
-    // Galerie client : dossier images = clients/<nom> (sans .html)
-    startPath = card.link_url.replace(/\.html$/, '');
+    // Galerie client : images de couverture dans images/, pas dans clients/
+    startPath = 'images';
   } else if (card?.gallery_id) {
     // Mapping gallery_id → dossier connu
     const folderMap = {
