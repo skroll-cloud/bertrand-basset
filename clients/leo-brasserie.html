@@ -458,10 +458,22 @@ async function loadFromPCloud() {
   }
 
   try {
-    const rootContents = await scanFolder(null);
+    /* pCloud: 1er appel → folderid racine. 2e appel avec folderid → vrais contenus */
+    const rootMeta = await pcloudFetch('showpublink', { code: PCLOUD_CODE });
+    let rootContents = rootMeta.metadata?.contents || [];
+
+    /* Si l'API ne retourne pas les contenus directement, on les demande via le folderid */
+    if (!rootContents.length && rootMeta.metadata?.folderid) {
+      msgEl.textContent = 'Lecture du dossier…';
+      const folderData = await pcloudFetch('showpublink', {
+        code: PCLOUD_CODE, folderid: rootMeta.metadata.folderid
+      });
+      rootContents = folderData.metadata?.contents || [];
+    }
+
     let fileList = rootContents.filter(f => !f.isfolder && /\.(jpg|jpeg|png|webp)$/i.test(f.name));
 
-    /* Si pas d\'images directes, scanner les sous-dossiers (1 niveau) */
+    /* Si pas d\'images directes, scanner les sous-dossiers (2 niveaux) */
     if (!fileList.length) {
       const subfolders = rootContents.filter(f => f.isfolder);
       for (const sf of subfolders) {
@@ -469,7 +481,16 @@ async function loadFromPCloud() {
           msgEl.textContent = `Chargement — ${sf.name}…`;
           const sub = await scanFolder(sf.folderid, sf.name);
           const imgs = sub.filter(f => !f.isfolder && /\.(jpg|jpeg|png|webp)$/i.test(f.name));
-          fileList = fileList.concat(imgs);
+          if (!imgs.length) {
+            /* Niveau 2 : sous-sous-dossiers */
+            const sub2folders = sub.filter(f => f.isfolder);
+            for (const sf2 of sub2folders) {
+              const sub2 = await scanFolder(sf2.folderid, sf2.name).catch(() => []);
+              fileList = fileList.concat(sub2.filter(f => !f.isfolder && /\.(jpg|jpeg|png|webp)$/i.test(f.name)));
+            }
+          } else {
+            fileList = fileList.concat(imgs);
+          }
         } catch(e) { console.warn('Sous-dossier error:', sf.name, e); }
       }
     }
