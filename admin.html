@@ -648,12 +648,15 @@ async function saveCard(dbId) {
 
 async function saveCardPwd(dbId) {
   const input = document.getElementById(`f-pwd-${dbId}`);
+  const btn   = input?.parentElement?.querySelector('button');
   const pwd = input?.value?.trim();
-  if (!pwd) return;
+  if (!pwd) { alert('Entrez un mot de passe avant de cliquer sur Définir.'); return; }
 
   /* Hachage SHA-256 côté client */
   const buf  = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pwd));
   const hash = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+
+  if (btn) { btn.textContent = '…'; btn.disabled = true; }
 
   const row = {
     id:         dbId,
@@ -667,12 +670,20 @@ async function saveCardPwd(dbId) {
       headers: { 'Prefer': 'resolution=merge-duplicates,return=minimal' },
       body: JSON.stringify([row])
     });
-    if (!res.ok) throw new Error(await res.text());
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error(errText);
+    }
     dbCards[dbId] = { ...(dbCards[dbId]||{}), desc_en: hash };
     const status = document.getElementById(`pwd-status-${dbId}`);
     if (status) { status.textContent = '● Défini'; status.className = 'pwd-status set'; }
     input.value = '';
-  } catch(e) { console.error('saveCardPwd:', e); }
+    if (btn) { btn.textContent = '✓ OK'; btn.style.color = 'var(--green)'; btn.disabled = false; setTimeout(() => { btn.textContent = 'Définir'; btn.style.color = ''; }, 2500); }
+  } catch(e) {
+    console.error('saveCardPwd:', e);
+    alert(`Erreur lors de la sauvegarde du mot de passe :\n${e.message}`);
+    if (btn) { btn.textContent = 'Définir'; btn.disabled = false; }
+  }
 }
 
 async function toggleCardVis(dbId, currentlyVisible) {

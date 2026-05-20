@@ -440,75 +440,124 @@ async function loadFromPCloud() {
   const loadEl = document.getElementById('pcloud-loading');
   const msgEl  = document.getElementById('loadingMsg');
   loadEl.style.display = 'flex';
-  msgEl.textContent = 'Chargement de la galerie…';
+  msgEl.textContent = 'Connexion à pCloud…';
+
+  const debugLog = [];
+  function dbg(msg, data) {
+    const entry = data !== undefined ? `${msg}: ${JSON.stringify(data).slice(0,300)}` : msg;
+    debugLog.push(entry);
+    console.log('[pCloud]', entry);
+  }
 
   async function scanFolder(folderid, folderName) {
     const params = { code: PCLOUD_CODE };
     if (folderid != null) params.folderid = folderid;
+    dbg('scanFolder', { folderid, folderName });
     try {
       const d = await pcloudFetch('showpublink', params);
+      dbg('scanFolder result', { result: d.result, count: d.metadata?.contents?.length });
       return d.metadata?.contents || [];
     } catch(e) {
-      /* Fallback : navigation par nom de dossier si folderid échoue */
-      if (folderid != null && folderName) {
-        const d2 = await pcloudFetch('showpublink', { code: PCLOUD_CODE, path: '/' + folderName });
-        return d2.metadata?.contents || [];
-      }
-      throw e;
+      dbg('scanFolder error', e.message);
+      return [];
     }
   }
 
-  try {
-    /* pCloud: 1er appel → folderid racine. 2e appel avec folderid → vrais contenus */
-    const rootMeta = await pcloudFetch('showpublink', { code: PCLOUD_CODE });
-    let rootContents = rootMeta.metadata?.contents || [];
+  function showError(msg, rawData) {
+    let html = `<p class="loading-error" style="text-align:left;max-width:480px">
+      <strong>Impossible de charger la galerie</strong><br><br>${msg}</p>`;
+    if (rawData) {
+      html += `<details style="margin-top:0.8rem;max-width:480px">
+        <summary style="font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:#666;cursor:pointer">
+          Réponse API (pour debug)</summary>
+        <pre style="font-size:0.55rem;color:#888;margin-top:0.5rem;white-space:pre-wrap;text-align:left;max-height:200px;overflow:auto">${JSON.stringify(rawData,null,2).slice(0,2000)}</pre>
+      </details>`;
+    }
+    html += `<details style="margin-top:0.5rem;max-width:480px">
+      <summary style="font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:#666;cursor:pointer">
+        Log complet</summary>
+      <pre style="font-size:0.55rem;color:#888;margin-top:0.5rem;white-space:pre-wrap;text-align:left;max-height:200px;overflow:auto">${debugLog.join('\n')}</pre>
+    </details>
+    <button class="loading-retry" onclick="location.reload()" style="margin-top:0.8rem">Réessayer</button>`;
+    loadEl.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;gap:0.5rem;padding:2rem">${html}</div>`;
+  }
 
-    /* Si l'API ne retourne pas les contenus directement, on les demande via le folderid */
-    if (!rootContents.length && rootMeta.metadata?.folderid) {
-      msgEl.textContent = 'Lecture du dossier…';
+  let rootMeta;
+  try {
+    dbg('Appel showpublink initial', { code: PCLOUD_CODE.slice(0,8)+'...' });
+    msgEl.textContent = 'Lecture du dossier partagé…';
+    rootMeta = await pcloudFetch('showpublink', { code: PCLOUD_CODE });
+    dbg('Réponse initiale', {
+      result: rootMeta.result,
+      isfolder: rootMeta.metadata?.isfolder,
+      name: rootMeta.metadata?.name,
+      folderid: rootMeta.metadata?.folderid,
+      contentsCount: rootMeta.metadata?.contents?.length ?? 'absent'
+    });
+  } catch(e) {
+    dbg('Erreur API principale', e.message);
+    showError(`Serveur pCloud inaccessible.<br><small>${e.message}</small>`, null);
+    return;
+  }
+
+  let rootContents = rootMeta.metadata?.contents || [];
+
+  /* Si contents absent/vide mais folderid dispo → 2e appel */
+  if (!rootContents.length && rootMeta.metadata?.folderid) {
+    dbg('Contents vide, 2e appel avec folderid', rootMeta.metadata.folderid);
+    msgEl.textContent = 'Lecture du contenu…';
+    try {
       const folderData = await pcloudFetch('showpublink', {
         code: PCLOUD_CODE, folderid: rootMeta.metadata.folderid
       });
       rootContents = folderData.metadata?.contents || [];
-    }
+      dbg('2e appel résultat', { contentsCount: rootContents.length });
+    } catch(e) { dbg('2e appel erreur', e.message); }
+  }
 
-    let fileList = rootContents.filter(f => !f.isfolder && /\.(jpg|jpeg|png|webp)$/i.test(f.name));
+  let fileList = rootContents.filter(f => !f.isfolder && /\.(jpg|jpeg|png|webp)$/i.test(f.name));
+  dbg('Images directes', fileList.length);
 
-    /* Si pas d\'images directes, scanner les sous-dossiers (2 niveaux) */
-    if (!fileList.length) {
-      const subfolders = rootContents.filter(f => f.isfolder);
-      for (const sf of subfolders) {
-        try {
-          msgEl.textContent = `Chargement — ${sf.name}…`;
-          const sub = await scanFolder(sf.folderid, sf.name);
-          const imgs = sub.filter(f => !f.isfolder && /\.(jpg|jpeg|png|webp)$/i.test(f.name));
-          if (!imgs.length) {
-            /* Niveau 2 : sous-sous-dossiers */
-            const sub2folders = sub.filter(f => f.isfolder);
-            for (const sf2 of sub2folders) {
-              const sub2 = await scanFolder(sf2.folderid, sf2.name).catch(() => []);
-              fileList = fileList.concat(sub2.filter(f => !f.isfolder && /\.(jpg|jpeg|png|webp)$/i.test(f.name)));
-            }
-          } else {
-            fileList = fileList.concat(imgs);
-          }
-        } catch(e) { console.warn('Sous-dossier error:', sf.name, e); }
+  /* Scanner les sous-dossiers si pas d'images directes */
+  if (!fileList.length) {
+    const subfolders = rootContents.filter(f => f.isfolder);
+    dbg('Sous-dossiers trouvés', subfolders.map(f => f.name));
+    for (const sf of subfolders) {
+      msgEl.textContent = `Chargement — ${sf.name}…`;
+      const sub = await scanFolder(sf.folderid, sf.name);
+      const imgs = sub.filter(f => !f.isfolder && /\.(jpg|jpeg|png|webp)$/i.test(f.name));
+      dbg(`Dossier "${sf.name}"`, { images: imgs.length, sousDossiers: sub.filter(f=>f.isfolder).length });
+      if (imgs.length) {
+        fileList = fileList.concat(imgs);
+      } else {
+        /* Niveau 2 */
+        for (const sf2 of sub.filter(f => f.isfolder)) {
+          const sub2 = await scanFolder(sf2.folderid, sf2.name);
+          const imgs2 = sub2.filter(f => !f.isfolder && /\.(jpg|jpeg|png|webp)$/i.test(f.name));
+          dbg(`  Sous-dossier "${sf2.name}"`, imgs2.length);
+          fileList = fileList.concat(imgs2);
+        }
       }
     }
+  }
 
-    if (!fileList.length) throw new Error('Aucune photo trouvée dans le dossier partagé.');
+  dbg('Total photos trouvées', fileList.length);
 
-    fileList.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }));
-    photos = fileList.map(f => ({ id: f.fileid, name: f.name, label: photoLabel(f.name) }));
-    buildGallery();
-    document.getElementById('app').style.display = 'flex';
-  } catch (e) {
-    loadEl.innerHTML = `
-      <p class="loading-error">Impossible de charger la galerie.<br>${e.message}</p>
-      <button class="loading-retry" onclick="location.reload()">Réessayer</button>`;
+  if (!fileList.length) {
+    showError(
+      `Aucune photo trouvée dans le dossier partagé.<br>
+       <small>Code utilisé : ${PCLOUD_CODE.slice(0,8)}…<br>
+       Serveur : ${pcloudHost || 'non résolu'}</small>`,
+      { metadata: { name: rootMeta.metadata?.name, folderid: rootMeta.metadata?.folderid, contentsCount: rootContents.length, subfolders: rootContents.filter(f=>f.isfolder).map(f=>f.name) } }
+    );
     return;
   }
 
+  fileList.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }));
+  photos = fileList.map(f => ({ id: f.fileid, name: f.name, label: photoLabel(f.name) }));
+  dbg('Galerie prête', photos.length + ' photos');
+  buildGallery();
+  document.getElementById('app').style.display = 'flex';
   loadEl.style.display = 'none';
 }
 
