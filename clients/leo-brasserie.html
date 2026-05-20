@@ -378,6 +378,7 @@ let photos  = [];
 const selected = new Set();
 const urlCache = {};
 let lbPhoto = 0;
+let pcloudHost = null; /* host résolu : api.pcloud.com ou eapi.pcloud.com */
 
 /* ══════════════════════ PASSWORD ══════════════════════ */
 async function sha256(str) {
@@ -401,13 +402,25 @@ async function checkPwd() {
 document.getElementById('gateInput').addEventListener('keydown', e => { if (e.key === 'Enter') checkPwd(); });
 
 /* ══════════════════════ PCLOUD ══════════════════════ */
+
+/* Essaie US puis EU — mémorise le host qui fonctionne */
+async function pcloudFetch(endpoint, params) {
+  const qs = new URLSearchParams(params).toString();
+  const hosts = pcloudHost ? [pcloudHost] : ['api.pcloud.com', 'eapi.pcloud.com'];
+  for (const host of hosts) {
+    try {
+      const r = await fetch(`https://${host}/${endpoint}?${qs}`);
+      if (!r.ok) continue;
+      const d = await r.json();
+      if (d.result === 0) { pcloudHost = host; return d; }
+    } catch(e) { /* essaie le suivant */ }
+  }
+  throw new Error('pCloud API inaccessible (US et EU)');
+}
+
 async function pcloudDirectUrl(fileId) {
   if (urlCache[fileId]) return urlCache[fileId];
-  const r = await fetch(
-    `https://api.pcloud.com/getpublinkdownload?code=${PCLOUD_CODE}&fileid=${fileId}&forcedownload=0`
-  );
-  const d = await r.json();
-  if (d.result !== 0) throw new Error('pCloud error ' + d.result);
+  const d = await pcloudFetch('getpublinkdownload', { code: PCLOUD_CODE, fileid: fileId, forcedownload: 0 });
   const url = 'https://' + d.hosts[0] + d.path;
   urlCache[fileId] = url;
   return url;
@@ -420,11 +433,9 @@ async function loadFromPCloud() {
   msgEl.textContent = 'Chargement de la galerie…';
 
   async function scanFolder(folderid) {
-    let url = `https://api.pcloud.com/showpublink?code=${PCLOUD_CODE}`;
-    if (folderid) url += `&folderid=${folderid}`;
-    const r = await fetch(url);
-    const d = await r.json();
-    if (d.result !== 0) throw new Error('Erreur pCloud : ' + d.result);
+    const params = { code: PCLOUD_CODE };
+    if (folderid) params.folderid = folderid;
+    const d = await pcloudFetch('showpublink', params);
     return d.metadata.contents || [];
   }
 

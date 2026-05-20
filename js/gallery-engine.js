@@ -153,7 +153,13 @@ class Portfolio {
                         if (row.parent_id)  card.parentId  = row.parent_id;
                         card._dbId          = key;
                         card._sortOrder     = row.sort_order ?? 999;
-                        card._hiddenByAdmin = row.visible === false;
+                        /* Les cartes marquées "cachées par défaut" dans gallery-data.js
+                           nécessitent visible=true explicite pour être publiées.
+                           Les cartes normales sont masquées seulement si visible=false. */
+                        const wasStaticHidden = card._hiddenByAdmin === true;
+                        card._hiddenByAdmin = wasStaticHidden
+                            ? row.visible !== true   // caché par défaut → visible seulement si admin dit true
+                            : row.visible === false; // visible par défaut → caché seulement si admin dit false
                     });
 
                     /* Injecter les cartes Supabase qui n'existent pas dans gallery-data.js */

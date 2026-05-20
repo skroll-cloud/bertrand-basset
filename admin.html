@@ -369,10 +369,38 @@ async function loadAll() {
     renderCards();
     renderVisibility();
     document.getElementById('saveVisBtn').disabled = false;
+
+    /* ── Migration : corriger la hiérarchie galeries client ─────────────────
+       S'exécute une seule fois (flag localStorage). Fixe les valeurs Supabase
+       pour les 3 cartes de la sous-galerie "Galeries Client". */
+    if (!localStorage.getItem('bb_migration_galeries_v2')) {
+      await migrateGaleriesClient();
+    }
   } catch(e) {
     dot.className = 'status-dot err';
     txt.textContent = `Erreur : ${e.message}`;
   }
+}
+
+async function migrateGaleriesClient() {
+  const fixes = [
+    { id: 'ph-plougasnou',   section: 'photographe', title_fr: 'Plougasnou',    label_fr: 'Finistère · Bretagne',    desc_fr: 'Galerie client',           parent_id: 'ph-galeries-client', visible: true,  sort_order: 10, link_url: 'clients/plougasnou.html',   updated_at: new Date().toISOString() },
+    { id: 'ph-gilmerton',    section: 'photographe', title_fr: 'Gilmerton',     label_fr: 'Galerie privée',          desc_fr: 'Sélection · accès protégé', parent_id: 'ph-galeries-client', visible: false, sort_order: 20, link_url: 'clients/gilmerton.html',    updated_at: new Date().toISOString() },
+    { id: 'ph-leo-brasserie',section: 'photographe', title_fr: 'Léo Brasserie', label_fr: 'Galerie privée',          desc_fr: 'Sélection · accès protégé', parent_id: 'ph-galeries-client', visible: false, sort_order: 30, link_url: 'clients/leo-brasserie.html', updated_at: new Date().toISOString() },
+  ];
+  try {
+    const res = await sb('gallery_cards', {
+      method: 'POST',
+      headers: { 'Prefer': 'resolution=merge-duplicates,return=minimal' },
+      body: JSON.stringify(fixes)
+    });
+    if (res.ok) {
+      localStorage.setItem('bb_migration_galeries_v2', '1');
+      /* Recharger les cartes en mémoire pour refléter la migration */
+      const r = await sb('gallery_cards?select=*&order=sort_order.asc');
+      if (r.ok) { const cards = await r.json(); dbCards = {}; cards.forEach(c => { dbCards[c.id] = c; }); renderCards(); }
+    }
+  } catch(e) { console.warn('Migration galeries-client:', e); }
 }
 
 // ── Rendu cartes ─────────────────────────────────────────────────────────────
