@@ -1,0 +1,37 @@
+# ═══════════════════════════════════════════════════════════════════
+# CARTON — St Mélar
+# ═══════════════════════════════════════════════════════════════════
+
+[CATEGORY_FR]
+Immersion · EHPAD de Lanmeur
+
+[CATEGORY_EN]
+Immersion · Lanmeur care home
+
+[TITLE_FR]
+
+[TITLE_EN]
+
+[SUBTITLE_FR]
+
+[SUBTITLE_EN]
+
+[DESC_FR]
+Une semaine avec mon appareil dans un EHPAD. J'ai pris une chambre. J'ai dormi sur place, à Lanmeur. Pour montrer les soignants — leur quotidien, leurs gestes, leur façon d'être là. Ce travail qu'on ne voit jamais parce qu'il se passe derrière des portes fermées.
+
+Pour que quelqu'un te laisse vraiment entrer dans son monde, il faut y être. Pas passer. Être.
+
+[DESC_EN]
+A week with my camera in a care home. I rented a room. I slept on site, in Lanmeur. To show the caregivers — their daily routine, their gestures, the way they show up. The work no one ever sees because it happens behind closed doors.
+
+For someone to truly let you into their world, you have to be there. Not pass through. Be there.
+
+[CTA_LABEL]
+
+[CTA_URL]
+
+[SIDEBAR_FR]
+Résidence photographique · 6 planches · Exposition à l'hôpital
+
+[SIDEBAR_EN]
+Photography residency · 6 plates · Hospital exhibition

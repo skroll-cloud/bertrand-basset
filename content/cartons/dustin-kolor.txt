@@ -1,0 +1,39 @@
+# ═══════════════════════════════════════════════════════════════════
+# CARTON — Dust'in Kolor
+# ═══════════════════════════════════════════════════════════════════
+
+[CATEGORY_FR]
+
+[CATEGORY_EN]
+
+[TITLE_FR]
+
+[TITLE_EN]
+
+[SUBTITLE_FR]
+
+[SUBTITLE_EN]
+
+[DESC_FR]
+Désert du Nevada — Burning Man, août 2016.
+
+Sans vraiment prévenir, le vent se met à souffler, le sable très fin du désert qu'on appelle la Dust se soulève et en quelques minutes on ne distingue plus que des formes grises dans le brouillard.
+
+On enfile alors ses Goggles, ces grosses lunettes de protection aux verres colorés et le monde devient rouge, bleu, orange, rose…
+
+C'est cette vision pendant les tempêtes de sable que j'ai voulu retranscrire avec ce travail chromatique.
+
+[DESC_EN]
+In the middle of a sandstorm, visibility drops to near zero. You put on goggles — those coloured protective lenses. The world turns red, blue, orange, pink…
+
+Dust'in Kolor is not a colorised series. It's what I saw.
+
+Nevada Desert — Burning Man, August 2016.
+
+[CTA_LABEL]
+
+[CTA_URL]
+
+[SIDEBAR_FR]
+
+[SIDEBAR_EN]

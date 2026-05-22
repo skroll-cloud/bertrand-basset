@@ -1,0 +1,27 @@
+# ═══════════════════════════════════════════════════════════════════
+# CARTON — Corporate & Web
+# ═══════════════════════════════════════════════════════════════════
+
+[CATEGORY_FR]
+
+[CATEGORY_EN]
+
+[TITLE_FR]
+
+[TITLE_EN]
+
+[SUBTITLE_FR]
+
+[SUBTITLE_EN]
+
+[DESC_FR]
+
+[DESC_EN]
+
+[CTA_LABEL]
+
+[CTA_URL]
+
+[SIDEBAR_FR]
+
+[SIDEBAR_EN]

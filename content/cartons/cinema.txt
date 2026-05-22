@@ -1,0 +1,33 @@
+# ═══════════════════════════════════════════════════════════════════
+# CARTON — Cinéma
+# ═══════════════════════════════════════════════════════════════════
+
+[CATEGORY_FR]
+
+[CATEGORY_EN]
+
+[TITLE_FR]
+J'arrive
+
+[TITLE_EN]
+J'arrive
+
+[SUBTITLE_FR]
+
+[SUBTITLE_EN]
+
+[DESC_FR]
+Court métrage de 13 minutes
+Produit par Respiro Production
++ de 40 selections et 20 prix
+Rhodes Island, Los Angeles, Clermont-Ferrand, Arles...
+
+[DESC_EN]
+
+[CTA_LABEL]
+
+[CTA_URL]
+
+[SIDEBAR_FR]
+
+[SIDEBAR_EN]

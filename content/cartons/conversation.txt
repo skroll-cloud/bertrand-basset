@@ -1,0 +1,39 @@
+# ═══════════════════════════════════════════════════════════════════
+# CARTON — Conversation (galerie portrait documentaire)
+# ═══════════════════════════════════════════════════════════════════
+
+[CATEGORY_FR]
+
+[CATEGORY_EN]
+
+[TITLE_FR]
+
+[TITLE_EN]
+
+[SUBTITLE_FR]
+
+[SUBTITLE_EN]
+
+[DESC_FR]
+Un peu plus qu'une photo, une rencontre, une conversation entre vous et moi.
+
+Une conversation, c'est d'abord une rencontre où on prend le temps, on discute, dans un lieu de votre choix, sans appareil photo. Puis, on reprend la conversation pour la séance photo, on cherche ensemble à capturer le fruit de notre rencontre. C'est une démarche qui rompt avec l'instanéité, une sorte d'éloge de la lenteur, parce que le résultat sera plus intemporelle, fruit d'une maturation.
+
+Le rendu peut-être photographique, sonore ou sous la forme d'entretien mémoire.
+
+Contactez moi pour en savoir plus.
+
+[DESC_EN]
+More than a photo — a conversation between you and me.
+
+In the form of a documentary series or individual portrait, a conversation can take the shape of a photograph, a recorded interview or a memory film. Multiple approaches are possible depending on the project, the subject, the person.
+
+Contact me to find out more.
+
+[CTA_LABEL]
+
+[CTA_URL]
+
+[SIDEBAR_FR]
+
+[SIDEBAR_EN]

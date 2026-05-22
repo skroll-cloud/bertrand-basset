@@ -1066,6 +1066,59 @@ function _filmsEmbedSrc(v) {
 }
 
 /* ─── PORTFOLIO CLASS ────────────────────────────────── */
+// ── Système de contenu cartons (.txt) ────────────────────────────────────────
+// Les fichiers content/cartons/[galleryId].txt surchargent les textes du JSON.
+// Format : [CHAMP_FR] / [CHAMP_EN] sur une ligne seule, texte en-dessous.
+// ─────────────────────────────────────────────────────────────────────────────
+
+const _cartonTxtCache = {};   // galleryId → { titleFr, descFr, … } | null
+
+function _parseCartonTxt(raw) {
+    const out = {};
+    const clean = raw.replace(/^#[^\n]*\n?/gm, '');      // supprimer commentaires
+    const parts = clean.split(/\[([A-Z_]+)\]/);           // découper sur [CHAMP]
+    for (let i = 1; i < parts.length; i += 2) {
+        const rawKey = parts[i].trim();
+        const val    = (parts[i + 1] || '').trim();
+        // CATEGORY_FR → categoryFr, DESC_EN → descEn, CTA_URL → ctaUrl …
+        const key = rawKey.toLowerCase().replace(/_([a-z])/g, (_, c) => c.toUpperCase());
+        out[key] = val;
+    }
+    return out;
+}
+
+async function _loadCartonTxt(galleryId) {
+    if (_cartonTxtCache[galleryId] !== undefined) return _cartonTxtCache[galleryId];
+    try {
+        const r = await fetch(`content/cartons/${galleryId}.txt`);
+        if (!r.ok) { _cartonTxtCache[galleryId] = null; return null; }
+        _cartonTxtCache[galleryId] = _parseCartonTxt(await r.text());
+        return _cartonTxtCache[galleryId];
+    } catch {
+        _cartonTxtCache[galleryId] = null;
+        return null;
+    }
+}
+
+// Pré-charger tous les txt au démarrage (fichiers légers, chargés en arrière-plan)
+function _preloadCartonTxts() {
+    Object.keys(GALLERIES_CONFIG).forEach(id => _loadCartonTxt(id));
+}
+
+// Fusionne les champs txt (priorité) avec les données JSON du carton
+function _mergeCartonTxt(item, galleryId) {
+    const txt = _cartonTxtCache[galleryId];
+    if (!txt) return item;
+    const merged = { ...item };
+    const fields = ['titleFr','titleEn','subtitleFr','subtitleEn',
+                    'categoryFr','categoryEn','descFr','descEn',
+                    'ctaLabel','ctaUrl','sidebarFr','sidebarEn'];
+    fields.forEach(f => { if (txt[f] !== undefined) merged[f] = txt[f]; });
+    return merged;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+
 class Portfolio {
     constructor() {
         this.currentLang      = 'en';
@@ -1079,6 +1132,7 @@ class Portfolio {
         this.SLIDESHOW_MS     = 3000;
         this.currentAudio     = null;
         this.gridMode         = false;
+        _preloadCartonTxts(); // Charge les .txt en arrière-plan dès le démarrage
         this.init();
     }
 
@@ -1582,13 +1636,14 @@ class Portfolio {
 
         } else if (item.type === 'carton') {
             const en         = lang === 'en';
-            const title      = en ? (item.titleEn    || item.titleFr    || '') : (item.titleFr    || item.titleEn    || '');
-            const subtitle   = en ? (item.subtitleEn || item.subtitleFr || '') : (item.subtitleFr || item.subtitleEn || '');
-            const category   = en ? (item.categoryEn || item.categoryFr || '') : (item.categoryFr || item.categoryEn || '');
-            const sidebarTxt = en ? (item.sidebarEn  || item.sidebarFr  || '') : (item.sidebarFr  || item.sidebarEn  || '');
-            const desc       = en ? (item.descEn     || item.descFr     || '') : (item.descFr     || item.descEn     || '');
-            const ctaUrl     = item.ctaUrl   || '';
-            const ctaLbl     = item.ctaLabel || (en ? 'See more' : 'En savoir plus');
+            const c          = _mergeCartonTxt(item, this.currentGalleryId); // fusion txt+JSON
+            const title      = en ? (c.titleEn    || c.titleFr    || '') : (c.titleFr    || c.titleEn    || '');
+            const subtitle   = en ? (c.subtitleEn || c.subtitleFr || '') : (c.subtitleFr || c.subtitleEn || '');
+            const category   = en ? (c.categoryEn || c.categoryFr || '') : (c.categoryFr || c.categoryEn || '');
+            const sidebarTxt = en ? (c.sidebarEn  || c.sidebarFr  || '') : (c.sidebarFr  || c.sidebarEn  || '');
+            const desc       = en ? (c.descEn     || c.descFr     || '') : (c.descFr     || c.descEn     || '');
+            const ctaUrl     = c.ctaUrl   || '';
+            const ctaLbl     = c.ctaLabel || (en ? 'See more' : 'En savoir plus');
 
             /* ── SIDEBAR: sous-titre + titre + texte — bouton dans footerCaption ── */
             if (galleryDesc) {

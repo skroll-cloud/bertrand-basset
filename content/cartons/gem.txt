@@ -1,0 +1,43 @@
+# ═══════════════════════════════════════════════════════════════════
+# CARTON — GEM Le Sympa
+# ═══════════════════════════════════════════════════════════════════
+
+[CATEGORY_FR]
+
+[CATEGORY_EN]
+
+[TITLE_FR]
+
+[TITLE_EN]
+
+[SUBTITLE_FR]
+
+[SUBTITLE_EN]
+
+[DESC_FR]
+J'ai rencontré l'association GEM Le Sympa par hasard, dans une foire aux associations à Morlaix. Très vite, une envie commune : mettre en avant leurs adhérents — des personnes aux parcours souvent chaotiques.
+
+« Le G.E.M est un lieu de bienveillance et de convivialité pour échanger les uns avec les autres, prendre en compte et respecter ce qui se dit, participer à un espace d'accueil et de solidarité. »
+
+La confiance construite dans le temps m'a permis d'organiser des séances en studio où je leur avais demandé de s'endimancher. Et ils l'ont fait. Une âme, un regard.
+
+Résultat : Exposition permanente au GEM de Morlaix · Label Ministère de la Santé « Grande Cause Nationale 2025 — Parlons Santé Mentale »
+
+[DESC_EN]
+I discovered the GEM Le Sympa association by chance, at a community fair in Morlaix. Very quickly, a shared idea emerged: to highlight their members — people with often chaotic life paths.
+
+"The G.E.M is a place of kindness and conviviality where people can exchange with one another, acknowledge and respect what is said, and take part in a welcoming and supportive space."
+
+The trust built over time allowed me to organise studio sessions where I asked them to dress up. And they did. A soul, a gaze.
+
+Result: Permanent exhibition at the GEM in Morlaix · Ministry of Health label "Grande Cause Nationale 2025 — Parlons Santé Mentale"
+
+[CTA_LABEL]
+Site du G.E.M Le Sympa →
+
+[CTA_URL]
+https://gemlesympa.wixsite.com/g-e-m-le-sympa/en-d%C3%A9couvrir-plus
+
+[SIDEBAR_FR]
+
+[SIDEBAR_EN]

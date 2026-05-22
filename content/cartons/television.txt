@@ -1,0 +1,29 @@
+# ═══════════════════════════════════════════════════════════════════
+# CARTON — Télévision
+# ═══════════════════════════════════════════════════════════════════
+
+[CATEGORY_FR]
+
+[CATEGORY_EN]
+
+[TITLE_FR]
+Réalisateur - France 2
+
+[TITLE_EN]
+
+[SUBTITLE_FR]
+
+[SUBTITLE_EN]
+
+[DESC_FR]
+Réalisation de portraits d'invités pour 20H30 le dimanche, de portrait reportage pour 13H15 le samedi ou de documentaire historique pour 13H15 le dimanche.
+
+[DESC_EN]
+
+[CTA_LABEL]
+
+[CTA_URL]
+
+[SIDEBAR_FR]
+
+[SIDEBAR_EN]

@@ -1,0 +1,30 @@
+# ═══════════════════════════════════════════════════════════════════
+# CARTON — Portrait
+# ═══════════════════════════════════════════════════════════════════
+
+[CATEGORY_FR]
+
+[CATEGORY_EN]
+
+[TITLE_FR]
+
+[TITLE_EN]
+
+[SUBTITLE_FR]
+
+[SUBTITLE_EN]
+
+[DESC_FR]
+Acteur, Artisan, Dirigeant, Artiste, profession libérale, série.
+
+[DESC_EN]
+Artist, artisan, executive, employee, self-employed professional — let's organise a portrait session.
+
+[CTA_LABEL]
+Reserver votre portrait
+
+[CTA_URL]
+
+[SIDEBAR_FR]
+
+[SIDEBAR_EN]

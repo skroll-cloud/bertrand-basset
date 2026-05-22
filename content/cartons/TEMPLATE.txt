@@ -1,0 +1,74 @@
+# ═══════════════════════════════════════════════════════════════════
+# MATRICE — Carton de galerie · Bertrand Basset
+# ═══════════════════════════════════════════════════════════════════
+#
+# COMMENT UTILISER CE FICHIER :
+#   1. Copie ce fichier et renomme-le avec l'ID de la galerie (ex: gem.txt)
+#   2. Remplis les champs entre les balises [CHAMP]
+#   3. Envoie le fichier modifié à Claude → mise à jour automatique
+#
+# RÈGLES DE FORMAT :
+#   - Chaque section commence par [NOM_DU_CHAMP] sur sa propre ligne
+#   - Le texte suit immédiatement en dessous, sur autant de lignes que tu veux
+#   - Saute une ligne pour créer un nouveau paragraphe (↵↵)
+#   - Laisse vide si tu ne veux pas afficher ce champ
+#   - Les lignes commençant par # sont des commentaires ignorés
+#
+# ─── RENDU DANS LE SITE ────────────────────────────────────────────
+#
+#   [CATEGORY_FR/EN]  ← petite ligne grise au-dessus du titre
+#   [TITLE_FR/EN]     ← grand titre central
+#   [SUBTITLE_FR/EN]  ← sous-titre sous le titre
+#   [DESC_FR/EN]      ← texte principal (multi-paragraphes OK)
+#   [CTA_LABEL]       ← texte du bouton lien (même en FR et EN)
+#   [CTA_URL]         ← URL du bouton (lien externe ou interne)
+#   [SIDEBAR_FR/EN]   ← texte affiché dans la colonne de gauche
+#
+# ═══════════════════════════════════════════════════════════════════
+
+[CATEGORY_FR]
+# ex : Santé mentale · Morlaix
+
+[CATEGORY_EN]
+# ex : Mental health · Morlaix
+
+[TITLE_FR]
+# ex : GEM
+
+[TITLE_EN]
+# ex : GEM
+
+[SUBTITLE_FR]
+# ex : G.E.M Le Sympa · Morlaix
+
+[SUBTITLE_EN]
+# ex : G.E.M Le Sympa · Morlaix
+
+[DESC_FR]
+# Texte principal en français.
+# Laisse une ligne vide pour créer un nouveau paragraphe.
+#
+# Exemple :
+# Premier paragraphe.
+#
+# Deuxième paragraphe.
+
+[DESC_EN]
+# Main text in English.
+# Leave a blank line to create a new paragraph.
+
+[CTA_LABEL]
+# Texte du bouton (affiché en FR et EN)
+# ex : En savoir plus →
+
+[CTA_URL]
+# URL complète ou chemin relatif
+# ex : https://example.com  ou  clients/plougasnou.html
+
+[SIDEBAR_FR]
+# Texte court dans la colonne gauche (optionnel)
+# ex : Résidence photographique · 6 planches
+
+[SIDEBAR_EN]
+# Short text in left column (optional)
+# ex : Photography residency · 6 plates
