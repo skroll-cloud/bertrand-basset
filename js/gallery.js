@@ -1010,7 +1010,7 @@ function buildTravaillerEnsemblePage(lang) {
                 }</p>
                 <p>${en
                     ? "It’s been 20 years that my job is to help you do that."
-                    : "Cça fait 20 ans que mon métier est de vous aider à le faire."
+                    : "Ça fait 20 ans que mon métier est de vous aider à le faire."
                 }</p>
                 <p>${en
                     ? 'Business owner, volunteer, artist or grandparent — I adapt and co-create with you what needs to exist: a photo, a film, a podcast.'
