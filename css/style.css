@@ -3120,3 +3120,187 @@ body {
     .section-card:nth-child(2n) { border-right: none; }
     .section-card { border-right: none; }
 }
+
+/* ================================== */
+/* TRAVAILLER ENSEMBLE                */
+/* ================================== */
+.te-main {
+    position: absolute;
+    inset: 0;
+    overflow-y: auto;
+    padding: 2.5rem 3rem;
+    background: var(--white);
+}
+.te-intro {
+    max-width: 560px;
+    margin: 0 auto 2.5rem;
+}
+.te-intro h2 {
+    font-size: 0.6rem;
+    font-weight: 400;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-bottom: 1rem;
+    text-align: left;
+}
+.te-intro p {
+    font-size: 0.88rem;
+    font-weight: 300;
+    line-height: 1.7;
+    color: var(--black);
+    margin-bottom: 0.6rem;
+    text-align: left;
+}
+.te-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: var(--light-gray);
+    max-width: 900px;
+    margin: 0 auto;
+}
+.te-card {
+    background: var(--white);
+    cursor: pointer;
+    overflow: hidden;
+    transition: background .2s;
+}
+.te-card:hover .te-card-img { transform: scale(1.04); }
+.te-card-stub {
+    opacity: 0.35;
+    cursor: default;
+    pointer-events: none;
+}
+.te-card-img-wrap {
+    aspect-ratio: 3 / 2;
+    overflow: hidden;
+}
+.te-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    display: block;
+    transition: transform .5s ease;
+    filter: grayscale(6%);
+}
+.te-card-body {
+    padding: .9rem 1rem 1.1rem;
+    border-top: 1px solid var(--light-gray);
+}
+.te-card-label {
+    font-size: .45rem;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: .3rem;
+}
+.te-card-title {
+    font-size: .88rem;
+    font-weight: 400;
+    color: var(--black);
+    margin-bottom: .2rem;
+    line-height: 1.3;
+}
+.te-card-desc {
+    font-size: .65rem;
+    color: var(--dim);
+    line-height: 1.5;
+}
+
+/* Carton sub-view (plein écran dans #galleryContainer) */
+.te-carton {
+    position: absolute;
+    inset: 0;
+    display: none;
+    flex-direction: row;
+    background: var(--white);
+}
+.te-carton.visible { display: flex; }
+.te-carton-img {
+    flex: 1;
+    overflow: hidden;
+}
+.te-carton-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+}
+.te-carton-text {
+    width: 360px;
+    flex-shrink: 0;
+    overflow-y: auto;
+    padding: 3rem 2.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-left: 1px solid var(--light-gray);
+}
+.te-back {
+    font-size: .52rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--dim);
+    cursor: pointer;
+    margin-bottom: 2.5rem;
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    transition: color .15s;
+    background: none;
+    border: none;
+    font-family: inherit;
+    padding: 0;
+    align-self: flex-start;
+}
+.te-back:hover { color: var(--black); }
+.te-carton-label {
+    font-size: .45rem;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: .8rem;
+}
+.te-carton-title {
+    font-size: 1.1rem;
+    font-weight: 300;
+    color: var(--black);
+    line-height: 1.4;
+    margin-bottom: 1.4rem;
+    letter-spacing: -0.01em;
+}
+.te-carton-body {
+    font-size: .78rem;
+    line-height: 1.9;
+    color: #444;
+    margin-bottom: 1.5rem;
+}
+.te-carton-body p { margin-bottom: .8rem; }
+.te-ref {
+    font-size: .6rem;
+    letter-spacing: .04em;
+    color: var(--dim);
+    font-style: italic;
+    line-height: 1.6;
+}
+.te-cta {
+    display: inline-flex;
+    align-items: center;
+    font-size: .52rem;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    font-family: inherit;
+    padding: .65rem 1.3rem;
+    border: 1px solid var(--black);
+    background: transparent;
+    color: var(--black);
+    cursor: pointer;
+    transition: all .2s;
+    text-decoration: none;
+    margin-top: .3rem;
+    align-self: flex-start;
+}
+.te-cta:hover { background: var(--black); color: var(--white); }
