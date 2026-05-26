@@ -96,7 +96,15 @@ class Portfolio {
         /* Charger la visibilité depuis Supabase, puis construire le menu */
         this._loadVisibility().then(() => {
             this.buildMenu();
-            if (SITE_CONFIG.showLanding === false) this.openHomeGallery();
+            const initHash = window.location.hash.slice(1);
+            if (SITE_CONFIG.showLanding === false) {
+                this.openHomeGallery();
+            } else if (initHash) {
+                /* Hash dans l'URL → entrer directement dans le site sur la bonne vue */
+                document.getElementById('landing')?.classList.add('hidden');
+                document.getElementById('site')?.classList.add('active');
+                this._navigateToHash(initHash);
+            }
         });
     }
 
@@ -292,6 +300,43 @@ class Portfolio {
                 if (Math.abs(dx) > 40) { dx < 0 ? this.next() : this.prev(); }
             }, { passive: true });
         }
+
+        /* Hash routing — bouton Retour navigateur */
+        window.addEventListener('popstate', () => {
+            const hash = window.location.hash.slice(1);
+            if (!hash) {
+                this._navigateToHash(SITE_CONFIG.defaultGallery || 'portrait');
+                this.setActiveLink(null);
+            } else {
+                this._navigateToHash(hash);
+            }
+        });
+    }
+
+    /* Navigue vers la vue correspondant au hash (galerie, section ou page) */
+    _navigateToHash(hash) {
+        if (this.galleries[hash]) {
+            this.openGallery(hash);
+            const navLink = document.querySelector(`[data-gallery="${hash}"]`);
+            this.setActiveLink(navLink || null);
+            return;
+        }
+        if (typeof SECTIONS_CONFIG !== 'undefined' && SECTIONS_CONFIG[hash]) {
+            this.showSectionGrid(hash);
+            const navLink = document.querySelector(`[data-section="${hash}"]`);
+            this.setActiveLink(navLink || null);
+            return;
+        }
+        const menuPage = MENU_CONFIG.find(i => i.pageId === hash || i.id === hash);
+        if (menuPage?.pageId || menuPage?.type === 'page') {
+            const pageId = menuPage.pageId || hash;
+            this.showPage(pageId);
+            const navLink = document.querySelector(`[data-page="${pageId}"]`);
+            this.setActiveLink(navLink || null);
+            return;
+        }
+        /* Hash inconnu — galerie par défaut */
+        this.openHomeGallery();
     }
 
     setLang(lang) {
@@ -397,6 +442,7 @@ class Portfolio {
     openGallery(id) {
         const g = this.galleries[id];
         if (!g?.items?.length) return;
+        history.pushState({ view: 'gallery', id }, '', '#' + id);
         this.currentGallery   = g;
         this.currentGalleryId = id;
         this.currentPageId    = null;
@@ -884,6 +930,7 @@ class Portfolio {
         this.currentGalleryId = null;
         this.currentPageId    = id;
         this.stopSlideshow();
+        history.pushState({ view: 'page', id }, '', '#' + id);
         const container = document.getElementById('galleryContainer');
         const siteEl    = document.getElementById('site');
         if (id === 'films-player') {
@@ -924,6 +971,7 @@ class Portfolio {
         this.stopSlideshow();
         this.stopAudio();
         this.exitUniverseMode();
+        history.pushState({ view: 'section', id: sectionId }, '', '#' + sectionId);
 
         const container = document.getElementById('galleryContainer');
         const siteEl    = document.getElementById('site');
