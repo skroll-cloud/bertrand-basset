@@ -908,8 +908,6 @@ function buildAuteurPage(lang) {
 
 function buildTravaillerEnsemblePage(lang) {
     const en = lang === 'en';
-
-    /* ── helpers ── */
     function t(fr, en_) { return en ? en_ : fr; }
 
     /* ── LANDING ── */
@@ -927,32 +925,16 @@ function buildTravaillerEnsemblePage(lang) {
             "For 20 years, my job has been to help you do that."
         ) + '</p>',
         '<p class="te-hero-line">' + t(
-            "Dirigeant, b\u00e9n\u00e9vole, artiste ou grand-parent \u2014 peu importe qui vous \u00eates et ce que vous voulez raconter, je m\'adapte et je cr\u00e9e avec vous ce qui doit exister : une photo, un film, un podcast.",
+            "Dirigeant, b\u00e9n\u00e9vole, artiste ou grand-parent \u2014 peu importe qui vous \u00eates et ce que vous voulez raconter, je m\'adapte et je cr\u00e9e avec vous ce qui doit exister\u00a0: une photo, un film, un podcast.",
             "Business owner, volunteer, artist or grandparent \u2014 whoever you are and whatever you want to tell, I adapt and I create with you what needs to exist: a photo, a film, a podcast."
         ) + '</p>',
         '<p class="te-hero-regarde">' + t("Regardez.", "Watch.") + '</p>',
         '</div>',
 
-        /* Sur-mesure */
-        '<div class="te-surmesure">',
-        '<p>' + t(
-            "Pour chaque projet qu\'on me confie, j\'invente une solution nouvelle. Jamais je ne reproduis une recette toute faite. Je co-construis avec vous la solution qui convient \u00e0 votre probl\u00e8me.",
-            "For every project I take on, I invent a new solution. I never reproduce a ready-made recipe. I co-build with you the solution that fits your problem."
-        ) + '</p>',
-        '<p>' + t(
-            "Avant je pensais que c\'\u00e9tait un probl\u00e8me. Maintenant je sais que c\'est ma force.",
-            "I used to think that was a problem. Now I know it's my strength."
-        ) + '</p>',
-        '<p>' + t(
-            "Si on travaille ensemble, vous n\'achetez pas une solution \u2014 vous achetez une cr\u00e9ation sur mesure.",
-            "If we work together, you're not buying a solution \u2014 you're buying a bespoke creation."
-        ) + '</p>',
-        '</div>',
-
         /* 2 vignettes */
         '<div class="te-grid">',
 
-        /* Vignette 1 */
+        /* Vignette 1 — Archiver votre mémoire */
         '<div class="te-card" onclick="window._teShowCarton(\'memoire\')">',
         '<div class="te-card-img-wrap"><img class="te-card-img" src="images/Television/02.jpg" alt="" loading="lazy"></div>',
         '<div class="te-card-body">',
@@ -961,9 +943,9 @@ function buildTravaillerEnsemblePage(lang) {
         '<div class="te-card-desc">' + t("Pour les familles, les entreprises ou les institutions et associations.", "For families, companies, institutions and associations.") + '</div>',
         '</div></div>',
 
-        /* Vignette 2 */
+        /* Vignette 2 — Fiction */
         '<div class="te-card" onclick="window._teShowCarton(\'fiction\')">',
-        '<div class="te-card-img-wrap"><img class="te-card-img" src="images/cinema/1.jpg" alt="" loading="lazy"></div>',
+        '<div class="te-card-img-wrap"><img class="te-card-img" src="https://img.youtube.com/vi/O5iTddsVMyA/maxresdefault.jpg" alt="" loading="lazy"></div>',
         '<div class="te-card-body">',
         '<div class="te-card-label">' + t("Film \u00b7 Sc\u00e9nario \u00b7 Production", "Film \u00b7 Script \u00b7 Production") + '</div>',
         '<div class="te-card-title">' + t("Mettez de la fiction dans votre communication", "Put fiction in your communication") + '</div>',
@@ -972,11 +954,15 @@ function buildTravaillerEnsemblePage(lang) {
 
         '</div>',
 
-        /* CTA final */
-        '<div class="te-surmesure" style="margin-top:3rem">',
-        '<p style="font-style:italic">' + t(
-            "Et vous, vous avez une histoire \u00e0 raconter, des humains \u00e0 valoriser, des savoirs \u00e0 transmettre ?",
-            "And you \u2014 do you have a story to tell, people to highlight, knowledge to pass on?"
+        /* Sur-mesure — sous les vignettes, même police que le manifeste */
+        '<div class="te-hero" style="margin-top:3rem;margin-bottom:2rem">',
+        '<p class="te-hero-line">' + t(
+            "Pour chaque projet qu\'on me confie, j\'invente une solution nouvelle. Jamais je ne reproduis une recette toute faite. Je co-construis avec vous la solution qui convient \u00e0 votre probl\u00e8me.",
+            "For every project I take on, I invent a new solution. I never reproduce a ready-made recipe. I co-build with you the solution that fits your problem."
+        ) + '</p>',
+        '<p class="te-hero-line">' + t(
+            "Si on travaille ensemble, vous n\'achetez pas une solution \u2014 vous achetez une cr\u00e9ation sur mesure.",
+            "If we work together, you're not buying a solution \u2014 you're buying a bespoke creation."
         ) + '</p>',
         '<a class="te-hero-cta" href="mailto:bertrand.basset@gmail.com">' + t("Parlons de votre projet \u2192", "Talk about your project \u2192") + '</a>',
         '</div>',
@@ -1002,7 +988,7 @@ function buildTravaillerEnsemblePage(lang) {
         '</div></div>'
     ].join('');
 
-    /* ── CARTON 2 : Fiction dans la communication ── */
+    /* ── CARTON 2 : Fiction ── */
     const cartonFiction = [
         '<div class="te-carton" id="te-carton-fiction">',
         '<div class="te-carton-scroll">',
@@ -1020,7 +1006,6 @@ function buildTravaillerEnsemblePage(lang) {
         '</div></div>'
     ].join('');
 
-    /* ── navigation ── */
     window._teShowCarton = function(id) {
         var landing = document.getElementById('te-landing');
         if (landing) landing.style.display = 'none';
