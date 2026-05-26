@@ -1,0 +1,185 @@
+# ═══════════════════════════════════════════════════════════════════
+# TEXTES — Page "Travailler ensemble" · bertrandbasset.com
+# ═══════════════════════════════════════════════════════════════════
+#
+# Modifie ce fichier puis dis à Claude de mettre à jour le site.
+# Les lignes commençant par # sont des commentaires (ignorés).
+# Saute une ligne entre les paragraphes.
+#
+# ═══════════════════════════════════════════════════════════════════
+
+
+# ── INTRODUCTION (texte d'ouverture de la page) ─────────────────────
+
+[INTRO_FR]
+Vous avez une histoire à raconter, des humains à valoriser, des savoirs à transmettre.
+
+Ça fait 20 ans que mon métier est de vous aider à le faire.
+
+Dirigeant, bénévole, artiste ou grand-parent — peu importe qui vous êtes et ce que vous voulez raconter, je m'adapte et je crée avec vous ce qui doit exister : une photo, un film, un podcast.
+
+Regardez.
+
+[INTRO_EN]
+You have a story to tell, people to highlight, knowledge to pass on.
+
+For 20 years, my job has been to help you do that.
+
+Business owner, volunteer, artist or grandparent — whoever you are and whatever you want to tell, I adapt and I create with you what needs to exist: a photo, a film, a podcast.
+
+Watch.
+
+
+# ── CARTE 1 — Archiver votre mémoire ────────────────────────────────
+
+[CARTE1_LABEL_FR]
+Mémoire · Archives · Podcast
+
+[CARTE1_LABEL_EN]
+Memory · Archives · Podcast
+
+[CARTE1_TITRE_FR]
+Fabriquer aujourd'hui les archives de demain.
+
+[CARTE1_TITRE_EN]
+Building tomorrow's archives today.
+
+[CARTE1_TEXTE_FR]
+Entretien mémoire, portraits documentaires, podcast, films d'archives.
+
+Pour les familles, les entreprises ou les institutions, n'attendez pas qu'il soit trop tard pour enregistrer votre mémoire.
+
+[CARTE1_TEXTE_EN]
+Memory interview, documentary portrait, podcast, archive film.
+
+For families, companies or institutions — don't wait until it's too late to record your memory.
+
+[CARTE1_CTA_FR]
+Vous avez une mémoire à préserver →
+
+[CARTE1_CTA_EN]
+You have a memory to preserve →
+
+[CARTE1_IMAGE]
+images/Television/02.jpg
+
+[CARTE1_VIDEO]
+https://vimeo.com/1192293542/57b7d733e5
+# (Ernest L'hour — embed : https://player.vimeo.com/video/1192293542?h=57b7d733e5)
+
+[CARTE1_REFS]
+Ernest L'hour · Léon Gautier, Commando Kieffer · Jean Rochefort
+
+
+# ── CARTE 2 — Mettez de la fiction dans votre communication ─────────
+
+[CARTE2_LABEL_FR]
+Film · Communication
+
+[CARTE2_LABEL_EN]
+Film · Communication
+
+[CARTE2_TITRE_FR]
+Mettez de la fiction dans votre communication.
+
+[CARTE2_TITRE_EN]
+Put fiction in your communication.
+
+[CARTE2_TEXTE_FR]
+Un film de commande qui ne ressemble pas à un film de commande.
+Une écriture, un point de vue, une histoire — pas un catalogue de prestations.
+
+[CARTE2_TEXTE_EN]
+A commissioned film that doesn't look like a commissioned film.
+An écriture, a point of view, a story — not a catalogue of features.
+
+[CARTE2_CTA_FR]
+Vous voulez un film qui ne ressemble pas à un film de communication →
+
+[CARTE2_CTA_EN]
+You want a film that doesn't look like a corporate film →
+
+[CARTE2_IMAGE]
+images/cinema/1.jpg
+
+[CARTE2_VIDEO]
+https://www.youtube.com/watch?v=O5iTddsVMyA
+# (Tourisme Western Mont d'Arrée)
+
+[CARTE2_REFS]
+Tourisme Western Mont d'Arrée · J'arrive (40 festivals, 20 prix)
+
+
+# ── CARTE 3 — Immersion métier (masquée pour l'instant) ─────────────
+
+[CARTE3_LABEL_FR]
+Documentaire · Immersion · Métier
+
+[CARTE3_TITRE_FR]
+Immersion métier
+
+[CARTE3_ACCROCHE_FR]
+Parce que raconter ce qu'on vend, c'est raconter qui le fait.
+
+[CARTE3_TEXTE_FR]
+Approche documentaire. Votre métier. Une histoire. Des images.
+
+[CARTE3_CTA_FR]
+Vous voulez montrer les humains derrière votre métier →
+
+[CARTE3_VIDEO]
+https://www.youtube.com/watch?v=Fj8JcmKI0Iw
+# (Web-doc Burning Man — le temple du deuil païen)
+
+[CARTE3_REFS]
+Web-doc Burning Man · L'EHPAD de Lanmeur · Le GEM s'endimanche
+
+
+# ── CARTE 4 — Série portrait exposée (masquée pour l'instant) ───────
+
+[CARTE4_LABEL_FR]
+Portrait · Studio · Exposition
+
+[CARTE4_TITRE_FR]
+Série portrait exposée
+
+[CARTE4_ACCROCHE_FR]
+Valoriser vos adhérents, vos collaborateurs avec une série de portraits studio artistiques, suivie d'un vernissage et d'une exposition dans vos locaux.
+
+[CARTE4_TEXTE_FR]
+Série portraits studio artistiques · vernissage · exposition dans vos locaux.
+
+[CARTE4_CTA_FR]
+Vous voulez que vos collaborateurs existent autrement →
+
+[CARTE4_REFS]
+Le GEM s'endimanche · Lumière Lente · Carré d'As
+
+
+# ── PHRASE SUR-MESURE (bas de page) ─────────────────────────────────
+
+[SURMESURE_FR]
+Pour chaque projet qu'on me confie, j'invente une solution nouvelle. Jamais je ne reproduis une recette toute faite. Je co-construis avec vous la solution qui convient à votre problème.
+
+Avant je pensais que c'était un problème. Maintenant je sais que c'est ma force.
+
+Si on travaille ensemble, vous n'achetez pas une solution — vous achetez une création sur mesure.
+
+[SURMESURE_EN]
+For every project I take on, I invent a new solution. I never reproduce a ready-made recipe. I co-build with you the solution that fits your problem.
+
+I used to think that was a problem. Now I know it's my strength.
+
+If we work together, you're not buying a solution — you're buying a bespoke creation.
+
+
+# ── CTA FINAL ────────────────────────────────────────────────────────
+
+[CTA_FINAL_FR]
+Parlons de votre projet →
+
+[CTA_FINAL_EN]
+Talk about your project →
+
+[CTA_URL]
+mailto:bertrand.basset@gmail.com

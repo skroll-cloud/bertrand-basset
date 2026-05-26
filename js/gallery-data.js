@@ -909,60 +909,132 @@ function buildAuteurPage(lang) {
 function buildTravaillerEnsemblePage(lang) {
     const en = lang === 'en';
 
-    /* ── Manifeste ────────────────────────────────────── */
-    const m1 = en
-        ? 'You have a story to tell, people to highlight, knowledge to pass on.'
-        : 'Vous avez une histoire à raconter, des humains à valoriser, des savoirs à transmettre.';
-    const m2 = en
-        ? "For 20 years, my job has been to help you do that."
-        : "Ça fait 20 ans que mon métier est de vous aider à le faire.";
-    const m3 = en
-        ? "Business owner, volunteer, artist or grandparent — whoever you are and whatever you want to tell, I adapt and I create with you what needs to exist: a photo, a film, a podcast."
-        : "Dirigeant, bénévole, artiste ou grand-parent — peu importe qui vous êtes et ce que vous voulez raconter, je m'adapte et je crée avec vous ce qui doit exister : une photo, un film, un podcast.";
-    const mRegarde = en ? 'Watch.' : 'Regardez.';
+    /* ── helpers ── */
+    function t(fr, en_) { return en ? en_ : fr; }
 
-    /* ── Phrase sur-mesure ───────────────────────────── */
-    const s1 = en
-        ? "For every project I take on, I invent a new solution. I never reproduce a ready-made recipe. I co-build with you the solution that fits your problem."
-        : "Pour chaque projet qu'on me confie, j'invente une solution nouvelle. Jamais je ne reproduis une recette toute faite. Je co-construis avec vous la solution qui convient à votre problème.";
-    const s2 = en
-        ? "I used to think that was a problem. Now I know it's my strength."
-        : "Avant je pensais que c'était un problème. Maintenant je sais que c'est ma force.";
-    const s3 = en
-        ? "If we work together, you're not buying a solution — you're buying a bespoke creation."
-        : "Si on travaille ensemble, vous n'achetez pas une solution — vous achetez une création sur mesure.";
+    /* ── LANDING ── */
+    const landing = [
+        '<div class="te-main" id="te-landing">',
 
-    const ctaLabel = en ? 'Talk about your project →' : 'Parlons de votre projet →';
+        /* Manifeste */
+        '<div class="te-hero">',
+        '<p class="te-hero-line">' + t(
+            "Vous avez une histoire \u00e0 raconter, des humains \u00e0 valoriser, des savoirs \u00e0 transmettre.",
+            "You have a story to tell, people to highlight, knowledge to pass on."
+        ) + '</p>',
+        '<p class="te-hero-line">' + t(
+            "\u00c7a fait 20 ans que mon m\u00e9tier est de vous aider \u00e0 le faire.",
+            "For 20 years, my job has been to help you do that."
+        ) + '</p>',
+        '<p class="te-hero-line">' + t(
+            "Dirigeant, b\u00e9n\u00e9vole, artiste ou grand-parent \u2014 peu importe qui vous \u00eates et ce que vous voulez raconter, je m\'adapte et je cr\u00e9e avec vous ce qui doit exister : une photo, un film, un podcast.",
+            "Business owner, volunteer, artist or grandparent \u2014 whoever you are and whatever you want to tell, I adapt and I create with you what needs to exist: a photo, a film, a podcast."
+        ) + '</p>',
+        '<p class="te-hero-regarde">' + t("Regardez.", "Watch.") + '</p>',
+        '</div>',
 
-    return '<div class="te-main">'
+        /* Sur-mesure */
+        '<div class="te-surmesure">',
+        '<p>' + t(
+            "Pour chaque projet qu\'on me confie, j\'invente une solution nouvelle. Jamais je ne reproduis une recette toute faite. Je co-construis avec vous la solution qui convient \u00e0 votre probl\u00e8me.",
+            "For every project I take on, I invent a new solution. I never reproduce a ready-made recipe. I co-build with you the solution that fits your problem."
+        ) + '</p>',
+        '<p>' + t(
+            "Avant je pensais que c\'\u00e9tait un probl\u00e8me. Maintenant je sais que c\'est ma force.",
+            "I used to think that was a problem. Now I know it's my strength."
+        ) + '</p>',
+        '<p>' + t(
+            "Si on travaille ensemble, vous n\'achetez pas une solution \u2014 vous achetez une cr\u00e9ation sur mesure.",
+            "If we work together, you're not buying a solution \u2014 you're buying a bespoke creation."
+        ) + '</p>',
+        '</div>',
 
-        /* ── Manifeste centré ─────────────────────────── */
-        + '<div class="te-hero">'
-        + '<p class="te-hero-line">' + m1 + '</p>'
-        + '<p class="te-hero-line">' + m2 + '</p>'
-        + '<p class="te-hero-line">' + m3 + '</p>'
-        + '<p class="te-hero-regarde">' + mRegarde + '</p>'
-        + '</div>'
+        /* 2 vignettes */
+        '<div class="te-grid">',
 
-        /* ── Player Ernest L'hour ───────────────────── */
-        + '<div class="te-video-wrap">'
-        + '<div class="te-video-ratio">'
-        + '<iframe src="https://player.vimeo.com/video/1192293542?h=57b7d733e5&color=fafafa&byline=0&portrait=0&title=0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>'
-        + '</div>'
-        + '<p class="te-video-caption">Ernest L’hour &nbsp;&middot;&nbsp; '
-        + (en ? 'Memory film' : 'Film mémoire')
-        + '</p>'
-        + '</div>'
+        /* Vignette 1 */
+        '<div class="te-card" onclick="window._teShowCarton(\'memoire\')">',
+        '<div class="te-card-img-wrap"><img class="te-card-img" src="images/Television/02.jpg" alt="" loading="lazy"></div>',
+        '<div class="te-card-body">',
+        '<div class="te-card-label">' + t("M\u00e9moire \u00b7 Transmission \u00b7 Archives", "Memory \u00b7 Archives \u00b7 Podcast") + '</div>',
+        '<div class="te-card-title">' + t("Archiver votre m\u00e9moire", "Archive your memory") + '</div>',
+        '<div class="te-card-desc">' + t("Pour les familles, les entreprises ou les institutions et associations.", "For families, companies, institutions and associations.") + '</div>',
+        '</div></div>',
 
-        /* ── Phrase sur-mesure ─────────────────────── */
-        + '<div class="te-surmesure">'
-        + '<p>' + s1 + '</p>'
-        + '<p>' + s2 + '</p>'
-        + '<p>' + s3 + '</p>'
-        + '<a class="te-hero-cta" href="mailto:bertrand.basset@gmail.com">' + ctaLabel + '</a>'
-        + '</div>'
+        /* Vignette 2 */
+        '<div class="te-card" onclick="window._teShowCarton(\'fiction\')">',
+        '<div class="te-card-img-wrap"><img class="te-card-img" src="images/cinema/1.jpg" alt="" loading="lazy"></div>',
+        '<div class="te-card-body">',
+        '<div class="te-card-label">' + t("Film \u00b7 Sc\u00e9nario \u00b7 Production", "Film \u00b7 Script \u00b7 Production") + '</div>',
+        '<div class="te-card-title">' + t("Mettez de la fiction dans votre communication", "Put fiction in your communication") + '</div>',
+        '<div class="te-card-desc">' + t("Pour votre film de communication.", "For your communication film.") + '</div>',
+        '</div></div>',
 
-        + '</div>';
+        '</div>',
+
+        /* CTA final */
+        '<div class="te-surmesure" style="margin-top:3rem">',
+        '<p style="font-style:italic">' + t(
+            "Et vous, vous avez une histoire \u00e0 raconter, des humains \u00e0 valoriser, des savoirs \u00e0 transmettre ?",
+            "And you \u2014 do you have a story to tell, people to highlight, knowledge to pass on?"
+        ) + '</p>',
+        '<a class="te-hero-cta" href="mailto:bertrand.basset@gmail.com">' + t("Parlons de votre projet \u2192", "Talk about your project \u2192") + '</a>',
+        '</div>',
+
+        '</div>'
+    ].join('');
+
+    /* ── CARTON 1 : Archiver votre mémoire ── */
+    const cartonMemoire = [
+        '<div class="te-carton" id="te-carton-memoire">',
+        '<div class="te-carton-scroll">',
+        '<button class="te-back" onclick="window._teShowMain()">&larr; ' + t("Travailler ensemble", "Back") + '</button>',
+        '<div class="te-carton-label">' + t("M\u00e9moire \u00b7 Transmission \u00b7 Archives", "Memory \u00b7 Archives \u00b7 Podcast") + '</div>',
+        '<div class="te-carton-title">' + t("Archiver votre m\u00e9moire", "Archive your memory") + '</div>',
+        '<div class="te-carton-accroche">' + t("Pour les familles, les entreprises ou les institutions et associations.", "For families, companies, institutions and associations.") + '</div>',
+        '<div class="te-carton-keywords">' + t("Grands entretiens \u00b7 films d\'archives \u00b7 pour familles, entreprises, institutions, associations", "Major interviews \u00b7 archive films \u00b7 for families, companies, institutions, associations") + '</div>',
+        '<div class="te-video-ratio" style="margin:2rem 0">',
+        '<iframe src="https://player.vimeo.com/video/1192293542?h=57b7d733e5&color=fafafa&byline=0&portrait=0&title=0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>',
+        '</div>',
+        '<p class="te-video-caption">Ernest L\'hour, dernier go\u00e9monier \u2014 Mus\u00e9e de la Mer de Carantec</p>',
+        '<div class="te-carton-refs">Ernest L\'hour \u00b7 Jean Rochefort, France 2 \u00b7 L\u00e9on Gautier, Commando Kieffer</div>',
+        '<a class="te-cta" href="mailto:bertrand.basset@gmail.com">' + t("Vous avez une m\u00e9moire \u00e0 pr\u00e9server, un t\u00e9moignage \u00e0 recueillir avant qu\'il soit trop tard\u00a0? \u2192", "You have a memory to preserve, a testimony to collect before it\'s too late? \u2192") + '</a>',
+        '</div></div>'
+    ].join('');
+
+    /* ── CARTON 2 : Fiction dans la communication ── */
+    const cartonFiction = [
+        '<div class="te-carton" id="te-carton-fiction">',
+        '<div class="te-carton-scroll">',
+        '<button class="te-back" onclick="window._teShowMain()">&larr; ' + t("Travailler ensemble", "Back") + '</button>',
+        '<div class="te-carton-label">' + t("Film \u00b7 Sc\u00e9nario \u00b7 Production", "Film \u00b7 Script \u00b7 Production") + '</div>',
+        '<div class="te-carton-title">' + t("Mettez de la fiction dans votre communication", "Put fiction in your communication") + '</div>',
+        '<div class="te-carton-accroche">' + t("Pour votre film de communication.", "For your communication film.") + '</div>',
+        '<div class="te-carton-keywords">' + t("Production \u00b7 sc\u00e9nario \u00b7 tournage \u00b7 post-production cin\u00e9ma \u00b7 pour votre film de communication", "Production \u00b7 script \u00b7 shooting \u00b7 cinema post-production \u00b7 for your communication film") + '</div>',
+        '<div class="te-video-ratio" style="margin:2rem 0;background:#000">',
+        '<iframe src="https://www.youtube.com/embed/O5iTddsVMyA?rel=0&modestbranding=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>',
+        '</div>',
+        '<p class="te-video-caption">Tourisme Western Mont d\'Arr\u00e9e</p>',
+        '<div class="te-carton-refs">Tourisme Western Mont d\'Arr\u00e9e \u00b7 J\'arrive (40 festivals, 20 prix) \u00b7 FIA 100 ans</div>',
+        '<a class="te-cta" href="mailto:bertrand.basset@gmail.com">' + t("Vous voulez un film de communication qui ne ressemble pas \u00e0 un film de communication\u00a0? \u2192", "You want a film that doesn\'t look like a corporate film? \u2192") + '</a>',
+        '</div></div>'
+    ].join('');
+
+    /* ── navigation ── */
+    window._teShowCarton = function(id) {
+        var landing = document.getElementById('te-landing');
+        if (landing) landing.style.display = 'none';
+        document.querySelectorAll('.te-carton').forEach(function(el) { el.classList.remove('visible'); });
+        var carton = document.getElementById('te-carton-' + id);
+        if (carton) carton.classList.add('visible');
+    };
+    window._teShowMain = function() {
+        document.querySelectorAll('.te-carton').forEach(function(el) { el.classList.remove('visible'); });
+        var landing = document.getElementById('te-landing');
+        if (landing) landing.style.display = '';
+    };
+
+    return landing + cartonMemoire + cartonFiction;
 }
 function buildContactPage(lang) {
     const t  = T[lang];

@@ -3296,30 +3296,38 @@ body {
     position: absolute;
     inset: 0;
     display: none;
-    flex-direction: row;
+    overflow-y: auto;
     background: var(--white);
 }
-.te-carton.visible { display: flex; }
-.te-carton-img {
-    flex: 1;
-    overflow: hidden;
+.te-carton.visible { display: block; }
+.te-carton-scroll {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 2.5rem 3rem 5rem;
 }
-.te-carton-img img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-    display: block;
+.te-carton-accroche {
+    font-size: 1rem;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--gray);
+    margin-bottom: 1.2rem;
+    line-height: 1.6;
 }
-.te-carton-text {
-    width: 360px;
-    flex-shrink: 0;
-    overflow-y: auto;
-    padding: 3rem 2.5rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    border-left: 1px solid var(--light-gray);
+.te-carton-keywords {
+    font-size: 0.62rem;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--dim);
+    margin-bottom: 0.5rem;
+}
+.te-carton-refs {
+    font-size: 0.65rem;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-bottom: 2rem;
 }
 .te-back {
     font-size: .52rem;
