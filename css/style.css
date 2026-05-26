@@ -3159,6 +3159,32 @@ body {
     transition: opacity .2s;
 }
 .te-hero-cta:hover { opacity: .5; }
+.te-hero-regarde {
+    font-size: 1.25rem;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--gray);
+    margin-top: 0.4rem;
+    margin-bottom: 0;
+}
+
+/* ── Phrase sur-mesure ── */
+.te-surmesure {
+    max-width: 640px;
+    margin: 4rem auto 4rem;
+    text-align: center;
+}
+.te-surmesure p {
+    font-size: 0.9rem;
+    font-weight: 300;
+    line-height: 1.75;
+    color: var(--black);
+    margin-bottom: 1rem;
+}
+.te-surmesure p:nth-child(2) {
+    font-style: italic;
+    color: var(--gray);
+}
 
 /* ── Travailler ensemble — player vidéo ── */
 .te-video-wrap {

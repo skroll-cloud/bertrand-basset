@@ -909,28 +909,42 @@ function buildAuteurPage(lang) {
 function buildTravaillerEnsemblePage(lang) {
     const en = lang === 'en';
 
-    const line1 = en
+    /* ── Manifeste ────────────────────────────────────── */
+    const m1 = en
         ? 'You have a story to tell, people to highlight, knowledge to pass on.'
         : 'Vous avez une histoire à raconter, des humains à valoriser, des savoirs à transmettre.';
-    const line2 = en
-        ? "It's been 20 years that my job is to help you do that."
+    const m2 = en
+        ? "For 20 years, my job has been to help you do that."
         : "Ça fait 20 ans que mon métier est de vous aider à le faire.";
-    const line3 = en
-        ? 'Business owner, volunteer, artist or grandparent — I adapt and co-create with you what needs to exist: a photo, a film, a podcast.'
-        : "Dirigeant, bénévole, artiste ou grand-parent — je m'adapte et crée avec vous ce qui doit exister : une photo, un film, un podcast.";
-    const ctaLabel = en ? 'Get in touch →' : 'Prendre contact →';
+    const m3 = en
+        ? "Business owner, volunteer, artist or grandparent — whoever you are and whatever you want to tell, I adapt and I create with you what needs to exist: a photo, a film, a podcast."
+        : "Dirigeant, bénévole, artiste ou grand-parent — peu importe qui vous êtes et ce que vous voulez raconter, je m'adapte et je crée avec vous ce qui doit exister : une photo, un film, un podcast.";
+    const mRegarde = en ? 'Watch.' : 'Regardez.';
+
+    /* ── Phrase sur-mesure ───────────────────────────── */
+    const s1 = en
+        ? "For every project I take on, I invent a new solution. I never reproduce a ready-made recipe. I co-build with you the solution that fits your problem."
+        : "Pour chaque projet qu'on me confie, j'invente une solution nouvelle. Jamais je ne reproduis une recette toute faite. Je co-construis avec vous la solution qui convient à votre problème.";
+    const s2 = en
+        ? "I used to think that was a problem. Now I know it's my strength."
+        : "Avant je pensais que c'était un problème. Maintenant je sais que c'est ma force.";
+    const s3 = en
+        ? "If we work together, you're not buying a solution — you're buying a bespoke creation."
+        : "Si on travaille ensemble, vous n'achetez pas une solution — vous achetez une création sur mesure.";
+
+    const ctaLabel = en ? 'Talk about your project →' : 'Parlons de votre projet →';
 
     return '<div class="te-main">'
 
-        /* ── Texte centré ─────────────────────────────────── */
+        /* ── Manifeste centré ─────────────────────────── */
         + '<div class="te-hero">'
-        + '<p class="te-hero-line">' + line1 + '</p>'
-        + '<p class="te-hero-line">' + line2 + '</p>'
-        + '<p class="te-hero-line">' + line3 + '</p>'
-        + '<a class="te-hero-cta" href="#" onclick="portfolio.showPage(\'contact\');portfolio.setActiveLink(\'contact\');return false;">' + ctaLabel + '</a>'
+        + '<p class="te-hero-line">' + m1 + '</p>'
+        + '<p class="te-hero-line">' + m2 + '</p>'
+        + '<p class="te-hero-line">' + m3 + '</p>'
+        + '<p class="te-hero-regarde">' + mRegarde + '</p>'
         + '</div>'
 
-        /* ── Player Ernest L’hour ───────────────────────── */
+        /* ── Player Ernest L'hour ───────────────────── */
         + '<div class="te-video-wrap">'
         + '<div class="te-video-ratio">'
         + '<iframe src="https://player.vimeo.com/video/1192293542?h=57b7d733e5&color=fafafa&byline=0&portrait=0&title=0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>'
@@ -938,6 +952,14 @@ function buildTravaillerEnsemblePage(lang) {
         + '<p class="te-video-caption">Ernest L’hour &nbsp;&middot;&nbsp; '
         + (en ? 'Memory film' : 'Film mémoire')
         + '</p>'
+        + '</div>'
+
+        /* ── Phrase sur-mesure ─────────────────────── */
+        + '<div class="te-surmesure">'
+        + '<p>' + s1 + '</p>'
+        + '<p>' + s2 + '</p>'
+        + '<p>' + s3 + '</p>'
+        + '<a class="te-hero-cta" href="mailto:bertrand.basset@gmail.com">' + ctaLabel + '</a>'
         + '</div>'
 
         + '</div>';
