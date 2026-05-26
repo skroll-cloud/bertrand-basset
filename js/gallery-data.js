@@ -909,26 +909,25 @@ function buildAuteurPage(lang) {
 function buildTravaillerEnsemblePage(lang) {
     const en = lang === 'en';
 
-    /* ── 2 cartes visibles seulement ── */
     const cards = [
         {
             id:      'archives',
-            labelFr: 'Mémoire · Archives · Podcast',
-            labelEn: 'Memory · Archives · Podcast',
-            titleFr: 'Fabriquer aujourd'hui les archives de demain.',
-            titleEn: 'Building tomorrow's archives today.',
-            descFr:  'Entretien mémoire, portrait documentaire, podcast, film d'archives.',
+            labelFr: 'M\u00e9moire \u00b7 Archives \u00b7 Podcast',
+            labelEn: 'Memory \u00b7 Archives \u00b7 Podcast',
+            titleFr: "Fabriquer aujourd'hui les archives de demain.",
+            titleEn: "Building tomorrow's archives today.",
+            descFr:  "Entretien m\u00e9moire, portrait documentaire, podcast, film d'archives.",
             descEn:  'Memory interview, documentary portrait, podcast, archive film.',
             img:     'images/Television/02.jpg',
         },
         {
             id:      'fiction',
-            labelFr: 'Film · Communication',
-            labelEn: 'Film · Communication',
+            labelFr: 'Film \u00b7 Communication',
+            labelEn: 'Film \u00b7 Communication',
             titleFr: 'Mettez de la fiction dans votre communication.',
             titleEn: 'Put fiction in your communication.',
-            descFr:  'Un film de commande qui ne ressemble pas à un film de commande.',
-            descEn:  'A commissioned film that doesn't look like a commissioned film.',
+            descFr:  "Un film de commande qui ne ressemble pas \u00e0 un film de commande.",
+            descEn:  "A commissioned film that doesn't look like a commissioned film.",
             img:     'images/cinema/1.jpg',
         },
     ];
@@ -937,83 +936,45 @@ function buildTravaillerEnsemblePage(lang) {
         const label = en ? c.labelEn : c.labelFr;
         const title = en ? c.titleEn : c.titleFr;
         const desc  = en ? c.descEn  : c.descFr;
-        return `<div class="te-card" onclick="window._teShowCarton('${c.id}')">
-            <div class="te-card-img-wrap">
-                <img class="te-card-img" src="${c.img}" alt="" loading="lazy">
-            </div>
-            <div class="te-card-body">
-                <div class="te-card-label">${label}</div>
-                <div class="te-card-title">${title}</div>
-                <div class="te-card-desc">${desc}</div>
-            </div>
-        </div>`;
+        return '<div class="te-card" onclick="window._teShowCarton(\'' + c.id + '\')">'
+             + '<div class="te-card-img-wrap"><img class="te-card-img" src="' + c.img + '" alt="" loading="lazy"></div>'
+             + '<div class="te-card-body">'
+             + '<div class="te-card-label">' + label + '</div>'
+             + '<div class="te-card-title">' + title + '</div>'
+             + '<div class="te-card-desc">' + desc + '</div>'
+             + '</div></div>';
     }).join('');
 
-    /* ── Carton Archives ── */
-    const archivesCarton = `<div class="te-carton" id="te-carton-archives">
-        <div class="te-carton-img">
-            <img src="images/Television/02.jpg" alt="Léon Gautier, Commando Kieffer">
-        </div>
-        <div class="te-carton-text">
-            <button class="te-back" onclick="window._teShowMain()">← ${en ? 'Back' : 'Travailler ensemble'}</button>
-            <div class="te-carton-label">${en ? 'Memory · Archives · Podcast' : 'Mémoire · Archives · Podcast'}</div>
-            <div class="te-carton-title">${en
-                ? 'Building tomorrow's archives today.'
-                : 'Fabriquer aujourd'hui les archives de demain.'
-            }</div>
-            <div class="te-carton-body">
-                <p>${en
-                    ? 'Memory interview, documentary portrait, podcast, archive film.'
-                    : 'Entretien mémoire, portraits documentaires, podcast, films d'archives.'
-                }</p>
-                <p>${en
-                    ? 'For families, companies or institutions — don't wait until it's too late to record your memory.'
-                    : 'Pour les familles, les entreprises ou les institutions, n'attendez pas qu'il soit trop tard pour enregistrer votre mémoire.'
-                }</p>
-                <p class="te-ref">Ernest L'hour · Léon Gautier, Commando Kieffer · Jean Rochefort</p>
-            </div>
-            <a class="te-cta" href="https://vimeo.com/240574987" target="_blank" rel="noopener">${en
-                ? 'Watch the film →'
-                : 'Voir le film →'
-            }</a>
-            <a class="te-cta" style="margin-top:.5rem;border-color:var(--light-gray);color:var(--dim)" href="#" onclick="portfolio.showPage('contact');portfolio.setActiveLink('contact');return false;">${en
-                ? 'You have a memory to preserve →'
-                : 'Vous avez une mémoire à préserver →'
-            }</a>
-        </div>
-    </div>`;
+    const archivesCarton = '<div class="te-carton" id="te-carton-archives">'
+        + '<div class="te-carton-img"><img src="images/Television/02.jpg" alt="L\u00e9on Gautier, Commando Kieffer"></div>'
+        + '<div class="te-carton-text">'
+        + '<button class="te-back" onclick="window._teShowMain()">&larr; ' + (en ? 'Back' : 'Travailler ensemble') + '</button>'
+        + '<div class="te-carton-label">' + (en ? 'Memory \u00b7 Archives \u00b7 Podcast' : 'M\u00e9moire \u00b7 Archives \u00b7 Podcast') + '</div>'
+        + '<div class="te-carton-title">' + (en ? "Building tomorrow's archives today." : "Fabriquer aujourd'hui les archives de demain.") + '</div>'
+        + '<div class="te-carton-body">'
+        + '<p>' + (en ? 'Memory interview, documentary portrait, podcast, archive film.' : "Entretien m\u00e9moire, portraits documentaires, podcast, films d'archives.") + '</p>'
+        + '<p>' + (en ? "For families, companies or institutions — don't wait until it's too late to record your memory." : "Pour les familles, les entreprises ou les institutions, n'attendez pas qu'il soit trop tard pour enregistrer votre m\u00e9moire.") + '</p>'
+        + '<p class="te-ref">Ernest L&#8217;hour \u00b7 L\u00e9on Gautier, Commando Kieffer \u00b7 Jean Rochefort</p>'
+        + '</div>'
+        + '<a class="te-cta" href="https://vimeo.com/240574987" target="_blank" rel="noopener">' + (en ? 'Watch the film &rarr;' : 'Voir le film &rarr;') + '</a>'
+        + '<a class="te-cta" style="margin-top:.5rem;border-color:var(--light-gray);color:var(--dim)" href="#" onclick="portfolio.showPage(\'contact\');portfolio.setActiveLink(\'contact\');return false;">' + (en ? 'You have a memory to preserve &rarr;' : 'Vous avez une m\u00e9moire \u00e0 pr\u00e9server &rarr;') + '</a>'
+        + '</div></div>';
 
-    /* ── Carton Fiction ── */
-    const fictionCarton = `<div class="te-carton" id="te-carton-fiction">
-        <div class="te-carton-img" style="background:#000">
-            <iframe
-                src="https://www.youtube.com/embed/O5iTddsVMyA?rel=0&modestbranding=1"
-                style="width:100%;height:100%;border:none;display:block"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowfullscreen></iframe>
-        </div>
-        <div class="te-carton-text">
-            <button class="te-back" onclick="window._teShowMain()">← ${en ? 'Back' : 'Travailler ensemble'}</button>
-            <div class="te-carton-label">${en ? 'Film · Communication' : 'Film · Communication'}</div>
-            <div class="te-carton-title">${en
-                ? 'Put fiction in your communication.'
-                : 'Mettez de la fiction dans votre communication.'
-            }</div>
-            <div class="te-carton-body">
-                <p>${en
-                    ? 'A commissioned film that doesn't look like a commissioned film. An ecriture, a point of view, a story — not a catalogue of features.'
-                    : 'Un film de commande qui ne ressemble pas à un film de commande. Une écriture, un point de vue, une histoire — pas un catalogue de prestations.'
-                }</p>
-                <p class="te-ref">Tourisme Mont d'Arrée</p>
-            </div>
-            <a class="te-cta" href="#" onclick="portfolio.showPage('contact');portfolio.setActiveLink('contact');return false;">${en
-                ? 'You want a film that doesn't look like a corporate film →'
-                : 'Vous voulez un film qui ne ressemble pas à un film de communication →'
-            }</a>
-        </div>
-    </div>`;
+    const fictionCarton = '<div class="te-carton" id="te-carton-fiction">'
+        + '<div class="te-carton-img" style="background:#000">'
+        + '<iframe src="https://www.youtube.com/embed/O5iTddsVMyA?rel=0&modestbranding=1" style="width:100%;height:100%;border:none;display:block" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'
+        + '</div>'
+        + '<div class="te-carton-text">'
+        + '<button class="te-back" onclick="window._teShowMain()">&larr; ' + (en ? 'Back' : 'Travailler ensemble') + '</button>'
+        + '<div class="te-carton-label">Film \u00b7 Communication</div>'
+        + '<div class="te-carton-title">' + (en ? 'Put fiction in your communication.' : 'Mettez de la fiction dans votre communication.') + '</div>'
+        + '<div class="te-carton-body">'
+        + '<p>' + (en ? "A commissioned film that doesn't look like a commissioned film. An ecriture, a point of view, a story — not a catalogue of features." : "Un film de commande qui ne ressemble pas \u00e0 un film de commande. Une \u00e9criture, un point de vue, une histoire — pas un catalogue de prestations.") + '</p>'
+        + '<p class="te-ref">Tourisme Mont d&#8217;Arr\u00e9e</p>'
+        + '</div>'
+        + '<a class="te-cta" href="#" onclick="portfolio.showPage(\'contact\');portfolio.setActiveLink(\'contact\');return false;">' + (en ? "You want a film that doesn't look like a corporate film &rarr;" : 'Vous voulez un film qui ne ressemble pas \u00e0 un film de communication &rarr;') + '</a>'
+        + '</div></div>';
 
-    /* ── Navigation ── */
     window._teShowCarton = function(id) {
         const main = document.querySelector('.te-main');
         if (main) main.style.display = 'none';
@@ -1027,30 +988,19 @@ function buildTravaillerEnsemblePage(lang) {
         if (main) main.style.display = '';
     };
 
-    return `
-        <div class="te-main">
-            <div class="te-intro">
-                <h2>${en ? 'Working together' : 'Travailler ensemble'}</h2>
-                <p>${en
-                    ? 'You have a story to tell, people to highlight, knowledge to pass on.'
-                    : 'Vous avez une histoire à raconter, des humains à valoriser, des savoirs à transmettre.'
-                }</p>
-                <p>${en
-                    ? "It's been 20 years that my job is to help you do that."
-                    : "Ça fait 20 ans que mon métier est de vous aider à le faire."
-                }</p>
-                <p>${en
-                    ? 'Business owner, volunteer, artist or grandparent — I adapt and co-create with you what needs to exist: a photo, a film, a podcast.'
-                    : "Dirigeant, bénévole, artiste ou grand-parent — je m'adapte et crée avec vous ce qui doit exister : une photo, un film, un podcast."
-                }</p>
-            </div>
-            <div class="te-grid" style="grid-template-columns:repeat(2,1fr)">
-                ${cardsHtml}
-            </div>
-        </div>
-        ${archivesCarton}
-        ${fictionCarton}
-    `;
+    return '<div class="te-main">'
+        + '<div class="te-intro">'
+        + '<h2>' + (en ? 'Working together' : 'Travailler ensemble') + '</h2>'
+        + '<p>' + (en ? 'You have a story to tell, people to highlight, knowledge to pass on.' : 'Vous avez une histoire \u00e0 raconter, des humains \u00e0 valoriser, des savoirs \u00e0 transmettre.') + '</p>'
+        + '<p>' + (en ? "It's been 20 years that my job is to help you do that." : "\u00c7a fait 20 ans que mon m\u00e9tier est de vous aider \u00e0 le faire.") + '</p>'
+        + '<p>' + (en ? 'Business owner, volunteer, artist or grandparent — I adapt and co-create with you what needs to exist: a photo, a film, a podcast.' : "Dirigeant, b\u00e9n\u00e9vole, artiste ou grand-parent — je m'adapte et cr\u00e9e avec vous ce qui doit exister : une photo, un film, un podcast.") + '</p>'
+        + '</div>'
+        + '<div class="te-grid" style="grid-template-columns:repeat(2,1fr)">'
+        + cardsHtml
+        + '</div>'
+        + '</div>'
+        + archivesCarton
+        + fictionCarton;
 }
 function buildContactPage(lang) {
     const t  = T[lang];
