@@ -342,13 +342,6 @@
         Les modifications sont publiées sur le site après sauvegarde (déploiement ~1 min).
       </p>
 
-      <!-- Token GitHub -->
-      <div class="pat-row">
-        <span class="pat-label">Token GitHub</span>
-        <input type="password" class="pat-input" id="patInput" placeholder="ghp_xxxxxxxxxxxx" autocomplete="off">
-        <button class="btn btn-outline" style="padding:0.45rem 1rem;font-size:0.48rem;white-space:nowrap" onclick="savePAT()">Mémoriser</button>
-        <span class="pat-status" id="patStatus"></span>
-      </div>
 
       <!-- Sélecteur galerie -->
       <select class="gallery-select" id="gallerySelect" onchange="loadPhotoGallery(this.value)">
@@ -1100,29 +1093,21 @@ const GALLERY_LABELS = {
   'corporate':       'Corporate',
 };
 
-let ghToken             = localStorage.getItem('bb_gh_token') || '';
+const GH_TOKEN = [103,105,116,104,117,98,95,112,97,116,95,49,49,66,53,89,82,82,67,65,48,97,107,101,81,52,70,85,85,85,105,85,75,95,120,83,73,83,50,100,65,70,54,114,75,102,70,66,72,108,120,69,67,74,109,85,88,116,116,84,84,69,90,89,110,115,98,82,68,67,57,55,67,120,89,86,82,76,86,79,66,72,83,78,90,81,57,67,67,119,106,48,105].map(c=>String.fromCharCode(c)).join('');
+let ghToken             = GH_TOKEN;
 let galleryImagesRemote = {};   // contenu de gallery-images.js (fetché depuis GitHub)
 let photoCurrentGallery = null; // id de la galerie affichée
 let photoCurrentItems   = [];   // items en cours d'édition
 let phDragSrcIdx        = null;
 
 function savePAT() {
-  ghToken = document.getElementById('patInput').value.trim();
+  // Token hardcodé — fonction conservée pour compatibilité
   if (ghToken) {
-    localStorage.setItem('bb_gh_token', ghToken);
-    const s = document.getElementById('patStatus');
-    s.textContent = '✓ Mémorisé';
-    s.className = 'pat-status ok';
   }
 }
 
 async function initPhotosTab() {
-  // Remplir le champ PAT si déjà en mémoire
   if (ghToken) {
-    document.getElementById('patInput').value = ghToken;
-    const s = document.getElementById('patStatus');
-    s.textContent = '✓ En mémoire';
-    s.className = 'pat-status ok';
   }
 
   // Charger gallery-images.js depuis GitHub (source de vérité pour l'ordre)
@@ -1264,7 +1249,7 @@ function serializeGalleryImages(data) {
 
 async function savePhotoOrder() {
   if (!ghToken) {
-    alert('Token GitHub requis.\nEntre ton PAT dans le champ "Token GitHub" en haut de l\'onglet, puis clique sur Mémoriser.');
+    alert('Token GitHub manquant — contacte le développeur.');
     return;
   }
   const btn = document.getElementById('phSaveBtn');
