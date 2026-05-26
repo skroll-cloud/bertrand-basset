@@ -892,6 +892,10 @@ class Portfolio {
             container.classList.remove('page-mode');
             siteEl?.classList.add('films-mode');
             container.innerHTML = buildFilmsPlayerPage(this.currentLang);
+        } else if (id === 'travailler-ensemble') {
+            siteEl?.classList.remove('films-mode');
+            container.classList.remove('page-mode');
+            container.innerHTML = buildTravaillerEnsemblePage(this.currentLang);
         } else {
             siteEl?.classList.remove('films-mode');
             container.classList.add('page-mode');
@@ -900,7 +904,6 @@ class Portfolio {
             if (id === 'contact')               html = buildContactPage(this.currentLang);
             if (id === 'post-production')       html = buildPostProductionPage(this.currentLang);
             if (id === 'auteur')                html = buildAuteurPage(this.currentLang);
-            if (id === 'travailler-ensemble')   html = buildTravaillerEnsemblePage(this.currentLang);
             container.innerHTML = `<div class="page-content">${html}</div>`;
         }
         const counter = document.querySelector('.gallery-counter');

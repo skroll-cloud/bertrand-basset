@@ -908,48 +908,137 @@ function buildAuteurPage(lang) {
 
 function buildTravaillerEnsemblePage(lang) {
     const en = lang === 'en';
-    return `<div class="page-text">
-      <div class="page-section">
-        <h2>${en ? 'Working together' : 'Travailler ensemble'}</h2>
-        <p>${en
-          ? 'You have a story to tell, people to highlight, knowledge to pass on.'
-          : 'Vous avez une histoire à raconter, des humains à valoriser, des savoirs à transmettre.'
-        }</p>
-        <p>${en
-          ? "It's been 20 years that my job is to help you do that."
-          : "Ça fait 20 ans que mon métier est de vous aider à le faire."
-        }</p>
-        <p>${en
-          ? 'Business owner, volunteer, artist or grandparent — whatever you want to tell, I adapt and co-create with you what needs to exist: a photo, a film, a podcast.'
-          : "Dirigeant, bénévole, artiste ou grand-parent — peu importe qui vous êtes et ce que vous voulez raconter, je m'adapte et je crée avec vous ce qui doit exister : une photo, un film, un podcast."
-        }</p>
-      </div>
-      <div class="page-section">
-        <h2>${en ? 'Made to measure' : 'Sur mesure'}</h2>
-        <p>${en
-          ? "For every project I'm entrusted with, I invent a new solution. I never reproduce a ready-made recipe. I co-build with you the solution that fits your problem."
-          : "Pour chaque projet qu'on me confie, j'invente une solution nouvelle. Jamais je ne reproduis une recette toute faite. Je co-construis avec vous la solution qui convient à votre problème."
-        }</p>
-        <p>${en
-          ? "If we work together, you're not buying a service — you're buying a custom creation."
-          : "Si on travaille ensemble, vous n'achetez pas une solution — vous achetez une création sur mesure."
-        }</p>
-      </div>
-      <div class="page-section">
-        <h2>${en ? 'And you?' : 'Et vous ?'}</h2>
-        <p style="font-style:italic">${en
-          ? '\"Do you have a story to tell, people to highlight, knowledge to pass on?\"'
-          : '« Et vous, vous avez une histoire à raconter, des humains à valoriser, des savoirs à transmettre ?»'
-        }</p>
-      </div>
-      <div class="page-section">
-        <a href="#" onclick="window.portfolio?.showPage('contact');return false;" class="cta-link-text">
-          ${en ? 'Let\'s talk →' : 'Prendre contact →'}
-        </a>
-      </div>
-    </div>`;
-}
 
+    const cards = [
+        {
+            id: 'archives',
+            labelFr: 'Mémoire · Archives · Podcast',
+            labelEn: 'Memory · Archives · Podcast',
+            titleFr: 'Fabriquer aujourd’hui les archives de demain.',
+            titleEn: 'Building tomorrow’s archives today.',
+            descFr:  'Entretien mémoire, portrait documentaire, podcast, film d’archives.',
+            descEn:  'Memory interview, documentary portrait, podcast, archive film.',
+            img:     'images/Television/02.jpg',
+            stub:    false,
+        },
+        {
+            id: 'fiction',
+            labelFr: 'Film · Communication',
+            labelEn: 'Film · Communication',
+            titleFr: 'Mettez de la fiction dans votre communication.',
+            titleEn: 'Put fiction in your communication.',
+            descFr:  'À venir.',
+            descEn:  'Coming soon.',
+            img:     'images/cinema/1.jpg',
+            stub:    true,
+        },
+        {
+            id: 'immersion',
+            labelFr: 'Documentaire · Résidence',
+            labelEn: 'Documentary · Residency',
+            titleFr: 'Immersion métier.',
+            titleEn: 'Professional immersion.',
+            descFr:  'À venir.',
+            descEn:  'Coming soon.',
+            img:     'images/ST MELAR/stmelar-1.jpg',
+            stub:    true,
+        },
+        {
+            id: 'portrait-serie',
+            labelFr: 'Série · Exposition',
+            labelEn: 'Series · Exhibition',
+            titleFr: 'La série portrait exposée.',
+            titleEn: 'Portrait series for exhibition.',
+            descFr:  'À venir.',
+            descEn:  'Coming soon.',
+            img:     'images/gem/JeanFrancois.jpg',
+            stub:    true,
+        },
+    ];
+
+    const cardsHtml = cards.map(c => {
+        const label = en ? c.labelEn : c.labelFr;
+        const title = en ? c.titleEn : c.titleFr;
+        const desc  = en ? c.descEn  : c.descFr;
+        const click = c.stub ? '' : `onclick="window._teShowCarton('${c.id}')"`;
+        return `<div class="te-card${c.stub ? ' te-card-stub' : ''}" ${click}>
+            <div class="te-card-img-wrap">
+                <img class="te-card-img" src="${c.img}" alt="" loading="lazy">
+            </div>
+            <div class="te-card-body">
+                <div class="te-card-label">${label}</div>
+                <div class="te-card-title">${title}</div>
+                <div class="te-card-desc">${desc}</div>
+            </div>
+        </div>`;
+    }).join('');
+
+    const archivesCarton = `<div class="te-carton" id="te-carton-archives">
+        <div class="te-carton-img">
+            <img src="images/Television/02.jpg" alt="Léon Gautier, Commando Kieffer">
+        </div>
+        <div class="te-carton-text">
+            <button class="te-back" onclick="window._teShowMain()">← ${en ? 'Back' : 'Travailler ensemble'}</button>
+            <div class="te-carton-label">${en ? 'Memory · Archives · Podcast' : 'Mémoire · Archives · Podcast'}</div>
+            <div class="te-carton-title">${en
+                ? 'Building tomorrow’s archives today.'
+                : 'Fabriquer aujourd’hui les archives de demain.'
+            }</div>
+            <div class="te-carton-body">
+                <p>${en
+                    ? 'Memory interview, documentary portrait, podcast, archive film.'
+                    : 'Entretien mémoire, portraits documentaires, podcast, films d’archives.'
+                }</p>
+                <p>${en
+                    ? 'For families, companies or institutions — don’t wait until it’s too late to record your memory.'
+                    : 'Pour les familles, les entreprises ou les institutions, n’attendez pas qu’il soit trop tard pour enregistrer votre mémoire.'
+                }</p>
+                <p class="te-ref">Ernest L’hour · Léon Gautier, Commando Kieffer · Jean Rochefort</p>
+            </div>
+            <a class="te-cta" href="#" onclick="portfolio.showPage('contact');portfolio.setActiveLink('contact');return false;">${en
+                ? 'You have a memory to preserve →'
+                : 'Vous avez une mémoire à préserver →'
+            }</a>
+        </div>
+    </div>`;
+
+    window._teShowCarton = function(id) {
+        const main = document.querySelector('.te-main');
+        if (main) main.style.display = 'none';
+        document.querySelectorAll('.te-carton').forEach(el => el.classList.remove('visible'));
+        const carton = document.getElementById('te-carton-' + id);
+        if (carton) carton.classList.add('visible');
+    };
+    window._teShowMain = function() {
+        document.querySelectorAll('.te-carton').forEach(el => el.classList.remove('visible'));
+        const main = document.querySelector('.te-main');
+        if (main) main.style.display = '';
+    };
+
+    return `
+        <div class="te-main">
+            <div class="te-intro">
+                <h2>${en ? 'Working together' : 'Travailler ensemble'}</h2>
+                <p>${en
+                    ? 'You have a story to tell, people to highlight, knowledge to pass on.'
+                    : 'Vous avez une histoire à raconter, des humains à valoriser, des savoirs à transmettre.'
+                }</p>
+                <p>${en
+                    ? "It's been 20 years that my job is to help you do that."
+                    : "Ça fait 20 ans que mon métier est de vous aider à le faire."
+                }</p>
+                <p>${en
+                    ? 'Business owner, volunteer, artist or grandparent — I adapt and co-create with you what needs to exist: a photo, a film, a podcast.'
+                    : "Dirigeant, bénévole, artiste ou grand-parent — je m'adapte et crée avec vous ce qui doit exister : une photo, un film, un podcast."
+                }</p>
+            </div>
+            <div class="te-grid">
+                ${cardsHtml}
+            </div>
+        </div>
+        ${archivesCarton}
+    `;
+}
 function buildContactPage(lang) {
     const t  = T[lang];
     const en = lang === 'en';
