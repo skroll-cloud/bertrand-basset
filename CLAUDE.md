@@ -211,16 +211,66 @@ document.getElementById('homeLink')?.addEventListener('click', e => {
 
 ---
 
-## 5. Galeries clients (pages type plougasnou.html)
+## 5. Galeries clients — architecture
 
-- **Exception à la règle showPage()** : les galeries clients sont des fichiers HTML séparés
-  car elles sont **plein écran** (menu du site disparu) avec leur propre logique (lightbox, password gate)
-- Elles **doivent quand même** utiliser les vars CSS du site (`--black`, `--white`, etc.)
-  et la typographie IBM Plex Sans 300
-- Le thème peut être sombre (fond noir) car c'est une UX photo professionnelle dédiée au client
-- Password gate : SHA-256 côté client (Web Crypto API)
+### Règle d'accès
+- Chaque galerie a **une URL propre et partageable** : `bertrandbasset.com/clients/[nom].html`
+- Le portail `clients/index.html` liste toutes les galeries (lien direct, pas dans la nav du site)
+- La carte "Galeries Client" dans PHOTOGRAPHE pointe vers `clients/index.html` (pas de subgrid)
+
+### Mot de passe master
+Toute galerie accepte **deux mots de passe** :
+1. Son mot de passe propre (SHA-256 hardcodé dans le fichier)
+2. Le mot de passe maître **`fullaccess`** (SHA-256 = `44ffde91067d45353ee3b6ec012580e30fea73b60654a905013269cb092b7b8d`)
+
+```js
+if (hash === PWD_HASH || hash === MASTER_HASH) { /* accès accordé */ }
+```
+
+### 3 types de galeries
+
+| Type | Fichier template | Usage |
+|------|-----------------|-------|
+| **Visionnage** | `clients/ines.html` | Lecture seule — le client visionne, sans sélectionner ni télécharger |
+| **Sélection** | `clients/gilmerton.html` | Grille + sélection + "Envoyer ma sélection" par email + téléchargement ZIP |
+| **Boutique** | (à créer) | Sélection + panier + achat Stripe |
+
+### Protocole — créer une nouvelle galerie client
+
+Bertrand dit : **"type de galerie + nom du dossier pCloud + (optionnel) mot de passe + photo vignette"**
+
+Claude fait :
+1. Récupérer le code pCloud depuis le lien `u.pcloud.link/publink/show?code=CODE`
+2. Vérifier que c'est bien un **dossier** (pas un fichier)
+3. Lister les photos pour confirmer le nombre et le nom de la vignette
+4. Copier le template correspondant au type (ines.html pour Visionnage, gilmerton.html pour Sélection)
+5. Modifier les 3 constantes CONFIG :
+   ```js
+   const PCLOUD_CODE  = 'CODE_PCLOUD';
+   const PWD_HASH     = 'sha256_du_mot_de_passe';  /* ou provisoire = SHA256(Nom) */
+   const GALLERY_NAME = 'Nom';
+   ```
+6. Ajouter la carte dans `clients/index.html` avec la vignette pCloud :
+   ```html
+   <img src="https://api.pcloud.com/getpubthumb?code=CODE&fileid=FILEID&size=600x900&type=jpg">
+   ```
+7. Déployer depuis `/tmp/bb_deploy`
+
+### Galeries actives
+
+| Galerie | Type | pCloud code | Vignette fileid | Mot de passe |
+|---------|------|-------------|-----------------|--------------|
+| Gilmerton | Sélection | `kZo1EU5ZLLpXW8fr6xzJNJW0gPuU1B6fdsuy` | — | SHA256("Gilmerton") |
+| Léo Brasserie | Sélection | `kZQ1EU5ZzBL5BcesXwzTqgy0uauzhu35EtS7` | — | SHA256("Léo") |
+| Ines | Visionnage | `kZTjQI5Z2AICSui7ebYf6i6dMEQqiYXYSFCV` | 88476285883 | SHA256("Ines") provisoire |
+
+### Propriétés techniques communes
+- **Exception à la règle showPage()** : fichiers HTML séparés (plein écran, logique propre)
+- Thème sombre (fond `#0f0f0f`) — UX photo professionnelle
+- Password gate : SHA-256 côté client (Web Crypto API) + sessionStorage pour l'auth
 - Lightbox : Fullscreen API (`element.requestFullscreen()`)
-- Navigation : ← → clavier, S sélection, Esc fermeture
+- pCloud : EU first (`eapi.pcloud.com`), fallback US (`api.pcloud.com`)
+- Le compte pCloud de Bertrand est sur le serveur **US** (`api.pcloud.com`)
 
 ---
 

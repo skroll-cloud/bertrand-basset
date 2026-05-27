@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ines — Studio · Bertrand Basset</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/logo-b.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --noir: #111; --blanc: #fff; --creme: #f7f6f4; --gris: #888;
+      --ligne: #e0e0e0; --ocre: #c8913a; --font: 'IBM Plex Sans', system-ui, sans-serif;
+    }
+    html, body { height: 100%; background: #0f0f0f; color: var(--blanc); font-family: var(--font); font-weight: 300; -webkit-font-smoothing: antialiased; }
+
+    /* ── GATE ── */
+    #gate {
+      position: fixed; inset: 0; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 1.5rem;
+      background: #0f0f0f; z-index: 1000;
+    }
+    .gate-logo { font-size: 0.55rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gris); }
+    .gate-titre { font-size: 1.6rem; font-weight: 300; letter-spacing: 0.04em; }
+    .gate-sous { font-size: 0.65rem; letter-spacing: 0.12em; color: var(--gris); text-transform: uppercase; }
+    .gate-form { display: flex; flex-direction: column; align-items: center; gap: 0.8rem; width: 260px; }
+    .gate-input {
+      width: 100%; padding: 0.8rem 1rem; background: #1a1a1a; border: 1px solid #2a2a2a;
+      color: var(--blanc); font-family: var(--font); font-size: 0.8rem; font-weight: 300;
+      letter-spacing: 0.06em; outline: none; text-align: center;
+    }
+    .gate-input:focus { border-color: var(--ocre); }
+    .gate-btn {
+      width: 100%; padding: 0.8rem; background: var(--ocre); color: var(--noir);
+      font-family: var(--font); font-size: 0.6rem; font-weight: 500;
+      letter-spacing: 0.16em; text-transform: uppercase; border: none; cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .gate-btn:hover { opacity: 0.85; }
+    .gate-error { font-size: 0.62rem; color: #c0392b; opacity: 0; transition: opacity 0.3s; }
+    .gate-error.show { opacity: 1; }
+
+    /* ── LOADING ── */
+    #pcloud-loading {
+      position: fixed; inset: 0; display: none; flex-direction: column;
+      align-items: center; justify-content: center; gap: 1rem; background: #0f0f0f; z-index: 900;
+    }
+    .spin {
+      width: 28px; height: 28px; border: 2px solid #333; border-top-color: var(--ocre);
+      border-radius: 50%; animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-msg { font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gris); }
+    .loading-error { font-size: 0.7rem; color: #e74c3c; text-align: center; max-width: 300px; line-height: 1.6; }
+    .loading-retry { margin-top: 0.5rem; padding: 0.5rem 1rem; background: transparent; border: 1px solid var(--gris); color: var(--gris); font-family: var(--font); font-size: 0.6rem; letter-spacing: 0.1em; cursor: pointer; }
+
+    /* ── APP ── */
+    #app { display: none; flex-direction: column; height: 100vh; }
+
+    /* ── HEADER ── */
+    .app-header {
+      flex-shrink: 0; display: flex; align-items: center; gap: 1.2rem;
+      padding: 0 1.5rem; height: 52px; border-bottom: 1px solid #1e1e1e; background: #0f0f0f;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .header-brand { display: flex; align-items: center; }
+    .header-brand img { width: 22px; height: 22px; filter: invert(1); }
+    .header-sep { width: 1px; height: 20px; background: #2a2a2a; }
+    .header-left { flex: 1; }
+    .header-shooting { font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gris); }
+    .header-right { display: flex; align-items: center; }
+    .photo-count { font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: #444; }
+
+    /* ── GALERIE ── */
+    .galerie { flex: 1; overflow-y: auto; padding: 2rem; }
+    .galerie-header { margin-bottom: 1.5rem; }
+    .galerie-titre { font-size: 0.58rem; letter-spacing: 0.18em; text-transform: uppercase; color: #444; }
+    .photo-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 4px;
+    }
+    .photo-item {
+      position: relative; aspect-ratio: 2/3; overflow: hidden; cursor: pointer;
+      background: #1a1a1a;
+    }
+    .photo-item img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      transition: transform 0.3s; user-select: none; -webkit-user-drag: none;
+    }
+    .photo-item:hover img { transform: scale(1.02); }
+    .photo-item .overlay {
+      position: absolute; inset: 0; background: rgba(0,0,0,0);
+      transition: background 0.25s;
+    }
+    .photo-item:hover .overlay { background: rgba(0,0,0,0.15); }
+
+    /* ── LIGHTBOX ── */
+    #lightbox {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.97);
+      z-index: 300; display: none; flex-direction: column;
+    }
+    #lightbox.open { display: flex; }
+    .lb-topbar {
+      flex-shrink: 0; height: 52px; display: flex; align-items: center;
+      justify-content: space-between; padding: 0 1.2rem; border-bottom: 1px solid #1e1e1e;
+    }
+    .lb-title { font-size: 0.6rem; letter-spacing: 0.1em; color: var(--gris); }
+    .lb-topbar-right { display: flex; align-items: center; gap: 0.4rem; }
+    .lb-icon-btn {
+      display: flex; align-items: center; gap: 5px;
+      padding: 0.4rem 0.7rem; background: none; border: 1px solid #2a2a2a;
+      color: var(--gris); font-family: var(--font); font-size: 0.55rem;
+      letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: color 0.2s, border-color 0.2s;
+    }
+    .lb-icon-btn:hover { color: var(--blanc); border-color: #555; }
+    .lb-icon-btn svg { flex-shrink: 0; }
+    .lb-close { background: none; border: none; color: var(--gris); font-size: 1.4rem; cursor: pointer; padding: 0 0.3rem; }
+    .lb-stage {
+      flex: 1; display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden; min-height: 0;
+    }
+    .lb-img { max-width: 100%; max-height: 100%; object-fit: contain; user-select: none; }
+    .lb-nav {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      background: none; border: none; color: rgba(255,255,255,0.35);
+      font-size: 2.5rem; cursor: pointer; padding: 0 1rem; z-index: 1;
+      transition: color 0.2s;
+    }
+    .lb-nav:hover { color: var(--blanc); }
+    .lb-prev { left: 0; }
+    .lb-next { right: 0; }
+    .lb-bottombar {
+      flex-shrink: 0; height: 48px; display: flex; align-items: center;
+      gap: 1.5rem; padding: 0 1.5rem; border-top: 1px solid #1e1e1e;
+    }
+    .lb-counter { font-size: 0.58rem; color: #444; min-width: 50px; }
+    .lb-hint { font-size: 0.52rem; color: #333; letter-spacing: 0.08em; margin-left: auto; }
+  </style>
+</head>
+<body>
+
+<!-- ── GATE ── -->
+<div id="gate">
+  <span class="gate-logo">Bertrand Basset · Studio</span>
+  <h1 class="gate-titre">Ines</h1>
+  <p class="gate-sous">Galerie privée — accès protégé</p>
+  <div class="gate-form">
+    <input type="password" class="gate-input" id="gateInput" placeholder="Mot de passe" autocomplete="off">
+    <button class="gate-btn" onclick="checkPwd()">Accéder à la galerie</button>
+    <span class="gate-error" id="gateError">Mot de passe incorrect.</span>
+  </div>
+</div>
+
+<!-- ── LOADING pCloud ── -->
+<div id="pcloud-loading">
+  <div class="spin"></div>
+  <span class="loading-msg" id="loadingMsg">Chargement de la galerie…</span>
+</div>
+
+<!-- ── APP ── -->
+<div id="app">
+  <header class="app-header">
+    <a href="index.html" class="header-brand" title="Retour aux galeries">
+      <img src="../assets/logo-b.svg" alt="B">
+    </a>
+    <div class="header-sep"></div>
+    <div class="header-left">
+      <span class="header-shooting">Studio · Ines</span>
+    </div>
+    <div class="header-right">
+      <span class="photo-count" id="photoCount"></span>
+    </div>
+  </header>
+  <div class="galerie">
+    <div class="galerie-header">
+      <span class="galerie-titre" id="galerieCount"></span>
+    </div>
+    <div class="photo-grid" id="photoGrid"></div>
+  </div>
+</div>
+
+<!-- ── LIGHTBOX ── -->
+<div id="lightbox">
+  <div class="lb-topbar">
+    <span class="lb-title" id="lbTitle"></span>
+    <div class="lb-topbar-right">
+      <button class="lb-icon-btn" id="lbFsBtn" onclick="lbToggleFs()" title="Plein écran">
+        <svg id="lbFsIcon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+      </button>
+      <button class="lb-close" onclick="closeLb()">×</button>
+    </div>
+  </div>
+  <div class="lb-stage" id="lbStage">
+    <button class="lb-nav lb-prev" onclick="lbNav(-1)">‹</button>
+    <img class="lb-img" id="lbImg" src="" alt="">
+    <button class="lb-nav lb-next" onclick="lbNav(1)">›</button>
+  </div>
+  <div class="lb-bottombar">
+    <span class="lb-counter" id="lbCounter"></span>
+    <span class="lb-hint">← → naviguer · Esc fermer</span>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════
+   CONFIG — modifier uniquement ces constantes
+   ═══════════════════════════════════════════════════ */
+const PCLOUD_CODE  = 'kZTjQI5Z2AICSui7ebYf6i6dMEQqiYXYSFCV';
+const PWD_HASH     = 'c3ef02333f92b8d976c44b4387570e671847de0dc26b32e0f91041b0e76da809'; /* "Ines" — provisoire */
+const MASTER_HASH  = '44ffde91067d45353ee3b6ec012580e30fea73b60654a905013269cb092b7b8d'; /* "fullaccess" */
+const GALLERY_NAME = 'Ines';
+
+/* ── STATE ── */
+let photos  = [];
+const urlCache = {};
+let lbPhoto = 0;
+let pcloudHost = null;
+
+/* ══════════════════════ PASSWORD ══════════════════════ */
+async function sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+async function checkPwd() {
+  const val = document.getElementById('gateInput').value.trim();
+  const hash = await sha256(val);
+  if (hash === PWD_HASH || hash === MASTER_HASH) {
+    sessionStorage.setItem('gallery_auth_' + GALLERY_NAME, '1');
+    document.getElementById('gate').style.display = 'none';
+    loadFromPCloud();
+  } else {
+    document.getElementById('gateError').classList.add('show');
+    setTimeout(() => document.getElementById('gateError').classList.remove('show'), 2500);
+  }
+}
+
+document.getElementById('gateInput').addEventListener('keydown', e => { if (e.key === 'Enter') checkPwd(); });
+
+/* ══════════════════════ PCLOUD ══════════════════════ */
+async function pcloudFetch(endpoint, params) {
+  const qs = new URLSearchParams(params).toString();
+  const allHosts = ['eapi.pcloud.com', 'api.pcloud.com'];
+  const hosts = pcloudHost
+    ? [pcloudHost, ...allHosts.filter(h => h !== pcloudHost)]
+    : allHosts;
+  for (const host of hosts) {
+    try {
+      const r = await fetch(`https://${host}/${endpoint}?${qs}`);
+      if (!r.ok) continue;
+      const d = await r.json();
+      if (d.result === 0) { pcloudHost = host; return d; }
+    } catch(e) { /* essaie le suivant */ }
+  }
+  throw new Error('pCloud API inaccessible (EU et US essayés)');
+}
+
+async function pcloudDirectUrl(fileId) {
+  if (urlCache[fileId]) return urlCache[fileId];
+  const d = await pcloudFetch('getpublinkdownload', { code: PCLOUD_CODE, fileid: fileId, forcedownload: 0 });
+  const url = 'https://' + d.hosts[0] + d.path;
+  urlCache[fileId] = url;
+  return url;
+}
+
+async function loadFromPCloud() {
+  const loadEl = document.getElementById('pcloud-loading');
+  const msgEl  = document.getElementById('loadingMsg');
+  loadEl.style.display = 'flex';
+  msgEl.textContent = 'Connexion à pCloud…';
+
+  function showError(msg) {
+    loadEl.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;gap:0.8rem;padding:2rem">
+      <p class="loading-error">${msg}</p>
+      <button class="loading-retry" onclick="location.reload()">Réessayer</button>
+    </div>`;
+  }
+
+  let rootMeta;
+  try {
+    msgEl.textContent = 'Lecture du dossier…';
+    rootMeta = await pcloudFetch('showpublink', { code: PCLOUD_CODE });
+  } catch(e) {
+    showError('Serveur pCloud inaccessible.<br><small>' + e.message + '</small>');
+    return;
+  }
+
+  let rootContents = rootMeta.metadata?.contents || [];
+
+  if (!rootContents.length && rootMeta.metadata?.folderid) {
+    try {
+      const d2 = await pcloudFetch('showpublink', { code: PCLOUD_CODE, folderid: rootMeta.metadata.folderid });
+      rootContents = d2.metadata?.contents || [];
+    } catch(e) {}
+  }
+
+  let fileList = rootContents.filter(f => !f.isfolder && /\.(jpg|jpeg|png|webp)$/i.test(f.name));
+
+  if (!fileList.length) {
+    showError('Aucune photo trouvée dans le dossier partagé.');
+    return;
+  }
+
+  fileList.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }));
+  photos = fileList.map(f => ({ id: f.fileid, name: f.name }));
+
+  buildGallery();
+  document.getElementById('app').style.display = 'flex';
+  loadEl.style.display = 'none';
+}
+
+/* ══════════════════════ GALLERY BUILD ══════════════════════ */
+function buildGallery() {
+  const grid = document.getElementById('photoGrid');
+  grid.innerHTML = '';
+  const txt = photos.length + ' photo' + (photos.length > 1 ? 's' : '');
+  document.getElementById('galerieCount').textContent = txt;
+  document.getElementById('photoCount').textContent = txt;
+
+  photos.forEach((p, i) => {
+    const thumbUrl = `https://api.pcloud.com/getpubthumb?code=${PCLOUD_CODE}&fileid=${p.id}&size=800x1200&type=jpg`;
+    const item = document.createElement('div');
+    item.className = 'photo-item';
+    item.innerHTML = `
+      <img src="${thumbUrl}" alt="${p.name}" loading="lazy">
+      <div class="overlay"></div>`;
+    item.addEventListener('click', () => openLb(i));
+    grid.appendChild(item);
+  });
+}
+
+/* ══════════════════════ LIGHTBOX ══════════════════════ */
+function openLb(idx) {
+  lbPhoto = idx;
+  renderLb();
+  document.getElementById('lightbox').classList.add('open');
+  document.addEventListener('keydown', lbKeydown);
+}
+
+function closeLb() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.removeEventListener('keydown', lbKeydown);
+  if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+}
+
+function lbKeydown(e) {
+  if (e.key === 'ArrowLeft')       lbNav(-1);
+  else if (e.key === 'ArrowRight') lbNav(1);
+  else if (e.key === 'Escape')     closeLb();
+}
+
+function lbNav(dir) {
+  lbPhoto = (lbPhoto + dir + photos.length) % photos.length;
+  renderLb();
+}
+
+async function renderLb() {
+  const p = photos[lbPhoto];
+  const img = document.getElementById('lbImg');
+  img.src = '';
+  document.getElementById('lbTitle').textContent = `${GALLERY_NAME} · ${lbPhoto + 1} / ${photos.length}`;
+  document.getElementById('lbCounter').textContent = `${lbPhoto + 1} / ${photos.length}`;
+  updateFsIcon();
+  try {
+    const url = await pcloudDirectUrl(p.id);
+    img.src = url;
+  } catch(e) {
+    img.src = `https://api.pcloud.com/getpubthumb?code=${PCLOUD_CODE}&fileid=${p.id}&size=2048x2048&type=jpg`;
+  }
+}
+
+/* ══════════════════════ FULLSCREEN ══════════════════════ */
+function lbToggleFs() {
+  const lb = document.getElementById('lightbox');
+  if (!document.fullscreenElement) lb.requestFullscreen().catch(() => {});
+  else document.exitFullscreen();
+}
+function updateFsIcon() {
+  const icon = document.getElementById('lbFsIcon');
+  if (document.fullscreenElement) {
+    icon.innerHTML = '<path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/>';
+  } else {
+    icon.innerHTML = '<path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>';
+  }
+}
+document.addEventListener('fullscreenchange', updateFsIcon);
+
+/* ══════════════════════ INIT ══════════════════════ */
+(function() {
+  if (sessionStorage.getItem('gallery_auth_' + GALLERY_NAME) === '1') {
+    document.getElementById('gate').style.display = 'none';
+    loadFromPCloud();
+  }
+})();
+</script>
+</body>
+</html>

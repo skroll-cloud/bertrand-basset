@@ -111,7 +111,7 @@ const SECTIONS_CONFIG = {
                 descFr: "Série documentaire · territoire",
                 descEn: "Documentary series · territory",
                 img: "images/ST MELAR/stmelar-1.jpg",
-                parentId: "ph-galeries-client"
+                _hiddenByAdmin: true
             },
             {
                 id: "salarie-ehpad", galleryId: null,
