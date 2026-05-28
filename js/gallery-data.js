@@ -633,7 +633,7 @@ const GALLERIES_CONFIG = {
             {
                 "cid": "best-of-phrase",
                 "position": 1,
-                "titleFr": "Je fabrique des images,<br>je raconte des histoires,<br>parfois en même temps.",
+                "titleFr": "Je fabrique des images,<br>Je raconte des histoires,<br>Parfois en même temps.",
                 "titleEn": "I make images,<br>I tell stories,<br>sometimes at the same time.",
                 "subtitleFr": "",
                 "subtitleEn": "",
