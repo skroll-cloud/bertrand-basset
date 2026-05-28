@@ -315,6 +315,61 @@
       display: flex; align-items: center; justify-content: center;
       font-size: 0.6rem;
     }
+
+    /* ── Visibilité — arbre ── */
+    .vis-tree { display: flex; flex-direction: column; gap: 5px; }
+    .vis-block { border: 1px solid var(--line); overflow: hidden; }
+
+    /* En-tête de section (parent) */
+    .vis-parent-row {
+      display: flex; align-items: center; gap: 0.85rem;
+      padding: 0.72rem 1rem;
+      background: #f4f4f4;
+    }
+    .vis-parent-label {
+      flex: 1; font-size: 0.5rem; font-weight: 400;
+      letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim);
+    }
+
+    /* Lignes enfants */
+    .vis-children { display: flex; flex-direction: column; }
+    .vis-child-row {
+      display: flex; align-items: center; gap: 0.7rem;
+      padding: 0.52rem 1rem 0.52rem 2rem;
+      border-top: 1px solid #f0f0f0;
+      cursor: default; position: relative;
+      transition: background .1s;
+    }
+    /* Connecteur L */
+    .vis-child-row::before {
+      content: '';
+      position: absolute; left: 1.05rem; top: 50%;
+      width: 0.6rem; height: 1px; background: var(--light-gray);
+    }
+    .vis-child-row.drag-over-vis {
+      border-top: 2px solid var(--black); background: #f6f6f6;
+    }
+    .vis-child-row.dragging-vis { opacity: 0.28; background: #f9f9f9; }
+    .vis-drag-handle {
+      color: var(--line); cursor: grab; user-select: none;
+      font-size: 0.85rem; flex-shrink: 0; line-height: 1;
+      transition: color .15s; margin-top: 1px;
+    }
+    .vis-drag-handle:hover { color: var(--dim); }
+    .vis-drag-handle:active { cursor: grabbing; }
+    .vis-child-label { flex: 1; font-size: 0.7rem; font-weight: 300; }
+
+    /* Badge ordre modifié */
+    .vis-order-badge {
+      font-size: 0.48rem; letter-spacing: 0.08em;
+      color: var(--red); border: 1px solid currentColor;
+      padding: 0.15rem 0.55rem; display: none;
+    }
+    .vis-order-badge.visible { display: inline-block; }
+
+    /* Bouton publier ordre (caché par défaut) */
+    #saveOrderBtn { display: none; }
+    #saveOrderBtn.visible { display: inline-flex; }
   </style>
 </head>
 <body>
@@ -431,11 +486,16 @@
 
     <!-- ── TAB : Visibilité ── -->
     <div class="tab-panel" id="tab-visibility">
-      <p class="admin-section-desc">Active ou désactive chaque section du menu principal.</p>
-      <div id="toggleList"></div>
-      <div class="save-wrap">
-        <button class="btn btn-dark" id="saveVisBtn" onclick="saveVisibility()" disabled>Enregistrer</button>
-        <a href="index.html" class="preview-link">← Voir le site</a>
+      <p class="admin-section-desc">
+        Active/désactive chaque entrée du menu. Glisse les lignes enfants pour réordonner —
+        clique <strong>Publier l'ordre</strong> pour que le changement soit en ligne.
+      </p>
+      <div id="toggleList" class="vis-tree"></div>
+      <div class="save-wrap" style="margin-top:1.5rem">
+        <button class="btn btn-dark"    id="saveVisBtn"   onclick="saveVisibility()"  disabled>Enregistrer visibilité</button>
+        <button class="btn btn-outline" id="saveOrderBtn" onclick="saveMenuOrder()">Publier l'ordre sur GitHub</button>
+        <span class="vis-order-badge" id="visOrderBadge">● Ordre modifié</span>
+        <a href="index.html" class="preview-link" style="margin-left:auto">← Voir le site</a>
         <span class="feedback" id="visFeedback"></span>
       </div>
     </div>
@@ -944,36 +1004,124 @@ function showFb(el, msg, isErr) {
   if (!isErr) setTimeout(() => { el.className = 'feedback'; }, 4000);
 }
 
-// ── Visibilité menu ────────────────────────────────────────────────────────────
-function buildDynamicSecs() {
-  const list = [];
+// ── Visibilité menu — arbre ────────────────────────────────────────────────────
+let visOrderChanged = false;
+
+function buildVisTree() {
+  const tree = [];
   MENU_CONFIG.forEach(item => {
     if (item.hidden || item.parent) return;
-    list.push({ id: item.id, label: item.name, parent: false });
+    const node = {
+      id: item.id,
+      label: item.name,
+      sectionId: item.sectionId || null,
+      children: []
+    };
     if (item.type === 'section' && SECTIONS_CONFIG[item.sectionId]) {
       const prefix = PREFIX[item.sectionId] || item.sectionId;
       SECTIONS_CONFIG[item.sectionId].cards.forEach(c => {
-        list.push({ id: `${prefix}-${c.id}`, label: c.titleFr || c.id, parent: true });
+        node.children.push({
+          id: `${prefix}-${c.id}`,
+          cardId: c.id,
+          label: c.titleFr || c.id
+        });
       });
     }
+    tree.push(node);
   });
-  return list;
+  return tree;
 }
 
 function renderVisibility() {
-  dynamicSecs = buildDynamicSecs();
-  const list  = document.getElementById('toggleList');
-  list.innerHTML = dynamicSecs.map(s => {
-    const checked = visState[s.id] !== false;
+  const visTree = buildVisTree();
+  // Maintenir dynamicSecs pour saveVisibility()
+  dynamicSecs = [];
+  visTree.forEach(node => {
+    dynamicSecs.push({ id: node.id, label: node.label, parent: false });
+    node.children.forEach(c => {
+      dynamicSecs.push({ id: c.id, label: c.label, parent: true });
+    });
+  });
+
+  const list = document.getElementById('toggleList');
+  list.innerHTML = visTree.map(node => {
+    const checked = visState[node.id] !== false;
+    const childrenHtml = node.children.map(c => {
+      const cChecked = visState[c.id] !== false;
+      return `
+        <div class="vis-child-row" draggable="true"
+          data-id="${c.id}" data-card-id="${c.cardId}" data-sec="${node.sectionId || ''}">
+          <div class="vis-drag-handle" title="Glisser pour réordonner">⠿</div>
+          <span class="vis-child-label">${c.label}</span>
+          <label class="toggle-switch">
+            <input type="checkbox" ${cChecked?'checked':''} onchange="visState['${c.id}']=this.checked">
+            <span class="toggle-track"></span>
+          </label>
+        </div>`;
+    }).join('');
+
     return `
-      <div class="toggle-row">
-        <span class="toggle-label${s.parent?' child':''}">${s.label}</span>
+    <div class="vis-block">
+      <div class="vis-parent-row">
+        <span class="vis-parent-label">${node.label}</span>
         <label class="toggle-switch">
-          <input type="checkbox" ${checked?'checked':''} onchange="visState['${s.id}']=this.checked">
+          <input type="checkbox" ${checked?'checked':''} onchange="visState['${node.id}']=this.checked">
           <span class="toggle-track"></span>
         </label>
-      </div>`;
+      </div>
+      ${childrenHtml ? `<div class="vis-children" data-sec="${node.sectionId || ''}">${childrenHtml}</div>` : ''}
+    </div>`;
   }).join('');
+
+  attachVisDragHandlers();
+}
+
+// ── Drag-and-drop Visibilité ─────────────────────────────────────────────────
+let visDragSrcEl = null;
+
+function attachVisDragHandlers() {
+  document.querySelectorAll('.vis-child-row[draggable]').forEach(row => {
+    row.addEventListener('dragstart', e => {
+      visDragSrcEl = row;
+      row.classList.add('dragging-vis');
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    row.addEventListener('dragend', () => {
+      visDragSrcEl = null;
+      row.classList.remove('dragging-vis');
+      document.querySelectorAll('.vis-child-row.drag-over-vis').forEach(r => r.classList.remove('drag-over-vis'));
+    });
+    row.addEventListener('dragover', e => {
+      if (!visDragSrcEl || visDragSrcEl === row) return;
+      if (visDragSrcEl.dataset.sec !== row.dataset.sec) return;
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      document.querySelectorAll('.vis-child-row.drag-over-vis').forEach(r => r.classList.remove('drag-over-vis'));
+      row.classList.add('drag-over-vis');
+    });
+    row.addEventListener('dragleave', () => row.classList.remove('drag-over-vis'));
+    row.addEventListener('drop', e => {
+      e.preventDefault();
+      row.classList.remove('drag-over-vis');
+      if (!visDragSrcEl || visDragSrcEl === row) return;
+      if (visDragSrcEl.dataset.sec !== row.dataset.sec) return;
+
+      const container = row.closest('.vis-children');
+      if (!container) return;
+      const rows = [...container.querySelectorAll('.vis-child-row')];
+      const srcIdx = rows.indexOf(visDragSrcEl);
+      const tgtIdx = rows.indexOf(row);
+      if (srcIdx < 0 || tgtIdx < 0) return;
+
+      if (srcIdx < tgtIdx) row.after(visDragSrcEl);
+      else row.before(visDragSrcEl);
+
+      // Marquer ordre modifié
+      visOrderChanged = true;
+      document.getElementById('visOrderBadge').classList.add('visible');
+      document.getElementById('saveOrderBtn').classList.add('visible');
+    });
+  });
 }
 
 async function saveVisibility() {
@@ -995,12 +1143,157 @@ async function saveVisibility() {
       body: JSON.stringify(rows)
     });
     if (!res.ok) throw new Error(await res.text());
-    showFb(fb, '✓ Enregistré', false);
+    showFb(fb, '✓ Visibilité enregistrée', false);
   } catch(e) {
     showFb(fb, `Erreur : ${e.message}`, true);
   } finally {
     btn.disabled = false;
   }
+}
+
+// ── Sauvegarder l'ordre dans gallery-data.js ─────────────────────────────────
+async function saveMenuOrder() {
+  const btn = document.getElementById('saveOrderBtn');
+  const fb  = document.getElementById('visFeedback');
+  btn.disabled = true;
+  showFb(fb, 'Lecture gallery-data.js…', false);
+
+  // Collect new order from DOM
+  const newOrders = {};
+  document.querySelectorAll('.vis-children[data-sec]').forEach(container => {
+    const secId = container.dataset.sec;
+    if (!secId) return;
+    newOrders[secId] = [...container.querySelectorAll('.vis-child-row')].map(r => r.dataset.cardId);
+  });
+
+  try {
+    const getRes = await fetch(
+      `https://api.github.com/repos/${GH_REPO}/contents/js/gallery-data.js`,
+      { headers: { Authorization: `token ${ghToken}`, Accept: 'application/vnd.github.v3+json' } }
+    );
+    if (!getRes.ok) throw new Error(`Lecture impossible (${getRes.status})`);
+    const meta = await getRes.json();
+    let source = decodeURIComponent(escape(atob(meta.content.replace(/\n/g, ''))));
+
+    let changed = false;
+    for (const [secId, newOrder] of Object.entries(newOrders)) {
+      const result = reorderSectionCards(source, secId, newOrder);
+      if (result !== source) { source = result; changed = true; }
+    }
+
+    if (!changed) {
+      showFb(fb, 'Aucun changement détecté.', false);
+      btn.disabled = false;
+      return;
+    }
+
+    const encoded = btoa(unescape(encodeURIComponent(source)));
+    const putRes = await fetch(
+      `https://api.github.com/repos/${GH_REPO}/contents/js/gallery-data.js`,
+      {
+        method: 'PUT',
+        headers: {
+          Authorization: `token ${ghToken}`,
+          Accept: 'application/vnd.github.v3+json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          message: 'admin: réordonnancement sections menu',
+          content: encoded,
+          sha: meta.sha,
+          branch: GH_BRANCH
+        })
+      }
+    );
+    if (!putRes.ok) {
+      const err = await putRes.json().catch(() => ({}));
+      throw new Error(err.message || `HTTP ${putRes.status}`);
+    }
+
+    visOrderChanged = false;
+    document.getElementById('visOrderBadge').classList.remove('visible');
+    document.getElementById('saveOrderBtn').classList.remove('visible');
+    showFb(fb, '✓ Ordre publié — site mis à jour dans ~1 min', false);
+  } catch(e) {
+    showFb(fb, `Erreur : ${e.message}`, true);
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function reorderSectionCards(src, secId, newOrder) {
+  // Trouver la section dans SECTIONS_CONFIG
+  const secRe = new RegExp(`\b${secId}\s*:\s*\{`);
+  const secMatch = secRe.exec(src);
+  if (!secMatch) return src;
+
+  const openBrace = src.indexOf('{', secMatch.index);
+  if (openBrace < 0) return src;
+
+  // Trouver 'cards: [' dans les 5000 chars suivants
+  const ahead = src.substring(openBrace, openBrace + 5000);
+  const cardsRe = /\bcards\s*:\s*\[/;
+  const cardsMatch = cardsRe.exec(ahead);
+  if (!cardsMatch) return src;
+
+  const bracketIdx = openBrace + cardsMatch.index + cardsMatch[0].length - 1;
+
+  // Extraire les objets de la liste
+  const { objects, arrayEnd } = extractCardObjects(src, bracketIdx);
+  if (!objects.length) return src;
+
+  // Map id -> texte objet
+  const cardMap = {};
+  objects.forEach(obj => {
+    const m = /\bid\s*:\s*["']([^"']+)["']/.exec(obj);
+    if (m) cardMap[m[1]] = obj;
+  });
+
+  // Nouvel ordre
+  const ordered = newOrder.filter(id => cardMap[id]).map(id => cardMap[id]);
+  // Sécurité : ajouter les cartes absentes du newOrder
+  objects.forEach(obj => {
+    const m = /\bid\s*:\s*["']([^"']+)["']/.exec(obj);
+    if (m && !newOrder.includes(m[1])) ordered.push(obj);
+  });
+
+  const oldArray = src.substring(bracketIdx, arrayEnd + 1);
+  const indent = '            ';
+  const newArray = '[\n' + ordered.map(t => indent + t.trim()).join(',\n') + '\n        ]';
+
+  return src.substring(0, bracketIdx) + newArray + src.substring(arrayEnd + 1);
+}
+
+function extractCardObjects(src, bracketIdx) {
+  // bracketIdx = index of '['
+  const objects = [];
+  let i = bracketIdx + 1;
+
+  while (i < src.length) {
+    while (i < src.length && /[\s,]/.test(src[i])) i++;
+    if (i >= src.length || src[i] === ']') break;
+    if (src[i] !== '{') { i++; continue; }
+
+    const start = i;
+    let depth = 0;
+    let inStr = false, strChar = '';
+
+    while (i < src.length) {
+      const ch = src[i];
+      if (inStr) {
+        if (ch === strChar && src[i - 1] !== '\\') inStr = false;
+      } else {
+        if (ch === '"' || ch === "'") { inStr = true; strChar = ch; }
+        else if (ch === '{') depth++;
+        else if (ch === '}') { depth--; if (!depth) { i++; break; } }
+      }
+      i++;
+    }
+
+    objects.push(src.substring(start, i));
+  }
+
+  return { objects, arrayEnd: i - 1 };
 }
 
 // ── Image Picker ──────────────────────────────────────────────────────────────
