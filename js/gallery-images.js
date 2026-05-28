@@ -1,6 +1,6 @@
 /**
  * gallery-images.js
- * Généré par Admin — 28/05/2026 13:13
+ * Généré par Admin — 28/05/2026 13:14
  * Ne pas éditer manuellement.
  */
 const GALLERY_IMAGES = {
@@ -15,7 +15,6 @@ const GALLERY_IMAGES = {
         { "filename": "portrait-02.jpg" },
         { "filename": "L1060508.jpg" },
         { "filename": "Atelier_Plougasnou.jpg" },
-        { "filename": "Atelier_Plougasnou 1.jpg" },
     ],
     "conversation-s-": [
         { "filename": "conversation-01.jpg" },
