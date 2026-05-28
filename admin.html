@@ -234,6 +234,87 @@
     .ph-name { font-size: 0.42rem; padding: 0.25rem 0.35rem; color: var(--dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: var(--white); }
     .ph-empty { font-size: 0.7rem; color: var(--dim); padding: 3rem 0; text-align: center; }
     .ph-count { font-size: 0.52rem; color: var(--dim); letter-spacing: 0.08em; margin-bottom: 0.8rem; }
+
+    /* ── Pending changes badge ── */
+    .pending-badge {
+      display: inline-flex; align-items: center; gap: 0.35rem;
+      font-size: 0.52rem; letter-spacing: 0.08em;
+      color: var(--red); padding: 0.2rem 0.7rem;
+      border: 1px solid currentColor; border-radius: 2px;
+    }
+
+    /* ── Cartons dans l'onglet Photos ── */
+    .carton-ph-section { margin-top: 2rem; }
+    .carton-ph-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; margin-top: 0.8rem; }
+    .carton-ph-card {
+      background: var(--black); color: var(--white);
+      padding: 0.85rem; display: flex; flex-direction: column; gap: 0.5rem;
+    }
+    .carton-ph-badge {
+      font-size: 0.42rem; letter-spacing: 0.16em; text-transform: uppercase;
+      color: rgba(255,255,255,.4);
+    }
+    .carton-ph-title {
+      width: 100%; font-size: 0.63rem; font-weight: 300; line-height: 1.55;
+      color: var(--white); background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.12);
+      padding: 0.4rem 0.5rem; font-family: inherit;
+      resize: vertical; min-height: 60px;
+      transition: border-color .15s;
+    }
+    .carton-ph-title:focus { outline: none; border-color: rgba(255,255,255,.45); }
+    .carton-ph-pos {
+      display: flex; align-items: center; gap: 0.5rem;
+      font-size: 0.48rem; letter-spacing: 0.1em; color: rgba(255,255,255,.45);
+    }
+    .carton-ph-pos input {
+      width: 44px; background: rgba(255,255,255,.1);
+      border: 1px solid rgba(255,255,255,.18);
+      color: var(--white); font-family: inherit; font-size: 0.62rem;
+      padding: 0.18rem 0.35rem; text-align: center;
+    }
+
+    /* ── Modal ajout depuis galerie ── */
+    #galleryPickerOverlay {
+      display: none; position: fixed; inset: 0; background: rgba(10,10,10,.65);
+      z-index: 1001; align-items: center; justify-content: center;
+    }
+    #galleryPickerOverlay.open { display: flex; }
+    #galleryPickerModal {
+      background: var(--white); width: min(860px, 96vw); max-height: 90vh;
+      display: flex; flex-direction: column; overflow: hidden;
+    }
+    .gpicker-header {
+      display: flex; align-items: center; gap: 0.8rem;
+      padding: 1rem 1.4rem; border-bottom: 1px solid var(--line); flex-shrink: 0;
+    }
+    .gpicker-title {
+      flex: 1; font-size: 0.55rem; letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--dim);
+    }
+    .gpicker-close {
+      background: none; border: none; cursor: pointer; font-size: 1.2rem;
+      color: var(--dim); line-height: 1; padding: 0.2rem; transition: color .15s;
+    }
+    .gpicker-close:hover { color: var(--black); }
+    .gpicker-controls {
+      padding: 0.75rem 1.4rem; border-bottom: 1px solid var(--line);
+      flex-shrink: 0; display: flex; align-items: center; gap: 0.8rem;
+    }
+    .gpicker-body { flex: 1; overflow-y: auto; padding: 1rem 1.4rem; }
+    .gpicker-footer {
+      padding: 0.8rem 1.4rem; border-top: 1px solid var(--line); flex-shrink: 0;
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .gpicker-count { font-size: 0.62rem; color: var(--dim); flex: 1; }
+    .picker-img-item.gpick-selected { border-color: var(--black); }
+    .picker-img-item.gpick-selected::after {
+      content: '✓'; position: absolute; top: 4px; left: 4px;
+      background: var(--black); color: #fff;
+      width: 18px; height: 18px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.6rem;
+    }
   </style>
 </head>
 <body>
@@ -257,6 +338,30 @@
     </div>
     <div class="picker-body" id="pickerBody">
       <div class="picker-loading">Chargement…</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Modal ajout depuis une autre galerie ── -->
+<div id="galleryPickerOverlay" onclick="if(event.target===this)closeGalleryPicker()">
+  <div id="galleryPickerModal">
+    <div class="gpicker-header">
+      <span class="gpicker-title">Ajouter des photos depuis une autre galerie</span>
+      <button class="gpicker-close" onclick="closeGalleryPicker()">&#x2715;</button>
+    </div>
+    <div class="gpicker-controls">
+      <select class="gallery-select" id="gpickerGalSelect" onchange="loadGalleryPickerPhotos(this.value)" style="margin:0;min-width:200px">
+        <option value="">&#x2014; Choisir une galerie source &#x2014;</option>
+      </select>
+      <span style="font-size:0.58rem;color:var(--dim)">Clique sur les photos pour les sélectionner</span>
+    </div>
+    <div class="gpicker-body" id="gpickerBody">
+      <div class="picker-empty">Sélectionne une galerie pour voir ses photos.</div>
+    </div>
+    <div class="gpicker-footer">
+      <span class="gpicker-count" id="gpickerCount">0 photo sélectionnée</span>
+      <button class="btn btn-dark" id="gpickerAddBtn" onclick="addSelectedToGallery()" disabled>Ajouter la sélection</button>
+      <button class="btn btn-outline" onclick="closeGalleryPicker()">Annuler</button>
     </div>
   </div>
 </div>
@@ -348,6 +453,11 @@
         <option value="">— Choisir une galerie —</option>
       </select>
 
+      <!-- Bouton cross-galerie -->
+      <div id="phAddFromGalBtn" style="display:none;margin-bottom:1rem">
+        <button class="btn btn-outline" onclick="openGalleryPicker()">+ Ajouter depuis une autre galerie</button>
+      </div>
+
       <!-- Grille photos -->
       <div id="phGalleryContent">
         <div class="ph-empty">Sélectionne une galerie ci-dessus.</div>
@@ -359,6 +469,18 @@
         <span class="feedback" id="phFeedback"></span>
         <a href="index.html" class="preview-link" target="_blank">Voir le site →</a>
       </div>
+    </div>
+
+      <!-- Cartons section -->
+      <div class="carton-ph-section" id="phCartonsSection" style="display:none">
+        <div class="admin-section-title">Cartons (slides texte)</div>
+        <div class="carton-ph-grid" id="phCartonsGrid"></div>
+        <div class="save-wrap" style="margin-top:1rem">
+          <button class="btn btn-dark" id="phCartonsSaveBtn" onclick="saveCartons()">Sauvegarder les cartons</button>
+          <span class="feedback" id="phCartonsFeedback"></span>
+        </div>
+      </div>
+
     </div>
 
   </div>
@@ -1099,6 +1221,13 @@ let galleryImagesRemote = {};   // contenu de gallery-images.js (fetché depuis 
 let photoCurrentGallery = null; // id de la galerie affichée
 let photoCurrentItems   = [];   // items en cours d'édition
 let phDragSrcIdx        = null;
+let phHasChanges        = false;
+
+function setPhHasChanges(val) {
+  phHasChanges = val;
+  const badge = document.getElementById('phPendingBadge');
+  if (badge) badge.style.display = val ? 'inline-flex' : 'none';
+}
 
 function savePAT() {
   // Token hardcodé — fonction conservée pour compatibilité
@@ -1160,7 +1289,10 @@ function loadPhotoGallery(galleryId) {
   }
   photoCurrentGallery = galleryId;
   photoCurrentItems   = getGalleryItems(galleryId);
+  setPhHasChanges(false);
+  document.getElementById('phAddFromGalBtn').style.display = 'block';
   renderPhotoGrid();
+  loadCartons(galleryId);
 }
 
 function renderPhotoGrid() {
@@ -1174,7 +1306,7 @@ function renderPhotoGrid() {
   }
 
   const n = items.length;
-  let html = `<div class="ph-count">${n} photo${n>1?'s':''} &nbsp;·&nbsp; glisser pour réordonner &nbsp;·&nbsp; × pour supprimer</div>`;
+  let html = `<div class="ph-count">${n} photo${n>1?'s':''} &nbsp;·&nbsp; glisser pour réordonner &nbsp;·&nbsp; × pour supprimer &nbsp; <span class="pending-badge" id="phPendingBadge" style="display:${phHasChanges?'inline-flex':'none'}">● Non sauvegardé</span></div>`;
   html += '<div class="photo-grid" id="photoGrid">';
   items.forEach((item, idx) => {
     const thumb = getThumbUrl(photoCurrentGallery, item);
@@ -1194,6 +1326,7 @@ function renderPhotoGrid() {
 
 function deletePhoto(idx) {
   photoCurrentItems.splice(idx, 1);
+  setPhHasChanges(true);
   renderPhotoGrid();
 }
 
@@ -1225,6 +1358,7 @@ function attachPhotoDragHandlers() {
       if (phDragSrcIdx === null || phDragSrcIdx === tgtIdx) return;
       const [moved] = photoCurrentItems.splice(phDragSrcIdx, 1);
       photoCurrentItems.splice(tgtIdx, 0, moved);
+      setPhHasChanges(true);
       renderPhotoGrid();
     });
   });
@@ -1310,12 +1444,238 @@ async function savePhotoOrder() {
       opt.textContent = `${GALLERY_LABELS[photoCurrentGallery] || photoCurrentGallery}  (${n} photo${n !== 1 ? 's' : ''})`;
     }
 
+    setPhHasChanges(false);
     showFb(fb, '✓ Publié — le site se met à jour dans ~1 min', false);
   } catch(e) {
     showFb(fb, `Erreur : ${e.message}`, true);
   } finally {
     btn.disabled = false;
   }
+}
+
+
+// ── Cartons dans l'onglet Photos ─────────────────────────────────────────────
+function esc2(s) {
+  return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function loadCartons(galleryId) {
+  const section = document.getElementById('phCartonsSection');
+  const grid    = document.getElementById('phCartonsGrid');
+  const cartons = GALLERIES_CONFIG[galleryId]?.cartons || [];
+  if (!cartons.length) { section.style.display = 'none'; return; }
+  section.style.display = 'block';
+  grid.innerHTML = cartons.map((c, i) => {
+    const raw   = (c.titleFr || c.title || '').replace(/<br\s*\/?>/gi, '\n');
+    const pos   = c.position !== undefined ? c.position : (i + 1);
+    const label = c.cid ? `Carton — <em>${c.cid}</em>` : `Carton #${i+1}`;
+    return `<div class="carton-ph-card">
+      <div class="carton-ph-badge">${label}</div>
+      <textarea class="carton-ph-title" id="ct-title-${i}" placeholder="Titre (retour à la ligne avec Entrée)">${esc2(raw)}</textarea>
+      <div class="carton-ph-pos">
+        <span>Position (slide n°)</span>
+        <input type="number" id="ct-pos-${i}" value="${pos}" min="1" max="99">
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function saveCartons() {
+  const btn = document.getElementById('phCartonsSaveBtn');
+  const fb  = document.getElementById('phCartonsFeedback');
+  btn.disabled = true;
+  showFb(fb, 'Lecture du fichier…', false);
+
+  const cartons = GALLERIES_CONFIG[photoCurrentGallery]?.cartons || [];
+  if (!cartons.length) { btn.disabled = false; return; }
+
+  // Collecter les valeurs éditées
+  const updates = cartons.map((c, i) => {
+    const rawTitle = document.getElementById(`ct-title-${i}`)?.value || (c.titleFr||'');
+    const titleFr  = rawTitle.replace(/\n/g, '<br>');
+    const position = parseInt(document.getElementById(`ct-pos-${i}`)?.value) || c.position || 1;
+    return { ...c, titleFr, position };
+  });
+
+  try {
+    // Lire gallery-data.js sur GitHub
+    const getRes = await fetch(
+      `https://api.github.com/repos/${GH_REPO}/contents/js/gallery-data.js`,
+      { headers: { Authorization: `token ${ghToken}`, Accept: 'application/vnd.github.v3+json' } }
+    );
+    if (!getRes.ok) throw new Error(`Lecture impossible (${getRes.status})`);
+    const fileMeta = await getRes.json();
+    let source = decodeURIComponent(escape(atob(fileMeta.content.replace(/\n/g,''))));
+
+    // Mettre à jour chaque carton dans la source
+    updates.forEach((c, i) => {
+      const orig = cartons[i];
+      if (!orig.cid) return;
+
+      const cidStr = `"cid": "${orig.cid}"`;
+      const cidIdx = source.indexOf(cidStr);
+      if (cidIdx < 0) return;
+
+      // Remplacer titleFr après le cid (dans les 800 prochains chars)
+      const ahead = source.substring(cidIdx, cidIdx + 800);
+      const tfIdx = ahead.indexOf('"titleFr"');
+      if (tfIdx >= 0) {
+        const gIdx   = cidIdx + tfIdx;
+        const escaped = c.titleFr.replace(/\\/g,'\\\\').replace(/"/g,'\\"');
+        const before  = source.substring(0, gIdx);
+        const after   = source.substring(gIdx);
+        source = before + after.replace(/"titleFr"\s*:\s*"[^"]*"/, `"titleFr": "${escaped}"`);
+      }
+
+      // Recalculer cidIdx (source a peut-être changé de taille)
+      const cidIdx2 = source.indexOf(cidStr);
+      if (cidIdx2 < 0) return;
+      const ahead2 = source.substring(cidIdx2, cidIdx2 + 400);
+      const posIdx = ahead2.indexOf('"position"');
+      if (posIdx >= 0) {
+        const gIdx  = cidIdx2 + posIdx;
+        const before = source.substring(0, gIdx);
+        const after  = source.substring(gIdx);
+        source = before + after.replace(/"position"\s*:\s*\d+/, `"position": ${c.position}`);
+      }
+    });
+
+    // Pousser la mise à jour
+    const encoded = btoa(unescape(encodeURIComponent(source)));
+    const putRes = await fetch(
+      `https://api.github.com/repos/${GH_REPO}/contents/js/gallery-data.js`,
+      {
+        method: 'PUT',
+        headers: {
+          Authorization: `token ${ghToken}`,
+          Accept: 'application/vnd.github.v3+json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          message: `admin: cartons ${photoCurrentGallery} — édition`,
+          content: encoded,
+          sha: fileMeta.sha,
+          branch: GH_BRANCH
+        })
+      }
+    );
+    if (!putRes.ok) {
+      const err = await putRes.json().catch(() => ({}));
+      throw new Error(err.message || `HTTP ${putRes.status}`);
+    }
+
+    // Mettre à jour le cache local
+    updates.forEach((c, i) => { GALLERIES_CONFIG[photoCurrentGallery].cartons[i] = c; });
+    showFb(fb, '✓ Cartons sauvegardés — site mis à jour dans ~1 min', false);
+  } catch(e) {
+    showFb(fb, `Erreur : ${e.message}`, true);
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+// ── Ajout photos depuis une autre galerie ─────────────────────────────────────
+let gpickerSelected     = new Set();
+let gpickerGalleryItems = [];
+let gpickerCurrentGal   = null;
+
+function openGalleryPicker() {
+  if (!photoCurrentGallery) return;
+  gpickerSelected.clear();
+  gpickerCurrentGal = null;
+  gpickerGalleryItems = [];
+
+  const sel = document.getElementById('gpickerGalSelect');
+  sel.innerHTML = '<option value="">&#x2014; Choisir une galerie source &#x2014;</option>';
+  Object.entries(GALLERY_LABELS).forEach(([id, label]) => {
+    if (id === photoCurrentGallery) return;
+    if (!GALLERIES_CONFIG[id]) return;
+    const opt = document.createElement('option');
+    opt.value = id;
+    opt.textContent = label;
+    sel.appendChild(opt);
+  });
+
+  document.getElementById('gpickerBody').innerHTML = '<div class="picker-empty">Sélectionne une galerie pour voir ses photos.</div>';
+  const destLabel = GALLERY_LABELS[photoCurrentGallery] || photoCurrentGallery;
+  document.getElementById('gpickerAddBtn').textContent = `Ajouter au ${destLabel}`;
+  updateGpickerCount();
+  document.getElementById('galleryPickerOverlay').classList.add('open');
+}
+
+function closeGalleryPicker() {
+  document.getElementById('galleryPickerOverlay').classList.remove('open');
+  gpickerSelected.clear();
+}
+
+function loadGalleryPickerPhotos(galleryId) {
+  gpickerSelected.clear();
+  gpickerCurrentGal = galleryId;
+  const body = document.getElementById('gpickerBody');
+  if (!galleryId) {
+    body.innerHTML = '<div class="picker-empty">Sélectionne une galerie.</div>';
+    updateGpickerCount();
+    return;
+  }
+  gpickerGalleryItems = getGalleryItems(galleryId).filter(
+    i => !i.type || i.type === 'image' || i.type === 'accueil-image'
+  );
+  if (!gpickerGalleryItems.length) {
+    body.innerHTML = '<div class="picker-empty">Aucune photo dans cette galerie.</div>';
+    updateGpickerCount();
+    return;
+  }
+  updateGpickerCount();
+  renderGpickerGrid();
+}
+
+function renderGpickerGrid() {
+  const body = document.getElementById('gpickerBody');
+  let html = '<div class="picker-grid">';
+  gpickerGalleryItems.forEach((item, idx) => {
+    const thumb = getThumbUrl(gpickerCurrentGal, item);
+    const name  = (item.filename||'').split('/').pop();
+    const sel   = gpickerSelected.has(idx) ? 'gpick-selected' : '';
+    html += `<div class="picker-img-item ${sel}" onclick="toggleGpickerItem(${idx})">
+      <img src="${thumb}" alt="${esc(name)}" loading="lazy" onerror="this.style.opacity='.25'">
+      <div class="picker-img-name">${esc(name)}</div>
+    </div>`;
+  });
+  html += '</div>';
+  body.innerHTML = html;
+}
+
+function toggleGpickerItem(idx) {
+  if (gpickerSelected.has(idx)) gpickerSelected.delete(idx);
+  else gpickerSelected.add(idx);
+  updateGpickerCount();
+  renderGpickerGrid();
+}
+
+function updateGpickerCount() {
+  const n = gpickerSelected.size;
+  document.getElementById('gpickerCount').textContent =
+    n === 0 ? '0 photo sélectionnée' : `${n} photo${n>1?'s':''} sélectionnée${n>1?'s':''}`;
+  document.getElementById('gpickerAddBtn').disabled = n === 0;
+}
+
+function addSelectedToGallery() {
+  gpickerSelected.forEach(idx => {
+    const item = gpickerGalleryItems[idx];
+    if (!item) return;
+    const newItem = { ...item };
+    // Construire le chemin complet si relatif
+    if (!newItem.filename.includes('/')) {
+      const srcPath = GALLERIES_CONFIG[gpickerCurrentGal]?.path || `images/${gpickerCurrentGal}`;
+      newItem.filename = `${srcPath}/${newItem.filename}`;
+    }
+    // Éviter les doublons
+    const exists = photoCurrentItems.some(pi => pi.filename === newItem.filename);
+    if (!exists) photoCurrentItems.push(newItem);
+  });
+  closeGalleryPicker();
+  setPhHasChanges(true);
+  renderPhotoGrid();
 }
 
 // ── Init ───────────────────────────────────────────────────────────────────────
