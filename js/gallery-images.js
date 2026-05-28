@@ -1,6 +1,6 @@
 /**
  * gallery-images.js
- * Généré par Admin V4 — 01/05/2026 20:44:31
+ * Généré par Admin — 28/05/2026 13:13
  * Ne pas éditer manuellement.
  */
 const GALLERY_IMAGES = {
@@ -15,11 +15,11 @@ const GALLERY_IMAGES = {
         { "filename": "portrait-02.jpg" },
         { "filename": "L1060508.jpg" },
         { "filename": "Atelier_Plougasnou.jpg" },
-        { "filename": "Atelier_Plougasnou 1.jpg" }
+        { "filename": "Atelier_Plougasnou 1.jpg" },
     ],
     "conversation-s-": [
         { "filename": "conversation-01.jpg" },
-        { "filename": "conversation-02.jpg" }
+        { "filename": "conversation-02.jpg" },
     ],
     "studio": [
         { "filename": "stmelar-1.jpg" },
@@ -27,6 +27,12 @@ const GALLERY_IMAGES = {
         { "filename": "stmelar-3.jpg" },
         { "filename": "stmelar-4.jpg" },
         { "filename": "stmelar-5.jpg" },
-        { "filename": "stmelar-6.jpg" }
+        { "filename": "stmelar-6.jpg" },
+    ],
+    "best-of": [
+        { "filename": "images/portrait/conversation-02.jpg", "title": "Antoine Asnar", "subtitle": "Portrait Studio" },
+        { "filename": "images/portrait/L1060508.jpg", "title": "Ange-Marine", "subtitle": "Portrait nature" },
+        { "filename": "images/dustin-kolor/04.jpg", "title": "Lost in the dust", "subtitle": "Exposition" },
+        { "filename": "images/cinema/1.jpg", "title": "J'arrive", "subtitle": "Réalisateur cinéma" },
     ],
 };
