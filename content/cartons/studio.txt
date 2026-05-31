@@ -2,17 +2,26 @@
 # CARTON — Studio / Immersion
 # ═══════════════════════════════════════════════════════════════════
 
+[VISIBLE]
+false
+
 [CATEGORY_FR]
+
 
 [CATEGORY_EN]
 
+
 [TITLE_FR]
+
 
 [TITLE_EN]
 
+
 [SUBTITLE_FR]
 
+
 [SUBTITLE_EN]
+
 
 [DESC_FR]
 J'ai 45 ans, un peu de kilomètre et la maitrise d'un savoir faire, me fondre dans un lieu, un collectif, un évènement, et rendre compte avec une approche humaniste, c'est à dire qui met en avant les humains, leur interactions. Le portrait restant ma spécialité, j'aime raconter par les gueules, les instants, les petits couac.
@@ -26,8 +35,12 @@ Here, I took a room for a week at St Melar, a unit of the Ephad de Lanmeur, for 
 
 [CTA_LABEL]
 
+
 [CTA_URL]
+
 
 [SIDEBAR_FR]
 
+
 [SIDEBAR_EN]
+
