@@ -426,8 +426,13 @@
           </div>
         </div>
 
+        <div id="ctDeletedBanner" style="display:none;padding:.6rem 1rem;background:#fef0f0;border:1px solid #c41e1e;font-size:.65rem;color:#c41e1e;margin-bottom:.8rem">
+          ⚠ Ce carton est actuellement <strong>supprimé</strong> — il ne s'affiche pas sur le site.
+          <button onclick="restoreCarton()" style="margin-left:.8rem;font-size:.6rem;font-family:inherit;padding:.2rem .5rem;border:1px solid #c41e1e;background:transparent;color:#c41e1e;cursor:pointer">Restaurer</button>
+        </div>
         <div class="save-wrap">
           <button class="btn btn-dark" id="ctSaveBtn" onclick="saveCartonTxt()">Publier sur GitHub</button>
+          <button class="btn-outline btn" id="ctDeleteBtn" onclick="deleteCarton()" style="border-color:#c41e1e;color:#c41e1e;margin-left:.5rem">Supprimer le carton</button>
           <span class="feedback" id="ctFeedback"></span>
           <span id="ctLoadingMsg" style="font-size:.62rem;color:var(--dim)"></span>
         </div>
@@ -1412,12 +1417,18 @@ function initCartonsTab() {
   });
 }
 
-function _buildCartonTxt(galleryId) {
+let cartonIsDeleted = false; // état courant du carton chargé
+
+function _buildCartonTxt(galleryId, deleted = false) {
   const v = id => (document.getElementById(id)?.value || '').trimEnd();
+  const visibleLine = deleted ? 'false' : 'true';
   return [
     `# ═══════════════════════════════════════════════════════════════════`,
     `# CARTON — ${GALLERY_LABELS[galleryId] || galleryId}`,
     `# ═══════════════════════════════════════════════════════════════════`,
+    ``,
+    `[VISIBLE]`,
+    visibleLine,
     ``,
     `[CATEGORY_FR]`,
     v('ct-cat-fr'),
@@ -1485,6 +1496,38 @@ function _fillCartonForm(fields) {
   set('ct-cta-url',    fields.ctaUrl);
   set('ct-sidebar-fr', fields.sidebarFr);
   set('ct-sidebar-en', fields.sidebarEn);
+  // Afficher/masquer le bandeau "supprimé"
+  cartonIsDeleted = (fields.visible === 'false');
+  document.getElementById('ctDeletedBanner').style.display = cartonIsDeleted ? 'block' : 'none';
+  document.getElementById('ctSaveBtn').style.display       = cartonIsDeleted ? 'none'  : '';
+  document.getElementById('ctDeleteBtn').style.display     = cartonIsDeleted ? 'none'  : '';
+}
+
+async function deleteCarton() {
+  if (!cartonCurrentGallery) return;
+  if (!confirm(`Supprimer le carton de la galerie "${GALLERY_LABELS[cartonCurrentGallery] || cartonCurrentGallery}" ?\nIl disparaîtra du site mais le texte restera éditable.`)) return;
+  cartonIsDeleted = true;
+  await _commitCartonTxt(true);
+  _fillCartonForm({ ...getCurrentCartonFields(), visible: 'false' });
+}
+
+async function restoreCarton() {
+  if (!cartonCurrentGallery) return;
+  cartonIsDeleted = false;
+  await _commitCartonTxt(false);
+  _fillCartonForm({ ...getCurrentCartonFields(), visible: 'true' });
+}
+
+function getCurrentCartonFields() {
+  const v = id => document.getElementById(id)?.value || '';
+  return {
+    categoryFr: v('ct-cat-fr'), categoryEn: v('ct-cat-en'),
+    titleFr: v('ct-title-fr'),  titleEn: v('ct-title-en'),
+    subtitleFr: v('ct-sub-fr'), subtitleEn: v('ct-sub-en'),
+    descFr: v('ct-desc-fr'),    descEn: v('ct-desc-en'),
+    ctaLabel: v('ct-cta-label'),ctaUrl: v('ct-cta-url'),
+    sidebarFr: v('ct-sidebar-fr'), sidebarEn: v('ct-sidebar-en')
+  };
 }
 
 async function loadCartonForm(galleryId) {
@@ -1526,20 +1569,24 @@ async function loadCartonForm(galleryId) {
 
 async function saveCartonTxt() {
   const btn = document.getElementById('ctSaveBtn');
-  const fb  = document.getElementById('ctFeedback');
-  if (!cartonCurrentGallery) return;
   btn.disabled = true;
+  await _commitCartonTxt(false);
+  btn.disabled = false;
+}
+
+async function _commitCartonTxt(deleted) {
+  const fb = document.getElementById('ctFeedback');
+  if (!cartonCurrentGallery) return;
   showFb(fb, 'Publication…', false);
 
   const path    = `content/cartons/${cartonCurrentGallery}.txt`;
-  const content = _buildCartonTxt(cartonCurrentGallery);
+  const content = _buildCartonTxt(cartonCurrentGallery, deleted);
   const encoded = btoa(unescape(encodeURIComponent(content)));
+  const action  = deleted ? 'suppression' : 'mise à jour';
 
   try {
-    // Si pas de SHA → créer ; sinon → mettre à jour
     let sha = cartonCurrentSha;
     if (!sha) {
-      // Tentative de récupération du SHA (cas où le fichier a été créé entre temps)
       const chk = await fetch(
         `https://api.github.com/repos/${GH_REPO}/contents/${path}?ref=${GH_BRANCH}`,
         { headers: { Authorization: `token ${ghToken}`, Accept: 'application/vnd.github.v3+json' } }
@@ -1547,7 +1594,7 @@ async function saveCartonTxt() {
       if (chk.ok) { const d = await chk.json(); sha = d.sha; }
     }
 
-    const body = { message: `carton ${cartonCurrentGallery} : mise à jour texte`, content: encoded, branch: GH_BRANCH };
+    const body = { message: `carton ${cartonCurrentGallery} : ${action}`, content: encoded, branch: GH_BRANCH };
     if (sha) body.sha = sha;
 
     const res = await fetch(
@@ -1568,11 +1615,9 @@ async function saveCartonTxt() {
     }
     const data = await res.json();
     cartonCurrentSha = data.content?.sha || sha;
-    showFb(fb, '✓ Publié — le site se met à jour dans ~1 min', false);
+    showFb(fb, deleted ? '✓ Carton supprimé du site' : '✓ Publié — mise à jour dans ~1 min', false);
   } catch(e) {
     showFb(fb, `Erreur : ${e.message}`, true);
-  } finally {
-    btn.disabled = false;
   }
 }
 
