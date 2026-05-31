@@ -1156,3 +1156,51 @@ function _filmsEmbedSrc(v) {
     /* youtube */
     return `https://www.youtube-nocookie.com/embed/${v.videoId}?rel=0`;
 }
+
+// ── Système de contenu cartons (.txt) ────────────────────────────────────────
+// Les fichiers content/cartons/[galleryId].txt surchargent les textes du JSON.
+// Format : [CHAMP_FR] / [CHAMP_EN] sur une ligne seule, texte en-dessous.
+// ─────────────────────────────────────────────────────────────────────────────
+
+const _cartonTxtCache = {};   // galleryId → { titleFr, descFr, visible, … } | null
+
+function _parseCartonTxt(raw) {
+    const out = {};
+    const clean = raw.replace(/^#[^\n]*\n?/gm, '');
+    const parts = clean.split(/\[([A-Z_]+)\]/);
+    for (let i = 1; i < parts.length; i += 2) {
+        const rawKey = parts[i].trim();
+        const val    = (parts[i + 1] || '').trim();
+        const key    = rawKey.toLowerCase().replace(/_([a-z])/g, (_, c) => c.toUpperCase());
+        out[key] = val;
+    }
+    return out;
+}
+
+async function _loadCartonTxt(galleryId) {
+    if (_cartonTxtCache[galleryId] !== undefined) return _cartonTxtCache[galleryId];
+    try {
+        const r = await fetch(`content/cartons/${galleryId}.txt`);
+        if (!r.ok) { _cartonTxtCache[galleryId] = null; return null; }
+        _cartonTxtCache[galleryId] = _parseCartonTxt(await r.text());
+        return _cartonTxtCache[galleryId];
+    } catch {
+        _cartonTxtCache[galleryId] = null;
+        return null;
+    }
+}
+
+function _preloadCartonTxts() {
+    Object.keys(GALLERIES_CONFIG).forEach(id => _loadCartonTxt(id));
+}
+
+function _mergeCartonTxt(item, galleryId) {
+    const txt = _cartonTxtCache[galleryId];
+    if (!txt) return item;
+    const merged = { ...item };
+    const fields = ['titleFr','titleEn','subtitleFr','subtitleEn',
+                    'categoryFr','categoryEn','descFr','descEn',
+                    'ctaLabel','ctaUrl','sidebarFr','sidebarEn'];
+    fields.forEach(f => { if (txt[f] !== undefined) merged[f] = txt[f]; });
+    return merged;
+}

@@ -16,6 +16,7 @@ class Portfolio {
         this.SLIDESHOW_MS     = 3000;
         this.currentAudio     = null;
         this.gridMode         = false;
+        _preloadCartonTxts();
         this.init();
     }
 
@@ -443,7 +444,12 @@ class Portfolio {
         const g = this.galleries[id];
         if (!g?.items?.length) return;
         history.pushState({ view: 'gallery', id }, '', '#' + id);
-        this.currentGallery   = g;
+        // Filtrer les cartons supprimés ([VISIBLE] false dans le .txt)
+        const txtOvr = _cartonTxtCache[id];
+        const items  = (txtOvr?.visible === 'false')
+            ? g.items.filter(i => i.type !== 'carton')
+            : g.items;
+        this.currentGallery   = { ...g, items };
         this.currentGalleryId = id;
         this.currentPageId    = null;
         this.currentIndex     = 0;
@@ -624,13 +630,14 @@ class Portfolio {
 
         } else if (item.type === 'carton') {
             const en         = lang === 'en';
-            const title      = en ? (item.titleEn    || item.titleFr    || '') : (item.titleFr    || item.titleEn    || '');
-            const subtitle   = en ? (item.subtitleEn || item.subtitleFr || '') : (item.subtitleFr || item.subtitleEn || '');
-            const category   = en ? (item.categoryEn || item.categoryFr || '') : (item.categoryFr || item.categoryEn || '');
-            const sidebarTxt = en ? (item.sidebarEn  || item.sidebarFr  || '') : (item.sidebarFr  || item.sidebarEn  || '');
-            const desc       = en ? (item.descEn     || item.descFr     || '') : (item.descFr     || item.descEn     || '');
-            const ctaUrl     = item.ctaUrl   || '';
-            const ctaLbl     = item.ctaLabel || (en ? 'See more' : 'En savoir plus');
+            const c          = _mergeCartonTxt(item, this.currentGalleryId);
+            const title      = en ? (c.titleEn    || c.titleFr    || '') : (c.titleFr    || c.titleEn    || '');
+            const subtitle   = en ? (c.subtitleEn || c.subtitleFr || '') : (c.subtitleFr || c.subtitleEn || '');
+            const category   = en ? (c.categoryEn || c.categoryFr || '') : (c.categoryFr || c.categoryEn || '');
+            const sidebarTxt = en ? (c.sidebarEn  || c.sidebarFr  || '') : (c.sidebarFr  || c.sidebarEn  || '');
+            const desc       = en ? (c.descEn     || c.descFr     || '') : (c.descFr     || c.descEn     || '');
+            const ctaUrl     = c.ctaUrl   || '';
+            const ctaLbl     = c.ctaLabel || (en ? 'See more' : 'En savoir plus');
 
             /* ── SIDEBAR: sous-titre + titre + texte — bouton dans footerCaption ── */
             if (galleryDesc) {
