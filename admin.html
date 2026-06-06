@@ -128,6 +128,12 @@
     }
     .card-vis-btn.hidden-card { border-color: var(--red); color: var(--red); }
     .card-vis-btn:hover { border-color: var(--black); color: var(--black); }
+    .card-del-btn {
+      padding: 0.3rem 0.7rem; font-family: inherit; font-size: 0.48rem; letter-spacing: 0.1em;
+      text-transform: uppercase; border: 1px solid transparent; background: transparent;
+      color: var(--dim); cursor: pointer; transition: all .15s; white-space: nowrap;
+    }
+    .card-del-btn:hover { border-color: var(--red); color: var(--red); }
     .pwd-status { font-size: 0.5rem; letter-spacing: 0.06em; color: var(--dim); white-space: nowrap; }
     .pwd-status.set { color: var(--green); }
     .card-pwd-row { background: #fafafa; border-radius: 2px; padding: 0.3rem 0; }
@@ -666,6 +672,7 @@ function cardRowHtml(c, siblings) {
           onclick="toggleCardVis('${c.dbId}', ${vis})">
           ${vis ? 'Visible' : 'Masquée'}
         </button>
+        <button class="card-del-btn" onclick="deleteCard('${c.dbId}')">Supprimer</button>
       </div>
     </div>`;
 }
@@ -768,7 +775,7 @@ async function saveCard(dbId) {
   const parentVal = document.getElementById(`f-parent-${dbId}`)?.value || '';
   const row = {
     id:        dbId,
-    section:   dbId.startsWith('ph-') ? 'photographe' : dbId.startsWith('real-') ? 'realisateur' : 'boutique',
+    section:   dbId.startsWith('ph-') ? 'photographe' : dbId.startsWith('real-') ? 'realisateur' : dbId.startsWith('client-') ? 'galeries-client' : 'boutique',
     title_fr:  document.getElementById(`f-title-${dbId}`).value,
     label_fr:  document.getElementById(`f-label-${dbId}`).value,
     desc_fr:   document.getElementById(`f-desc-${dbId}`).value,
@@ -810,7 +817,7 @@ async function saveCardPwd(dbId) {
 
   const row = {
     id:         dbId,
-    section:    dbId.startsWith('ph-') ? 'photographe' : dbId.startsWith('real-') ? 'realisateur' : 'boutique',
+    section:    dbId.startsWith('ph-') ? 'photographe' : dbId.startsWith('real-') ? 'realisateur' : dbId.startsWith('client-') ? 'galeries-client' : 'boutique',
     desc_en:    hash,
     updated_at: new Date().toISOString()
   };
@@ -853,6 +860,21 @@ async function toggleCardVis(dbId, currentlyVisible) {
     // Mettre à jour l'attribut onclick pour refléter le nouvel état
     btn.onclick = () => toggleCardVis(dbId, newVis);
   } catch(e) { console.error(e); }
+}
+
+// ── Supprimer une carte ───────────────────────────────────────────────────────
+async function deleteCard(dbId) {
+  const title = document.getElementById(`f-title-${dbId}`)?.value || dbId;
+  if (!confirm(`Supprimer "${title}" ?\n\nCette carte sera effacée de Supabase.\nSi elle est définie dans le code du site, elle réapparaîtra au prochain déploiement.`)) return;
+  try {
+    const res = await sb(`gallery_cards?id=eq.${encodeURIComponent(dbId)}`, {
+      method: 'DELETE',
+      headers: { 'Prefer': 'return=minimal' }
+    });
+    if (!res.ok) throw new Error(await res.text());
+    delete dbCards[dbId];
+    document.getElementById(`row-${dbId}`)?.remove();
+  } catch(e) { alert('Erreur suppression : ' + e.message); }
 }
 
 // ── Ajouter une carte ─────────────────────────────────────────────────────────
