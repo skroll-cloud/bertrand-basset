@@ -170,29 +170,27 @@ const SECTIONS_CONFIG = {
             },
             {
                 id: "gilmerton", url: "clients/gilmerton.html",
-                labelFr: "Galerie privée", labelEn: "Private gallery",
+                labelFr: "Galerie client", labelEn: "Client gallery",
                 titleFr: "Gilmerton", titleEn: "Gilmerton",
-                descFr: "Sélection · accès protégé",
-                descEn: "Selection · protected access",
-                img: null,
-                parentId: "ph-galeries-client", _hiddenByAdmin: true
+                descFr: "Remise de commande · accès protégé",
+                descEn: "Order delivery · protected access",
+                img: "https://api.pcloud.com/getpubthumb?code=kZo1EU5ZLLpXW8fr6xzJNJW0gPuU1B6fdsuy&fileid=88201126472&size=600x900&type=jpg"
             },
             {
                 id: "leo-brasserie", url: "clients/leo-brasserie.html",
-                labelFr: "Galerie privée", labelEn: "Private gallery",
+                labelFr: "Galerie client", labelEn: "Client gallery",
                 titleFr: "Léo Brasserie", titleEn: "Léo Brasserie",
-                descFr: "Sélection · accès protégé",
-                descEn: "Selection · protected access",
-                img: null,
-                parentId: "ph-galeries-client", _hiddenByAdmin: true
+                descFr: "Remise de commande · accès protégé",
+                descEn: "Order delivery · protected access",
+                img: "https://api.pcloud.com/getpubthumb?code=kZQ1EU5ZzBL5BcesXwzTqgy0uauzhu35EtS7&fileid=88089443232&size=600x900&type=jpg"
             },
             {
-                id: "galeries-client", url: "clients/index.html",
-                labelFr: "Accès privé", labelEn: "Private access",
-                titleFr: "Galeries Client", titleEn: "Client Galleries",
-                descFr: "Remise de commandes clients",
-                descEn: "Client order delivery",
-                img: null
+                id: "grande-parade", url: "clients/grande-parade.html",
+                labelFr: "Galerie client", labelEn: "Client gallery",
+                titleFr: "Grande Parade", titleEn: "Grande Parade",
+                descFr: "Galerie · accès protégé",
+                descEn: "Gallery · protected access",
+                img: "https://api.pcloud.com/getpubthumb?code=kZKq0A5ZaoFGv3YO4mQrFbQghpd6Tfw0CWgy&fileid=88890561791&size=600x900&type=jpg"
             }
         ]
     },
