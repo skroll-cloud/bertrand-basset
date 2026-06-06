@@ -217,20 +217,45 @@ class Portfolio {
     buildMenu() {
         const nav = document.getElementById('mainNav');
         if (!nav) return;
-        /* Top-level items only (children rendered inside universeNav) */
-        const visible = MENU_CONFIG.filter(i => !i.hidden && !i._hiddenByAdmin && !i.parent);
+        /* Hidden groups — used to suppress orphan children */
+        const hiddenGroups = new Set(MENU_CONFIG.filter(i => i.type === 'group' && (i.hidden || i._hiddenByAdmin)).map(i => i.id));
+        const visible = MENU_CONFIG.filter(i => !i.hidden && !i._hiddenByAdmin && !(i.parent && hiddenGroups.has(i.parent)));
 
-        const itemHtml = (item) => {
-            if (item.type === 'group')    return `<div class="nav-item"><a href="#" class="nav-link" data-group="${item.id}">${item.name}</a></div>`;
-            if (item.type === 'section')  return `<div class="nav-item"><a href="#" class="nav-link" data-section="${item.sectionId}">${item.name}</a></div>`;
-            if (item.type === 'gallery')  return `<div class="nav-item"><a href="#" class="nav-link" data-gallery="${item.galleryId}">${item.name}</a></div>`;
-            if (item.type === 'page')     return `<div class="nav-item"><a href="#" class="nav-link" data-page="${item.pageId}">${item.name}</a></div>`;
-            if (item.type === 'link')     return `<div class="nav-item"><a href="${item.url}" class="nav-link">${item.name}</a></div>`;
-            if (item.type === 'external') return `<div class="nav-item"><a href="${item.url}" class="nav-link" target="_blank">${item.name}</a></div>`;
+        /* Build children map so ordering in config doesn't matter */
+        const childrenOf = {};
+        visible.filter(i => i.parent).forEach(i => {
+            if (!childrenOf[i.parent]) childrenOf[i.parent] = [];
+            childrenOf[i.parent].push(i);
+        });
+
+        const itemHtml = (item, isSub) => {
+            const cls = isSub ? 'nav-item nav-sub-item' : 'nav-item';
+            if (item.type === 'section')  return `<div class="${cls}"><a href="#" class="nav-link" data-section="${item.sectionId}">${item.name}</a></div>`;
+            if (item.type === 'gallery')  return `<div class="${cls}"><a href="#" class="nav-link" data-gallery="${item.galleryId}">${item.name}</a></div>`;
+            if (item.type === 'page')     return `<div class="${cls}"><a href="#" class="nav-link" data-page="${item.pageId}">${item.name}</a></div>`;
+            if (item.type === 'link')     return `<div class="${cls}"><a href="${item.url}" class="nav-link">${item.name}</a></div>`;
+            if (item.type === 'external') return `<div class="${cls}"><a href="${item.url}" class="nav-link" target="_blank">${item.name}</a></div>`;
             return '';
         };
 
-        nav.innerHTML = visible.map(item => itemHtml(item)).join('');
+        let html = '';
+        for (const item of visible) {
+            if (item.parent) continue; /* children rendered inside their group */
+            if (item.type === 'group') {
+                const children = childrenOf[item.id] || [];
+                html += `<div class="nav-group">`;
+                html += `<div class="nav-group-header">${item.name}</div>`;
+                if (children.length > 0) {
+                    html += `<div class="nav-group-children">`;
+                    children.forEach(c => { html += itemHtml(c, true); });
+                    html += `</div>`;
+                }
+                html += `</div>`;
+            } else {
+                html += itemHtml(item, false);
+            }
+        }
+        nav.innerHTML = html;
         /* Re-bind nav click events after rebuild */
         this.bindNavEvents();
     }
@@ -348,14 +373,6 @@ class Portfolio {
     }
 
     bindNavEvents() {
-        document.querySelectorAll('[data-group]').forEach(link => {
-            link.addEventListener('click', e => {
-                e.preventDefault();
-                const group = MENU_CONFIG.find(i => i.id === link.dataset.group);
-                if (group) this.enterUniverseMode(group, null);
-                this.closeMenu();
-            });
-        });
         document.querySelectorAll('[data-section]').forEach(link => {
             link.addEventListener('click', e => {
                 e.preventDefault();

@@ -46,24 +46,12 @@ const T = {
 /* type "link"     → lien href direct                           */
 const MENU_CONFIG = [
   { "id": "best-of",             "name": "BEST OF",              "type": "gallery", "galleryId": "best-of", "hidden": true },
-
-  /* ── PHOTOGRAPHE — groupe avec sous-menu sidebar ── */
-  { "id": "photographe",         "name": "PHOTOGRAPHE",          "type": "group" },
-  { "id": "ph-portrait",         "name": "Portrait",             "type": "gallery", "galleryId": "portrait",     "parent": "photographe" },
-  { "id": "ph-immersion",        "name": "Immersion",            "type": "gallery", "galleryId": "studio",       "parent": "photographe" },
-  { "id": "ph-gem",              "name": "Série GEM",            "type": "gallery", "galleryId": "gem",          "parent": "photographe" },
-  { "id": "ph-st-melar",         "name": "St Mélar",             "type": "gallery", "galleryId": "st-melar",     "parent": "photographe" },
-  { "id": "ph-clients",          "name": "Galeries Client",      "type": "link",    "url": "clients/index.html", "parent": "photographe" },
-
-  /* ── RÉALISATEUR — groupe avec sous-menu sidebar ── */
-  { "id": "realisateur",         "name": "RÉALISATEUR",          "type": "group" },
-  { "id": "re-cinema",           "name": "Cinéma",               "type": "gallery", "galleryId": "cinema",       "parent": "realisateur" },
-  { "id": "re-television",       "name": "Télévision",           "type": "gallery", "galleryId": "television",   "parent": "realisateur" },
-  { "id": "re-archives",         "name": "Archives France 2",    "type": "gallery", "galleryId": "archives",     "parent": "realisateur" },
-
+  { "id": "photographe",         "name": "PHOTOGRAPHE",          "type": "section", "sectionId": "photographe" },
+  { "id": "realisateur",         "name": "RÉALISATEUR",          "type": "section", "sectionId": "realisateur" },
+  { "id": "auteur",              "name": "AUTEUR",               "type": "page",    "pageId": "auteur",    "hidden": true },
   { "id": "travailler-ensemble", "name": "TRAVAILLER ENSEMBLE",  "type": "page",    "pageId": "travailler-ensemble" },
 
-  /* ── BOUTIQUE ── grille de vignettes ── */
+  /* ── BOUTIQUE ── grille de vignettes (comme PHOTOGRAPHE/RÉALISATEUR) ── */
   { "id": "boutique",            "name": "BOUTIQUE",             "type": "section", "sectionId": "boutique" },
   { "id": "boutique-dk",         "name": "DUST'IN KOLOR",        "type": "link",    "url": "dustin-kolor/index.html", "hidden": true },
   { "id": "boutique-portrait",   "name": "SÉANCE PORTRAIT",      "type": "page",    "pageId": "contact",              "hidden": true },
@@ -72,9 +60,9 @@ const MENU_CONFIG = [
   { "id": "infos",               "name": "INFOS",                "type": "page",    "pageId": "infos" },
 
   /* ── Cachés ── */
-  { "id": "auteur",          "name": "AUTEUR",           "type": "page",    "pageId": "auteur",           "hidden": true },
-  { "id": "post-production", "name": "POST-PRODUCTION",  "type": "page",    "pageId": "post-production",  "hidden": true },
-  { "id": "films-player",    "name": "VOIR LES FILMS",   "type": "page",    "pageId": "films-player",     "hidden": true }
+  { "id": "post-production", "name": "POST-PRODUCTION", "type": "page",    "pageId": "post-production", "hidden": true },
+  { "id": "films-player",    "name": "VOIR LES FILMS",  "type": "page",    "pageId": "films-player",    "hidden": true },
+  { "id": "archives",        "name": "ARCHIVES",        "type": "gallery", "galleryId": "archives",     "hidden": true }
 ];
 
 /* ─── SECTIONS CONFIG ────────────────────────────────────────── */
