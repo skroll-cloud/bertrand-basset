@@ -119,7 +119,8 @@ const SECTIONS_CONFIG = {
                 titleFr: "Salarié EHPAD", titleEn: "Care home worker",
                 descFr: "Le quotidien des soignants",
                 descEn: "A caregiver's daily life",
-                img: null
+                img: null,
+                _hiddenByAdmin: true   /* pas encore de contenu */
             },
             {
                 id: "carre-das", galleryId: null,
@@ -127,7 +128,8 @@ const SECTIONS_CONFIG = {
                 titleFr: "Carré d'As", titleEn: "Carré d'As",
                 descFr: "Série photographique",
                 descEn: "Photography series",
-                img: null
+                img: null,
+                _hiddenByAdmin: true   /* pas encore de contenu */
             },
             {
                 id: "lumiere", galleryId: null,
@@ -135,7 +137,8 @@ const SECTIONS_CONFIG = {
                 titleFr: "Lumière Lente", titleEn: "Slow Light",
                 descFr: "Une esthétique en développement",
                 descEn: "An aesthetic in development",
-                img: null
+                img: null,
+                _hiddenByAdmin: true   /* pas encore de contenu */
             },
             {
                 id: "plateau", galleryId: null,
@@ -143,7 +146,8 @@ const SECTIONS_CONFIG = {
                 titleFr: "Shooting plateau & scène", titleEn: "On-set & stage",
                 descFr: "Acteurs, équipes, making-of",
                 descEn: "Actors, crews, making-of",
-                img: null
+                img: null,
+                _hiddenByAdmin: true   /* pas encore de contenu */
             },
             {
                 id: "immersion", galleryId: "studio",
@@ -151,7 +155,8 @@ const SECTIONS_CONFIG = {
                 titleFr: "Immersion", titleEn: "Immersion",
                 descFr: "EHPAD, territoire, métier",
                 descEn: "Care homes, territory, craft",
-                img: "images/ST MELAR/stmelar-1.jpg"
+                img: "images/ST MELAR/stmelar-1.jpg",
+                _hiddenByAdmin: true   /* galerie studio vide pour l'instant */
             },
             {
                 id: "st-melar", galleryId: "st-melar",
@@ -167,7 +172,8 @@ const SECTIONS_CONFIG = {
                 titleFr: "Burning Man", titleEn: "Burning Man",
                 descFr: "Désert du Nevada · Black Rock City",
                 descEn: "Nevada desert · Black Rock City",
-                img: "images/dustin-kolor/04.jpg"
+                img: "images/dustin-kolor/04.jpg",
+                _hiddenByAdmin: true   /* pas de galleryId — contenu à créer */
             },
         ]
     },

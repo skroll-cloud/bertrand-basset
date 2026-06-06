@@ -1,4 +1,5 @@
 # CLAUDE.md — Cahier des charges site Bertrand Basset
+*Dernière mise à jour : 06 juin 2026*
 
 > **Règle absolue** : ne jamais inventer un nouveau design de page.
 > Toute nouvelle page ou section s'intègre dans le système existant.
@@ -11,31 +12,40 @@
 - Domaine : `bertrandbasset.com` (DNS Cloudflare → GitHub Pages)
 - Repo : `skroll-cloud/bertrand-basset.git`
 - PAT : encodé en char codes dans `admin.html` (ne pas modifier)
-- **Opérations git** : toujours depuis `/tmp/bb_deploy` (clone temporaire).
+- **Opérations git** : toujours depuis `/sessions/loving-pensive-clarke/repo-push`
   Le dossier monté `/sessions/.../mnt/site-v1` est en FUSE — git y est interdit (EPERM).
-- Déploiement = `git push origin main` depuis `/tmp/bb_deploy`
+  `/tmp` est sur une partition à 100% — NE PAS utiliser `/tmp` pour git.
 
 ### Protocole de déploiement
 
 ```bash
-# 1. Clone du repo (toujours recloner — /tmp ne persiste pas entre sessions)
-cd /tmp && rm -rf bb_deploy
-git clone https://[TOKEN]@github.com/skroll-cloud/bertrand-basset.git bb_deploy
+# 1. Aller dans le repo de déploiement (persiste entre sessions)
+cd /sessions/loving-pensive-clarke/repo-push
 
-# 2. Copier les fichiers modifiés depuis le mount FUSE
-cp /sessions/.../mnt/site-v1/FICHIER /tmp/bb_deploy/FICHIER
+# 2. Mettre à jour le remote avec le PAT actuel si besoin
+git remote set-url origin https://[PAT]:x-oauth-basic@github.com/skroll-cloud/bertrand-basset.git
 
-# 3. Bump version string dans index.html si JS modifié (ex: ?v=20260526c)
+# 3. Récupérer le dernier état (fetch léger — évite de recloner)
+HTTPS_PROXY=http://localhost:3128 git fetch --depth=1 origin main
+git reset --hard origin/main
 
-# 4. Commit + push
-cd /tmp/bb_deploy
+# 4. Copier les fichiers modifiés depuis le mount FUSE
+cp /sessions/loving-pensive-clarke/mnt/site-v1/FICHIER /sessions/loving-pensive-clarke/repo-push/FICHIER
+
+# 5. Bump ?v= dans index.html si un fichier JS a été modifié
+
+# 6. Commit + push
+git config user.email "claude@anthropic.com"
+git config user.name "Claude"
 git add -A
 git commit -m "Description du changement"
-git push origin main
+HTTPS_PROXY=http://localhost:3128 git push origin main
 ```
 
-**Note importante** : GitHub push protection bloque les tokens en clair et en base64.
+**Note** : GitHub push protection bloque les tokens en clair et en base64.
 Le PAT dans admin.html est encodé en tableau de char codes pour contourner ce filtre.
+
+**PAT actuel** : encodé en char codes dans `admin.html` (ligne ~1179). NE PAS écrire en clair dans les fichiers commités — push protection GitHub le bloquera. Le PAT de déploiement est visible dans le remote du repo `/sessions/loving-pensive-clarke/repo-push`.
 
 ---
 
@@ -81,6 +91,8 @@ color: var(--black);
 | `.te-main` | Grille plein écran pour page Travailler Ensemble |
 | `.te-card` | Carte de présentation (2 colonnes) |
 | `.te-carton` | Vue détail d'une carte (position:absolute, display:none → .visible) |
+| `.section-card` | Carte dans une grille de section (PHOTOGRAPHE, RÉALISATEUR…) |
+| `.section-grid` | Grille de cartes (CSS grid, responsive) |
 
 ---
 
@@ -90,22 +102,24 @@ color: var(--black);
 
 `index.html` charge **dans cet ordre** :
 ```html
-<script src="js/gallery-images.js?v=20260502"></script>
-<script src="js/gallery-data.js?v=20260526c"></script>
-<script src="js/gallery-engine.js?v=20260526"></script>
+<script src="js/gallery-images.js?v=20260606b"></script>
+<script src="js/gallery-data.js?v=20260606d"></script>
+<script src="js/gallery-engine.js?v=20260606b"></script>
 ```
 
 **`js/gallery.js`** (114 Ko) — OBSOLÈTE, backup monolithique, **NON CHARGÉ**, **NE PAS MODIFIER**.
 
 ### `js/gallery-images.js`
 Listes d'images ordonnées par galerie (généré par scan). Modifier si on ajoute des photos.
+Priorité sur `GALLERIES_CONFIG[id].images` si la clé existe.
 
 ### `js/gallery-data.js`
 **Toutes les données et fonctions de construction de pages.**
 
 Variables globales :
 - `SITE_CONFIG` — config générale (nom, landing, galerie par défaut)
-- `MENU_CONFIG` — navigation (voir §4)
+- `MENU_CONFIG` — navigation (voir §8)
+- `SECTIONS_CONFIG` — grilles de cartes par section (voir §9)
 - `GALLERIES_CONFIG` — définition des galeries et leurs images
 - `T` — traductions `{ en: {…}, fr: {…} }`
 
@@ -126,6 +140,7 @@ window.portfolio = new Portfolio();  // instanciée au DOMContentLoaded
 Méthodes clés :
 - `openGallery(id)` — ouvre une galerie
 - `showPage(id)` — affiche une page dans `#galleryContainer`
+- `showSectionGrid(sectionId)` — affiche la grille de cartes d'une section
 - `showItem(index)` — affiche un slide (image, carton, vidéo…)
 - `openHomeGallery()` → `openGallery(SITE_CONFIG.defaultGallery)` — **pas la landing**
 - `buildMenu()` — reconstruit le nav depuis `MENU_CONFIG`
@@ -167,14 +182,14 @@ titleFr: "Fabriquer aujourd'hui les archives de demain."
 
 Dans `index.html`, changer le `?v=` pour forcer le rechargement du cache :
 ```html
-<script src="js/gallery-data.js?v=20260526c"></script>
+<script src="js/gallery-data.js?v=20260606d"></script>
 ```
 
 ---
 
 ## 4. Navigation — règle des B logos
 
-### Hiérarchie 3 niveaux
+### Hiérarchie
 
 ```
 Landing page (index.html — section landing)
@@ -182,11 +197,7 @@ Landing page (index.html — section landing)
 Site principal (index.html — section site)
     ├── Sidebar gauche : nav principale (MENU_CONFIG)
     ├── Logo B sidebar (#homeLink) → openHomeGallery() = galerie par défaut, PAS la landing
-    └── GALERIES → clients/index.html
-            ├── Header B (.site-brand) → ../index.html (site principal)
-            └── Cards galeries clients → clients/plougasnou.html etc.
-                    ├── Header B (.header-brand) → clients/index.html
-                    └── Menu disparu (plein écran)
+    └── Galeries clients → clients/[nom].html (URL directe, pas dans la nav)
 ```
 
 ### Logo B dans chaque contexte
@@ -195,8 +206,7 @@ Site principal (index.html — section site)
 |----------|---------|-------------|
 | Landing | `.brand-block` | Entrée dans le site |
 | Site principal sidebar | `#homeLink` | `openHomeGallery()` (galerie best-of) |
-| `clients/index.html` | `.site-brand` | `../index.html` (site principal) |
-| `clients/[galerie].html` | `.header-brand` | `index.html` (liste galeries clients) |
+| `clients/[galerie].html` | `.header-brand` | `index.html` (site principal) |
 
 ### Comportement `#homeLink`
 
@@ -215,8 +225,8 @@ document.getElementById('homeLink')?.addEventListener('click', e => {
 
 ### Règle d'accès
 - Chaque galerie a **une URL propre et partageable** : `bertrandbasset.com/clients/[nom].html`
-- Le portail `clients/index.html` liste toutes les galeries (lien direct, pas dans la nav du site)
-- La carte "Galeries Client" dans PHOTOGRAPHE pointe vers `clients/index.html` (pas de subgrid)
+- Elles sont aussi accessibles via la section `galeries-client` dans le site (cachée dans le nav pour l'instant)
+- `clients/index.html` : portail de liste des galeries (accès direct par URL, hors nav principale)
 
 ### Mot de passe master
 Toute galerie accepte **deux mots de passe** :
@@ -227,42 +237,45 @@ Toute galerie accepte **deux mots de passe** :
 if (hash === PWD_HASH || hash === MASTER_HASH) { /* accès accordé */ }
 ```
 
-### 3 types de galeries
+### ⚠️ Deux générations de templates — ergonomies différentes
 
-| Type | Fichier template | Usage |
-|------|-----------------|-------|
-| **Visionnage** | `clients/ines.html` | Lecture seule — le client visionne, sans sélectionner ni télécharger |
-| **Sélection** | `clients/gilmerton.html` | Grille + sélection + "Envoyer ma sélection" par email + téléchargement ZIP |
-| **Boutique** | (à créer) | Sélection + panier + achat Stripe |
+| Génération | Fichiers | Accès | Fonctionnalités |
+|-----------|----------|-------|-----------------|
+| **Ancienne** (2 tiers) | `gilmerton.html`, `leo-brasserie.html` | Mot de passe unique → grille complète | Sélection photos + envoi par email + téléchargement ZIP |
+| **Nouvelle** (3 tiers) | `grande-parade.html`, template `galerie-template.html` | Highlight public → mdp visionnage → mdp téléchargement | Highlight teaser (dossier `highlight/`), voir toutes les photos avec mdp, télécharger avec mdp séparé |
 
-### Protocole — créer une nouvelle galerie client
+**À terme** : standardiser les anciennes galeries sur le nouveau template 3 tiers.
 
-Bertrand dit : **"type de galerie + nom du dossier pCloud + (optionnel) mot de passe + photo vignette"**
+### Protocole — créer une nouvelle galerie client (template 3 tiers)
+
+Bertrand dit : **"pCloud lien dossier + (optionnel) mot de passe + photo vignette"**
 
 Claude fait :
-1. Récupérer le code pCloud depuis le lien `u.pcloud.link/publink/show?code=CODE`
-2. Vérifier que c'est bien un **dossier** (pas un fichier)
-3. Lister les photos pour confirmer le nombre et le nom de la vignette
-4. Copier le template correspondant au type (ines.html pour Visionnage, gilmerton.html pour Sélection)
-5. Modifier les 3 constantes CONFIG :
+1. Récupérer le code pCloud depuis l'URL : `u.pcloud.link/publink/show?code=CODE`
+2. Vérifier que c'est un **dossier** (pas un fichier — `.jpg` dans le titre = erreur)
+3. Copier `clients/grande-parade.html` → `clients/[nom].html`
+4. Modifier les constantes CONFIG :
    ```js
-   const PCLOUD_CODE  = 'CODE_PCLOUD';
-   const PWD_HASH     = 'sha256_du_mot_de_passe';  /* ou provisoire = SHA256(Nom) */
-   const GALLERY_NAME = 'Nom';
+   const CONFIG = {
+     GALLERY_NAME:  'Nom',
+     PCLOUD_CODE:   'CODE_PCLOUD',
+     PWD_VIEW_HASH: 'sha256_mdp_visionnage',
+     PWD_DL_HASH:   'sha256_mdp_telechargement',
+     CARD_ID:       'client-nom',
+     NOTIF_EMAIL:   'yellowshoesstudio@gmail.com',
+   };
    ```
-6. Ajouter la carte dans `clients/index.html` avec la vignette pCloud :
-   ```html
-   <img src="https://api.pcloud.com/getpubthumb?code=CODE&fileid=FILEID&size=600x900&type=jpg">
-   ```
-7. Déployer depuis `/tmp/bb_deploy`
+5. Ajouter la carte dans `SECTIONS_CONFIG["galeries-client"]` (gallery-data.js)
+6. Ajouter la carte dans `clients/index.html` avec vignette pCloud
+7. Déployer depuis `/sessions/loving-pensive-clarke/repo-push`
 
 ### Galeries actives
 
-| Galerie | Type | pCloud code | Vignette fileid | Mot de passe |
-|---------|------|-------------|-----------------|--------------|
-| Gilmerton | Sélection | `kZo1EU5ZLLpXW8fr6xzJNJW0gPuU1B6fdsuy` | — | SHA256("Gilmerton") |
-| Léo Brasserie | Sélection | `kZQ1EU5ZzBL5BcesXwzTqgy0uauzhu35EtS7` | — | SHA256("Léo") |
-| Ines | Visionnage | `kZTjQI5Z2AICSui7ebYf6i6dMEQqiYXYSFCV` | 88476285883 | SHA256("Ines") provisoire |
+| Galerie | Fichier | Type | pCloud code | Vignette fileid | Mot de passe |
+|---------|---------|------|-------------|-----------------|--------------|
+| Gilmerton | `clients/gilmerton.html` | Ancienne (2 tiers) | `kZo1EU5ZLLpXW8fr6xzJNJW0gPuU1B6fdsuy` | 88201126472 | SHA256("Gilmerton") |
+| Léo Brasserie | `clients/leo-brasserie.html` | Ancienne (2 tiers) | `kZQ1EU5ZzBL5BcesXwzTqgy0uauzhu35EtS7` | 88089443232 | SHA256("Léo") |
+| Grande Parade | `clients/grande-parade.html` | Nouvelle (3 tiers) | `kZKq0A5ZaoFGv3YO4mQrFbQghpd6Tfw0CWgy` | 88890561791 | view: SHA256("GrandeParade"), dl: SHA256("GrandeParadeDL") |
 
 ### Propriétés techniques communes
 - **Exception à la règle showPage()** : fichiers HTML séparés (plein écran, logique propre)
@@ -274,26 +287,26 @@ Claude fait :
 
 ---
 
-## 6. Structure des fichiers (après nettoyage mai 2026)
+## 6. Structure des fichiers
 
 ```
 site-v1/
 ├── index.html              — Point d'entrée unique du site (landing + site)
-├── admin.html              — Interface d'administration (PAT hardcodé)
+├── admin.html              — Interface d'administration (PAT hardcodé en char codes)
 ├── panier.html             — Panier universel (toutes les boutiques)
 ├── merci.html              — Page de confirmation de commande
 ├── qr-cartes.html          — QR codes pour l'exposition Dust'in Kolor
 ├── css/
 │   └── style.css           — Design system complet
 ├── js/
-│   ├── gallery-images.js   — Listes d'images ordonnées (généré)
-│   ├── gallery-data.js     — CONFIG + fonctions buildXxxPage()
-│   └── gallery-engine.js   — Classe Portfolio, rendu, navigation
+│   ├── gallery-images.js   — Listes d'images ordonnées (?v=20260606b)
+│   ├── gallery-data.js     — CONFIG + SECTIONS_CONFIG + buildXxxPage() (?v=20260606d)
+│   └── gallery-engine.js   — Classe Portfolio, rendu, navigation (?v=20260606b)
 ├── assets/
 │   └── logo-b.svg
 ├── images/                 — Toutes les images du site
 │   ├── accueil/            (2 photos)
-│   ├── portrait/           (14 photos)
+│   ├── portrait/           (12 photos)
 │   ├── cinema/             (10 photos)
 │   ├── Television/         (10 photos)
 │   ├── archives/           (10 photos)
@@ -304,11 +317,15 @@ site-v1/
 │   ├── immersion/          (1 photo)
 │   ├── landing/            (2 photos)
 │   ├── STUDIO/             (3 photos)
-│   └── ST MELAR/           (7 photos)
+│   └── ST MELAR/           (7 photos — gallery-images.js clé "st-melar")
 ├── clients/
-│   ├── index.html          — Liste des galeries clients
-│   ├── gilmerton.html      — Galerie Gilmerton (pCloud, password)
-│   └── leo-brasserie.html  — Galerie Léo Brasserie (pCloud, password)
+│   ├── index.html          — Liste des galeries clients (portail direct)
+│   ├── gilmerton.html      — Galerie Gilmerton (ancienne, 2 tiers)
+│   ├── leo-brasserie.html  — Galerie Léo Brasserie (ancienne, 2 tiers)
+│   ├── grande-parade.html  — Galerie Grande Parade (nouvelle, 3 tiers)
+│   └── galerie-template.html — Template 3 tiers (base pour nouvelles galeries)
+├── content/
+│   └── cartons/            — Fichiers .txt par galerie (override inline carton)
 ├── dustin-kolor/
 │   ├── index.html          — Mini-site série photos (exception validée)
 │   ├── boutique.html       — Boutique tirages
@@ -351,8 +368,9 @@ Dans `GALLERIES_CONFIG` (gallery-data.js), dans la liste `images` :
 {
   id: "unique-id",
   name: "LABEL NAV",
-  type: "gallery" | "page" | "group" | "link" | "external",
+  type: "gallery" | "section" | "page" | "group" | "link" | "external",
   galleryId: "…",     // si type=gallery
+  sectionId: "…",     // si type=section (ouvre showSectionGrid)
   pageId: "…",        // si type=page
   url: "…",           // si type=link ou external
   parent: "group-id", // si enfant d'un groupe
@@ -360,12 +378,104 @@ Dans `GALLERIES_CONFIG` (gallery-data.js), dans la liste `images` :
 }
 ```
 
+### État actuel du menu (06/06/2026)
+
+| ID | Nom nav | Type | Cible | Visible |
+|----|---------|------|-------|---------|
+| `best-of` | BEST OF | gallery | best-of | ✗ caché |
+| `photographe` | PHOTOGRAPHE | section | photographe | ✓ |
+| `realisateur` | RÉALISATEUR | section | realisateur | ✓ |
+| `travailler-ensemble` | TRAVAILLER ENSEMBLE | page | travailler-ensemble | ✓ |
+| `boutique` | BOUTIQUE | section | boutique | ✓ |
+| `infos` | INFOS | page | infos | ✓ |
+| `galeries-client` | GALERIES CLIENT | section | galeries-client | ✗ caché (activer quand prêt) |
+| `post-production` | POST-PRODUCTION | page | post-production | ✗ caché |
+| `auteur` | AUTEUR | page | auteur | ✗ caché |
+
 ---
 
-## 9. Galeries clients pCloud — protocole
+## 9. SECTIONS_CONFIG — structure et prefixMap
 
-Les galeries clients privées (Gilmerton, Léo Brasserie) chargent leurs photos depuis
-pCloud via l'API publique.
+Cartes affichées dans `showSectionGrid(sectionId)` quand on clique sur un item de type `section`.
+
+### Structure d'une carte
+
+```js
+{
+  id: "unique-dans-section",
+  galleryId: "...",          // ouvre la galerie au clic
+  url: "...",                // navigation href au clic (galeries clients, liens externes)
+  pageId: "...",             // showPage() au clic
+  labelFr/labelEn: "...",   // petite ligne de catégorie (ex. "Studio · Terrain")
+  titleFr/titleEn: "...",   // titre principal de la carte
+  descFr/descEn: "...",     // description courte
+  img: "...",               // image de couverture (URL ou chemin local)
+  _hiddenByAdmin: true,     // caché par défaut (Supabase peut l'activer)
+  parentId: "...",          // ID Supabase parent (pour les sous-galeries)
+}
+```
+
+### Règle `_hiddenByAdmin`
+
+```js
+// Dans gallery-engine.js (chargement Supabase) :
+const wasStaticHidden = card._hiddenByAdmin === true;
+card._hiddenByAdmin = wasStaticHidden
+    ? row.visible !== true   // caché par défaut → visible seulement si admin dit true
+    : row.visible === false; // visible par défaut → caché seulement si admin dit false
+```
+
+- `_hiddenByAdmin: true` en static = caché par défaut, à activer manuellement dans l'admin
+- Sans ce flag = visible par défaut, à masquer depuis l'admin si besoin
+
+### Sections et leur prefixMap Supabase
+
+| Section | prefixMap clé | Préfixe ID Supabase | Exemple d'ID |
+|---------|--------------|---------------------|--------------|
+| `photographe` | `ph` | `ph-` | `ph-portrait` |
+| `realisateur` | `real` | `real-` | `real-cinema` |
+| `boutique` | `shop` | `shop-` | `shop-boutique-dk` |
+| `galeries-client` | `client` | `client-` | `client-gilmerton` |
+
+Ce prefixMap est défini à **deux endroits** (à maintenir en sync) :
+1. `gallery-engine.js` (ligne init Supabase ~141) : `const prefixMap = { photographe: 'ph', realisateur: 'real', boutique: 'shop', 'galeries-client': 'client' };`
+2. `gallery-engine.js` (`showSectionGrid` ~1000) : même constante
+3. `admin.html` : `const PREFIX = { photographe: 'ph', realisateur: 'real', boutique: 'shop', 'galeries-client': 'client' };`
+
+### Cartes actuellement cachées par défaut (`_hiddenByAdmin: true`)
+
+Dans `photographe` : `plougasnou`, `salarie-ehpad`, `carre-das`, `lumiere`, `plateau`, `immersion`, `burning-man`
+(À activer depuis l'admin quand le contenu sera prêt)
+
+---
+
+## 10. Admin — fonctionnalités
+
+Fichier : `admin.html`
+Mot de passe admin : `bertrand2025`
+
+### 4 onglets
+
+| Onglet | Fonctionnalité |
+|--------|----------------|
+| **Cartes & galeries** | Modifier titre/label/desc/image de chaque carte, drag-and-drop pour réordonner, bouton Visible/Masquée |
+| **Visibilité menu** | Activer/désactiver les items du nav principal |
+| **Photos** | Réordonner et supprimer les photos d'une galerie (déploie sur GitHub) |
+| **Cartons** | Éditer le texte des cartons par galerie (déploie sur GitHub) |
+
+### Sections visibles dans "Cartes & galeries"
+
+PHOTOGRAPHE · RÉALISATEUR · BOUTIQUE · **GALERIES CLIENT** (ajouté 06/06/2026)
+
+### Supabase
+
+- URL : `https://suecslynruuputmujudg.supabase.co`
+- Table `gallery_cards` : stocke les overrides de cartes (titre, label, desc, img, visible, sort_order, parent_id)
+- Table `section_visibility` : stocke l'état visible/masqué des items de nav
+
+---
+
+## 11. Galeries clients pCloud — protocole
 
 ### Règle absolue : ne jamais inventer un code pCloud
 Le code s'obtient UNIQUEMENT depuis l'URL que Bertrand partage :
@@ -378,21 +488,9 @@ Si le titre de la page pCloud se termine en `.jpg` → c'est un fichier → dema
 
 | Galerie | Code pCloud | Type | Serveur API |
 |---------|------------|------|-------------|
-| Léo Brasserie | `kZQ1EU5ZzBL5BcesXwzTqgy0uauzhu35EtS7` | Dossier ✓ | api.pcloud.com (US) |
 | Gilmerton | `kZo1EU5ZLLpXW8fr6xzJNJW0gPuU1B6fdsuy` | Dossier ✓ | api.pcloud.com (US) |
-
-### Mot de passe des galeries
-Stocké en SHA-256 dans `gallery_cards.desc_en` (Supabase). Modifiable via admin.html.
-Valeurs initiales : Gilmerton = SHA256("Gilmerton"), Léo = SHA256("Léo").
-
-### Structure d'un fichier galerie client pCloud
-```js
-const PCLOUD_CODE  = 'CODE_ICI';          // Code du DOSSIER partagé
-const PWD_HASH     = 'sha256_du_mdp';     // Hash SHA-256 du mot de passe
-const GALLERY_NAME = 'Nom Galerie';
-const NOTIF_EMAIL  = 'yellowshoesstudio@gmail.com';
-const CARD_ID      = 'ph-nom-galerie';    // ID dans gallery_cards Supabase
-```
+| Léo Brasserie | `kZQ1EU5ZzBL5BcesXwzTqgy0uauzhu35EtS7` | Dossier ✓ | api.pcloud.com (US) |
+| Grande Parade | `kZKq0A5ZaoFGv3YO4mQrFbQghpd6Tfw0CWgy` | Dossier ✓ | api.pcloud.com (US) |
 
 ### API pCloud utilisée
 - Endpoint : `showpublink?code=CODE` (EU first: `eapi.pcloud.com`, fallback US: `api.pcloud.com`)
@@ -400,10 +498,11 @@ const CARD_ID      = 'ph-nom-galerie';    // ID dans gallery_cards Supabase
 - Pour lister les fichiers : `showpublink?code=CODE` → `metadata.contents`
 - Si `contents` vide → 2e appel avec `folderid`: `showpublink?code=CODE&folderid=ID`
 - Pour les URLs de téléchargement : `getpublinkdownload?code=CODE&fileid=FILEID`
+- Pour les vignettes : `getpubthumb?code=CODE&fileid=FILEID&size=600x900&type=jpg`
 
 ---
 
-## 10. Hébergement vidéo
+## 12. Hébergement vidéo
 
 - **YouTube non-répertorié** : recommandé (gratuit, permanent, embeddable)
 - **Vimeo** : fonctionne tant que l'abonnement est actif
@@ -412,74 +511,49 @@ const CARD_ID      = 'ph-nom-galerie';    // ID dans gallery_cards Supabase
 
 ### Vidéos de référence — Travailler Ensemble
 
-Ces liens sont utilisés dans la page "Travailler Ensemble" (`buildTravaillerEnsemblePage`).
-
-| Œuvre | Plateforme | Lien |
-|-------|-----------|------|
-| Jean Rochefort (portrait) | Vimeo | https://vimeo.com/237381173/1595582296 |
-| Ernest L'hour | Vimeo | https://vimeo.com/1192293542/57b7d733e5 |
-| J'arrive | Vimeo | https://vimeo.com/390539243 |
-| Burning Man / Temple du deuil | YouTube | https://www.youtube.com/watch?v=Fj8JcmKI0Iw |
-| Tourisme fiction Monts d'Arrée | YouTube | https://www.youtube.com/watch?v=O5iTddsVMyA |
-
-**Note** : Les Vimeo avec hash de confidentialité (`/HASH`) nécessitent le format embed :
-`https://player.vimeo.com/video/ID?h=HASH`
-
-Exemples :
-- Jean Rochefort : `https://player.vimeo.com/video/237381173?h=1595582296`
-- Ernest L'hour : `https://player.vimeo.com/video/1192293542?h=57b7d733e5`
+| Œuvre | Plateforme | Lien embed |
+|-------|-----------|------------|
+| Jean Rochefort (portrait) | Vimeo | `https://player.vimeo.com/video/237381173?h=1595582296` |
+| Ernest L'hour | Vimeo | `https://player.vimeo.com/video/1192293542?h=57b7d733e5` |
+| J'arrive | Vimeo | `https://vimeo.com/390539243` |
+| Burning Man / Temple du deuil | YouTube | `https://www.youtube.com/watch?v=Fj8JcmKI0Iw` |
+| Tourisme fiction Monts d'Arrée | YouTube | `https://www.youtube.com/watch?v=O5iTddsVMyA` |
 
 ---
 
-## 11. Page Travailler Ensemble
+## 13. Page Travailler Ensemble
 
-### Fonctionnement
+Appelée via `showPage('travailler-ensemble')`.
+Fonction `buildTravaillerEnsemblePage(lang)` dans `gallery-data.js`.
 
-Appelée via `showPage('travailler-ensemble')` dans gallery-engine.js.
-La fonction `buildTravaillerEnsemblePage(lang)` est dans `gallery-data.js`.
-
-La page a sa propre structure (pas de `page-mode`) car elle est plein écran avec navigation interne :
-- Vue principale : grille 2 colonnes de cartes (`.te-grid`)
-- Vue détail : carton plein écran (`.te-carton`) avec image + texte + vidéo
-
-```js
-// Dans showPage() de gallery-engine.js :
-} else if (id === 'travailler-ensemble') {
-    siteEl?.classList.remove('films-mode');
-    container.classList.remove('page-mode');
-    container.innerHTML = buildTravaillerEnsemblePage(this.currentLang);
-}
-```
-
-### Cartes actuelles
-
+Cartes actuelles :
 | ID | Titre FR | Image | Vidéo |
 |----|----------|-------|-------|
-| `archives` | Fabriquer aujourd'hui les archives de demain | `images/Television/02.jpg` | Vimeo 1192293542 (Ernest L'hour) |
-| `fiction` | Mettez de la fiction dans votre communication | `images/cinema/1.jpg` | YouTube O5iTddsVMyA (Monts d'Arrée) |
-| `immersion` | *masqué* (pas dans la grille) | — | — |
-| `portrait` | *masqué* (pas dans la grille) | — | — |
+| `archives` | Fabriquer aujourd'hui les archives de demain | `images/Television/02.jpg` | Vimeo 1192293542 |
+| `fiction` | Mettez de la fiction dans votre communication | `images/cinema/1.jpg` | YouTube O5iTddsVMyA |
+| `immersion` | *masqué* | — | — |
+| `portrait` | *masqué* | — | — |
 
 ---
 
-## 12. Pages cachées, prêtes à publier
+## 14. Pages cachées, prêtes à publier
 
 - `post-production` (`hidden: true` dans MENU_CONFIG) — `buildPostProductionPage()` OK
 - `auteur` (`hidden: true` dans MENU_CONFIG) — `buildAuteurPage()` OK
 
-Pour publier : dans `MENU_CONFIG` (gallery-data.js), retirer `hidden: true`.
+Pour publier : dans `MENU_CONFIG` (gallery-data.js), retirer `hidden: true`, bumper `?v=`.
 
 ---
 
-## 13. Galeries clients en attente
+## 15. Galeries clients en attente
 
 - **Juste Après 153** — photos à redimensionner (PIL, max 1800px, quality 82)
 - **La Régal** — photos à redimensionner
-- **St Mélar** — 7 photos dans `images/ST MELAR/` (déjà là, galerie pas encore créée)
+- **St Mélar** — 7 photos dans `images/ST MELAR/` + 6 dans gallery-images.js (`st-melar`), galerie visible dans PHOTOGRAPHE
 
 ---
 
-## 14. Règle de redimensionnement photos
+## 16. Règle de redimensionnement photos
 
 ```python
 from PIL import Image
@@ -490,44 +564,13 @@ img.save(dst, 'JPEG', quality=82, optimize=True)
 
 ---
 
-## 15. Routage URL (hash routing) — À implémenter
+## 17. Routage URL (hash routing) — À implémenter
 
-### Problème actuel
-Le site est une SPA sans mise à jour de l'URL → le bouton Retour du navigateur quitte le site.
-Les QR codes d'exposition (ex: `qr-cartes.html`) doivent rester des pages séparées.
-
-### Solution planifiée : hash routing
-
-Dans `gallery-engine.js`, modifier `openGallery()` et `showPage()` pour écrire le hash :
-```js
-openGallery(id) {
-    window.location.hash = id;
-    // …reste du code…
-}
-
-showPage(id) {
-    window.location.hash = id;
-    // …reste du code…
-}
-```
-
-Ajouter un listener `hashchange` dans l'init :
-```js
-window.addEventListener('hashchange', () => {
-    const hash = window.location.hash.slice(1);
-    if (!hash) { this.openHomeGallery(); return; }
-    // Chercher dans GALLERIES_CONFIG et MENU_CONFIG…
-});
-```
-
-URLs résultantes :
-- `bertrandbasset.com/#portrait` → galerie portrait
-- `bertrandbasset.com/#travailler-ensemble` → page Travailler Ensemble
-- `bertrandbasset.com/#infos` → page infos
+Le site est une SPA. `showSectionGrid()` et `showPage()` écrivent déjà dans `history.pushState` (format `#id`). Un listener `hashchange` pourrait être ajouté pour la navigation Retour.
 
 ---
 
-## 16. Checklist avant tout ajout de contenu
+## 18. Checklist avant tout ajout de contenu
 
 1. [ ] Est-ce que cette page a besoin d'être plein-écran (galerie client) ?
    - Non → `showPage()` dans gallery-engine.js + `buildXxxPage()` dans gallery-data.js
@@ -535,13 +578,14 @@ URLs résultantes :
 2. [ ] Le fond est-il `var(--white)` / `#fafafa` ? (sauf galeries clients dark = OK)
 3. [ ] La police est-elle IBM Plex Sans, weight 300 ?
 4. [ ] Le logo B navigue-t-il vers le bon endroit ? (voir §4)
-5. [ ] Le déploiement se fait-il depuis `/tmp/bb_deploy` ?
+5. [ ] Le déploiement se fait-il depuis `/sessions/loving-pensive-clarke/repo-push` ?
 6. [ ] Le `?v=` a-t-il été bumped dans index.html si un fichier JS a été modifié ?
 7. [ ] Les strings JS avec apostrophes utilisent-elles des guillemets doubles ?
+8. [ ] Si nouvelle section : prefixMap mis à jour aux 3 endroits (engine ×2, admin ×1) ?
 
 ---
 
-## 17. Architecture e-commerce universelle
+## 19. Architecture e-commerce universelle
 
 ### Règle d'or : un seul panier pour tout le site
 
@@ -555,27 +599,10 @@ URLs résultantes :
 localStorage.key = 'bb_cart'   // Bertrand Basset cart — toujours cette clé, partout
 ```
 
-### Structure d'un item cart (générique)
-
-```js
-{
-  id:      string,       // clé unique, ex. "sandstorm-feu-simple"
-  slug:    string,       // identifiant œuvre pour l'Edge Function
-  type:    string,       // "simple" | "dibond" | "grand" | "carte" | "carte-pack"
-  cat:     string,       // "tirage" | "carte" | "portrait"
-  titre:   string,       // libellé affiché dans le panier et les emails
-  prix:    number,       // prix unitaire en €
-  qty:     number,       // quantité (toujours 1 pour les tirages numérotés)
-  chassis: boolean,      // option châssis alu (tirages Dibond uniquement)
-  imgs:    string[],     // optionnel : images de cartes postales
-  ids:     string[],     // optionnel : IDs pour les packs
-}
-```
-
 ### Endpoint de paiement (Supabase Edge Function)
 
 ```
-POST https://[PROJECT_REF].supabase.co/functions/v1/stripe-checkout
+POST https://suecslynruuputmujudg.supabase.co/functions/v1/stripe-checkout
 Headers: apikey: [SUPABASE_ANON_KEY]
 Body: { items, promo, success_url, cancel_url }
 Response: { url: "https://checkout.stripe.com/..." }
