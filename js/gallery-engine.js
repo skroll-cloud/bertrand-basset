@@ -138,7 +138,7 @@ class Portfolio {
                 const dbMap   = {};
                 dbCards.forEach(r => { dbMap[r.id] = r; });
 
-                const prefixMap = { photographe: 'ph', realisateur: 'real', boutique: 'shop' };
+                const prefixMap = { photographe: 'ph', realisateur: 'real', boutique: 'shop', 'galeries-client': 'client' };
 
                 for (const secId in SECTIONS_CONFIG) {
                     const sec    = SECTIONS_CONFIG[secId];
@@ -997,7 +997,7 @@ class Portfolio {
         const title = lang === 'en' ? sec.titleEn : sec.titleFr;
 
         /* Préfixe de section pour dériver les clés sans Supabase */
-        const prefixMap = { photographe: 'ph', realisateur: 'real', boutique: 'shop' };
+        const prefixMap = { photographe: 'ph', realisateur: 'real', boutique: 'shop', 'galeries-client': 'client' };
         const secPrefix = prefixMap[sectionId] || sectionId;
 
         /* Construire la map des enfants : parentDbId → [cartes enfants] */

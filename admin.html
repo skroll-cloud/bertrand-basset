@@ -309,6 +309,7 @@
               <option value="photographe">Photographe</option>
               <option value="realisateur">Réalisateur</option>
               <option value="boutique">Boutique</option>
+              <option value="galeries-client">Galeries Client</option>
             </select>
           </div>
           <div class="form-field form-full">
@@ -446,8 +447,8 @@
 const SUPA_URL = 'https://suecslynruuputmujudg.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN1ZWNzbHlucnV1cHV0bXVqdWRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY1MTYyODcsImV4cCI6MjA5MjA5MjI4N30.c9Pa_x6MEcJdqVekBodSYpu3it-riVU1hYhC-m5iCsU';
 const PWD_HASH = 'fd8faf112b549a3c0ace23b2b0c25171195a07494895830426b5cece2ba3796b';
-const PREFIX   = { photographe: 'ph', realisateur: 'real', boutique: 'shop' };
-const SEC_NAME = { photographe: 'PHOTOGRAPHE', realisateur: 'RÉALISATEUR', boutique: 'BOUTIQUE' };
+const PREFIX   = { photographe: 'ph', realisateur: 'real', boutique: 'shop', 'galeries-client': 'client' };
+const SEC_NAME = { photographe: 'PHOTOGRAPHE', realisateur: 'RÉALISATEUR', boutique: 'BOUTIQUE', 'galeries-client': 'GALERIES CLIENT' };
 
 let dbCards      = {};  // id → row Supabase gallery_cards
 let visState     = {};  // id → boolean (section_visibility)
@@ -560,7 +561,7 @@ function renderCards() {
   const wrap = document.getElementById('cardSections');
 
   // Pour chaque section, fusionner cartes gallery-data.js + cartes Supabase non présentes
-  const allBySec = { photographe: [], realisateur: [], boutique: [] };
+  const allBySec = { photographe: [], realisateur: [], boutique: [], 'galeries-client': [] };
 
   for (const secId in SECTIONS_CONFIG) {
     if (!allBySec[secId]) allBySec[secId] = [];
