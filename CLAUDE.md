@@ -1,5 +1,5 @@
 # CLAUDE.md — Cahier des charges site Bertrand Basset
-*Dernière mise à jour : 06 juin 2026*
+*Dernière mise à jour : 07 juin 2026*
 
 > **Règle absolue** : ne jamais inventer un nouveau design de page.
 > Toute nouvelle page ou section s'intègre dans le système existant.
@@ -12,7 +12,8 @@
 - Domaine : `bertrandbasset.com` (DNS Cloudflare → GitHub Pages)
 - Repo : `skroll-cloud/bertrand-basset.git`
 - PAT : encodé en char codes dans `admin.html` (ne pas modifier)
-- **Opérations git** : toujours depuis `/sessions/loving-pensive-clarke/repo-push`
+- **Opérations git** : toujours depuis `/sessions/[session-name]/repo-push`
+  Le nom de session change à chaque démarrage — vérifier avec `ls /sessions/` au début de chaque session.
   Le dossier monté `/sessions/.../mnt/site-v1` est en FUSE — git y est interdit (EPERM).
   `/tmp` est sur une partition à 100% — NE PAS utiliser `/tmp` pour git.
 
@@ -20,14 +21,16 @@
 
 ```bash
 # 1. Aller dans le repo de déploiement (persiste entre sessions)
-cd /sessions/loving-pensive-clarke/repo-push
+#    Le nom de session change — vérifier avec : ls /sessions/
+cd /sessions/[session-name]/repo-push
 
 # 2. Mettre à jour le remote avec le PAT actuel si besoin
 git remote set-url origin https://[PAT]:x-oauth-basic@github.com/skroll-cloud/bertrand-basset.git
 
 # 3. Récupérer le dernier état (fetch léger — évite de recloner)
-HTTPS_PROXY=http://localhost:3128 git fetch --depth=1 origin main
+git fetch --depth=1 origin main
 git reset --hard origin/main
+# Note : HTTPS_PROXY=http://localhost:3128 n'est plus nécessaire dans les sessions récentes
 
 # 4. Copier les fichiers modifiés depuis le mount FUSE
 cp /sessions/loving-pensive-clarke/mnt/site-v1/FICHIER /sessions/loving-pensive-clarke/repo-push/FICHIER
@@ -39,7 +42,7 @@ git config user.email "claude@anthropic.com"
 git config user.name "Claude"
 git add -A
 git commit -m "Description du changement"
-HTTPS_PROXY=http://localhost:3128 git push origin main
+git push origin main
 ```
 
 **Note** : GitHub push protection bloque les tokens en clair et en base64.
@@ -242,7 +245,7 @@ if (hash === PWD_HASH || hash === MASTER_HASH) { /* accès accordé */ }
 | Génération | Fichiers | Accès | Fonctionnalités |
 |-----------|----------|-------|-----------------|
 | **Ancienne** (2 tiers) | `gilmerton.html`, `leo-brasserie.html` | Mot de passe unique → grille complète | Sélection photos + envoi par email + téléchargement ZIP |
-| **Nouvelle** (3 tiers) | `grande-parade.html`, template `galerie-template.html` | Highlight public → mdp visionnage → mdp téléchargement | Highlight teaser (dossier `highlight/`), voir toutes les photos avec mdp, télécharger avec mdp séparé |
+| **Nouvelle** (3 tiers) | `grande-parade.html`, template `galerie-template.html` | Highlights sélectionnés dans admin → demande d'accès par email → mdp téléchargement | Highlights depuis Supabase, gate slide, modal demande email, voir toutes les photos avec mdp, télécharger avec mdp séparé |
 
 **À terme** : standardiser les anciennes galeries sur le nouveau template 3 tiers.
 
@@ -262,20 +265,28 @@ Claude fait :
      PWD_VIEW_HASH: 'sha256_mdp_visionnage',
      PWD_DL_HASH:   'sha256_mdp_telechargement',
      CARD_ID:       'client-nom',
+     GALLERY_ID:    'nom-galerie',  // clé dans gallery_highlights + gallery_passwords Supabase
      NOTIF_EMAIL:   'yellowshoesstudio@gmail.com',
    };
    ```
-5. Ajouter la carte dans `SECTIONS_CONFIG["galeries-client"]` (gallery-data.js)
-6. Ajouter la carte dans `clients/index.html` avec vignette pCloud
-7. Déployer depuis `/sessions/loving-pensive-clarke/repo-push`
+5. Insérer le mot de passe en clair dans Supabase (pour envoi email) :
+   ```sql
+   INSERT INTO gallery_passwords (gallery_id, view_password, dl_password)
+   VALUES ('nom-galerie', 'MotDePasseView', 'MotDePasseDL');
+   ```
+6. Ajouter la galerie dans `HL_GALLERIES` de `admin.html` pour la sélection highlights
+7. Ajouter la carte dans `SECTIONS_CONFIG["galeries-client"]` (gallery-data.js)
+8. Ajouter la carte dans `clients/index.html` avec vignette pCloud
+9. Déployer depuis le repo-push de la session courante
 
 ### Galeries actives
 
-| Galerie | Fichier | Type | pCloud code | Vignette fileid | Mot de passe |
-|---------|---------|------|-------------|-----------------|--------------|
-| Gilmerton | `clients/gilmerton.html` | Ancienne (2 tiers) | `kZo1EU5ZLLpXW8fr6xzJNJW0gPuU1B6fdsuy` | 88201126472 | SHA256("Gilmerton") |
-| Léo Brasserie | `clients/leo-brasserie.html` | Ancienne (2 tiers) | `kZQ1EU5ZzBL5BcesXwzTqgy0uauzhu35EtS7` | 88089443232 | SHA256("Léo") |
-| Grande Parade | `clients/grande-parade.html` | Nouvelle (3 tiers) | `kZKq0A5ZaoFGv3YO4mQrFbQghpd6Tfw0CWgy` | 88890561791 | view: SHA256("GrandeParade"), dl: SHA256("GrandeParadeDL") |
+| Galerie | Fichier | Type | pCloud code | Vignette fileid | Mot de passe view | Mot de passe DL |
+|---------|---------|------|-------------|-----------------|-------------------|-----------------|
+| Gilmerton | `clients/gilmerton.html` | Ancienne (2 tiers) | `kZo1EU5ZLLpXW8fr6xzJNJW0gPuU1B6fdsuy` | 88201126472 | `Gilmerton` | même |
+| Léo Brasserie | `clients/leo-brasserie.html` | Ancienne (2 tiers) | `kZQ1EU5ZzBL5BcesXwzTqgy0uauzhu35EtS7` | 88089443232 | `Léo` | même |
+| Grande Parade | `clients/grande-parade.html` | Nouvelle (3 tiers) | `kZKq0A5ZaoFGv3YO4mQrFbQghpd6Tfw0CWgy` | 88890561791 | `GrandeParade` | `GrandeParadeDL` |
+| Inès | — | Nouvelle (3 tiers, à créer) | `kZTjQI5Z2AICSui7ebYf6i6dMEQqiYXYSFCV` | — | à définir | — |
 
 ### Propriétés techniques communes
 - **Exception à la règle showPage()** : fichiers HTML séparés (plein écran, logique propre)
@@ -454,7 +465,7 @@ Dans `photographe` : `plougasnou`, `salarie-ehpad`, `carre-das`, `lumiere`, `pla
 Fichier : `admin.html`
 Mot de passe admin : `bertrand2025`
 
-### 4 onglets
+### 5 onglets
 
 | Onglet | Fonctionnalité |
 |--------|----------------|
@@ -462,16 +473,36 @@ Mot de passe admin : `bertrand2025`
 | **Visibilité menu** | Activer/désactiver les items du nav principal |
 | **Photos** | Réordonner et supprimer les photos d'une galerie (déploie sur GitHub) |
 | **Cartons** | Éditer le texte des cartons par galerie (déploie sur GitHub) |
+| **Highlights** | Choisir les photos affichées publiquement en teaser sur chaque galerie client (sauvegardé dans Supabase, aucun déploiement) |
 
 ### Sections visibles dans "Cartes & galeries"
 
-PHOTOGRAPHE · RÉALISATEUR · BOUTIQUE · **GALERIES CLIENT** (ajouté 06/06/2026)
+PHOTOGRAPHE · RÉALISATEUR · BOUTIQUE · **GALERIES CLIENT**
 
-### Supabase
+### Onglet Highlights — fonctionnement
+
+1. Choisir une galerie dans la liste (se peuple depuis `HL_GALLERIES` dans `admin.html`)
+2. Toutes les photos pCloud s'affichent — cliquer pour sélectionner (✓)
+3. **Enregistrer** → sauvegardé dans `gallery_highlights` (Supabase)
+4. La galerie publique lit ces fileids au chargement et les affiche en teaser
+5. Si aucun highlight configuré → la galerie affiche directement le modal mot de passe
+
+Pour **ajouter une galerie** dans l'onglet Highlights : ajouter une entrée dans `HL_GALLERIES` (admin.html) :
+```js
+const HL_GALLERIES = {
+  'grande-parade': { code: 'kZKq0A5Z...', label: 'Grande Parade' },
+  // ajouter ici
+};
+```
+
+### Supabase — tables
 
 - URL : `https://suecslynruuputmujudg.supabase.co`
-- Table `gallery_cards` : stocke les overrides de cartes (titre, label, desc, img, visible, sort_order, parent_id)
-- Table `section_visibility` : stocke l'état visible/masqué des items de nav
+- Table `gallery_cards` : overrides de cartes (titre, label, desc, img, visible, sort_order, parent_id)
+- Table `section_visibility` : état visible/masqué des items de nav
+- Table `gallery_highlights` : fileids pCloud sélectionnés en highlight par galerie (`gallery_id` PK, `fileids` jsonb)
+- Table `gallery_passwords` : mots de passe en clair par galerie (`gallery_id` PK, `view_password`, `dl_password`) — **service_role uniquement**, accès anon interdit
+- Table `gallery_access_requests` : demandes d'accès email des visiteurs (`id`, `gallery_id`, `email`, `status`, `requested_at`)
 
 ---
 
@@ -484,6 +515,11 @@ Le code s'obtient UNIQUEMENT depuis l'URL que Bertrand partage :
 **IMPORTANT : le lien doit pointer vers un DOSSIER, pas un fichier.**
 Si le titre de la page pCloud se termine en `.jpg` → c'est un fichier → demander le dossier parent.
 
+### ⚠️ Limitation pCloud : les sous-dossiers ne sont PAS accessibles
+
+`showpublink?code=CODE&folderid=SUBFOLDER_ID` retourne **toujours le dossier racine**, jamais le sous-dossier.
+C'est pourquoi le dossier `highlight/` n'est pas utilisé. Les highlights sont gérés via Supabase (voir §20).
+
 ### Codes actuels
 
 | Galerie | Code pCloud | Type | Serveur API |
@@ -491,6 +527,7 @@ Si le titre de la page pCloud se termine en `.jpg` → c'est un fichier → dema
 | Gilmerton | `kZo1EU5ZLLpXW8fr6xzJNJW0gPuU1B6fdsuy` | Dossier ✓ | api.pcloud.com (US) |
 | Léo Brasserie | `kZQ1EU5ZzBL5BcesXwzTqgy0uauzhu35EtS7` | Dossier ✓ | api.pcloud.com (US) |
 | Grande Parade | `kZKq0A5ZaoFGv3YO4mQrFbQghpd6Tfw0CWgy` | Dossier ✓ | api.pcloud.com (US) |
+| Inès | `kZTjQI5Z2AICSui7ebYf6i6dMEQqiYXYSFCV` | Dossier ✓ | api.pcloud.com (US) |
 
 ### API pCloud utilisée
 - Endpoint : `showpublink?code=CODE` (EU first: `eapi.pcloud.com`, fallback US: `api.pcloud.com`)
@@ -614,3 +651,70 @@ Sur toute page dans `dustin-kolor/` ou autre sous-dossier avec achat :
 - **Gauche** : `← Retour à la série` → lien vers la galerie du sous-dossier
 - **Centre** : logo B → `../index.html` (site principal Bertrand Basset)
 - **Droite** : nom de la série + lien panier → `../panier.html`
+
+---
+
+## 20. Highlights galeries clients — architecture (07/06/2026)
+
+### Principe
+
+Les highlights sont les photos affichées **publiquement** en teaser sur une galerie client.
+Ils ne viennent **pas** d'un dossier pCloud (limitation API — voir §11) mais d'une sélection dans l'admin.
+
+### Flux complet
+
+```
+Admin (onglet Highlights)
+    → charge toutes les photos pCloud de la galerie
+    → Bertrand sélectionne 5-12 photos
+    → sauvegarde fileids dans Supabase (gallery_highlights)
+
+Galerie publique (grande-parade.html)
+    → au chargement : lit gallery_highlights depuis Supabase
+    → si fileids trouvés → showHighlight() : affiche les photos sélectionnées
+    → si vide → showGate() : ouvre directement le modal mot de passe
+
+Gate slide (pleine largeur, sous les highlights)
+    → affiche "+X PHOTOS DANS LA GALERIE COMPLÈTE"
+    → bouton "Demander l'accès" → modal email
+    → bouton "J'ai un code" → modal mot de passe
+
+Lightbox highlight
+    → navigation → sur la dernière photo → ferme lightbox + ouvre modal email
+    → compteur affiche "12 / 12 · +113 photos →"
+```
+
+### Modal demande d'accès
+
+Visiteur entre son email → POST `send-gallery-access` (Supabase Edge Function) :
+1. Stocke la demande dans `gallery_access_requests`
+2. Envoie un email de notification à `CONFIG.NOTIF_EMAIL` (yellowshoesstudio@gmail.com)
+3. Visiteur voit "Votre demande a été transmise. Bertrand vous contactera avec le code."
+4. Bertrand répond manuellement avec le code
+
+**État succès** : même si l'email échoue (Resend non configuré), la demande est stockée et le visiteur voit le message de succès.
+
+### Edge function `send-gallery-access`
+
+URL : `https://suecslynruuputmujudg.supabase.co/functions/v1/send-gallery-access`
+`verify_jwt: false` — accessible sans auth
+
+Corps de la requête :
+```json
+{ "gallery_id": "grande-parade", "gallery_name": "GRANDE PARADE",
+  "notif_email": "yellowshoesstudio@gmail.com", "email": "visiteur@email.com" }
+```
+
+**Prérequis pour l'envoi email** : variable d'environnement `RESEND_API_KEY` configurée dans Supabase.
+Sans cette clé, les demandes sont stockées mais aucun email n'est envoyé.
+
+### Configurer Resend (à faire)
+
+1. Créer un compte gratuit sur [resend.com](https://resend.com) (3000 emails/mois gratuits)
+2. Créer une clé API
+3. L'ajouter en secret Supabase :
+   ```bash
+   supabase secrets set RESEND_API_KEY=re_xxxxxxxxxxxx --project-ref suecslynruuputmujudg
+   ```
+   Ou via l'interface Supabase → Settings → Edge Functions → Secrets.
+4. Le FROM utilisé est `onboarding@resend.dev` (pas besoin de vérifier le domaine)
