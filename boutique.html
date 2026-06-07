@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bertrand Basset — Boutique</title>
+  <link rel="icon" type="image/svg+xml" href="assets/logo-b.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --font: 'IBM Plex Sans', -apple-system, Arial, sans-serif;
+      --black: #111;
+      --gray: #555;
+      --dim: #999;
+      --line: #e8e8e8;
+      --bg: #f9f9f9;
+    }
+    html { font-family: var(--font); color: var(--black); background: #fff; -webkit-font-smoothing: antialiased; }
+    body { min-height: 100vh; }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: var(--font); cursor: pointer; border: none; background: none; }
+    img { display: block; max-width: 100%; }
+
+    /* ── HEADER ── */
+    .site-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.2rem 2rem;
+      border-bottom: 1px solid var(--line);
+      position: sticky; top: 0; background: #fff; z-index: 100;
+    }
+    .header-logo { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; }
+    .header-logo img { width: 18px; height: 18px; }
+    .header-logo-name {
+      font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--black); font-weight: 400;
+    }
+    .header-right { display: flex; align-items: center; gap: 1.2rem; }
+    .header-cart {
+      position: relative; display: flex; align-items: center;
+      color: var(--black); text-decoration: none;
+    }
+    .header-cart svg { width: 18px; height: 18px; fill: none; stroke: var(--black); stroke-width: 1.5; }
+    .cart-badge {
+      position: absolute; top: -6px; right: -8px;
+      background: var(--black); color: #fff;
+      font-size: 0.45rem; font-weight: 500;
+      width: 14px; height: 14px; border-radius: 50%;
+      display: none; align-items: center; justify-content: center;
+    }
+    .header-lang {
+      font-size: 0.58rem; letter-spacing: 0.08em;
+      display: flex; gap: 0.3rem; align-items: center;
+    }
+    .header-lang a { color: var(--dim); cursor: pointer; transition: color 0.15s; }
+    .header-lang a.active { color: var(--black); font-weight: 500; }
+    .header-lang span { color: var(--line); }
+
+    /* ── CART POPUP ── */
+    .cart-popup-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.3); z-index: 200;
+    }
+    .cart-popup {
+      display: none; position: fixed;
+      top: 50%; left: 50%; transform: translate(-50%, -50%);
+      background: #fff; z-index: 201;
+      padding: 2.2rem 2rem; width: 320px; border-radius: 2px;
+      text-align: center;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.12);
+    }
+    .cart-popup.open, .cart-popup-overlay.open { display: block; }
+    .cart-popup-check {
+      width: 44px; height: 44px; border: 1.5px solid var(--black);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1rem;
+    }
+    .cart-popup-check svg { width: 18px; height: 18px; fill: none; stroke: var(--black); stroke-width: 2; stroke-linecap: round; }
+    .cart-popup-title { font-size: 0.95rem; font-weight: 300; margin-bottom: 0.4rem; }
+    .cart-popup-sub { font-size: 0.68rem; color: var(--dim); margin-bottom: 1.6rem; }
+    .cart-popup-actions { display: flex; flex-direction: column; gap: 0.6rem; }
+    .cart-popup-btn-primary {
+      display: block; padding: 0.85rem; background: var(--black); color: #fff;
+      font-size: 0.6rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase;
+      border-radius: 2px; text-decoration: none; transition: background 0.15s;
+    }
+    .cart-popup-btn-primary:hover { background: #333; }
+    .cart-popup-btn-secondary {
+      font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--dim); background: none; border: none; cursor: pointer;
+      padding: 0.5rem; transition: color 0.15s;
+    }
+    .cart-popup-btn-secondary:hover { color: var(--black); }
+
+    /* ── LIGHTBOX ── */
+    .lightbox {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.96); z-index: 500;
+      cursor: zoom-out; overflow: hidden;
+      align-items: center; justify-content: center;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox-img {
+      position: absolute;
+      width: 100%; height: 100%;
+      object-fit: contain;
+      transform: scale(3);
+      transform-origin: 50% 50%;
+      pointer-events: none;
+      user-select: none;
+      transition: transform-origin 0.05s ease;
+    }
+    .lightbox-hint {
+      position: absolute; bottom: 1.8rem; left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.55rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      pointer-events: none;
+    }
+    .lightbox-close {
+      position: absolute; top: 1.5rem; right: 1.5rem;
+      font-size: 0.55rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: rgba(255,255,255,0.5); background: none; border: none;
+      cursor: pointer; transition: color 0.15s; z-index: 1;
+    }
+    .lightbox-close:hover { color: #fff; }
+
+    /* ── PRODUCT LAYOUT ── */
+    .product-wrap {
+      max-width: 1100px; margin: 0 auto;
+      padding: 2.5rem 2rem 4rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+
+    /* ── PHOTO SIDE ── */
+    .photo-col { position: sticky; top: 5rem; }
+    .photo-main {
+      aspect-ratio: 4/3;
+      overflow: hidden;
+      cursor: zoom-in;
+      background: var(--bg);
+    }
+    .photo-main img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+    .photo-main:hover img { transform: scale(1.03); }
+    .photo-zoom-hint {
+      margin-top: 0.6rem;
+      font-size: 0.55rem; color: var(--dim); letter-spacing: 0.1em;
+      text-align: center; text-transform: uppercase;
+    }
+    .photo-caption {
+      margin-top: 0.3rem;
+      font-size: 0.58rem; color: var(--dim); letter-spacing: 0.06em;
+      text-align: center;
+    }
+
+    /* ── INFO SIDE ── */
+    .info-col { display: flex; flex-direction: column; gap: 0; }
+
+    .info-serie {
+      font-size: 0.52rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--dim); margin-bottom: 0.5rem;
+    }
+    .info-title {
+      font-size: clamp(1.8rem, 3vw, 2.6rem); font-weight: 300;
+      letter-spacing: -0.02em; line-height: 1.05;
+      margin-bottom: 0.25rem;
+    }
+    .info-code {
+      font-size: 0.7rem; font-weight: 300; letter-spacing: 0.06em;
+      color: var(--dim); margin-bottom: 1.4rem;
+    }
+
+    /* ── FORMAT TABS ── */
+    .format-tabs {
+      display: flex; gap: 1.8rem; margin-bottom: 1.6rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .format-tab {
+      padding: 0 0 0.7rem;
+      font-size: 0.6rem; font-weight: 400; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--dim); background: none; border: none;
+      border-bottom: 1.5px solid transparent; margin-bottom: -1px;
+      cursor: pointer; transition: color 0.15s, border-color 0.15s;
+      white-space: nowrap;
+    }
+    .format-tab.active { color: var(--black); border-bottom-color: var(--black); font-weight: 500; }
+    .format-tab:hover:not(.active) { color: var(--black); }
+
+    .info-sep { height: 1px; background: var(--line); margin-bottom: 1.6rem; }
+
+    /* Specs table */
+    .specs { display: flex; flex-direction: column; gap: 0; margin-bottom: 0.8rem; }
+    .spec-row {
+      display: flex; justify-content: space-between; align-items: baseline;
+      padding: 0.55rem 0; border-bottom: 1px solid var(--line);
+      font-size: 0.72rem;
+    }
+    .spec-key { color: var(--dim); font-weight: 300; letter-spacing: 0.04em; }
+    .spec-val {
+      color: var(--black); text-align: right;
+      display: flex; align-items: center; gap: 0.45rem;
+    }
+    .color-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+
+    /* Pricing note */
+    .pricing-note {
+      font-size: 0.6rem; color: var(--dim); line-height: 1.65;
+      font-style: italic; margin-bottom: 1.6rem; margin-top: 0.8rem;
+    }
+
+    /* Purchase block */
+    .purchase-block {
+      border: 1px solid var(--line);
+      border-radius: 2px;
+      padding: 1.4rem 1.5rem;
+      margin-bottom: 1rem;
+      display: flex; flex-direction: column; gap: 1.1rem;
+    }
+    .purchase-price-row {
+      display: flex; justify-content: space-between; align-items: baseline;
+    }
+    .price-main {
+      font-size: 2rem; font-weight: 300; letter-spacing: -0.03em; line-height: 1;
+    }
+    .price-tier-note {
+      font-size: 0.55rem; color: var(--dim); letter-spacing: 0.1em; text-transform: uppercase;
+    }
+    .stock-line {
+      display: flex; justify-content: space-between; align-items: center;
+      padding-top: 0.9rem; border-top: 1px solid var(--line);
+      font-size: 0.68rem; color: var(--gray);
+    }
+    /* Dots de tirage */
+    .copies-wrap { padding-top: 0.9rem; border-top: 1px solid var(--line); }
+    .copies-dots { display: flex; gap: 5px; align-items: center; margin-bottom: 0.55rem; }
+    .copy-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; display: inline-block; }
+    .dot-sold    { background: var(--black); }
+    .dot-current { background: transparent; border: 1.5px solid var(--black); }
+    .dot-future  { background: transparent; border: 1px solid var(--line); }
+    .dot-sep { width: 1px; height: 14px; background: var(--line); flex-shrink: 0; margin: 0 3px; }
+    .copies-note { font-size: 0.68rem; color: var(--dim); line-height: 1.5; }
+    .copies-count { color: var(--black); font-weight: 500; }
+
+    /* CTA */
+    .btn-primary {
+      display: block; width: 100%; padding: 1rem 1.5rem;
+      background: var(--black); color: #fff;
+      font-size: 0.65rem; font-weight: 500; letter-spacing: 0.14em;
+      text-transform: uppercase; text-align: center;
+      cursor: pointer; border-radius: 2px;
+      transition: background 0.2s;
+    }
+    .btn-primary:hover { background: #333; }
+    .btn-primary:disabled { background: #ccc; cursor: not-allowed; }
+
+    /* ── SÉRIE CAROUSEL ── */
+    .serie-section {
+      max-width: 1100px; margin: 0 auto;
+      padding: 3rem 2rem 4rem;
+      border-top: 1px solid var(--line);
+    }
+    .serie-header {
+      display: flex; justify-content: space-between; align-items: baseline;
+      margin-bottom: 1.5rem;
+    }
+    .serie-title { font-size: 0.9rem; font-weight: 400; }
+    .serie-subtitle { font-size: 0.6rem; color: var(--dim); letter-spacing: 0.1em; text-transform: uppercase; }
+
+    .serie-grid {
+      display: flex;
+      gap: 1.5rem;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      padding-bottom: 1rem;
+      scrollbar-width: none;
+    }
+    .serie-grid::-webkit-scrollbar { display: none; }
+    .serie-card { flex: 0 0 240px; cursor: pointer; scroll-snap-align: start; }
+    .serie-card-img {
+      aspect-ratio: 4/3;
+      overflow: hidden; margin-bottom: 0.6rem;
+    }
+    .serie-card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+    .serie-card:hover .serie-card-img img { transform: scale(1.08); }
+    .serie-card.current .serie-card-img { outline: 2px solid var(--black); outline-offset: 2px; }
+    .serie-card-name { font-size: 0.78rem; font-weight: 300; color: var(--black); margin-bottom: 0.15rem; }
+    .serie-card-price { font-size: 0.65rem; color: var(--dim); }
+
+    /* ── CARROUSEL NAV ── */
+    .serie-nav { position: relative; }
+    .serie-arrow {
+      position: absolute; top: 50%; transform: translateY(calc(-50% - 16px));
+      width: 30px; height: 30px; border-radius: 50%;
+      border: 1px solid var(--line); background: #fff;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; z-index: 10; color: var(--black);
+      font-size: 1rem; line-height: 1;
+      transition: border-color 0.15s, opacity 0.2s;
+    }
+    .serie-arrow:hover { border-color: var(--black); }
+    .serie-arrow:disabled { opacity: 0.2; cursor: default; pointer-events: none; }
+    .serie-arrow-prev { left: -15px; }
+    .serie-arrow-next { right: -15px; }
+    @media (max-width: 767px) {
+      .serie-arrow { display: none; }
+    }
+
+    /* ── FEEDBACK ── */
+    .toast {
+      position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(4rem);
+      background: var(--black); color: #fff;
+      font-size: 0.65rem; letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 0.75rem 1.5rem; border-radius: 2px;
+      transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+      z-index: 999; pointer-events: none; white-space: nowrap;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* ── MOBILE ── */
+    @media (max-width: 767px) {
+      .site-header { padding: 1rem 1.2rem; }
+      .header-logo-name { display: none; }
+      .product-wrap {
+        grid-template-columns: 1fr;
+        gap: 1.8rem; padding: 1.5rem 1.2rem 3rem;
+      }
+      .photo-col { position: static; }
+      .info-title { font-size: 2rem; }
+      .price-main { font-size: 1.8rem; }
+      .serie-section { padding: 2rem 1.2rem 3rem; }
+      .serie-card { flex: 0 0 180px; }
+      .cart-popup { width: calc(100vw - 3rem); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── HEADER ── -->
+  <header class="site-header">
+    <a href="index.html" class="header-logo">
+      <img src="assets/logo-b.svg" alt="B">
+      <span class="header-logo-name">Bertrand Basset</span>
+    </a>
+    <div class="header-right">
+      <a href="panier.html" class="header-cart" title="Panier">
+        <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        <span class="cart-badge" id="cartBadge">0</span>
+      </a>
+      <div class="header-lang">
+        <a data-lang="fr" class="active" onclick="setLang('fr')">FR</a>
+        <span>/</span>
+        <a data-lang="en" onclick="setLang('en')">EN</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── LIGHTBOX ── -->
+  <div class="lightbox" id="lightbox" onmousemove="panLightbox(event)">
+    <img class="lightbox-img" id="lightboxImg" src="" alt="">
+    <button class="lightbox-close" onclick="closeLightbox()">✕ Fermer</button>
+    <span class="lightbox-hint" id="lightboxHint">Déplacez la souris pour explorer · Clic pour fermer</span>
+  </div>
+
+  <!-- ── CART POPUP ── -->
+  <div class="cart-popup-overlay" id="cartPopupOverlay" onclick="closeCartPopup()"></div>
+  <div class="cart-popup" id="cartPopup">
+    <div class="cart-popup-check">
+      <svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>
+    </div>
+    <p class="cart-popup-title" id="cartPopupTitle">Ajouté au panier</p>
+    <p class="cart-popup-sub" id="cartPopupSub"></p>
+    <div class="cart-popup-actions">
+      <a href="panier.html" class="cart-popup-btn-primary" id="cartPopupBtnCart">Voir le panier</a>
+      <button class="cart-popup-btn-secondary" onclick="closeCartPopup()" id="cartPopupBtnContinue">Continuer mes achats</button>
+    </div>
+  </div>
+
+  <!-- ── PRODUCT ── -->
+  <div class="product-wrap">
+    <div class="photo-col">
+      <div class="photo-main" onclick="openLightbox()">
+        <img id="mainPhoto" src="" alt="">
+      </div>
+      <p class="photo-zoom-hint" id="photoZoomHint">↗ Cliquer pour zoomer</p>
+      <p class="photo-caption" id="photoCaption"></p>
+    </div>
+
+    <div class="info-col">
+      <p class="info-serie" id="infoSerie"></p>
+      <h1 class="info-title" id="infoTitle"></h1>
+      <p class="info-code" id="infoCode"></p>
+
+      <!-- Format selector -->
+      <div class="format-tabs">
+        <button class="format-tab active" data-fmt="grand" onclick="selectFormat('grand')" id="tabGrand"></button>
+        <button class="format-tab" data-fmt="a4" onclick="selectFormat('a4')" id="tabA4">A4 · 160 €</button>
+      </div>
+
+      <div class="info-sep"></div>
+
+      <div class="specs" id="specs"></div>
+
+      <p class="pricing-note" id="pricingNote"></p>
+
+      <div class="purchase-block">
+        <div class="purchase-price-row">
+          <div class="price-main" id="priceMain"></div>
+          <div class="price-tier-note" id="priceTierNote"></div>
+        </div>
+        <div id="copiesWrap"></div>
+        <button class="btn-primary" id="btnAdd" onclick="addToCart()"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SÉRIE ── -->
+  <section class="serie-section" id="serieSection">
+    <div class="serie-header">
+      <span class="serie-title" id="serieSectionTitle"></span>
+      <span class="serie-subtitle" id="serieSectionCount"></span>
+    </div>
+    <div class="serie-nav">
+      <button class="serie-arrow serie-arrow-prev" id="arrowPrev" onclick="scrollSerie(-1)" disabled>‹</button>
+      <div class="serie-grid" id="serieGrid" onscroll="updateArrows()"></div>
+      <button class="serie-arrow serie-arrow-next" id="arrowNext" onclick="scrollSerie(1)">›</button>
+    </div>
+  </section>
+
+  <script>
+  /* ══════════════════════════════════════════════════════════
+     CATALOGUE
+  ══════════════════════════════════════════════════════════ */
+  const SERIES_META = {
+    'dustin-kolor': {
+      name_fr: "Dust'in Kolor",
+      name_en: "Dust'in Kolor",
+    }
+  };
+
+  const EDITIONS = [
+    { slug:'sandstorm-feu',          serie:'dustin-kolor', num:'01', img:'images/dustin-kolor/01.jpg',
+      titre_fr:'Sandstorm',          titre_en:'Sandstorm',
+      couleur_fr:'Feu',              couleur_en:'Fire',     hex:'#FF4500',
+      format:'60 × 90 cm',          paper_a4:'baryta',
+      total:10, vendus:1, prix:[950, 1090, 1250] },
+
+    { slug:'flying-car-orange',      serie:'dustin-kolor', num:'02', img:'images/dustin-kolor/02.jpg',
+      titre_fr:'Flying Car',         titre_en:'Flying Car',
+      couleur_fr:'Orange',           couleur_en:'Orange',   hex:'#FF6600',
+      format:'70 × 124 cm',         paper_a4:'etching',
+      total:10, vendus:1, prix:[1290, 1490, 1690] },
+
+    { slug:'after-the-storm-vert',   serie:'dustin-kolor', num:'03', img:'images/dustin-kolor/03.jpg',
+      titre_fr:'After the Storm',    titre_en:'After the Storm',
+      couleur_fr:'Vert',             couleur_en:'Green',    hex:'#7BC043',
+      format:'70 × 124 cm',         paper_a4:'etching',
+      total:10, vendus:2, prix:[1290, 1490, 1690] },
+
+    { slug:'lost-in-the-dust-rouge', serie:'dustin-kolor', num:'04', img:'images/dustin-kolor/04.jpg',
+      titre_fr:'Lost in the Dust',   titre_en:'Lost in the Dust',
+      couleur_fr:'Rouge',            couleur_en:'Red',      hex:'#CC0000',
+      format:'60 × 80 cm',          paper_a4:'etching',
+      total:10, vendus:1, prix:[890, 1020, 1150] },
+
+    { slug:'camp-lighters-jaune',    serie:'dustin-kolor', num:'05', img:'images/dustin-kolor/05.jpg',
+      titre_fr:'Lamp Lighters',      titre_en:'Lamp Lighters',
+      couleur_fr:'Jaune',            couleur_en:'Yellow',   hex:'#FFB300',
+      format:'40 × 100 cm',         paper_a4:'etching',
+      total:10, vendus:1, prix:[790, 910, 1030] },
+
+    { slug:'im-here-bleu',           serie:'dustin-kolor', num:'06', img:'images/dustin-kolor/06.jpg',
+      titre_fr:"I'm Here",           titre_en:"I'm Here",
+      couleur_fr:'Bleu',             couleur_en:'Blue',     hex:'#0066CC',
+      format:'60 × 80 cm',          paper_a4:'etching',
+      total:10, vendus:1, prix:[890, 1020, 1150] },
+
+    { slug:'umbrellas-way-rose',     serie:'dustin-kolor', num:'08', img:'images/dustin-kolor/08.jpg',
+      titre_fr:'Umbrellas Way',      titre_en:'Umbrellas Way',
+      couleur_fr:'Rose',             couleur_en:'Pink',     hex:'#FF1493',
+      format:'60 × 80 cm',          paper_a4:'etching',
+      total:10, vendus:1, prix:[890, 1020, 1150] }
+  ];
+
+  /* ══════════════════════════════════════════════════════════
+     I18N
+  ══════════════════════════════════════════════════════════ */
+  const T = {
+    fr: {
+      couleur:'Couleur', format:'Format', support:'Support',
+      imprimeur:'Imprimeur', edition:'Édition',
+      disponibles:'disponibles', vendu:'vendu',
+      paliers:['Ex. 1–3','Ex. 4–7','Ex. 8–10'],
+      palier_actuel:'prix actuel', epuise:'Épuisé',
+      ajouter:'Ajouter au panier',
+      serie_titre:"Les œuvres de la série",
+      added:'✓ Ajouté au panier',
+      prix_progressif:'Les 3 premiers exemplaires sont au prix affiché. Le prix évolue à partir du 4ᵉ.',
+      zoom_hint:'↗ Cliquer pour zoomer',
+      lightbox_hint:'Déplacez la souris pour explorer · Clic pour fermer',
+      tab_grand:'Grand format · Dibond',
+      tab_a4:'A4 · 160 €',
+      fermer:'✕ Fermer',
+      prix_fixe:'Prix fixe',
+      ex_dispo:'ex. disponibles',
+      cert:'Certificat d\'authenticité inclus',
+      num_signe:'ex. numérotés, datés & signés',
+    },
+    en: {
+      couleur:'Color', format:'Format', support:'Print on',
+      imprimeur:'Printer', edition:'Edition',
+      disponibles:'available', vendu:'sold',
+      paliers:['No. 1–3','No. 4–7','No. 8–10'],
+      palier_actuel:'current price', epuise:'Sold out',
+      ajouter:'Add to cart',
+      serie_titre:'Works in the series',
+      added:'✓ Added to cart',
+      prix_progressif:'The first 3 copies are at the listed price. Price increases from the 4th copy.',
+      zoom_hint:'↗ Click to zoom',
+      lightbox_hint:'Move the mouse to explore · Click to close',
+      tab_grand:'Large format · Dibond',
+      tab_a4:'A4 · 160 €',
+      fermer:'✕ Close',
+      prix_fixe:'Fixed price',
+      ex_dispo:'copies available',
+      cert:'Certificate of authenticity included',
+      num_signe:'numbered, dated & signed copies',
+    }
+  };
+
+  /* ══════════════════════════════════════════════════════════
+     STATE
+  ══════════════════════════════════════════════════════════ */
+  let lang           = 'fr';
+  let current        = null;
+  let selectedFormat = 'grand'; // 'grand' | 'a4'
+
+  const dispo     = e => e.total - e.vendus;
+  const palierIdx = e => e.vendus < 3 ? 0 : e.vendus < 7 ? 1 : 2;
+  const prixAct   = e => e.prix[palierIdx(e)];
+
+  function workCode(ed) {
+    const digits  = ed.format.replace(/[^0-9]/g, '');
+    const couleur = lang === 'fr' ? ed.couleur_fr : ed.couleur_en;
+    return digits + '_' + couleur;
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     LIGHTBOX
+  ══════════════════════════════════════════════════════════ */
+  function openLightbox() {
+    const img = document.getElementById('mainPhoto');
+    document.getElementById('lightboxImg').src = img.src;
+    document.getElementById('lightboxImg').alt = img.alt;
+    document.getElementById('lightbox').classList.add('open');
+    // Hint text adapté au device
+    const hint = document.getElementById('lightboxHint');
+    if (hint) hint.textContent = ('ontouchstart' in window)
+      ? 'Glissez pour explorer · Tap pour fermer'
+      : 'Déplacez la souris pour explorer · Clic pour fermer';
+  }
+
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('open');
+  }
+
+  function panLightbox(e) {
+    const lb   = document.getElementById('lightbox');
+    const rect = lb.getBoundingClientRect();
+    const xPct = ((e.clientX - rect.left) / rect.width  * 100).toFixed(1);
+    const yPct = ((e.clientY - rect.top)  / rect.height * 100).toFixed(1);
+    document.getElementById('lightboxImg').style.transformOrigin = `${xPct}% ${yPct}%`;
+  }
+
+  // Touch handling for lightbox pan (mobile)
+  (function() {
+    let _lbTouchStartX = 0, _lbTouchStartY = 0, _lbMoved = false;
+    const lb = document.getElementById('lightbox');
+    lb.addEventListener('touchstart', e => {
+      _lbTouchStartX = e.touches[0].clientX;
+      _lbTouchStartY = e.touches[0].clientY;
+      _lbMoved = false;
+    }, { passive: true });
+    lb.addEventListener('touchmove', e => {
+      e.preventDefault();
+      _lbMoved = true;
+      const t = e.touches[0];
+      const rect = lb.getBoundingClientRect();
+      const xPct = ((t.clientX - rect.left) / rect.width  * 100).toFixed(1);
+      const yPct = ((t.clientY - rect.top)  / rect.height * 100).toFixed(1);
+      document.getElementById('lightboxImg').style.transformOrigin = `${xPct}% ${yPct}%`;
+    }, { passive: false });
+    lb.addEventListener('touchend', e => {
+      // Tap (no significant movement) → close
+      const dx = Math.abs(e.changedTouches[0].clientX - _lbTouchStartX);
+      const dy = Math.abs(e.changedTouches[0].clientY - _lbTouchStartY);
+      if (!_lbMoved && dx < 10 && dy < 10) closeLightbox();
+    }, { passive: true });
+  })();
+
+  // Close lightbox on Escape
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeLightbox();
+  });
+
+  /* ══════════════════════════════════════════════════════════
+     CARROUSEL
+  ══════════════════════════════════════════════════════════ */
+  function scrollSerie(dir) {
+    const grid = document.getElementById('serieGrid');
+    const card = grid.querySelector('.serie-card');
+    const w = card ? (card.offsetWidth + 24) : 264;
+    grid.scrollBy({ left: dir * w, behavior: 'smooth' });
+    setTimeout(updateArrows, 420);
+  }
+
+  function updateArrows() {
+    const grid = document.getElementById('serieGrid');
+    const prev = document.getElementById('arrowPrev');
+    const next = document.getElementById('arrowNext');
+    if (!grid || !prev || !next) return;
+    prev.disabled = grid.scrollLeft <= 2;
+    next.disabled = grid.scrollLeft >= grid.scrollWidth - grid.clientWidth - 2;
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     DOTS DE TIRAGE
+  ══════════════════════════════════════════════════════════ */
+  function renderDots(ed) {
+    const t         = T[lang];
+    const pi        = palierIdx(ed);
+    const ep        = dispo(ed) <= 0;
+    const tierEnds  = [3, 7, 10];
+    const restants  = tierEnds[pi] - ed.vendus;
+
+    let dotsHTML = '<div class="copies-dots">';
+    for (let i = 0; i < ed.total; i++) {
+      let cls;
+      if      (i < ed.vendus)         cls = 'dot-sold';
+      else if (i < tierEnds[pi])      cls = 'dot-current';
+      else                            cls = 'dot-future';
+      dotsHTML += `<span class="copy-dot ${cls}"></span>`;
+      if (i === 2 || i === 6) dotsHTML += '<span class="dot-sep"></span>';
+    }
+    dotsHTML += '</div>';
+
+    const noteHTML = ep
+      ? `<div class="copies-note">${t.epuise}</div>`
+      : `<div class="copies-note"><span class="copies-count">${restants}</span> restant${restants > 1 ? 's' : ''} à ce prix · ${dispo(ed)} disponibles</div>`;
+
+    return `<div class="copies-wrap">${dotsHTML}${noteHTML}</div>`;
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     FORMAT SELECTOR
+  ══════════════════════════════════════════════════════════ */
+  function selectFormat(fmt) {
+    selectedFormat = fmt;
+    document.querySelectorAll('.format-tab').forEach(b =>
+      b.classList.toggle('active', b.dataset.fmt === fmt)
+    );
+    if (current) updateFormatDisplay(current);
+  }
+
+  function updateFormatDisplay(ed) {
+    const t    = T[lang];
+    const pi   = palierIdx(ed);
+    const ep   = dispo(ed) <= 0;
+    const isA4 = selectedFormat === 'a4';
+
+    // Format tab labels (update grand format label since it changes per edition)
+    document.getElementById('tabGrand').textContent =
+      lang === 'fr' ? `${ed.format} · Dibond` : `${ed.format} · Dibond`;
+
+    // Support value
+    let supportVal;
+    if (isA4) {
+      supportVal = ed.paper_a4 === 'baryta' ? 'Silk Baryta 300g' : 'Museum Etching 350g';
+    } else {
+      supportVal = lang === 'fr' ? 'Contrecollé Dibond 2mm' : 'Face-mount Dibond 2mm';
+    }
+
+    // Format/size
+    const formatVal = isA4 ? 'A4 · 210 × 297 mm' : ed.format;
+
+    // Edition count
+    const totalEx = isA4 ? 30 : ed.total;
+
+    document.getElementById('specs').innerHTML = `
+      <div class="spec-row">
+        <span class="spec-key">${t.couleur}</span>
+        <span class="spec-val">
+          <span class="color-dot" style="background:${ed.hex}"></span>
+          ${lang === 'fr' ? ed.couleur_fr : ed.couleur_en}
+        </span>
+      </div>
+      <div class="spec-row">
+        <span class="spec-key">${t.format}</span>
+        <span class="spec-val">${formatVal}</span>
+      </div>
+      <div class="spec-row">
+        <span class="spec-key">${t.support}</span>
+        <span class="spec-val">${supportVal}</span>
+      </div>
+      <div class="spec-row">
+        <span class="spec-key">${t.imprimeur}</span>
+        <span class="spec-val">Pix in the City, Auray</span>
+      </div>
+      <div class="spec-row" style="align-items:flex-start">
+        <span class="spec-key" style="padding-top:0.1rem">${t.edition}</span>
+        <span class="spec-val" style="text-align:right;flex-direction:column;align-items:flex-end;gap:0.15rem;line-height:1.5">
+          <span>${totalEx} ${t.num_signe}</span>
+          <span style="color:var(--dim);font-size:0.62rem">${t.cert}</span>
+        </span>
+      </div>`;
+
+    // Pricing note
+    const noteEl = document.getElementById('pricingNote');
+    noteEl.textContent  = isA4 ? '' : t.prix_progressif;
+    noteEl.style.display = isA4 ? 'none' : '';
+
+    // Price & copies
+    if (isA4) {
+      document.getElementById('priceMain').textContent     = '160 €';
+      document.getElementById('priceTierNote').textContent = t.prix_fixe;
+      document.getElementById('copiesWrap').innerHTML =
+        `<div class="copies-wrap"><div class="copies-note">30 ${t.ex_dispo}</div></div>`;
+    } else {
+      document.getElementById('priceMain').textContent =
+        ep ? '—' : prixAct(ed).toLocaleString('fr-FR') + ' €';
+      document.getElementById('priceTierNote').textContent = ep ? t.epuise : t.paliers[pi];
+      document.getElementById('copiesWrap').innerHTML = renderDots(ed);
+    }
+
+    // CTA
+    const btnAdd = document.getElementById('btnAdd');
+    if (isA4) {
+      btnAdd.textContent = t.ajouter;
+      btnAdd.disabled    = false;
+    } else {
+      btnAdd.textContent = ep ? t.epuise : t.ajouter;
+      btnAdd.disabled    = ep;
+    }
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     CART
+  ══════════════════════════════════════════════════════════ */
+  function getCart() { try { return JSON.parse(localStorage.getItem('dk_cart')||'[]'); } catch(e){ return []; } }
+  function saveCart(c) { localStorage.setItem('dk_cart', JSON.stringify(c)); }
+
+  function addToCart() {
+    if (!current) return;
+    if (selectedFormat === 'grand' && dispo(current) <= 0) return;
+
+    const isA4   = selectedFormat === 'a4';
+    const prix   = isA4 ? 160 : prixAct(current);
+    const fmt    = isA4 ? 'A4 · 210 × 297 mm' : current.format;
+    const titre  = lang === 'fr' ? current.titre_fr : current.titre_en;
+    const key    = current.slug + (isA4 ? '_a4' : '_grand');
+
+    const cart = getCart();
+    const ex   = cart.find(x => x.key === key);
+    if (ex) ex.qty = (ex.qty || 1) + 1;
+    else cart.push({ key, slug: current.slug, num: current.num,
+      titre, format: fmt, prix, qty: 1 });
+
+    saveCart(cart);
+    updateCartBadge();
+    openCartPopup(titre, prix);
+  }
+
+  function updateCartBadge() {
+    const cart  = getCart();
+    const count = cart.reduce((s, i) => s + (i.qty || 1), 0);
+    const badge = document.getElementById('cartBadge');
+    if (!badge) return;
+    badge.textContent   = count;
+    badge.style.display = count > 0 ? 'flex' : 'none';
+  }
+
+  function openCartPopup(titre, prix) {
+    const t = T[lang];
+    document.getElementById('cartPopupTitle').textContent       = t.added;
+    document.getElementById('cartPopupSub').textContent         = titre + ' — ' + prix.toLocaleString('fr-FR') + ' €';
+    document.getElementById('cartPopupBtnCart').textContent     = lang === 'fr' ? 'Voir le panier' : 'View cart';
+    document.getElementById('cartPopupBtnContinue').textContent = lang === 'fr' ? 'Continuer mes achats' : 'Continue shopping';
+    document.getElementById('cartPopup').classList.add('open');
+    document.getElementById('cartPopupOverlay').classList.add('open');
+  }
+
+  function closeCartPopup() {
+    document.getElementById('cartPopup').classList.remove('open');
+    document.getElementById('cartPopupOverlay').classList.remove('open');
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     RENDER
+  ══════════════════════════════════════════════════════════ */
+  function render(ed) {
+    current = ed;
+    const t   = T[lang];
+    const ser = SERIES_META[ed.serie];
+    const serName = lang === 'fr' ? ser.name_fr : ser.name_en;
+    const titre   = lang === 'fr' ? ed.titre_fr : ed.titre_en;
+
+    document.title = titre + ' — Bertrand Basset';
+
+    // Photo
+    const mainImg = document.getElementById('mainPhoto');
+    mainImg.src = ed.img;
+    mainImg.alt = titre;
+    document.getElementById('lightboxImg').src = ed.img;
+
+    document.getElementById('photoZoomHint').textContent = t.zoom_hint;
+    document.getElementById('photoCaption').textContent  =
+      `${serName} — ${titre} — ${workCode(ed)}`;
+
+    // Title block
+    document.getElementById('infoSerie').textContent = serName;
+    document.getElementById('infoTitle').textContent  = titre;
+    document.getElementById('infoCode').textContent   = workCode(ed);
+
+    // Format tabs labels
+    document.getElementById('tabGrand').textContent =
+      lang === 'fr' ? `${ed.format} · Dibond` : `${ed.format} · Dibond`;
+    document.getElementById('tabA4').textContent = t.tab_a4;
+
+    // Lightbox hint
+    document.querySelector('.lightbox-hint').textContent  = t.lightbox_hint;
+    document.querySelector('.lightbox-close').textContent = t.fermer;
+
+    // Format-dependent section
+    updateFormatDisplay(ed);
+
+    // Série grid
+    const siblings = EDITIONS.filter(e => e.serie === ed.serie);
+    document.getElementById('serieSectionTitle').textContent = t.serie_titre;
+    document.getElementById('serieSectionCount').textContent = siblings.length + ' œuvres';
+
+    document.getElementById('serieGrid').innerHTML = siblings.map(s => {
+      const isCurrent = s.slug === ed.slug;
+      const sName = lang === 'fr' ? s.titre_fr : s.titre_en;
+      return `<div class="serie-card${isCurrent ? ' current' : ''}" onclick="navigate('${s.slug}')">
+        <div class="serie-card-img">
+          <img src="${s.img}" alt="${sName}" loading="lazy">
+        </div>
+        <div class="serie-card-name">${sName}</div>
+        <div class="serie-card-price">
+          ${dispo(s) <= 0
+            ? (lang === 'fr' ? 'Épuisé' : 'Sold out')
+            : prixAct(s).toLocaleString('fr-FR') + ' €'}
+        </div>
+      </div>`;
+    }).join('');
+
+    // Lang toggles
+    document.querySelectorAll('[data-lang]').forEach(a =>
+      a.classList.toggle('active', a.dataset.lang === lang)
+    );
+
+    // Cart badge
+    updateCartBadge();
+
+    // URL
+    history.replaceState(null, '', `?id=${ed.slug}`);
+
+    // Arrows
+    setTimeout(updateArrows, 50);
+  }
+
+  function navigate(slug) {
+    const ed = EDITIONS.find(e => e.slug === slug);
+    if (!ed) return;
+    render(ed);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function setLang(l) {
+    lang = l;
+    if (current) render(current);
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     INIT
+  ══════════════════════════════════════════════════════════ */
+  const urlId   = new URLSearchParams(location.search).get('id');
+  const DEFAULT = 'lost-in-the-dust-rouge';
+  const ed      = EDITIONS.find(e => e.slug === urlId)
+               || EDITIONS.find(e => e.slug === DEFAULT)
+               || EDITIONS[0];
+  render(ed);
+  </script>
+</body>
+</html>

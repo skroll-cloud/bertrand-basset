@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cartons d'œuvres — Bertrand Basset</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box; margin: 0; padding: 0;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      color-adjust: exact !important;
+    }
+    html { font-family: 'IBM Plex Sans', Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+    body { background: #d0d0d0; padding: 20px; }
+
+    /* ── SCREEN HEADER ── */
+    .screen-bar {
+      max-width: 340mm; margin: 0 auto 14px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .screen-title { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: #888; }
+    .btn-print {
+      font-family: inherit; padding: 8px 20px; background: #111; color: #fff;
+      font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+      border: none; cursor: pointer; border-radius: 2px;
+    }
+    .btn-print:hover { background: #333; }
+
+    /* ── FEUILLE A3+ — grille 2 colonnes ── */
+    .page {
+      width: 329mm;
+      min-height: 483mm;
+      background: #fff;
+      margin: 0 auto;
+      padding: 10mm;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4mm;
+      box-shadow: 0 2px 24px rgba(0,0,0,0.18);
+      align-content: start;
+    }
+
+    /* 7 cartons = 3 rangées de 2 + 1 seul en bas à gauche */
+
+    /* ══════════════════════════════
+       GABARIT UNIQUE
+       ══════════════════════════════ */
+    .carton {
+      border: 0.4pt solid #ccc;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    /* ── HEADER COLORÉ — 2 lignes ── */
+    .c-head {
+      padding: 4mm 6mm 4mm 7mm;
+      display: flex;
+      flex-direction: column;
+      gap: 2mm;
+      flex-shrink: 0;
+    }
+    .c-head-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .c-head-meta   { font-size: 6pt; letter-spacing: 0.16em; text-transform: uppercase; }
+    .c-head-author { font-size: 6pt; letter-spacing: 0.12em; text-transform: uppercase; }
+    .c-head-title  { font-size: 22pt; font-weight: 300; letter-spacing: -0.02em; line-height: 1.05; }
+
+    /* ── BODY : info + [prix | QR] ── */
+    .c-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 5mm 6mm 5mm 7mm;
+      gap: 4mm;
+      border-top: 0.3pt solid #e0e0e0;
+    }
+
+    /* Rangée du bas : prix | QR */
+    .c-bottom {
+      display: flex;
+      align-items: flex-end;
+      gap: 4mm;
+    }
+
+    /* Info */
+    .c-info { display: flex; flex-direction: column; gap: 2mm; }
+    .c-limited {
+      font-size: 9pt; font-weight: 500; color: #111; line-height: 1.2;
+    }
+    .c-signed {
+      font-size: 8.5pt; font-weight: 300; color: #555; line-height: 1.5;
+    }
+    .c-specs {
+      font-size: 8pt; color: #777; line-height: 1.6; font-weight: 300;
+    }
+    .c-specs strong { font-weight: 500; color: #333; }
+
+    /* Bloc prix */
+    .c-prix {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 1mm;
+      border-top: 0.3pt solid #e0e0e0;
+      padding-top: 3mm;
+    }
+    .c-prix-label {
+      font-size: 6pt; color: #888; text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .c-prix-val {
+      font-size: 17pt; font-weight: 300; color: #111;
+      letter-spacing: -0.02em; line-height: 1;
+    }
+    .c-prix-note {
+      font-size: 5.5pt; color: #bbb; letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    /* QR code */
+    .c-qr-wrap {
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5mm;
+      padding-left: 4mm;
+      border-left: 0.3pt solid #e0e0e0;
+    }
+    .c-qr { width: 22mm; height: 22mm; }
+    .c-qr canvas, .c-qr img { width: 100% !important; height: 100% !important; }
+    .c-qr-label {
+      font-size: 5pt; letter-spacing: 0.08em; text-transform: uppercase;
+      color: #ccc; text-align: center;
+    }
+
+
+    /* ── PRINT ── */
+    @media print {
+      body { background: none; padding: 0; }
+      .screen-bar { display: none; }
+      .page { margin: 0; box-shadow: none; width: 100%; }
+      .carton { border: 0.3pt solid #bbb; }
+      @page { size: 329mm 483mm portrait; margin: 10mm; }
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="screen-bar">
+  <span class="screen-title">Cartons d'œuvres · A3+ (329 × 483 mm) · 1 feuille · imprimer → couper</span>
+  <button class="btn-print" onclick="window.print()">Imprimer</button>
+</div>
+
+<div class="page" id="page"></div>
+
+<script>
+const BASE  = 'https://bertrandbasset.com/boutique.html?id=';
+const PAYER = 'https://bertrandbasset.com/payer.html';
+
+const EDITIONS = [
+  { slug:'sandstorm-feu',          num:'01', titre:'Sandstorm',        hex:'#FF4500', format:'60 × 90 cm',  prix:'950 €',  papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm' },
+  { slug:'flying-car-orange',      num:'02', titre:'Flying Car',       hex:'#FF6600', format:'70 × 124 cm', prix:'1 290 €',papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm' },
+  { slug:'lost-in-the-dust-rouge', num:'04', titre:'Lost in the Dust', hex:'#CC0000', format:'60 × 80 cm',  prix:'890 €',  papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm' },
+  { slug:'camp-lighters-jaune',    num:'05', titre:'Lamp Lighters',    hex:'#FFB300', format:'40 × 100 cm', prix:'790 €',  papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm' },
+  { slug:'im-here-bleu',           num:'06', titre:"I'm Here",         hex:'#0066CC', format:'60 × 80 cm',  prix:'890 €',  papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm' },
+  { slug:'umbrellas-way-rose',     num:'08', titre:'Umbrellas Way',    hex:'#FF1493', format:'60 × 80 cm',  prix:'890 €',  papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm' },
+];
+
+function textColor(hex) {
+  const h = hex.replace('#','');
+  const l = (0.299*parseInt(h.substr(0,2),16) + 0.587*parseInt(h.substr(2,2),16) + 0.114*parseInt(h.substr(4,2),16)) / 255;
+  return l > 0.55 ? '#111' : '#fff';
+}
+function dimColor(hex) {
+  const h = hex.replace('#','');
+  const l = (0.299*parseInt(h.substr(0,2),16) + 0.587*parseInt(h.substr(2,2),16) + 0.114*parseInt(h.substr(4,2),16)) / 255;
+  return l > 0.55 ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.55)';
+}
+
+function makeArtworkCarton(ed) {
+  const tc  = textColor(ed.hex);
+  const dc  = dimColor(ed.hex);
+  const qid = 'qr-' + ed.slug;
+  const div = document.createElement('div');
+  div.className = 'carton';
+  div.innerHTML = `
+    <div class="c-head" style="background:${ed.hex}">
+      <div class="c-head-top">
+        <span class="c-head-meta"   style="color:${dc}">№ ${ed.num} · Dust'in Kolor</span>
+        <span class="c-head-author" style="color:${dc}">Bertrand Basset</span>
+      </div>
+      <div class="c-head-title" style="color:${tc}">${ed.titre}</div>
+    </div>
+    <div class="c-body">
+      <div class="c-info">
+        <div class="c-limited">Série limitée à 10 exemplaires</div>
+        <div class="c-signed">Numérotée et signée par l'artiste<br>Certificat d'authenticité inclus</div>
+        <div class="c-specs"><strong>${ed.format}</strong> · ${ed.papier}<br>Tirage d'art : Pix in the City, Auray</div>
+      </div>
+      <div class="c-bottom">
+        <div class="c-prix">
+          <div class="c-prix-label">3 premiers tirages</div>
+          <div class="c-prix-val">${ed.prix}</div>
+          <div class="c-prix-note">Prix progressif ensuite</div>
+        </div>
+        <div class="c-qr-wrap">
+          <div class="c-qr" id="${qid}"></div>
+          <div class="c-qr-label">Voir &amp; commander</div>
+        </div>
+      </div>
+    </div>`;
+  return div;
+}
+
+function makeCartePostale() {
+  const div = document.createElement('div');
+  div.className = 'carton';
+  div.innerHTML = `
+    <div class="c-head" style="background:#111">
+      <div class="c-head-top">
+        <span class="c-head-meta"   style="color:rgba(255,255,255,0.5)">Exposition · Dust'in Kolor</span>
+        <span class="c-head-author" style="color:rgba(255,255,255,0.35)">Bertrand Basset</span>
+      </div>
+      <div class="c-head-title" style="color:#fff">Cartes postales</div>
+    </div>
+    <div class="c-body">
+      <div class="c-info">
+        <div class="c-limited">Série Dust'in Kolor</div>
+        <div class="c-signed">Impression haute définition</div>
+        <div class="c-specs">Règlement en espèces ou en ligne<br>via QR code · bertrandbasset.com</div>
+      </div>
+      <div class="c-bottom">
+        <div class="c-prix">
+          <div class="c-prix-label">1 carte postale</div>
+          <div class="c-prix-val">6 €</div>
+          <div style="height:3mm"></div>
+          <div class="c-prix-label">Pack 3 cartes</div>
+          <div class="c-prix-val">15 €</div>
+          <div class="c-prix-note">5 € la carte · économisez 17 %</div>
+        </div>
+        <div class="c-qr-wrap">
+          <div class="c-qr" id="qr-cartes"></div>
+          <div class="c-qr-label">Payer en ligne</div>
+        </div>
+      </div>
+    </div>`;
+  return div;
+}
+
+/* ── Assemblage ── */
+const page = document.getElementById('page');
+EDITIONS.forEach(ed => page.appendChild(makeArtworkCarton(ed)));
+page.appendChild(makeCartePostale());
+
+/* ── QR Codes ── */
+EDITIONS.forEach(ed => {
+  new QRCode(document.getElementById('qr-' + ed.slug), {
+    text: BASE + ed.slug, width: 128, height: 128,
+    colorDark: '#111', colorLight: '#fff', correctLevel: QRCode.CorrectLevel.M
+  });
+});
+new QRCode(document.getElementById('qr-cartes'), {
+  text: PAYER, width: 128, height: 128,
+  colorDark: '#111', colorLight: '#fff', correctLevel: QRCode.CorrectLevel.M
+});
+</script>
+</body>
+</html>
