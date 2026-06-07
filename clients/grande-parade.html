@@ -395,7 +395,8 @@ async function loadPCloud() {
       const hlFiles = (d2.metadata?.contents || [])
         .filter(i => !i.isfolder && /\.(jpe?g|png|webp)$/i.test(i.name))
         .sort((a, b) => a.name.localeCompare(b.name));
-      hlPhotos = hlFiles.map(f => ({ id: f.fileid, name: f.name }));
+      // Max 12 photos en highlight public
+      hlPhotos = hlFiles.slice(0, 12).map(f => ({ id: f.fileid, name: f.name }));
     } else {
       // Pas de dossier highlight → utiliser les 4 premières photos
       hlPhotos = allPhotos.slice(0, 4);
