@@ -320,6 +320,7 @@ const CONFIG = {
   PWD_VIEW_HASH: '60a7225a8c7a1771e6eb7bb32d3459ef485330a780c89ed4b9641fa3ea192897',
   PWD_DL_HASH:   '089bd217e8747ab92f1e592d024aafd512b3f40fd5bd866acaccbbd487671ba9',
   CARD_ID:       'ph-grande-parade',
+  GALLERY_ID:    'grande-parade',   // clé dans gallery_highlights (Supabase)
   NOTIF_EMAIL:   'yellowshoesstudio@gmail.com',
 };
 
@@ -357,8 +358,10 @@ async function init() {
 
   if (accessMode) {
     showFullGallery(accessMode);
-  } else {
+  } else if (hlPhotos.length > 0) {
     showHighlight();
+  } else {
+    showGate();
   }
 }
 
@@ -368,7 +371,24 @@ async function init() {
 async function loadPCloud() {
   if (!CONFIG.PCLOUD_CODE) return;
   try {
-    // 1. Lister le dossier racine
+    // 1. Lire les highlights sélectionnés dans Supabase (admin)
+    const SUPA_URL = 'https://suecslynruuputmujudg.supabase.co';
+    const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN1ZWNzbHlucnV1cHV0bXVqdWRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY1MTYyODcsImV4cCI6MjA5MjA5MjI4N30.c9Pa_x6MEcJdqVekBodSYpu3it-riVU1hYhC-m5iCsU';
+    let supaHighlights = null;
+    try {
+      const sr = await fetch(
+        `${SUPA_URL}/rest/v1/gallery_highlights?gallery_id=eq.${CONFIG.GALLERY_ID}&select=fileids`,
+        { headers: { apikey: SUPA_KEY, Authorization: `Bearer ${SUPA_KEY}` } }
+      );
+      if (sr.ok) {
+        const rows = await sr.json();
+        if (rows.length && Array.isArray(rows[0].fileids) && rows[0].fileids.length) {
+          supaHighlights = rows[0].fileids.map(String);
+        }
+      }
+    } catch(e) { /* non bloquant */ }
+
+    // 2. Lister le dossier racine pCloud
     let r = await fetch(`${PCLOUD_API}/showpublink?code=${CONFIG.PCLOUD_CODE}`);
     let d = await r.json();
     if (d.result !== 0) throw new Error(`pCloud ${d.result}: ${d.error}`);
@@ -380,27 +400,20 @@ async function loadPCloud() {
       contents = d.metadata?.contents || [];
     }
 
-    // 2. Séparer highlight/ du reste
-    const hlFolder = contents.find(i => i.isfolder && i.name.toLowerCase() === 'highlight');
     const rootFiles = contents
       .filter(i => !i.isfolder && /\.(jpe?g|png|webp)$/i.test(i.name))
       .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }));
 
     allPhotos = rootFiles.map(f => ({ id: f.fileid, name: f.name }));
 
-    // 3. Charger le sous-dossier highlight si présent
-    if (hlFolder) {
-      const r2 = await fetch(`${PCLOUD_API}/showpublink?code=${CONFIG.PCLOUD_CODE}&folderid=${hlFolder.folderid}`);
-      const d2 = await r2.json();
-      const hlFiles = (d2.metadata?.contents || [])
-        .filter(i => !i.isfolder && /\.(jpe?g|png|webp)$/i.test(i.name))
-        .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }));
-      // Max 12 photos en highlight public
-      hlPhotos = hlFiles.slice(0, 12).map(f => ({ id: f.fileid, name: f.name }));
-    } else {
-      // Pas de dossier highlight → utiliser les 4 premières photos
-      hlPhotos = allPhotos.slice(0, 4);
+    // 3. hlPhotos = sélection admin via Supabase
+    //    Si aucune sélection → hlPhotos reste [] → showGate() sera appelé dans init()
+    if (supaHighlights && supaHighlights.length) {
+      const photoMap = {};
+      allPhotos.forEach(p => { photoMap[String(p.id)] = p; });
+      hlPhotos = supaHighlights.map(fid => photoMap[fid]).filter(Boolean);
     }
+
   } catch(e) {
     console.error('pCloud load error:', e);
   }
@@ -420,6 +433,19 @@ async function getDirectUrl(fileid) {
     // Fallback : URL de miniature haute résolution
     return thumbUrl(fileid, '2048x2048');
   }
+}
+
+// ════════════════════════════════════════════════════════════
+// MODE PUBLIC — Gate (galerie fermée, pas de highlight configuré)
+// ════════════════════════════════════════════════════════════
+function showGate() {
+  const grid     = document.getElementById('hlGrid');
+  const gateCount = document.getElementById('gateCount');
+  grid.innerHTML = '';
+  gateCount.textContent = 'Galerie protégée';
+  document.getElementById('sectionPublic').style.display = '';
+  document.getElementById('sectionFull').style.display   = 'none';
+  setTimeout(() => openPwdModal(), 300);
 }
 
 // ════════════════════════════════════════════════════════════

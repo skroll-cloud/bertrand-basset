@@ -286,6 +286,7 @@
       <button class="admin-tab"        data-tab="visibility"  onclick="switchTab('visibility')">Visibilité menu</button>
       <button class="admin-tab"        data-tab="photos"      onclick="switchTab('photos')">Photos</button>
       <button class="admin-tab"        data-tab="cartons"     onclick="switchTab('cartons')">Cartons</button>
+      <button class="admin-tab"        data-tab="highlights"  onclick="switchTab('highlights')">Highlights</button>
     </div>
 
     <!-- ── TAB : Cartes ── -->
@@ -446,6 +447,28 @@
       </div>
     </div>
 
+    <!-- ── TAB : Highlights ── -->
+    <div class="tab-panel" id="tab-highlights">
+      <p class="admin-section-desc">
+        Sélectionne les photos affichées publiquement en teaser sur la page d'une galerie client.
+        Clique sur une photo pour la sélectionner/désélectionner, puis <strong>Enregistrer</strong>.
+      </p>
+
+      <select class="gallery-select" id="hlGallerySelect" onchange="loadHlGallery(this.value)">
+        <option value="">— Choisir une galerie —</option>
+      </select>
+
+      <div id="hlStatus" style="font-size:.65rem;color:var(--dim);margin:.5rem 0"></div>
+
+      <div id="hlGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin-top:1rem"></div>
+
+      <div class="save-wrap" id="hlSaveWrap" style="display:none;margin-top:1.5rem">
+        <button class="btn btn-dark" onclick="saveHighlights()">Enregistrer</button>
+        <span id="hlCount" style="font-size:.65rem;color:var(--dim);margin-left:1rem"></span>
+        <span class="feedback" id="hlFeedback" style="margin-left:1rem"></span>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -480,8 +503,9 @@ function showApp() {
 }
 
 // ── Tabs ─────────────────────────────────────────────────────────────────────
-let photosTabInited  = false;
-let cartonsTabInited = false;
+let photosTabInited     = false;
+let cartonsTabInited    = false;
+let highlightsTabInited = false;
 function switchTab(name) {
   document.querySelectorAll('.admin-tab').forEach(t => {
     t.classList.toggle('active', t.dataset.tab === name);
@@ -496,6 +520,10 @@ function switchTab(name) {
   if (name === 'cartons' && !cartonsTabInited) {
     cartonsTabInited = true;
     initCartonsTab();
+  }
+  if (name === 'highlights' && !highlightsTabInited) {
+    highlightsTabInited = true;
+    initHighlightsTab();
   }
 }
 
@@ -990,6 +1018,155 @@ async function saveVisibility() {
 // ── Image Picker ──────────────────────────────────────────────────────────────
 const GH_REPO   = 'skroll-cloud/bertrand-basset';
 const GH_BRANCH = 'main';
+
+// ── Highlights ────────────────────────────────────────────────────────────────
+
+// Galeries pCloud disponibles pour la sélection highlights
+// Format : { galleryId: { code: '...', label: '...' } }
+const HL_GALLERIES = {
+  'grande-parade': { code: 'kZKq0A5ZaoFGv3YO4mQrFbQghpd6Tfw0CWgy', label: 'Grande Parade' },
+  'gilmerton':     { code: 'kZo1EU5ZLLpXW8fr6xzJNJW0gPuU1B6fdsuy', label: 'Gilmerton' },
+  'leo-brasserie': { code: 'kZQ1EU5ZzBL5BcesXwzTqgy0uauzhu35EtS7', label: 'Léo Brasserie' },
+  'ines':          { code: 'kZTjQI5Z2AICSui7ebYf6i6dMEQqiYXYSFCV', label: 'Inès' },
+};
+
+let hlCurrentGallery  = null;   // galleryId en cours
+let hlSelectedFileids = new Set(); // fileids sélectionnés
+
+function initHighlightsTab() {
+  const sel = document.getElementById('hlGallerySelect');
+  Object.entries(HL_GALLERIES).forEach(([id, g]) => {
+    const opt = document.createElement('option');
+    opt.value = id;
+    opt.textContent = g.label;
+    sel.appendChild(opt);
+  });
+}
+
+async function loadHlGallery(galleryId) {
+  if (!galleryId) return;
+  hlCurrentGallery = galleryId;
+  hlSelectedFileids = new Set();
+
+  const grid   = document.getElementById('hlGrid');
+  const status = document.getElementById('hlStatus');
+  const saveW  = document.getElementById('hlSaveWrap');
+  grid.innerHTML  = '<div style="font-size:.65rem;color:var(--dim);padding:.5rem 0">Chargement…</div>';
+  status.textContent = '';
+  saveW.style.display = 'none';
+
+  // 1. Lire les highlights existants dans Supabase
+  try {
+    const r = await sb(`gallery_highlights?gallery_id=eq.${galleryId}&select=fileids`);
+    if (r.ok) {
+      const rows = await r.json();
+      if (rows.length && Array.isArray(rows[0].fileids)) {
+        rows[0].fileids.forEach(id => hlSelectedFileids.add(String(id)));
+      }
+    }
+  } catch(e) { /* pas bloquant */ }
+
+  // 2. Charger les photos pCloud
+  const cfg = HL_GALLERIES[galleryId];
+  if (!cfg) { grid.innerHTML = '<div style="color:red">Galerie inconnue.</div>'; return; }
+
+  try {
+    let photos = [];
+    const r1 = await fetch(`https://api.pcloud.com/showpublink?code=${cfg.code}`);
+    const d1 = await r1.json();
+    if (d1.result !== 0) throw new Error(`pCloud erreur ${d1.result}`);
+
+    let contents = d1.metadata?.contents || [];
+    if (!contents.length && d1.metadata?.folderid) {
+      const r2 = await fetch(`https://api.pcloud.com/showpublink?code=${cfg.code}&folderid=${d1.metadata.folderid}`);
+      const d2 = await r2.json();
+      contents = d2.metadata?.contents || [];
+    }
+
+    photos = contents
+      .filter(f => !f.isfolder && /\.(jpe?g|png|webp)$/i.test(f.name))
+      .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }));
+
+    if (!photos.length) {
+      grid.innerHTML = '<div style="font-size:.65rem;color:var(--dim)">Aucune photo trouvée.</div>';
+      return;
+    }
+
+    status.textContent = `${photos.length} photo(s) — clique pour sélectionner/désélectionner`;
+    renderHlGrid(photos, cfg.code);
+    saveW.style.display = '';
+    updateHlCount();
+
+  } catch(e) {
+    grid.innerHTML = `<div style="color:red;font-size:.65rem">Erreur : ${e.message}</div>`;
+  }
+}
+
+function renderHlGrid(photos, code) {
+  const grid = document.getElementById('hlGrid');
+  grid.innerHTML = photos.map(p => {
+    const fid     = String(p.fileid);
+    const sel     = hlSelectedFileids.has(fid);
+    const thumb   = `https://api.pcloud.com/getpubthumb?code=${code}&fileid=${fid}&size=300x300&type=jpg`;
+    return `<div class="hl-item ${sel ? 'hl-selected' : ''}" data-fid="${fid}" onclick="toggleHlPhoto(this, '${fid}')" style="position:relative;cursor:pointer;border-radius:4px;overflow:hidden;aspect-ratio:1;background:#111">
+      <img src="${thumb}" alt="${p.name}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;transition:opacity .2s;opacity:${sel ? '1' : '.55'}">
+      <div class="hl-check" style="position:absolute;top:6px;right:6px;width:22px;height:22px;border-radius:50%;background:${sel ? '#fff' : 'rgba(255,255,255,.3)'};display:flex;align-items:center;justify-content:center;font-size:.7rem;transition:all .2s">${sel ? '✓' : ''}</div>
+      <div style="position:absolute;bottom:0;left:0;right:0;padding:3px 5px;font-size:.5rem;color:#fff;background:rgba(0,0,0,.5);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.name}</div>
+    </div>`;
+  }).join('');
+}
+
+function toggleHlPhoto(el, fid) {
+  if (hlSelectedFileids.has(fid)) {
+    hlSelectedFileids.delete(fid);
+    el.classList.remove('hl-selected');
+    el.querySelector('img').style.opacity = '.55';
+    el.querySelector('.hl-check').style.background = 'rgba(255,255,255,.3)';
+    el.querySelector('.hl-check').textContent = '';
+  } else {
+    hlSelectedFileids.add(fid);
+    el.classList.add('hl-selected');
+    el.querySelector('img').style.opacity = '1';
+    el.querySelector('.hl-check').style.background = '#fff';
+    el.querySelector('.hl-check').textContent = '✓';
+  }
+  updateHlCount();
+}
+
+function updateHlCount() {
+  const n = hlSelectedFileids.size;
+  document.getElementById('hlCount').textContent = n === 0
+    ? 'Aucune photo sélectionnée — galerie fermée (modal mot de passe)'
+    : `${n} photo${n > 1 ? 's' : ''} en highlight`;
+}
+
+async function saveHighlights() {
+  if (!hlCurrentGallery) return;
+  const fb = document.getElementById('hlFeedback');
+  fb.textContent = 'Enregistrement…';
+  fb.style.color = 'var(--dim)';
+
+  const fileids = Array.from(hlSelectedFileids);
+
+  try {
+    // Upsert dans Supabase
+    const r = await sb('gallery_highlights', {
+      method: 'POST',
+      headers: { 'Prefer': 'resolution=merge-duplicates,return=minimal' },
+      body: JSON.stringify({ gallery_id: hlCurrentGallery, fileids, updated_at: new Date().toISOString() })
+    });
+    if (!r.ok) {
+      const err = await r.text();
+      throw new Error(err);
+    }
+    fb.textContent = '✓ Enregistré';
+    fb.style.color = 'green';
+    setTimeout(() => { fb.textContent = ''; }, 3000);
+  } catch(e) {
+    fb.textContent = `Erreur : ${e.message}`;
+    fb.style.color = 'red';
+  }
+}
 
 // Codes pCloud des galeries privées — à maintenir à jour (voir CLAUDE.md §9)
 const PCLOUD_GALLERIES = {
