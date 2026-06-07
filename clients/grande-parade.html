@@ -240,6 +240,112 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
+    /* ── GATE TILE dans la grille ───────────────────────── */
+    .hl-gate-tile {
+      background: #0e0e0e;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(255,255,255,.06);
+    }
+    .gate-inner { text-align: center; padding: 1.2rem; }
+    .gate-big-num {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 300;
+      letter-spacing: .02em;
+      color: var(--white);
+      line-height: 1;
+    }
+    .gate-big-label {
+      font-size: .42rem;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--dim);
+      margin: .55rem 0 1.8rem;
+    }
+    .gate-btns { display: flex; flex-direction: column; gap: .5rem; align-items: center; }
+    .gate-tile-btn {
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-weight: 400;
+      font-size: .46rem;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      padding: .65rem 1.5rem;
+      border: 1px solid rgba(255,255,255,.22);
+      background: transparent;
+      color: var(--white);
+      cursor: pointer;
+      transition: all .15s;
+      white-space: nowrap;
+      min-width: 155px;
+    }
+    .gate-tile-btn:hover { border-color: rgba(255,255,255,.65); background: rgba(255,255,255,.05); }
+    .gate-tile-btn.primary { background: var(--white); color: #0a0a0a; border-color: var(--white); }
+    .gate-tile-btn.primary:hover { background: rgba(255,255,255,.86); }
+
+    /* ── MODAL DEMANDE D'ACCÈS ──────────────────────────── */
+    .access-overlay {
+      position: fixed; inset: 0;
+      background: rgba(10,10,10,.88);
+      display: none;
+      align-items: center; justify-content: center;
+      z-index: 900; padding: 1.5rem;
+    }
+    .access-overlay.open { display: flex; }
+    .access-box {
+      position: relative;
+      background: #141414;
+      border: 1px solid rgba(255,255,255,.1);
+      padding: 2.4rem 2.4rem 1.8rem;
+      width: 100%; max-width: 380px;
+    }
+    .access-close-btn {
+      position: absolute; top: 1rem; right: 1.2rem;
+      background: none; border: none; color: var(--dim);
+      font-size: 1.1rem; cursor: pointer; line-height: 1;
+      transition: color .15s;
+    }
+    .access-close-btn:hover { color: var(--white); }
+    .access-modal-title {
+      font-size: .56rem; letter-spacing: .18em; text-transform: uppercase;
+      color: var(--white); margin-bottom: .55rem;
+    }
+    .access-modal-sub {
+      font-size: .58rem; color: var(--dim); line-height: 1.7; margin-bottom: 1.8rem;
+    }
+    .access-modal-error {
+      font-size: .54rem; color: var(--red); margin-bottom: .5rem; display: none;
+    }
+    .access-modal-error.show { display: block; }
+    .access-modal-input {
+      width: 100%; box-sizing: border-box;
+      background: #0f0f0f; border: 1px solid rgba(255,255,255,.15);
+      color: var(--white); padding: .72rem 1rem;
+      font-family: 'IBM Plex Sans', sans-serif; font-weight: 300; font-size: .65rem;
+      margin-bottom: .6rem; outline: none; transition: border-color .15s;
+    }
+    .access-modal-input:focus { border-color: rgba(255,255,255,.4); }
+    .access-modal-input::placeholder { color: #444; }
+    .access-modal-submit {
+      width: 100%; background: var(--white); color: #0a0a0a; border: none;
+      padding: .75rem; font-family: 'IBM Plex Sans', sans-serif; font-weight: 400;
+      font-size: .48rem; letter-spacing: .14em; text-transform: uppercase;
+      cursor: pointer; transition: background .15s;
+    }
+    .access-modal-submit:hover:not(:disabled) { background: rgba(255,255,255,.85); }
+    .access-modal-submit:disabled { opacity: .45; cursor: wait; }
+    .access-modal-alt {
+      margin-top: 1.1rem; font-size: .52rem; color: #555; text-align: center;
+    }
+    .access-modal-alt button {
+      background: none; border: none; color: var(--dim);
+      font-family: 'IBM Plex Sans', sans-serif; font-weight: 300; font-size: .52rem;
+      cursor: pointer; text-decoration: underline; padding: 0; transition: color .15s;
+    }
+    .access-modal-alt button:hover { color: var(--white); }
+    .access-success { display: none; text-align: center; }
+    .access-success.show { display: block; }
+
     /* ── RESPONSIVE ─────────────────────────────────────── */
     @media (max-width: 600px) {
       .hl-grid, .photo-grid { grid-template-columns: repeat(2, 1fr); }
@@ -296,6 +402,46 @@
   </div>
 </div>
 
+<!-- ── MODAL DEMANDE D'ACCÈS ── -->
+<div class="access-overlay" id="accessOverlay" onclick="if(event.target===this)closeAccessModal()">
+  <div class="access-box">
+    <button class="access-close-btn" onclick="closeAccessModal()">✕</button>
+
+    <!-- État formulaire -->
+    <div id="accessForm">
+      <p class="access-modal-title">Galerie complète</p>
+      <p class="access-modal-sub">
+        Entrez votre adresse email pour recevoir le code d'accès
+        à la galerie <strong style="color:var(--white)" id="accessGalleryLabel"></strong>.
+      </p>
+      <p class="access-modal-error" id="accessError"></p>
+      <input class="access-modal-input" id="accessEmail" type="email"
+             placeholder="votre@email.com" autocomplete="email"
+             onkeydown="if(event.key==='Enter')submitAccessRequest()">
+      <button class="access-modal-submit" id="accessSubmitBtn" onclick="submitAccessRequest()">
+        Recevoir le code par email
+      </button>
+      <p class="access-modal-alt">
+        Vous avez déjà un code ?
+        <button onclick="closeAccessModal();openPwdModal()">Se connecter →</button>
+      </p>
+    </div>
+
+    <!-- État succès -->
+    <div class="access-success" id="accessSuccess">
+      <div style="font-size:1.8rem;margin-bottom:1.2rem;opacity:.6">✉</div>
+      <p class="access-modal-title">Code envoyé !</p>
+      <p class="access-modal-sub" style="margin-top:.5rem">
+        Vérifiez votre boîte mail —<br>
+        vous allez recevoir le code d'accès dans quelques instants.
+      </p>
+      <button class="access-modal-submit" onclick="closeAccessModal();openPwdModal()" style="margin-top:.5rem">
+        J'ai mon code →
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- ── LIGHTBOX ── -->
 <div class="lightbox" id="lightbox" onclick="if(event.target===this)closeLb()">
   <button class="lb-close" onclick="closeLb()">✕</button>
@@ -337,6 +483,7 @@ let allPhotos    = [];   // photos du dossier racine pCloud (hors highlight)
 let hlPhotos     = [];   // photos du sous-dossier highlight/
 let lbIndex      = 0;    // index lightbox
 let lbPhotos     = [];   // photos actuellement dans la lightbox
+let lbSource     = null; // 'hl' | 'full'
 let accessMode   = null; // null | 'view' | 'dl'
 let selected     = new Set(); // indices sélectionnés (mode dl)
 
@@ -452,24 +599,35 @@ function showGate() {
 // MODE PUBLIC — Highlight
 // ════════════════════════════════════════════════════════════
 function showHighlight() {
-  const grid = document.getElementById('hlGrid');
+  const grid      = document.getElementById('hlGrid');
   const gateCount = document.getElementById('gateCount');
+  const total     = allPhotos.length;
 
   if (!hlPhotos.length) {
     grid.innerHTML = '<p style="text-align:center;color:var(--dim);font-size:.65rem;padding:4rem">Aucune photo de prévisualisation.</p>';
   } else {
+    const gateTile = total > 0 ? `
+      <div class="hl-item hl-gate-tile">
+        <div class="gate-inner">
+          <div class="gate-big-num">+${total}</div>
+          <div class="gate-big-label">photos dans la galerie complète</div>
+          <div class="gate-btns">
+            <button class="gate-tile-btn primary" onclick="openAccessModal()">Demander l'accès</button>
+            <button class="gate-tile-btn" onclick="openPwdModal()">J'ai un code</button>
+          </div>
+        </div>
+      </div>` : '';
+
     grid.innerHTML = hlPhotos.map((p, i) => `
       <div class="hl-item" onclick="openLb(${i}, 'hl')">
         <img src="${thumbUrl(p.id)}" alt="${p.name}" loading="lazy">
-      </div>`).join('');
+      </div>`).join('') + gateTile;
   }
 
-  const total = allPhotos.length;
-  if (total > hlPhotos.length) {
-    gateCount.textContent = `+ ${total - hlPhotos.length} photo${total - hlPhotos.length > 1 ? 's' : ''} dans la galerie complète`;
-  } else {
-    gateCount.textContent = 'Galerie complète disponible';
-  }
+  // Masquer l'ancien bandeau du bas (remplacé par la tile)
+  gateCount.textContent = '';
+  document.querySelector('.hl-fade').style.display    = 'none';
+  document.querySelector('.access-gate').style.display = 'none';
 
   document.getElementById('sectionPublic').style.display = '';
   document.getElementById('sectionFull').style.display   = 'none';
@@ -653,6 +811,7 @@ async function downloadPhotos(indices, zipName) {
 // LIGHTBOX
 // ════════════════════════════════════════════════════════════
 function openLb(idx, source) {
+  lbSource = source;
   lbPhotos = source === 'hl' ? hlPhotos : allPhotos;
   lbIndex  = idx;
   renderLb();
@@ -671,8 +830,11 @@ async function renderLb() {
   img.onload = () => { img.style.opacity = '1'; };
   img.src = url;
 
+  const hint = (lbSource === 'hl' && allPhotos.length > 0)
+    ? `  ·  +${allPhotos.length} photos  →`
+    : '';
   document.getElementById('lbCounter').textContent =
-    `${lbIndex + 1} / ${lbPhotos.length}`;
+    `${lbIndex + 1} / ${hlPhotos.length}${hint}`;
 
   // Tenter d'obtenir l'URL originale en arrière-plan
   getDirectUrl(p.id).then(directUrl => {
@@ -683,7 +845,22 @@ async function renderLb() {
 }
 
 function lbNav(dir) {
-  lbIndex = (lbIndex + dir + lbPhotos.length) % lbPhotos.length;
+  if (lbSource === 'hl') {
+    const newIdx = lbIndex + dir;
+    if (newIdx >= hlPhotos.length) {
+      // Fin des highlights → ouvrir le modal d'accès
+      closeLb();
+      openAccessModal();
+      return;
+    }
+    if (newIdx < 0) {
+      closeLb();
+      return;
+    }
+    lbIndex = newIdx;
+  } else {
+    lbIndex = (lbIndex + dir + lbPhotos.length) % lbPhotos.length;
+  }
   renderLb();
 }
 
@@ -703,8 +880,81 @@ document.addEventListener('keydown', e => {
     if (e.key === 'f' || e.key === 'F') document.getElementById('lightbox').requestFullscreen?.();
   } else if (document.getElementById('pwdOverlay').classList.contains('open')) {
     if (e.key === 'Escape') closePwdModal();
+  } else if (document.getElementById('accessOverlay').classList.contains('open')) {
+    if (e.key === 'Escape') closeAccessModal();
   }
 });
+
+// ════════════════════════════════════════════════════════════
+// DEMANDE D'ACCÈS PAR EMAIL
+// ════════════════════════════════════════════════════════════
+function openAccessModal() {
+  document.getElementById('accessOverlay').classList.add('open');
+  document.getElementById('accessForm').style.display    = '';
+  document.getElementById('accessSuccess').classList.remove('show');
+  document.getElementById('accessError').classList.remove('show');
+  document.getElementById('accessGalleryLabel').textContent = CONFIG.GALLERY_NAME;
+  document.getElementById('accessEmail').value = '';
+  document.getElementById('accessSubmitBtn').disabled    = false;
+  document.getElementById('accessSubmitBtn').textContent = 'Recevoir le code par email';
+  setTimeout(() => document.getElementById('accessEmail').focus(), 120);
+}
+
+function closeAccessModal() {
+  document.getElementById('accessOverlay').classList.remove('open');
+}
+
+async function submitAccessRequest() {
+  const email  = document.getElementById('accessEmail').value.trim();
+  const errEl  = document.getElementById('accessError');
+  const btn    = document.getElementById('accessSubmitBtn');
+
+  errEl.classList.remove('show');
+
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    errEl.textContent = 'Veuillez entrer une adresse email valide.';
+    errEl.classList.add('show');
+    return;
+  }
+
+  btn.textContent = 'Envoi en cours…';
+  btn.disabled    = true;
+
+  try {
+    const SUPA_URL = 'https://suecslynruuputmujudg.supabase.co';
+    const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN1ZWNzbHlucnV1cHV0bXVqdWRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY1MTYyODcsImV4cCI6MjA5MjA5MjI4N30.c9Pa_x6MEcJdqVekBodSYpu3it-riVU1hYhC-m5iCsU';
+
+    const r = await fetch(`${SUPA_URL}/functions/v1/send-gallery-access`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPA_KEY,
+        'Authorization': `Bearer ${SUPA_KEY}`,
+      },
+      body: JSON.stringify({
+        gallery_id:   CONFIG.GALLERY_ID,
+        gallery_name: CONFIG.GALLERY_NAME,
+        email,
+      }),
+    });
+
+    const data = await r.json().catch(() => ({}));
+
+    if (!r.ok) {
+      throw new Error(data.error || `Erreur ${r.status}`);
+    }
+
+    // Succès (même si warn: email non envoyé — demande stockée)
+    document.getElementById('accessForm').style.display = 'none';
+    document.getElementById('accessSuccess').classList.add('show');
+
+  } catch(e) {
+    errEl.textContent = `Une erreur est survenue. Réessayez ou contactez Bertrand directement.`;
+    errEl.classList.add('show');
+    btn.textContent = 'Recevoir le code par email';
+    btn.disabled    = false;
+  }
+}
 
 // ════════════════════════════════════════════════════════════
 // DÉMARRAGE
