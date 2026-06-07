@@ -372,24 +372,6 @@ const GALLERIES_CONFIG = {
         path:          "images/immersion",
         autoplay:      false,
         autoplayDelay: 4,
-        cartons: [
-        {
-                "cid": "cmmkol4ggs5l",
-                "position": 0,
-                "titleFr": "",
-                "titleEn": "",
-                "subtitleFr": "",
-                "subtitleEn": "",
-                "descFr": "J'ai 45 ans, un peu de kilomètre et la maitrise d'un savoir faire, me fondre dans un lieu, un collectif, un évènement, et rendre compte avec une approche humaniste, c'est à dire qui met en avant les humains, leur interactions. Le portrait restant ma spécialité, j'aime raconter par les gueules, les instants, les petits couac.\n\nPar exemple, il y a un an, j'ai pris une chambre dans un Ephad pendant une semaine. St Melar, une unité de l'Ephad de Lanmeur, où j'ai pu bénéficier d'une résidence photographique pour faire de la recherche de forme, voici les 6 planches que j'ai livrée pour l'exposition à l'hopital.",
-                "descEn": "Immersion in a trade, documentary immersion — I blend into the landscape to tell through portraits a place, a craft, a moment of life.\n\nHere, I took a room for a week at St Melar, a unit of the Ephad de Lanmeur, for a photographic residency.",
-                "ctaLabel": "",
-                "ctaUrl": "",
-                "categoryFr": "",
-                "categoryEn": "",
-                "sidebarFr": "",
-                "sidebarEn": ""
-        }
-],
         captions: {},
     },
 
