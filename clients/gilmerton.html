@@ -358,8 +358,18 @@ async function init() {
   if (accessMode) {
     showFullGallery(accessMode);
   } else {
-    showHighlight();
+    showGate();
   }
+}
+
+function showGate() {
+  const grid = document.getElementById('hlGrid');
+  grid.innerHTML = '';
+  const gateCount = document.getElementById('gateCount');
+  gateCount.textContent = 'Galerie protégée';
+  document.getElementById('sectionPublic').style.display = '';
+  document.getElementById('sectionFull').style.display   = 'none';
+  setTimeout(() => openPwdModal(), 300);
 }
 
 // ════════════════════════════════════════════════════════════
