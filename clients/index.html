@@ -77,6 +77,17 @@
       grid-template-columns: repeat(3, 1fr);
     }
 
+    /* ── LOADING ── */
+    .loading-state {
+      grid-column: 1 / -1;
+      padding: 4rem 2rem;
+      text-align: center;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--dim);
+    }
+
     /* ── CARTE ── */
     .galerie-carte {
       border-right: 1px solid var(--light-gray);
@@ -149,14 +160,16 @@
     }
     .btn-demander:hover { color: var(--black); }
 
-    /* Carte "à venir" / vide */
+    /* Carte "bientôt disponible" */
     .galerie-carte.coming {
       opacity: 0.5;
       pointer-events: none;
     }
-    .galerie-carte.coming .carte-visuel {
-      background: #e8e8e8;
-    }
+    .galerie-carte.coming .carte-visuel { background: #e8e8e8; }
+
+    /* Carte "photos à venir" */
+    .galerie-carte.placeholder .carte-visuel { background: #f0f0f0; }
+
     .carte-badge {
       position: absolute; bottom: 0.6rem; left: 0.6rem;
       font-size: 0.42rem; font-weight: 500; letter-spacing: 0.14em;
@@ -164,11 +177,6 @@
       background: rgba(250,250,250,0.9);
       border: 1px solid var(--light-gray);
       padding: 0.25rem 0.55rem;
-    }
-
-    /* Placeholder vide (photo à venir mais page existe) */
-    .galerie-carte.placeholder .carte-visuel {
-      background: #f0f0f0;
     }
 
     /* ── FOOTER ── */
@@ -201,9 +209,7 @@
       display: flex; align-items: flex-start;
       justify-content: space-between; margin-bottom: 1.4rem;
     }
-    .modal-titre {
-      font-size: 1.1rem; font-weight: 300; letter-spacing: -0.01em;
-    }
+    .modal-titre { font-size: 1.1rem; font-weight: 300; letter-spacing: -0.01em; }
     .modal-sous {
       font-size: 0.65rem; font-weight: 300;
       color: var(--gray); margin-top: 0.3rem; line-height: 1.6;
@@ -237,7 +243,6 @@
       padding: 0.5rem 0.85rem;
       background: #f3f3f3; border: 1px solid var(--light-gray);
     }
-
     .modal-submit {
       margin-top: 0.3rem;
       padding: 0.8rem 1.5rem;
@@ -247,12 +252,10 @@
       transition: opacity 0.2s; align-self: flex-start;
     }
     .modal-submit:hover { opacity: 0.8; }
-
     .modal-note {
       font-size: 0.58rem; font-weight: 300;
       color: var(--dim); line-height: 1.6;
     }
-
     .modal-confirm {
       display: none; flex-direction: column;
       align-items: center; text-align: center; gap: 0.8rem;
@@ -305,283 +308,9 @@
   <p class="page-desc">Vos photos de séance, organisées par série. Sélectionnez vos préférées et envoyez votre choix directement à Bertrand Basset.</p>
 </div>
 
-<!-- ── GRILLE ── -->
-<div class="galeries-grille">
-
-  <!-- 0 · Ines (mot de passe) -->
-  <div class="galerie-carte">
-    <a href="ines.html" class="carte-visuel carte-overlay-lock">
-      <img src="https://api.pcloud.com/getpubthumb?code=kZTjQI5Z2AICSui7ebYf6i6dMEQqiYXYSFCV&fileid=88476285883&size=600x900&type=jpg" alt="Ines">
-      <div class="carte-overlay">
-        <div class="carte-lock">
-          <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-        </div>
-      </div>
-    </a>
-    <div class="carte-infos">
-      <div class="carte-titre">Ines</div>
-      <div class="carte-actions">
-        <a href="ines.html" class="btn-acceder">Accéder</a>
-        <button class="btn-demander" onclick="openModal('Ines')">Demander le code</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- 1 · Plougasnou (mot de passe) -->
-  <div class="galerie-carte">
-    <a href="plougasnou.html" class="carte-visuel carte-overlay-lock">
-      <img src="plougasnou/Ricardo_Conversation/StudioB.AntoineAsnar%202.jpg" alt="Série Plougasnou">
-      <div class="carte-overlay">
-        <div class="carte-lock">
-          <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-        </div>
-      </div>
-    </a>
-    <div class="carte-infos">
-      <div class="carte-titre">Série Plougasnou</div>
-      <div class="carte-actions">
-        <a href="plougasnou.html" class="btn-acceder">Accéder</a>
-        <button class="btn-demander" onclick="openModal('Série Plougasnou')">Demander le code</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- 2 · Gilmerton (mot de passe) -->
-  <div class="galerie-carte">
-    <a href="gilmerton.html" class="carte-visuel carte-overlay-lock">
-      <img src="https://api.pcloud.com/getpubthumb?code=kZo1EU5ZLLpXW8fr6xzJNJW0gPuU1B6fdsuy&fileid=88201126472&size=600x900&type=jpg" alt="Gilmerton">
-      <div class="carte-overlay">
-        <div class="carte-lock">
-          <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-        </div>
-      </div>
-    </a>
-    <div class="carte-infos">
-      <div class="carte-titre">Gilmerton</div>
-      <div class="carte-actions">
-        <a href="gilmerton.html" class="btn-acceder">Accéder</a>
-        <button class="btn-demander" onclick="openModal('Gilmerton')">Demander le code</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- · Grande Parade (template unifié — test) -->
-  <div class="galerie-carte">
-    <a href="grande-parade.html" class="carte-visuel carte-overlay-lock">
-      <img src="https://api.pcloud.com/getpubthumb?code=kZKq0A5ZaoFGv3YO4mQrFbQghpd6Tfw0CWgy&fileid=88890561791&size=600x900&type=jpg" alt="Grande Parade">
-      <div class="carte-overlay">
-        <div class="carte-lock">
-          <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-        </div>
-      </div>
-    </a>
-    <div class="carte-infos">
-      <div class="carte-titre">Grande Parade</div>
-      <div class="carte-actions">
-        <a href="grande-parade.html" class="btn-acceder">Accéder</a>
-        <button class="btn-demander" onclick="openModal('Grande Parade')">Demander le code</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- 3 · Léo Brasserie (mot de passe) -->
-  <div class="galerie-carte">
-    <a href="leo-brasserie.html" class="carte-visuel carte-overlay-lock">
-      <img src="https://api.pcloud.com/getpubthumb?code=kZQ1EU5ZzBL5BcesXwzTqgy0uauzhu35EtS7&fileid=88089443232&size=600x900&type=jpg" alt="Léo Brasserie">
-      <div class="carte-overlay">
-        <div class="carte-lock">
-          <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-        </div>
-      </div>
-    </a>
-    <div class="carte-infos">
-      <div class="carte-titre">Léo Brasserie</div>
-      <div class="carte-actions">
-        <a href="leo-brasserie.html" class="btn-acceder">Accéder</a>
-        <button class="btn-demander" onclick="openModal('Léo Brasserie')">Demander le code</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- 4 · Ange Marine -->
-  <div class="galerie-carte">
-    <a href="ange-marine.html" class="carte-visuel">
-      <img src="ange-marine/L1060508.jpg" alt="Ange Marine">
-      <div class="carte-overlay"></div>
-    </a>
-    <div class="carte-infos">
-      <div class="carte-titre">Ange Marine</div>
-      <div class="carte-actions">
-        <a href="ange-marine.html" class="btn-acceder">Accéder</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- 3 · Antoine Asnar -->
-  <div class="galerie-carte">
-    <a href="antoine-asnar.html" class="carte-visuel">
-      <img src="antoine-asnar/StudioB.AntoineAsnar.jpg" alt="Antoine Asnar">
-      <div class="carte-overlay"></div>
-    </a>
-    <div class="carte-infos">
-      <div class="carte-titre">Antoine Asnar</div>
-      <div class="carte-actions">
-        <a href="antoine-asnar.html" class="btn-acceder">Accéder</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- 4 · Derezo Ephad (placeholder, à venir) -->
-  <div class="galerie-carte placeholder">
-    <a href="derezo-ephad.html" class="carte-visuel">
-      <div class="carte-badge">Photos à venir</div>
-    </a>
-    <div class="carte-infos">
-      <div class="carte-titre">Derezo Ephad</div>
-      <div class="carte-actions">
-        <a href="derezo-ephad.html" class="btn-acceder">Voir</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- 5 · Imène (placeholder) -->
-  <div class="galerie-carte placeholder">
-    <a href="imene.html" class="carte-visuel">
-      <div class="carte-badge">Photos à venir</div>
-    </a>
-    <div class="carte-infos">
-      <div class="carte-titre">Imène</div>
-      <div class="carte-actions">
-        <a href="imene.html" class="btn-acceder">Voir</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- 6 · JP Davodeau (placeholder) -->
-  <div class="galerie-carte placeholder">
-    <a href="jp-davodeau.html" class="carte-visuel">
-      <div class="carte-badge">Photos à venir</div>
-    </a>
-    <div class="carte-infos">
-      <div class="carte-titre">JP Davodeau</div>
-      <div class="carte-actions">
-        <a href="jp-davodeau.html" class="btn-acceder">Voir</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- 7 · La Régal Compagnie (plus tard) -->
-  <div class="galerie-carte coming">
-    <div class="carte-visuel">
-      <div class="carte-badge">Bientôt disponible</div>
-    </div>
-    <div class="carte-infos">
-      <div class="carte-titre">La Régal Compagnie</div>
-    </div>
-  </div>
-
-  <!-- 8 · Louis Boudot (placeholder) -->
-  <div class="galerie-carte placeholder">
-    <a href="louis-boudot.html" class="carte-visuel">
-      <div class="carte-badge">Photos à venir</div>
-    </a>
-    <div class="carte-infos">
-      <div class="carte-titre">Louis Boudot</div>
-      <div class="carte-actions">
-        <a href="louis-boudot.html" class="btn-acceder">Voir</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- 9 · Olivier Cuisine -->
-  <div class="galerie-carte">
-    <a href="olivier-cuisine.html" class="carte-visuel">
-      <img src="olivier-cuisine/Atelier_Plougasnou.jpg" alt="Olivier Cuisine">
-      <div class="carte-overlay"></div>
-    </a>
-    <div class="carte-infos">
-      <div class="carte-titre">Olivier Cuisine</div>
-      <div class="carte-actions">
-        <a href="olivier-cuisine.html" class="btn-acceder">Accéder</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- 10 · Patrick Ewen (placeholder) -->
-  <div class="galerie-carte placeholder">
-    <a href="patrick-ewen.html" class="carte-visuel">
-      <div class="carte-badge">Photos à venir</div>
-    </a>
-    <div class="carte-infos">
-      <div class="carte-titre">Patrick Ewen</div>
-      <div class="carte-actions">
-        <a href="patrick-ewen.html" class="btn-acceder">Voir</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- 11 · Pauline Gourret -->
-  <div class="galerie-carte">
-    <a href="pauline-gourret.html" class="carte-visuel">
-      <img src="pauline-gourret/Pauline%20Gourret%2001%40bertrandbasset.jpg" alt="Pauline Gourret">
-      <div class="carte-overlay"></div>
-    </a>
-    <div class="carte-infos">
-      <div class="carte-titre">Pauline Gourret</div>
-      <div class="carte-actions">
-        <a href="pauline-gourret.html" class="btn-acceder">Accéder</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- 12 · Shooting Bébé — Armel -->
-  <div class="galerie-carte">
-    <a href="shooting-bebe-armel.html" class="carte-visuel">
-      <img src="shooting-bebe-armel/ARMEL01%40bertrandbasset.jpg" alt="Shooting Bébé — Armel">
-      <div class="carte-overlay"></div>
-    </a>
-    <div class="carte-infos">
-      <div class="carte-titre">Shooting Bébé — Armel</div>
-      <div class="carte-actions">
-        <a href="shooting-bebe-armel.html" class="btn-acceder">Accéder</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- 13 · St Mélar (plus tard) -->
-  <div class="galerie-carte coming">
-    <div class="carte-visuel">
-      <div class="carte-badge">Bientôt disponible</div>
-    </div>
-    <div class="carte-infos">
-      <div class="carte-titre">St Mélar</div>
-    </div>
-  </div>
-
-  <!-- 14 · Studio LR -->
-  <div class="galerie-carte">
-    <a href="studio-lr.html" class="carte-visuel">
-      <img src="studio-lr/INSTA/Atelier_Plougasnou.jpg" alt="Studio LR">
-      <div class="carte-overlay"></div>
-    </a>
-    <div class="carte-infos">
-      <div class="carte-titre">Studio LR</div>
-      <div class="carte-actions">
-        <a href="studio-lr.html" class="btn-acceder">Accéder</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- 15 · Juste Après 153 (plus tard) -->
-  <div class="galerie-carte coming">
-    <div class="carte-visuel">
-      <div class="carte-badge">Bientôt disponible</div>
-    </div>
-    <div class="carte-infos">
-      <div class="carte-titre">Juste Après — 153</div>
-    </div>
-  </div>
-
+<!-- ── GRILLE (rendue dynamiquement) ── -->
+<div id="galeriesGrille" class="galeries-grille">
+  <div class="loading-state">Chargement…</div>
 </div>
 
 <!-- ── FOOTER ── -->
@@ -593,7 +322,6 @@
 <!-- ── MODAL demande de code ── -->
 <div class="modal-bg" id="modalBg" onclick="bgClick(event)">
   <div class="modal">
-
     <div id="modalForm">
       <div class="modal-head">
         <div>
@@ -602,7 +330,6 @@
         </div>
         <button class="modal-close" onclick="closeModal()">×</button>
       </div>
-
       <div class="modal-form">
         <div class="modal-field">
           <label class="modal-label">Galerie demandée</label>
@@ -624,7 +351,6 @@
         <p class="modal-note">Votre demande est envoyée directement à Bertrand Basset par email.</p>
       </div>
     </div>
-
     <div class="modal-confirm" id="modalConfirm">
       <div class="confirm-check">
         <svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>
@@ -632,11 +358,142 @@
       <div class="confirm-titre">Demande envoyée</div>
       <p class="confirm-msg">Bertrand Basset a reçu votre demande.<br>Vous recevrez le code d'accès sous 24h.</p>
     </div>
-
   </div>
 </div>
 
+<!-- gallery-data.js est à la racine du site, en dehors de clients/ -->
+<script src="../js/gallery-data.js"></script>
 <script>
+  /* ── CONFIG SUPABASE ── */
+  const SUPA_URL = 'https://suecslynruuputmujudg.supabase.co';
+  const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN1ZWNzbHlucnV1cHV0bXVqdWRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY1MTYyODcsImV4cCI6MjA5MjA5MjI4N30.c9Pa_x6MEcJdqVekBodSYpu3it-riVU1hYhC-m5iCsU';
+
+  /* ── RÉSOLUTION DES CHEMINS ──────────────────────────────────────────────────
+   * gallery-data.js stocke les chemins depuis la racine du site :
+   *   clients/ange-marine/...  →  depuis clients/index.html → ../clients/ange-marine/...
+   *   https://...              →  utilisé tel quel
+   * Les URLs de galerie (url: "clients/gilmerton.html") :
+   *   strip le préfixe "clients/"  → "gilmerton.html"  (on est déjà dans clients/)
+   */
+  function resolveImg(img) {
+    if (!img) return null;
+    if (img.startsWith('http')) return img;
+    return '../' + img;
+  }
+
+  function resolveUrl(url) {
+    if (!url) return null;
+    if (url.startsWith('http')) return url;
+    if (url.startsWith('clients/')) return url.slice('clients/'.length);
+    return url;
+  }
+
+  /* ── RENDU D'UNE CARTE ── */
+  function renderCard(card) {
+    const title   = card.titleFr || '';
+    const url     = resolveUrl(card.url);
+    const imgSrc  = resolveImg(card.img);
+    const locked  = !!card.locked;
+    const coming  = !!card.coming;
+    const placeholder = !!card.placeholder;
+
+    /* Carte "bientôt disponible" */
+    if (coming) {
+      return `
+        <div class="galerie-carte coming">
+          <div class="carte-visuel">
+            <div class="carte-badge">Bientôt disponible</div>
+          </div>
+          <div class="carte-infos">
+            <div class="carte-titre">${title}</div>
+          </div>
+        </div>`;
+    }
+
+    /* Image ou placeholder vide */
+    const imgHtml = imgSrc
+      ? `<img src="${imgSrc}" alt="${title}" loading="lazy">`
+      : (placeholder ? `<div class="carte-badge">Photos à venir</div>` : '');
+
+    /* Overlay (cadenas si protégée, survol simple sinon) */
+    const overlayHtml = imgSrc && locked
+      ? `<div class="carte-overlay">
+           <div class="carte-lock">
+             <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+           </div>
+         </div>`
+      : `<div class="carte-overlay"></div>`;
+
+    const visuelClass = `carte-visuel${locked && imgSrc ? ' carte-overlay-lock' : ''}`;
+    const carteClass  = `galerie-carte${placeholder ? ' placeholder' : ''}`;
+
+    const visuelOpen  = url ? `<a href="${url}" class="${visuelClass}">` : `<div class="${visuelClass}">`;
+    const visuelClose = url ? `</a>` : `</div>`;
+
+    /* Actions */
+    const titleEsc = title.replace(/'/g, "\\'");
+    const actions = url
+      ? `<div class="carte-actions">
+           <a href="${url}" class="btn-acceder">Accéder</a>
+           ${locked ? `<button class="btn-demander" onclick="openModal('${titleEsc}')">Demander le code</button>` : ''}
+         </div>`
+      : '';
+
+    return `
+      <div class="${carteClass}">
+        ${visuelOpen}
+          ${imgHtml}
+          ${imgSrc ? overlayHtml : ''}
+        ${visuelClose}
+        <div class="carte-infos">
+          <div class="carte-titre">${title}</div>
+          ${actions}
+        </div>
+      </div>`;
+  }
+
+  /* ── INITIALISATION ── */
+  async function init() {
+    /* Base statique depuis SECTIONS_CONFIG (gallery-data.js) */
+    const cards = (SECTIONS_CONFIG['galeries-client']?.cards || []).map((c, i) => ({
+      ...c, _sortOrder: i * 10
+    }));
+
+    /* Overrides Supabase (ordre, titre, image, visibilité) */
+    try {
+      const r = await fetch(
+        `${SUPA_URL}/rest/v1/gallery_cards?id=like.client-*&order=sort_order.asc.nullslast`,
+        { headers: { apikey: SUPA_KEY, Authorization: `Bearer ${SUPA_KEY}` } }
+      );
+      if (r.ok) {
+        const rows = await r.json();
+        const byId = {};
+        rows.forEach(row => { byId[row.id] = row; });
+
+        cards.forEach((card, i) => {
+          const row = byId['client-' + card.id];
+          if (row) {
+            if (row.title)                card.titleFr     = row.title;
+            if (row.label)                card.labelFr     = row.label;
+            if (row.img)                  card.img         = row.img;
+            if (row.description)          card.descFr      = row.description;
+            if (row.sort_order != null)   card._sortOrder  = row.sort_order;
+            if (row.visible === false)    card._hidden     = true;
+          }
+        });
+
+        cards.sort((a, b) => a._sortOrder - b._sortOrder);
+      }
+    } catch(e) {
+      console.warn('Supabase non disponible, affichage statique.', e);
+    }
+
+    const visible = cards.filter(c => !c._hidden);
+    document.getElementById('galeriesGrille').innerHTML =
+      visible.length ? visible.map(renderCard).join('') : '<div class="loading-state">Aucune galerie disponible.</div>';
+  }
+
+  /* ── MODAL ── */
   let galerieActive = '';
 
   function openModal(galerie) {
@@ -666,31 +523,27 @@
     const nom   = document.getElementById('modalNom').value.trim();
     const email = document.getElementById('modalEmail').value.trim();
     const msg   = document.getElementById('modalMsg').value.trim();
-
     if (!nom || !email) {
       if (!nom) document.getElementById('modalNom').focus();
       else      document.getElementById('modalEmail').focus();
       return;
     }
-
     const subject = `Demande d'accès galerie — ${galerieActive}`;
     const body = [
       `Demande d'accès à la galerie : ${galerieActive}`,
-      ``,
-      `Nom : ${nom}`,
-      `Email : ${email}`,
+      '', `Nom : ${nom}`, `Email : ${email}`,
       msg ? `\nMessage : ${msg}` : '',
-      ``,
-      `— Envoyé depuis bertrandbasset.com/clients`
+      '', `— Envoyé depuis bertrandbasset.com/clients`
     ].join('\n');
-
     window.location.href = `mailto:yellowshoesstudio@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-
     setTimeout(() => {
       document.getElementById('modalForm').style.display = 'none';
       document.getElementById('modalConfirm').classList.add('open');
     }, 600);
   }
+
+  /* ── START ── */
+  init();
 </script>
 </body>
 </html>
