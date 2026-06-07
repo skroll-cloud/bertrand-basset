@@ -384,7 +384,7 @@ async function loadPCloud() {
     const hlFolder = contents.find(i => i.isfolder && i.name.toLowerCase() === 'highlight');
     const rootFiles = contents
       .filter(i => !i.isfolder && /\.(jpe?g|png|webp)$/i.test(i.name))
-      .sort((a, b) => a.name.localeCompare(b.name));
+      .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }));
 
     allPhotos = rootFiles.map(f => ({ id: f.fileid, name: f.name }));
 
@@ -394,7 +394,7 @@ async function loadPCloud() {
       const d2 = await r2.json();
       const hlFiles = (d2.metadata?.contents || [])
         .filter(i => !i.isfolder && /\.(jpe?g|png|webp)$/i.test(i.name))
-        .sort((a, b) => a.name.localeCompare(b.name));
+        .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }));
       // Max 12 photos en highlight public
       hlPhotos = hlFiles.slice(0, 12).map(f => ({ id: f.fileid, name: f.name }));
     } else {
