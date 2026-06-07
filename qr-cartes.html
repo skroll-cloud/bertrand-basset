@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang='fr'>
+<head>
+<meta charset='UTF-8'>
+<title>QR Code — Payer ses cartes postales</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500&display=swap');
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body {
+    font-family:'IBM Plex Sans',-apple-system,Arial,sans-serif;
+    background:#f0f0f0;
+    display:flex; align-items:center; justify-content:center;
+    min-height:100vh; padding:2rem;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact;
+  }
+  .card {
+    background:#fff;
+    width:85mm; /* carte de visite large */
+    padding:10mm;
+    text-align:center;
+    border-radius:3px;
+    box-shadow:0 4px 24px rgba(0,0,0,0.10);
+    page-break-inside:avoid;
+  }
+  .kicker {
+    font-size:7pt; letter-spacing:0.18em; text-transform:uppercase;
+    color:#999; margin-bottom:4mm;
+  }
+  .qr { width:52mm; height:52mm; margin:0 auto 5mm; display:block; }
+  .qr svg { width:100%; height:100%; }
+  .title {
+    font-size:14pt; font-weight:300; letter-spacing:-0.01em;
+    color:#111; line-height:1.2; margin-bottom:2mm;
+  }
+  .subtitle {
+    font-size:7.5pt; color:#777; font-weight:300; line-height:1.6;
+    margin-bottom:5mm;
+  }
+  .prices {
+    display:flex; justify-content:center; gap:4mm;
+    margin-bottom:5mm;
+  }
+  .price-chip {
+    border:1px solid #e0e0e0; border-radius:2px;
+    padding:2mm 4mm; text-align:center;
+  }
+  .price-chip .amount { font-size:16pt; font-weight:500; color:#111; display:block; }
+  .price-chip .label  { font-size:7pt; color:#555; letter-spacing:0.08em; text-transform:uppercase; display:block; }
+  .url {
+    font-size:6.5pt; color:#bbb; letter-spacing:0.04em;
+    border-top:1px solid #eee; padding-top:4mm;
+  }
+  .logo-line {
+    display:flex; align-items:center; justify-content:center;
+    gap:2mm; margin-bottom:5mm;
+  }
+  .logo-b { font-size:10pt; font-weight:500; color:#111; }
+  .brand-name { font-size:6.5pt; letter-spacing:0.12em; text-transform:uppercase; color:#999; }
+  @media print {
+    body { background:#fff; padding:0; }
+    .card { box-shadow:none; }
+  }
+</style>
+</head>
+<body>
+<div class='card'>
+  <p class='kicker'>Dust'in Kolor — Exposition</p>
+  <div class='qr'><svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 31 31" shape-rendering="crispEdges"><path fill="#ffffff" d="M0 0h31v31H0z"/><path stroke="#000000" d="M1 1.5h7m1 0h1m1 0h4m2 0h4m2 0h7M1 2.5h1m5 0h1m1 0h5m3 0h1m1 0h1m1 0h1m1 0h1m5 0h1M1 3.5h1m1 0h3m1 0h1m2 0h1m1 0h3m5 0h2m1 0h1m1 0h3m1 0h1M1 4.5h1m1 0h3m1 0h1m1 0h4m5 0h1m2 0h1m1 0h1m1 0h3m1 0h1M1 5.5h1m1 0h3m1 0h1m4 0h1m1 0h5m1 0h1m2 0h1m1 0h3m1 0h1M1 6.5h1m5 0h1m2 0h3m2 0h1m1 0h2m1 0h2m1 0h1m5 0h1M1 7.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M9 8.5h2m2 0h3m1 0h3M1 9.5h1m1 0h2m1 0h3m2 0h1m1 0h3m2 0h3m2 0h1m2 0h1m1 0h2M1 10.5h5m2 0h1m2 0h3m3 0h5m1 0h3m3 0h1M2 11.5h1m2 0h1m1 0h3m1 0h1m3 0h1m3 0h1m4 0h1m2 0h2M2 12.5h2m2 0h1m2 0h1m2 0h1m1 0h2m1 0h1m1 0h1m4 0h1m4 0h1M3 13.5h2m1 0h2m4 0h2m4 0h1m2 0h1m2 0h1m1 0h2M1 14.5h3m7 0h1m2 0h1m1 0h2m2 0h1m2 0h1m3 0h3M1 15.5h3m3 0h2m1 0h1m1 0h1m2 0h1m1 0h1m1 0h3m1 0h1m1 0h1m1 0h3M2 16.5h1m2 0h2m1 0h1m3 0h1m1 0h1m2 0h1m2 0h1m4 0h1m2 0h1M2 17.5h1m4 0h1m2 0h1m5 0h1m5 0h1m2 0h2m1 0h1M5 18.5h1m2 0h1m2 0h4m1 0h3m2 0h1m2 0h1m1 0h3M1 19.5h1m1 0h1m1 0h5m1 0h1m4 0h1m1 0h1m2 0h1m1 0h3m1 0h1M4 20.5h1m1 0h1m1 0h1m3 0h2m2 0h1m1 0h2m1 0h1m1 0h1m3 0h1M2 21.5h1m1 0h4m4 0h3m3 0h10M9 22.5h3m1 0h3m1 0h1m3 0h1m3 0h5M1 23.5h7m1 0h1m3 0h2m2 0h2m1 0h2m1 0h1m1 0h2m1 0h1M1 24.5h1m5 0h1m1 0h1m11 0h1m3 0h2m1 0h2M1 25.5h1m1 0h3m1 0h1m3 0h3m1 0h2m1 0h1m2 0h5m1 0h1M1 26.5h1m1 0h3m1 0h1m1 0h2m4 0h4m3 0h1m1 0h3m2 0h1M1 27.5h1m1 0h3m1 0h1m1 0h1m3 0h3m4 0h1m3 0h1m2 0h1m1 0h1M1 28.5h1m5 0h1m4 0h1m1 0h1m1 0h1m4 0h1m4 0h1m1 0h1M1 29.5h7m1 0h4m2 0h3m1 0h3m2 0h1m3 0h1"/></svg>
+</div>
+  <div class='prices'>
+    <div class='price-chip'><span class='amount'>6 €</span><span class='label'>1 carte</span></div>
+    <div class='price-chip'><span class='amount'>15 €</span><span class='label'>3 cartes</span></div>
+  </div>
+  <p class='subtitle' style='margin-bottom:4mm'>Règlement sécurisé par carte bancaire</p>
+  <p class='url'>bertrandbasset.com/payer.html</p>
+</div>
+</body>
+</html>

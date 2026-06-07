@@ -1,0 +1,123 @@
+# ════════════════════════════════════════════════════════════════════
+# MENU — bertrandbasset.com
+# ════════════════════════════════════════════════════════════════════
+#
+# ── COMMENT MODIFIER CE FICHIER ─────────────────────────────────────
+#
+# Chaque ligne non commentée = un item du menu de la sidebar.
+# Envoie le fichier modifié à Claude → il implémente les changements.
+#
+# ── FORMAT D'UNE LIGNE ──────────────────────────────────────────────
+#
+#   TYPE  |  Nom affiché  |  Destination
+#
+# ── TYPES DISPONIBLES ───────────────────────────────────────────────
+#
+#   GROUPE    → Le nom apparaît dans la sidebar. En cliquant dessus,
+#               la sidebar se transforme et montre les sous-items.
+#               (← c'est ce que tu veux pour PHOTOGRAPHE)
+#               Les sous-items d'un groupe s'indentent avec 2 espaces.
+#
+#   GALERIE   → Ouvre directement une galerie photo dans le site.
+#               Destination = ID de la galerie (voir liste plus bas)
+#
+#   PAGE      → Affiche une page texte (infos, contact, etc.)
+#               Destination = ID de la page
+#
+#   LIEN      → Navigue vers une URL (autre page HTML du site)
+#               Destination = chemin relatif (ex. clients/index.html)
+#
+#   SECTION   → Ouvre une grille de cartes (comportement actuel de
+#               PHOTOGRAPHE et RÉALISATEUR)
+#
+#   CACHÉ     → Existe dans le code mais invisible dans la sidebar
+#               (utile pour garder un lien actif sans l'afficher)
+#
+# ── RÈGLES ──────────────────────────────────────────────────────────
+#
+#   - Les sous-items d'un GROUPE s'indentent avec 2 espaces
+#   - Un sous-item peut être GALERIE, PAGE, ou LIEN
+#   - Tout item peut être marqué [caché] en fin de ligne pour le
+#     masquer sans le supprimer
+#   - Les lignes commençant par # sont des commentaires ignorés
+#
+# ════════════════════════════════════════════════════════════════════
+# MENU ACTUEL (à modifier selon ta vision)
+# ════════════════════════════════════════════════════════════════════
+
+GALERIE   | BEST OF             | best-of                      [caché]
+SECTION   | PHOTOGRAPHE         | photographe
+SECTION   | RÉALISATEUR         | realisateur
+PAGE      | TRAVAILLER ENSEMBLE | travailler-ensemble
+SECTION   | BOUTIQUE            | boutique
+PAGE      | INFOS               | infos
+
+# ── Items cachés actuels (invisibles mais actifs) ────────────────────
+CACHÉ     | AUTEUR              | auteur
+CACHÉ     | POST-PRODUCTION     | post-production
+CACHÉ     | VOIR LES FILMS      | films-player
+CACHÉ     | ARCHIVES            | archives
+
+
+# ════════════════════════════════════════════════════════════════════
+# EXEMPLE — NOUVEAU MENU AVEC GROUPE PHOTOGRAPHE
+# ════════════════════════════════════════════════════════════════════
+# (Décommente et modifie pour proposer ta nouvelle version)
+#
+# GALERIE   | BEST OF              | best-of                   [caché]
+# GROUPE    | PHOTOGRAPHE          |
+#   GALERIE |   Portrait           | portrait
+#   GALERIE |   Immersion          | studio
+#   GALERIE |   Série GEM          | gem
+#   GALERIE |   St Mélar           | st-melar
+#   LIEN    |   Dust'in Kolor      | dustin-kolor/index.html
+#   LIEN    |   Galeries Client    | clients/index.html
+# GROUPE    | RÉALISATEUR          |
+#   GALERIE |   Cinéma             | cinema
+#   GALERIE |   Télévision         | television
+#   GALERIE |   Archives France 2  | archives
+#   GALERIE |   Corporate          | corporate
+# PAGE      | TRAVAILLER ENSEMBLE  | travailler-ensemble
+# SECTION   | BOUTIQUE             | boutique
+# PAGE      | INFOS                | infos
+
+
+# ════════════════════════════════════════════════════════════════════
+# GALERIES DISPONIBLES (à assigner dans le menu)
+# ════════════════════════════════════════════════════════════════════
+#
+# ID              | Nom lisible              | Photos | État
+# ────────────────┼──────────────────────────┼────────┼────────────
+# best-of         | Best Of                  |  var.  | actif
+# portrait        | Portrait                 |   13   | actif
+# gem             | GEM Le Sympa             |   13   | actif
+# studio          | Studio / Immersion       |    3   | actif
+# st-melar        | St Mélar (EHPAD)         |    6   | actif
+# cinema          | Cinéma                   |    9   | actif
+# television      | Télévision France 2      |   10   | actif
+# archives        | Archives portraits       |   10   | actif
+# corporate       | Corporate & Web          |    0   | sans photos
+# dustin-kolor    | Dust'in Kolor            |   11   | mini-site séparé
+#
+# ════════════════════════════════════════════════════════════════════
+# PAGES DISPONIBLES (id à utiliser dans le menu)
+# ════════════════════════════════════════════════════════════════════
+#
+# ID                   | Contenu
+# ─────────────────────┼────────────────────────────────────────────
+# infos                | Page À propos + Contact
+# travailler-ensemble  | Page avec cartes de projets et vidéos
+# auteur               | Page texte "Auteur"          [cachée actuel]
+# post-production      | Page Post-production          [cachée actuel]
+# films-player         | Lecteur vidéo plein écran     [caché actuel]
+# contact              | Formulaire de contact (dans infos)
+#
+# ════════════════════════════════════════════════════════════════════
+# LIENS DISPONIBLES (sous-dossiers / pages séparées)
+# ════════════════════════════════════════════════════════════════════
+#
+# URL                    | Description
+# ───────────────────────┼────────────────────────────────────────────
+# dustin-kolor/index.html| Mini-site Dust'in Kolor (boutique + expo)
+# clients/index.html     | Portail galeries client privées
+# clients/plougasnou.html| Galerie Plougasnou (accès direct)
