@@ -617,6 +617,70 @@ const GALLERIES_CONFIG = {
         captions: {}
     },
 
+    "burning-man": {
+        path:          "images/burning man",
+        autoplay:      false,
+        autoplayDelay: 4,
+        cartons:       [],
+        images: [
+            {"filename":"prise de vue sans titre-030414.jpg"},
+            {"filename":"prise de vue sans titre-071050.jpg"},
+            {"filename":"prise de vue sans titre-111650.jpg"},
+            {"filename":"prise de vue sans titre-1815.jpg"},
+            {"filename":"prise de vue sans titre-192132.jpg"},
+            {"filename":"prise de vue sans titre-2446.jpg"},
+            {"filename":"prise de vue sans titre-2447.jpg"},
+            {"filename":"prise de vue sans titre-2448.jpg"},
+            {"filename":"prise de vue sans titre-2451.jpg"},
+            {"filename":"prise de vue sans titre-2452.jpg"},
+            {"filename":"prise de vue sans titre-2453.jpg"},
+            {"filename":"prise de vue sans titre-2510.jpg"},
+            {"filename":"prise de vue sans titre-2539.jpg"},
+            {"filename":"prise de vue sans titre-2552.jpg"},
+            {"filename":"prise de vue sans titre-2555.jpg"},
+            {"filename":"prise de vue sans titre-2567.jpg"},
+            {"filename":"prise de vue sans titre-2578.jpg"},
+            {"filename":"prise de vue sans titre-2626.jpg"},
+            {"filename":"prise de vue sans titre-4044.jpg"},
+            {"filename":"prise de vue sans titre-4047.jpg"},
+            {"filename":"prise de vue sans titre-4083.jpg"},
+            {"filename":"prise de vue sans titre-4531.jpg"},
+            {"filename":"prise de vue sans titre-4580.jpg"},
+            {"filename":"prise de vue sans titre-4587.jpg"},
+            {"filename":"prise de vue sans titre-4594.jpg"},
+            {"filename":"prise de vue sans titre-4714.jpg"},
+            {"filename":"prise de vue sans titre-4717.jpg"},
+            {"filename":"prise de vue sans titre-4719.jpg"},
+            {"filename":"prise de vue sans titre-5569.jpg"},
+            {"filename":"prise de vue sans titre-5571.jpg"},
+            {"filename":"prise de vue sans titre-6273.jpg"},
+            {"filename":"prise de vue sans titre-6280.jpg"},
+            {"filename":"prise de vue sans titre-6290.jpg"},
+            {"filename":"prise de vue sans titre-6292.jpg"},
+            {"filename":"prise de vue sans titre-6294.jpg"}
+        ],
+        captions: {}
+    },
+
+    "cartes-postales": {
+        path:          "images/cartes-postales",
+        autoplay:      false,
+        autoplayDelay: 4,
+        cartons:       [],
+        images: [
+            {"filename":"cp-01.jpg"},
+            {"filename":"cp-02.jpg"},
+            {"filename":"cp-03.jpg"},
+            {"filename":"cp-04.jpg"},
+            {"filename":"cp-05.jpg"},
+            {"filename":"cp-06.jpg"},
+            {"filename":"cp-07.jpg"},
+            {"filename":"cp-08.jpg"},
+            {"filename":"cp-09.jpg"}
+        ],
+        captions: {}
+    },
+
     "best-of": {
         path:          ".",
         autoplay:      false,
