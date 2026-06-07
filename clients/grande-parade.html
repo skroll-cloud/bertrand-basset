@@ -358,20 +358,8 @@ async function init() {
   if (accessMode) {
     showFullGallery(accessMode);
   } else {
-    showGate();
+    showHighlight();
   }
-}
-
-function showGate() {
-  // Aucune photo affichée publiquement — accès protégé dès l'entrée
-  const grid = document.getElementById('hlGrid');
-  grid.innerHTML = '';
-  const gateCount = document.getElementById('gateCount');
-  gateCount.textContent = 'Galerie protégée';
-  document.getElementById('sectionPublic').style.display = '';
-  document.getElementById('sectionFull').style.display   = 'none';
-  // Ouvrir le modal mot de passe automatiquement
-  setTimeout(() => openPwdModal(), 300);
 }
 
 // ════════════════════════════════════════════════════════════
