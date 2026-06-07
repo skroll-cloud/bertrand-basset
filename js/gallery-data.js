@@ -173,7 +173,124 @@ const SECTIONS_CONFIG = {
                 descFr: "Désert du Nevada · Black Rock City",
                 descEn: "Nevada desert · Black Rock City",
                 img: "images/dustin-kolor/04.jpg",
-                _hiddenByAdmin: true   /* pas de galleryId — contenu à créer */
+                _hiddenByAdmin: true
+            },
+            /* ── Galeries clients (déplacées depuis galeries-client) ── */
+            {
+                id: "ines", url: "clients/ines.html",
+                labelFr: "Galerie privée", labelEn: "Private gallery",
+                titleFr: "Inès", titleEn: "Inès",
+                descFr: "Sélection · accès protégé", descEn: "Selection · protected access",
+                img: "https://api.pcloud.com/getpubthumb?code=kZTjQI5Z2AICSui7ebYf6i6dMEQqiYXYSFCV&fileid=88476285883&size=600x900&type=jpg",
+                _hiddenByAdmin: true
+            },
+            {
+                id: "grande-parade", url: "clients/grande-parade.html",
+                labelFr: "Galerie client", labelEn: "Client gallery",
+                titleFr: "Grande Parade", titleEn: "Grande Parade",
+                descFr: "Galerie · accès protégé", descEn: "Gallery · protected access",
+                img: "https://api.pcloud.com/getpubthumb?code=kZKq0A5ZaoFGv3YO4mQrFbQghpd6Tfw0CWgy&fileid=88890561791&size=600x900&type=jpg",
+                _hiddenByAdmin: true
+            },
+            {
+                id: "gilmerton", url: "clients/gilmerton.html",
+                labelFr: "Galerie privée", labelEn: "Private gallery",
+                titleFr: "Gilmerton", titleEn: "Gilmerton",
+                descFr: "Remise de commande · accès protégé", descEn: "Order delivery · protected access",
+                img: "https://api.pcloud.com/getpubthumb?code=kZo1EU5ZLLpXW8fr6xzJNJW0gPuU1B6fdsuy&fileid=88201126472&size=600x900&type=jpg",
+                _hiddenByAdmin: true
+            },
+            {
+                id: "leo-brasserie", url: "clients/leo-brasserie.html",
+                labelFr: "Galerie privée", labelEn: "Private gallery",
+                titleFr: "Léo Brasserie", titleEn: "Léo Brasserie",
+                descFr: "Remise de commande · accès protégé", descEn: "Order delivery · protected access",
+                img: "https://api.pcloud.com/getpubthumb?code=kZQ1EU5ZzBL5BcesXwzTqgy0uauzhu35EtS7&fileid=88089443232&size=600x900&type=jpg",
+                _hiddenByAdmin: true
+            },
+            {
+                id: "ange-marine", url: "clients/ange-marine.html",
+                labelFr: "Portrait", labelEn: "Portrait",
+                titleFr: "Ange Marine", titleEn: "Ange Marine",
+                img: "clients/ange-marine/L1060508.jpg",
+                _hiddenByAdmin: true
+            },
+            {
+                id: "antoine-asnar", url: "clients/antoine-asnar.html",
+                labelFr: "Portrait", labelEn: "Portrait",
+                titleFr: "Antoine Asnar", titleEn: "Antoine Asnar",
+                img: "clients/antoine-asnar/StudioB.AntoineAsnar 1.jpg",
+                _hiddenByAdmin: true
+            },
+            {
+                id: "olivier-cuisine", url: "clients/olivier-cuisine.html",
+                labelFr: "Corporate", labelEn: "Corporate",
+                titleFr: "Olivier Cuisine", titleEn: "Olivier Cuisine",
+                img: "clients/olivier-cuisine/Atelier_Plougasnou.jpg",
+                _hiddenByAdmin: true
+            },
+            {
+                id: "pauline-gourret", url: "clients/pauline-gourret.html",
+                labelFr: "Portrait", labelEn: "Portrait",
+                titleFr: "Pauline Gourret", titleEn: "Pauline Gourret",
+                img: "clients/pauline-gourret/Pauline Gourret 01@bertrandbasset.jpg",
+                _hiddenByAdmin: true
+            },
+            {
+                id: "shooting-bebe-armel", url: "clients/shooting-bebe-armel.html",
+                labelFr: "Portrait", labelEn: "Portrait",
+                titleFr: "Shooting Bébé — Armel", titleEn: "Shooting Bébé — Armel",
+                img: "clients/shooting-bebe-armel/ARMEL01@bertrandbasset.jpg",
+                _hiddenByAdmin: true
+            },
+            {
+                id: "studio-lr", url: "clients/studio-lr.html",
+                labelFr: "Studio", labelEn: "Studio",
+                titleFr: "Studio LR", titleEn: "Studio LR",
+                img: "clients/studio-lr/INSTA/Atelier_Plougasnou.jpg",
+                _hiddenByAdmin: true
+            },
+            {
+                id: "derezo-ephad", url: "clients/derezo-ephad.html",
+                labelFr: "Portrait", labelEn: "Portrait",
+                titleFr: "Derezo Ephad", titleEn: "Derezo Ephad",
+                _hiddenByAdmin: true
+            },
+            {
+                id: "imene", url: "clients/imene.html",
+                labelFr: "Portrait", labelEn: "Portrait",
+                titleFr: "Imène", titleEn: "Imène",
+                _hiddenByAdmin: true
+            },
+            {
+                id: "jp-davodeau", url: "clients/jp-davodeau.html",
+                labelFr: "Portrait", labelEn: "Portrait",
+                titleFr: "JP Davodeau", titleEn: "JP Davodeau",
+                _hiddenByAdmin: true
+            },
+            {
+                id: "louis-boudot", url: "clients/louis-boudot.html",
+                labelFr: "Portrait", labelEn: "Portrait",
+                titleFr: "Louis Boudot", titleEn: "Louis Boudot",
+                _hiddenByAdmin: true
+            },
+            {
+                id: "patrick-ewen", url: "clients/patrick-ewen.html",
+                labelFr: "Portrait", labelEn: "Portrait",
+                titleFr: "Patrick Ewen", titleEn: "Patrick Ewen",
+                _hiddenByAdmin: true
+            },
+            {
+                id: "la-regal",
+                labelFr: "Théâtre", labelEn: "Theatre",
+                titleFr: "La Régal Compagnie", titleEn: "La Régal Compagnie",
+                _hiddenByAdmin: true
+            },
+            {
+                id: "juste-apres-153",
+                labelFr: "Portrait", labelEn: "Portrait",
+                titleFr: "Juste Après — 153", titleEn: "Juste Après — 153",
+                _hiddenByAdmin: true
             },
         ]
     },
