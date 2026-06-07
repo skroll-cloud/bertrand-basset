@@ -240,44 +240,46 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ── GATE TILE dans la grille ───────────────────────── */
+    /* ── GATE SLIDE (pleine largeur, sous les highlights) ── */
     .hl-gate-tile {
-      background: #0e0e0e;
+      grid-column: 1 / -1;   /* s'étire sur toute la largeur */
+      aspect-ratio: auto;    /* override hl-item aspect-ratio */
+      min-height: 300px;
+      background: #0d0d0d;
       display: flex;
       align-items: center;
       justify-content: center;
-      border: 1px solid rgba(255,255,255,.06);
+      border-top: 1px solid rgba(255,255,255,.07);
     }
-    .gate-inner { text-align: center; padding: 1.2rem; }
+    .gate-inner { text-align: center; padding: 2rem 1.5rem; }
     .gate-big-num {
-      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-size: clamp(3.5rem, 10vw, 7rem);
       font-weight: 300;
-      letter-spacing: .02em;
+      letter-spacing: -.01em;
       color: var(--white);
       line-height: 1;
     }
     .gate-big-label {
-      font-size: .42rem;
-      letter-spacing: .18em;
+      font-size: .48rem;
+      letter-spacing: .22em;
       text-transform: uppercase;
       color: var(--dim);
-      margin: .55rem 0 1.8rem;
+      margin: .7rem 0 2.2rem;
     }
-    .gate-btns { display: flex; flex-direction: column; gap: .5rem; align-items: center; }
+    .gate-btns { display: flex; flex-direction: row; gap: .75rem; align-items: center; justify-content: center; flex-wrap: wrap; }
     .gate-tile-btn {
       font-family: 'IBM Plex Sans', sans-serif;
       font-weight: 400;
-      font-size: .46rem;
+      font-size: .48rem;
       letter-spacing: .14em;
       text-transform: uppercase;
-      padding: .65rem 1.5rem;
+      padding: .75rem 2rem;
       border: 1px solid rgba(255,255,255,.22);
       background: transparent;
       color: var(--white);
       cursor: pointer;
       transition: all .15s;
       white-space: nowrap;
-      min-width: 155px;
     }
     .gate-tile-btn:hover { border-color: rgba(255,255,255,.65); background: rgba(255,255,255,.05); }
     .gate-tile-btn.primary { background: var(--white); color: #0a0a0a; border-color: var(--white); }
@@ -432,8 +434,8 @@
       <div style="font-size:1.8rem;margin-bottom:1.2rem;opacity:.6">✉</div>
       <p class="access-modal-title">Code envoyé !</p>
       <p class="access-modal-sub" style="margin-top:.5rem">
-        Vérifiez votre boîte mail —<br>
-        vous allez recevoir le code d'accès dans quelques instants.
+        Votre demande a été transmise.<br>
+        Bertrand vous enverra le code d'accès par email dans les meilleurs délais.
       </p>
       <button class="access-modal-submit" onclick="closeAccessModal();openPwdModal()" style="margin-top:.5rem">
         J'ai mon code →
@@ -934,6 +936,7 @@ async function submitAccessRequest() {
       body: JSON.stringify({
         gallery_id:   CONFIG.GALLERY_ID,
         gallery_name: CONFIG.GALLERY_NAME,
+        notif_email:  CONFIG.NOTIF_EMAIL,
         email,
       }),
     });
