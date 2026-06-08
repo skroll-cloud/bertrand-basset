@@ -461,7 +461,7 @@ function buildItem0(item,locked,secMap){
       esc(name)+'</span>'+
     '<span class="badge">'+esc(item.type)+'</span>'+
     '<a class="acc-btn" href="index.html" target="_blank" rel="noopener">Accéder</a>'+
-    '<button class="vis-btn'+(isVis?'':' hidden')+(locked?' locked':'\')+'"'+
+    '<button class="vis-btn'+(isVis?'':' hidden')+(locked?' locked':'')+'"'+
       ' onclick="toggleMenuVis(\''+item.id+'\',this)">'+
       (isVis?'Visible':'Masqué')+'</button>';
   el.appendChild(row);
