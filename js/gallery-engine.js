@@ -146,6 +146,16 @@ class Portfolio {
                     'ph-exposition': 'ph', 'ph-clients': 'ph'
                 };
 
+                /* Snapshot des cartes statiques AVANT toute modification
+                   → permet de récupérer img/url/galleryId quand une carte est déplacée */
+                const staticSnap = {};
+                for (const sId in SECTIONS_CONFIG) {
+                    const pfx = prefixMap[sId] || sId;
+                    SECTIONS_CONFIG[sId].cards.forEach(c => {
+                        staticSnap[`${pfx}-${c.id}`] = c;
+                    });
+                }
+
                 for (const secId in SECTIONS_CONFIG) {
                     const sec    = SECTIONS_CONFIG[secId];
                     const prefix = prefixMap[secId] || secId;
@@ -167,13 +177,10 @@ class Portfolio {
                         if (row.parent_id)  card.parentId  = row.parent_id;
                         card._dbId          = key;
                         card._sortOrder     = row.sort_order ?? 999;
-                        /* Les cartes marquées "cachées par défaut" dans gallery-data.js
-                           nécessitent visible=true explicite pour être publiées.
-                           Les cartes normales sont masquées seulement si visible=false. */
                         const wasStaticHidden = card._hiddenByAdmin === true;
                         card._hiddenByAdmin = wasStaticHidden
-                            ? row.visible !== true   // caché par défaut → visible seulement si admin dit true
-                            : row.visible === false; // visible par défaut → caché seulement si admin dit false
+                            ? row.visible !== true
+                            : row.visible === false;
                     });
 
                     /* Retirer les cartes déplacées vers une autre section via l'admin */
@@ -183,26 +190,30 @@ class Portfolio {
                         return !row || !row.section || row.section === secId;
                     });
 
-                    /* Injecter les cartes Supabase qui n'existent pas dans gallery-data.js
-                       (y compris les cartes déplacées depuis une autre section) */
+                    /* Injecter les cartes qui appartiennent à cette section (déplacées ou purement DB)
+                       En cas de déplacement, utiliser le snapshot statique pour récupérer img/url/etc. */
                     dbCards
                         .filter(r => r.section === secId && !sec.cards.find(c => (c._dbId || `${prefix}-${c.id}`) === r.id))
                         .forEach(r => {
+                            const orig = staticSnap[r.id] || {};
+                            const wasStaticHidden = orig._hiddenByAdmin === true;
                             sec.cards.push({
                                 id:        r.id.replace(new RegExp(`^${prefix}-`), ''),
-                                titleFr:   r.title_fr   || '',
-                                titleEn:   r.title_en   || '',
-                                labelFr:   r.label_fr   || '',
-                                labelEn:   r.label_en   || '',
-                                descFr:    r.desc_fr    || '',
-                                descEn:    r.desc_en    || '',
-                                img:       r.cover_img  || null,
-                                galleryId: r.gallery_id || null,
-                                url:       r.link_url   || null,
-                                parentId:  r.parent_id  || null,
+                                titleFr:   r.title_fr   || orig.titleFr  || '',
+                                titleEn:   r.title_en   || orig.titleEn  || '',
+                                labelFr:   r.label_fr   || orig.labelFr  || '',
+                                labelEn:   r.label_en   || orig.labelEn  || '',
+                                descFr:    r.desc_fr    || orig.descFr   || '',
+                                descEn:    r.desc_en    || orig.descEn   || '',
+                                img:       r.cover_img  || orig.img      || null,
+                                galleryId: r.gallery_id || orig.galleryId || null,
+                                url:       r.link_url   || orig.url      || null,
+                                parentId:  r.parent_id  || orig.parentId || null,
                                 _dbId:         r.id,
                                 _sortOrder:    r.sort_order ?? 999,
-                                _hiddenByAdmin: r.visible === false,
+                                _hiddenByAdmin: r.visible !== null
+                                    ? r.visible === false
+                                    : (wasStaticHidden ? true : false),
                                 _fromSupabase: true
                             });
                         });
