@@ -114,15 +114,17 @@ class Portfolio {
         const hdrs = { 'apikey': SUPA_KEY, 'Authorization': `Bearer ${SUPA_KEY}` };
 
         try {
-            /* ── 1. section_visibility → masquage des items du menu ── */
-            const visRes = await fetch(`${SUPA_URL}/rest/v1/section_visibility?select=id,visible`, { headers: hdrs });
+            /* ── 1. section_visibility → masquage + noms des items du menu ── */
+            const visRes = await fetch(`${SUPA_URL}/rest/v1/section_visibility?select=id,visible,label`, { headers: hdrs });
             if (visRes.ok) {
                 const rows = await visRes.json();
                 const map  = {};
-                rows.forEach(r => { map[r.id] = r.visible; });
+                rows.forEach(r => { map[r.id] = r; });
                 MENU_CONFIG.forEach(item => {
-                    if (Object.prototype.hasOwnProperty.call(map, item.id)) {
-                        item._hiddenByAdmin = map[item.id] === false;
+                    const row = map[item.id];
+                    if (row) {
+                        item._hiddenByAdmin = row.visible === false;
+                        if (row.label) item.name = row.label; // override du nom depuis l'admin
                     } else {
                         delete item._hiddenByAdmin;
                     }
