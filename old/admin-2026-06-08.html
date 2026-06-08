@@ -1,0 +1,1869 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Bertrand Basset</title>
+  <link rel="icon" type="image/svg+xml" href="assets/logo-b.svg">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+  <script src="js/gallery-data.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --black: #0a0a0a; --white: #fafafa; --gray: #555; --dim: #999; --line: #e0e0e0; --red: #c41e1e; --green: #1a8a3c; }
+    html { font-family: 'IBM Plex Sans', sans-serif; color: var(--black); background: var(--white); -webkit-font-smoothing: antialiased; }
+    body { min-height: 100vh; display: flex; flex-direction: column; }
+    a { color: inherit; text-decoration: none; }
+
+    /* Header */
+    .site-header { display: flex; align-items: center; justify-content: space-between; padding: 1.2rem 2.5rem; border-bottom: 1px solid var(--line); position: sticky; top: 0; background: var(--white); z-index: 100; }
+    .header-logo { width: 22px; height: 22px; opacity: 0.7; transition: opacity .15s; }
+    .header-logo:hover { opacity: 1; }
+    .header-title { font-size: 0.55rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim); }
+    .header-logout { font-size: 0.52rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim); cursor: pointer; transition: color .15s; background: none; border: none; font-family: inherit; }
+    .header-logout:hover { color: var(--black); }
+
+    /* Gate */
+    #gate { flex: 1; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 1.4rem; padding: 4rem 2rem; }
+    .gate-title { font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); }
+    .gate-input { width: 260px; padding: 0.75rem 1rem; border: 1px solid var(--line); background: transparent; font-family: inherit; font-size: 0.8rem; font-weight: 300; outline: none; transition: border-color .15s; }
+    .gate-input:focus { border-color: var(--black); }
+    .gate-btn { width: 260px; padding: 0.75rem 1rem; background: var(--black); color: var(--white); font-family: inherit; font-size: 0.55rem; font-weight: 400; letter-spacing: 0.14em; text-transform: uppercase; border: none; cursor: pointer; }
+    .gate-error { font-size: 0.62rem; color: var(--red); }
+
+    /* App */
+    #app { display: none; flex: 1; flex-direction: column; }
+    .status-banner { background: var(--white); border-bottom: 1px solid var(--line); padding: 0.6rem 2.5rem; font-size: 0.55rem; letter-spacing: 0.08em; color: var(--dim); display: flex; align-items: center; gap: 0.6rem; }
+    .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--dim); }
+    .status-dot.ok { background: var(--green); }
+    .status-dot.err { background: var(--red); }
+
+    /* Tabs */
+    .admin-wrap { max-width: 780px; margin: 0 auto; padding: 2.5rem 2rem 5rem; flex: 1; width: 100%; }
+    .admin-tabs { display: flex; border-bottom: 1px solid var(--line); margin-bottom: 2rem; }
+    .admin-tab { padding: 0.75rem 1.4rem; font-size: 0.52rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); cursor: pointer; border: none; border-bottom: 2px solid transparent; background: none; font-family: inherit; transition: color .15s, border-color .15s; }
+    .admin-tab:hover { color: var(--black); }
+    .admin-tab.active { color: var(--black); border-bottom-color: var(--black); }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* Section */
+    .admin-section-title { font-size: 0.52rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim); margin-bottom: 0.8rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--line); }
+    .admin-section-desc { font-size: 0.68rem; color: var(--dim); line-height: 1.7; margin-bottom: 1.2rem; }
+
+    /* Toggle row (onglet Visibilité) */
+    .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 0.65rem 0; border-bottom: 1px solid #f2f2f2; gap: 1rem; }
+    .toggle-label { font-size: 0.72rem; font-weight: 300; }
+    .toggle-label.child { padding-left: 0.8rem; color: var(--gray); font-size: 0.68rem; }
+    .toggle-switch { position: relative; width: 36px; height: 20px; flex-shrink: 0; }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+    .toggle-track { position: absolute; inset: 0; background: var(--line); border-radius: 10px; cursor: pointer; transition: background .2s; }
+    .toggle-track::after { content: ''; position: absolute; width: 14px; height: 14px; border-radius: 50%; background: white; top: 3px; left: 3px; transition: transform .2s; box-shadow: 0 1px 3px rgba(0,0,0,.2); }
+    .toggle-switch input:checked + .toggle-track { background: var(--black); }
+    .toggle-switch input:checked + .toggle-track::after { transform: translateX(16px); }
+
+    /* Boutons */
+    .save-wrap { margin-top: 2rem; display: flex; align-items: center; gap: 1.2rem; flex-wrap: wrap; }
+    .btn { padding: 0.75rem 2rem; font-family: inherit; font-size: 0.52rem; font-weight: 400; letter-spacing: 0.14em; text-transform: uppercase; border: none; cursor: pointer; transition: background .2s; }
+    .btn-dark { background: var(--black); color: var(--white); }
+    .btn-dark:hover { background: #333; }
+    .btn-dark:disabled { background: var(--dim); cursor: not-allowed; }
+    .btn-outline { background: transparent; color: var(--black); border: 1px solid var(--line); }
+    .btn-outline:hover { border-color: var(--black); }
+    .feedback { font-size: 0.62rem; color: var(--green); opacity: 0; transition: opacity .3s; }
+    .feedback.err { color: var(--red); }
+    .feedback.visible { opacity: 1; }
+    .preview-link { font-size: 0.55rem; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); transition: color .15s; }
+    .preview-link:hover { color: var(--black); }
+
+    /* ── Onglet Cartes ────────────────────────────────── */
+    .section-group { margin-bottom: 2rem; }
+    .section-group-title { font-size: 0.5rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); padding: 0.6rem 0; border-bottom: 1px solid var(--line); margin-bottom: 0.5rem; }
+
+    .card-row {
+      display: grid;
+      grid-template-columns: 22px 52px 1fr auto;
+      gap: 0.7rem;
+      align-items: start;
+      padding: 0.7rem 0;
+      border-bottom: 1px solid #f5f5f5;
+      cursor: default;
+    }
+    .card-row.drag-over { background: #f0f4ff; border-radius: 2px; }
+    .drag-handle {
+      display: flex; align-items: flex-start; justify-content: center;
+      padding-top: 0.6rem; color: var(--line); font-size: 0.9rem;
+      cursor: grab; user-select: none; line-height: 1;
+      transition: color .15s;
+    }
+    .drag-handle:hover { color: var(--dim); }
+    .drag-handle:active { cursor: grabbing; }
+    .card-thumb { width: 52px; height: 36px; object-fit: cover; object-position: center top; background: #eee; display: block; flex-shrink: 0; }
+    .card-thumb-placeholder { width: 52px; height: 36px; background: var(--black); flex-shrink: 0; }
+    .card-fields { display: flex; flex-direction: column; gap: 0.35rem; }
+    .card-field-row { display: flex; gap: 0.5rem; align-items: center; }
+    .field-label { font-size: 0.48rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); width: 56px; flex-shrink: 0; padding-top: 0.45rem; }
+    .field-input {
+      flex: 1; padding: 0.38rem 0.55rem;
+      border: 1px solid transparent; background: transparent;
+      font-family: inherit; font-size: 0.7rem; font-weight: 300; color: var(--black);
+      outline: none; transition: border-color .15s, background .15s;
+      border-radius: 0;
+    }
+    .field-input:hover { background: #f9f9f9; border-color: var(--line); }
+    .field-input:focus { background: #fff; border-color: var(--black); }
+    .field-input.title { font-weight: 400; font-size: 0.75rem; }
+    .card-actions { display: flex; flex-direction: column; gap: 0.4rem; padding-top: 0.3rem; }
+    .card-save-btn {
+      padding: 0.3rem 0.7rem; font-family: inherit; font-size: 0.48rem; letter-spacing: 0.1em;
+      text-transform: uppercase; border: 1px solid var(--line); background: transparent;
+      color: var(--dim); cursor: pointer; transition: all .15s; white-space: nowrap;
+    }
+    .card-save-btn:hover { border-color: var(--black); color: var(--black); }
+    .card-save-btn.saving { border-color: var(--dim); color: var(--dim); }
+    .card-save-btn.saved { border-color: var(--green); color: var(--green); }
+    .card-vis-btn {
+      padding: 0.3rem 0.7rem; font-family: inherit; font-size: 0.48rem; letter-spacing: 0.1em;
+      text-transform: uppercase; border: 1px solid var(--line); background: transparent;
+      color: var(--dim); cursor: pointer; transition: all .15s; white-space: nowrap;
+    }
+    .card-vis-btn.hidden-card { border-color: var(--red); color: var(--red); }
+    .card-vis-btn:hover { border-color: var(--black); color: var(--black); }
+    .card-del-btn {
+      padding: 0.3rem 0.7rem; font-family: inherit; font-size: 0.48rem; letter-spacing: 0.1em;
+      text-transform: uppercase; border: 1px solid transparent; background: transparent;
+      color: var(--dim); cursor: pointer; transition: all .15s; white-space: nowrap;
+    }
+    .card-del-btn:hover { border-color: var(--red); color: var(--red); }
+    .card-type-badge {
+      display: inline-block; font-size: 0.4rem; letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 0.1rem 0.35rem; border-radius: 2px; border: 1px solid currentColor;
+      margin-left: 0.4rem; vertical-align: middle; font-weight: 400;
+    }
+    .type-galerie { color: #2a7ae4; }
+    .type-collection { color: #9b59b6; }
+    .type-client  { color: #27ae60; }
+    .type-lien    { color: #e67e22; }
+    .type-page    { color: #7f8c8d; }
+    .type-vide    { color: #ccc; border-color: #eee; }
+    .pwd-status { font-size: 0.5rem; letter-spacing: 0.06em; color: var(--dim); white-space: nowrap; }
+    .pwd-status.set { color: var(--green); }
+    .card-pwd-row { background: #fafafa; border-radius: 2px; padding: 0.3rem 0; }
+
+    /* Formulaire ajout carte */
+    .add-card-form { margin-top: 1.5rem; padding: 1.2rem; border: 1px solid var(--line); background: #fafafa; }
+    .add-card-form h3 { font-size: 0.5rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); margin-bottom: 1rem; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; margin-bottom: 0.8rem; }
+    .form-field { display: flex; flex-direction: column; gap: 0.3rem; }
+    .form-field label { font-size: 0.48rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim); }
+    .form-input { padding: 0.55rem 0.7rem; border: 1px solid var(--line); font-family: inherit; font-size: 0.7rem; font-weight: 300; background: transparent; outline: none; transition: border-color .15s; width: 100%; }
+    .form-input:focus { border-color: var(--black); }
+    .form-full { grid-column: 1 / -1; }
+    .form-select { padding: 0.55rem 0.7rem; border: 1px solid var(--line); font-family: inherit; font-size: 0.7rem; font-weight: 300; background: var(--white); outline: none; width: 100%; cursor: pointer; }
+    .info-box { background: #f4f4f4; border-left: 2px solid var(--line); padding: 0.75rem 1rem; font-size: 0.65rem; color: var(--gray); line-height: 1.7; margin-bottom: 1.2rem; }
+
+    /* ── Bouton choisir image ── */
+    .pick-btn {
+      padding: 0.32rem 0.6rem; font-family: inherit; font-size: 0.46rem; letter-spacing: 0.1em;
+      text-transform: uppercase; border: 1px solid var(--line); background: transparent;
+      color: var(--dim); cursor: pointer; transition: all .15s; white-space: nowrap; flex-shrink: 0;
+    }
+    .pick-btn:hover { border-color: var(--black); color: var(--black); }
+
+    /* ── Modal sélecteur d'images ── */
+    #imgPickerOverlay {
+      display: none; position: fixed; inset: 0; background: rgba(10,10,10,.6);
+      z-index: 1000; align-items: center; justify-content: center;
+    }
+    #imgPickerOverlay.open { display: flex; }
+    #imgPickerModal {
+      background: var(--white); width: min(860px, 96vw); max-height: 88vh;
+      display: flex; flex-direction: column; overflow: hidden;
+    }
+    .picker-header {
+      display: flex; align-items: center; gap: 0.8rem;
+      padding: 1rem 1.4rem; border-bottom: 1px solid var(--line); flex-shrink: 0;
+    }
+    .picker-breadcrumb {
+      flex: 1; font-size: 0.58rem; letter-spacing: 0.08em; color: var(--dim);
+      display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;
+    }
+    .picker-breadcrumb span { cursor: pointer; transition: color .15s; }
+    .picker-breadcrumb span:hover { color: var(--black); }
+    .picker-breadcrumb .sep { color: var(--line); }
+    .picker-close {
+      background: none; border: none; cursor: pointer; font-size: 1.2rem;
+      color: var(--dim); line-height: 1; padding: 0.2rem; transition: color .15s;
+    }
+    .picker-close:hover { color: var(--black); }
+    /* Tabs source */
+    .picker-tabs { display: flex; border-bottom: 1px solid var(--line); flex-shrink: 0; }
+    .picker-tab {
+      padding: 0.6rem 1.2rem; font-family: inherit; font-size: 0.5rem; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--dim); cursor: pointer; border: none;
+      border-bottom: 2px solid transparent; background: none; transition: color .15s, border-color .15s;
+    }
+    .picker-tab:hover { color: var(--black); }
+    .picker-tab.active { color: var(--black); border-bottom-color: var(--black); }
+    .picker-body { flex: 1; overflow-y: auto; padding: 1rem 1.4rem; }
+    .picker-loading { font-size: 0.65rem; color: var(--dim); padding: 2rem 0; text-align: center; }
+    .picker-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 6px;
+    }
+    .picker-folder {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.55rem 0.7rem; border: 1px solid var(--line); cursor: pointer;
+      font-size: 0.65rem; font-weight: 300; transition: border-color .15s, background .15s;
+    }
+    .picker-folder:hover { border-color: var(--black); background: #f8f8f8; }
+    .picker-folder-icon { font-size: 0.9rem; }
+    .picker-img-item {
+      position: relative; cursor: pointer; overflow: hidden;
+      border: 2px solid transparent; transition: border-color .15s;
+    }
+    .picker-img-item:hover { border-color: var(--black); }
+    .picker-img-item img { width: 100%; aspect-ratio: 3/2; object-fit: cover; display: block; }
+    .picker-img-name {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: rgba(10,10,10,.6); color: #fff;
+      font-size: 0.42rem; padding: 0.2rem 0.35rem;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      opacity: 0; transition: opacity .15s;
+    }
+    .picker-img-item:hover .picker-img-name { opacity: 1; }
+    .picker-empty { font-size: 0.65rem; color: var(--dim); padding: 2rem 0; text-align: center; }
+
+    /* ── Onglet Photos ─────────────────────────────────── */
+    .pat-row { display: flex; gap: 0.6rem; align-items: center; margin-bottom: 1.5rem; padding: 0.8rem 1rem; background: #f7f7f7; border: 1px solid var(--line); }
+    .pat-label { font-size: 0.5rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); white-space: nowrap; }
+    .pat-input { flex: 1; padding: 0.45rem 0.6rem; border: 1px solid var(--line); font-family: inherit; font-size: 0.7rem; font-weight: 300; background: transparent; outline: none; transition: border-color .15s; }
+    .pat-input:focus { border-color: var(--black); }
+    .pat-status { font-size: 0.52rem; color: var(--dim); white-space: nowrap; }
+    .pat-status.ok { color: var(--green); }
+    .gallery-select { padding: 0.55rem 0.8rem; border: 1px solid var(--line); font-family: inherit; font-size: 0.75rem; font-weight: 300; background: var(--white); outline: none; cursor: pointer; min-width: 220px; margin-bottom: 1.5rem; }
+    .photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 6px; margin-bottom: 1.5rem; min-height: 60px; }
+    .photo-card { position: relative; cursor: grab; border: 2px solid transparent; transition: border-color .15s, opacity .15s; background: #f0f0f0; user-select: none; }
+    .photo-card:active { cursor: grabbing; }
+    .photo-card.drag-over-ph { border-color: var(--black); }
+    .photo-card.dragging-ph { opacity: 0.35; }
+    .photo-card img { width: 100%; aspect-ratio: 3/2; object-fit: cover; display: block; pointer-events: none; }
+    .ph-delete { position: absolute; top: 4px; right: 4px; width: 22px; height: 22px; background: rgba(10,10,10,.75); color: #fff; border: none; cursor: pointer; font-size: 1rem; line-height: 1; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity .15s; padding: 0; }
+    .photo-card:hover .ph-delete { opacity: 1; }
+    .ph-name { font-size: 0.42rem; padding: 0.25rem 0.35rem; color: var(--dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: var(--white); }
+    .ph-empty { font-size: 0.7rem; color: var(--dim); padding: 3rem 0; text-align: center; }
+    .ph-count { font-size: 0.52rem; color: var(--dim); letter-spacing: 0.08em; margin-bottom: 0.8rem; }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <a href="index.html" title="Retour au site"><img src="assets/logo-b.svg" class="header-logo" alt="B"></a>
+  <span class="header-title">Administration</span>
+  <button class="header-logout" id="logoutBtn" style="display:none" onclick="logout()">Déconnexion</button>
+</header>
+
+<!-- ── Modal sélecteur d'images ── -->
+<div id="imgPickerOverlay" onclick="if(event.target===this)closePicker()">
+  <div id="imgPickerModal">
+    <div class="picker-header">
+      <div class="picker-breadcrumb" id="pickerBreadcrumb"></div>
+      <button class="picker-close" onclick="closePicker()">✕</button>
+    </div>
+    <div class="picker-tabs" id="pickerTabs" style="display:none">
+      <button class="picker-tab active" id="pickerTabGh"     onclick="switchPickerTab('github')">Images du site</button>
+      <button class="picker-tab"        id="pickerTabPcloud" onclick="switchPickerTab('pcloud')">Photos client (pCloud)</button>
+    </div>
+    <div class="picker-body" id="pickerBody">
+      <div class="picker-loading">Chargement…</div>
+    </div>
+  </div>
+</div>
+
+<div id="gate" style="display:none">
+  <p class="gate-title">Accès administration</p>
+  <input type="password" id="pwdInput" class="gate-input" placeholder="Mot de passe" autocomplete="current-password">
+  <button class="gate-btn" onclick="checkPassword()">Entrer</button>
+  <p class="gate-error" id="gateError" style="display:none">Mot de passe incorrect.</p>
+</div>
+
+<div id="app" style="display:none">
+  <div class="status-banner">
+    <span class="status-dot" id="statusDot"></span>
+    <span id="statusText">Connexion…</span>
+  </div>
+
+  <div class="admin-wrap">
+    <div class="admin-tabs">
+      <button class="admin-tab active" data-tab="cartes"      onclick="switchTab('cartes')">Cartes &amp; galeries</button>
+      <button class="admin-tab"        data-tab="visibility"  onclick="switchTab('visibility')">Visibilité menu</button>
+      <button class="admin-tab"        data-tab="photos"      onclick="switchTab('photos')">Photos</button>
+      <button class="admin-tab"        data-tab="cartons"     onclick="switchTab('cartons')">Cartons</button>
+      <button class="admin-tab"        data-tab="highlights"  onclick="switchTab('highlights')">Highlights</button>
+    </div>
+
+    <!-- ── TAB : Cartes ── -->
+    <div class="tab-panel active" id="tab-cartes">
+      <p class="admin-section-desc">
+        Modifie directement titre, label, description et image de couverture de chaque carte.
+        Clique sur <strong>Enregistrer</strong> à droite de la carte pour sauvegarder.
+        Les changements sont immédiats sur le site, et persistent même quand Claude met à jour le code.
+      </p>
+      <div id="cardSections">
+        <!-- Généré dynamiquement -->
+      </div>
+
+      <div class="add-card-form">
+        <h3>Ajouter une nouvelle carte</h3>
+        <div class="info-box">
+          Crée ici une carte vide dans une section. Elle s'affichera sur le site.
+          Quand les photos sont prêtes (dossier pCloud), donne-moi le lien et j'intègre les images.
+        </div>
+        <div class="form-grid">
+          <div class="form-field"><label>Titre</label><input class="form-input" id="nc-title" placeholder="ex. Plougasnou"></div>
+          <div class="form-field"><label>Label (petite ligne)</label><input class="form-input" id="nc-label" placeholder="ex. Finistère · Bretagne"></div>
+          <div class="form-field"><label>Description courte</label><input class="form-input" id="nc-desc" placeholder="ex. Série documentaire"></div>
+          <div class="form-field">
+            <label>Section</label>
+            <select class="form-select" id="nc-section">
+              <option value="photographe">Photographe</option>
+              <option value="realisateur">Réalisateur</option>
+              <option value="boutique">Boutique</option>
+              <option value="galeries-client">Galeries Client</option>
+            </select>
+          </div>
+          <div class="form-field form-full">
+            <label>Image de couverture</label>
+            <div style="display:flex;gap:0.5rem;align-items:center">
+              <input class="form-input" id="nc-img" placeholder="ex. images/mon-dossier/photo-01.jpg" style="flex:1">
+              <button class="pick-btn" onclick="openPickerForNew()" style="padding:0.55rem 0.8rem">Choisir…</button>
+            </div>
+          </div>
+          <div class="form-field form-full"><label>Lien au clic (laisser vide si pas encore de contenu)</label><input class="form-input" id="nc-url" placeholder="ex. clients/plougasnou.html  ou  laisser vide"></div>
+        </div>
+        <button class="btn btn-dark" onclick="addCard()">Ajouter la carte</button>
+        <span class="feedback" id="addCardFb" style="margin-left:1rem"></span>
+      </div>
+    </div>
+
+    <!-- ── TAB : Visibilité ── -->
+    <div class="tab-panel" id="tab-visibility">
+      <p class="admin-section-desc">Active ou désactive chaque section du menu principal.</p>
+      <div id="toggleList"></div>
+      <div class="save-wrap">
+        <button class="btn btn-dark" id="saveVisBtn" onclick="saveVisibility()" disabled>Enregistrer</button>
+        <a href="index.html" class="preview-link">← Voir le site</a>
+        <span class="feedback" id="visFeedback"></span>
+      </div>
+    </div>
+
+    <!-- ── TAB : Photos ── -->
+    <div class="tab-panel" id="tab-photos">
+      <p class="admin-section-desc">
+        Supprime ou réordonne les photos d'une galerie. Glisser-déposer pour changer l'ordre, × pour supprimer.
+        Les modifications sont publiées sur le site après sauvegarde (déploiement ~1 min).
+      </p>
+
+
+      <!-- Sélecteur galerie -->
+      <select class="gallery-select" id="gallerySelect" onchange="loadPhotoGallery(this.value)">
+        <option value="">— Choisir une galerie —</option>
+      </select>
+
+      <!-- Grille photos -->
+      <div id="phGalleryContent">
+        <div class="ph-empty">Sélectionne une galerie ci-dessus.</div>
+      </div>
+
+      <!-- Actions -->
+      <div class="save-wrap" id="phSaveWrap" style="display:none">
+        <button class="btn btn-dark" id="phSaveBtn" onclick="savePhotoOrder()">Publier sur GitHub</button>
+        <span class="feedback" id="phFeedback"></span>
+        <a href="index.html" class="preview-link" target="_blank">Voir le site →</a>
+      </div>
+    </div>
+
+    <!-- ── TAB : Cartons ── -->
+    <div class="tab-panel" id="tab-cartons">
+      <p class="admin-section-desc">
+        Modifie le texte affiché dans chaque carton de galerie.
+        Le fichier <code style="font-size:.65rem;background:#f4f4f4;padding:.1rem .3rem">content/cartons/[galerie].txt</code> est mis à jour sur GitHub directement.
+        Le site se met à jour dans ~1 min après publication.
+      </p>
+
+      <select class="gallery-select" id="cartonSelect" onchange="loadCartonForm(this.value)">
+        <option value="">— Choisir une galerie —</option>
+      </select>
+
+      <div id="cartonFormWrap" style="display:none">
+        <div class="form-grid" style="margin-bottom:1rem">
+          <div class="form-field">
+            <label>Catégorie (FR) <span style="color:var(--dim);font-size:.55rem;letter-spacing:.05em">— petit label gris au-dessus du titre</span></label>
+            <input class="form-input" id="ct-cat-fr" placeholder="ex. Santé mentale · Morlaix">
+          </div>
+          <div class="form-field">
+            <label>Catégorie (EN)</label>
+            <input class="form-input" id="ct-cat-en" placeholder="ex. Mental health · Morlaix">
+          </div>
+          <div class="form-field">
+            <label>Titre (FR)</label>
+            <input class="form-input" id="ct-title-fr" placeholder="ex. GEM">
+          </div>
+          <div class="form-field">
+            <label>Titre (EN)</label>
+            <input class="form-input" id="ct-title-en">
+          </div>
+          <div class="form-field">
+            <label>Sous-titre (FR)</label>
+            <input class="form-input" id="ct-sub-fr">
+          </div>
+          <div class="form-field">
+            <label>Sous-titre (EN)</label>
+            <input class="form-input" id="ct-sub-en">
+          </div>
+          <div class="form-field form-full">
+            <label>Texte principal (FR) <span style="color:var(--dim);font-size:.55rem;letter-spacing:.05em">— sauter une ligne = nouveau paragraphe</span></label>
+            <textarea class="form-input" id="ct-desc-fr" rows="7" style="resize:vertical;line-height:1.6"></textarea>
+          </div>
+          <div class="form-field form-full">
+            <label>Texte principal (EN)</label>
+            <textarea class="form-input" id="ct-desc-en" rows="7" style="resize:vertical;line-height:1.6"></textarea>
+          </div>
+          <div class="form-field">
+            <label>Bouton lien — texte <span style="color:var(--dim);font-size:.55rem">(FR et EN)</span></label>
+            <input class="form-input" id="ct-cta-label" placeholder="ex. En savoir plus →">
+          </div>
+          <div class="form-field">
+            <label>Bouton lien — URL</label>
+            <input class="form-input" id="ct-cta-url" placeholder="https://… ou clients/plougasnou.html">
+          </div>
+          <div class="form-field">
+            <label>Colonne gauche (FR) <span style="color:var(--dim);font-size:.55rem">— texte latéral court</span></label>
+            <input class="form-input" id="ct-sidebar-fr">
+          </div>
+          <div class="form-field">
+            <label>Colonne gauche (EN)</label>
+            <input class="form-input" id="ct-sidebar-en">
+          </div>
+        </div>
+
+        <div id="ctDeletedBanner" style="display:none;padding:.6rem 1rem;background:#fef0f0;border:1px solid #c41e1e;font-size:.65rem;color:#c41e1e;margin-bottom:.8rem">
+          ⚠ Ce carton est actuellement <strong>supprimé</strong> — il ne s'affiche pas sur le site.
+          <button onclick="restoreCarton()" style="margin-left:.8rem;font-size:.6rem;font-family:inherit;padding:.2rem .5rem;border:1px solid #c41e1e;background:transparent;color:#c41e1e;cursor:pointer">Restaurer</button>
+        </div>
+        <div class="save-wrap">
+          <button class="btn btn-dark" id="ctSaveBtn" onclick="saveCartonTxt()">Publier sur GitHub</button>
+          <button class="btn-outline btn" id="ctDeleteBtn" onclick="deleteCarton()" style="border-color:#c41e1e;color:#c41e1e;margin-left:.5rem">Supprimer le carton</button>
+          <span class="feedback" id="ctFeedback"></span>
+          <span id="ctLoadingMsg" style="font-size:.62rem;color:var(--dim)"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB : Highlights ── -->
+    <div class="tab-panel" id="tab-highlights">
+      <p class="admin-section-desc">
+        Sélectionne les photos affichées publiquement en teaser sur la page d'une galerie client.
+        Clique sur une photo pour la sélectionner/désélectionner, puis <strong>Enregistrer</strong>.
+      </p>
+
+      <select class="gallery-select" id="hlGallerySelect" onchange="loadHlGallery(this.value)">
+        <option value="">— Choisir une galerie —</option>
+      </select>
+
+      <div id="hlStatus" style="font-size:.65rem;color:var(--dim);margin:.5rem 0"></div>
+
+      <div id="hlGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin-top:1rem"></div>
+
+      <div class="save-wrap" id="hlSaveWrap" style="display:none;margin-top:1.5rem">
+        <button class="btn btn-dark" onclick="saveHighlights()">Enregistrer</button>
+        <span id="hlCount" style="font-size:.65rem;color:var(--dim);margin-left:1rem"></span>
+        <span class="feedback" id="hlFeedback" style="margin-left:1rem"></span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const SUPA_URL = 'https://suecslynruuputmujudg.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN1ZWNzbHlucnV1cHV0bXVqdWRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY1MTYyODcsImV4cCI6MjA5MjA5MjI4N30.c9Pa_x6MEcJdqVekBodSYpu3it-riVU1hYhC-m5iCsU';
+const PWD_HASH = 'fd8faf112b549a3c0ace23b2b0c25171195a07494895830426b5cece2ba3796b';
+const PREFIX   = {
+    photographe: 'ph', realisateur: 'real', boutique: 'shop', 'galeries-client': 'client',
+    'ph-portrait': 'ph', 'ph-reportage': 'ph', 'ph-series': 'ph',
+    'ph-exposition': 'ph', 'ph-clients': 'ph',
+};
+const SEC_NAME = {
+    photographe:      'PHOTOGRAPHE',
+    'ph-portrait':    '↳ Portrait',
+    'ph-reportage':   '↳ Reportage',
+    'ph-series':      '↳ Séries',
+    'ph-exposition':  '↳ Exposition',
+    'ph-clients':     '↳ Galeries clients',
+    realisateur:      'RÉALISATEUR',
+    boutique:         'BOUTIQUE',
+};
+
+let dbCards      = {};  // id → row Supabase gallery_cards
+let visState     = {};  // id → boolean (section_visibility)
+let dynamicSecs  = [];  // liste pour onglet visibilité
+
+// ── Auth ─────────────────────────────────────────────────────────────────────
+async function sha256(m) {
+  const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(m));
+  return Array.from(new Uint8Array(b)).map(x => x.toString(16).padStart(2,'0')).join('');
+}
+async function checkPassword() {
+  const h = await sha256(document.getElementById('pwdInput').value);
+  if (h === PWD_HASH) { sessionStorage.setItem('bb_admin','1'); showApp(); }
+  else document.getElementById('gateError').style.display = '';
+}
+function logout() { sessionStorage.removeItem('bb_admin'); location.reload(); }
+
+function showApp() {
+  document.getElementById('gate').style.display = 'none';
+  document.getElementById('app').style.display  = 'flex';
+  document.getElementById('logoutBtn').style.display = '';
+  loadAll();
+}
+
+// ── Tabs ─────────────────────────────────────────────────────────────────────
+let photosTabInited     = false;
+let cartonsTabInited    = false;
+let highlightsTabInited = false;
+function switchTab(name) {
+  document.querySelectorAll('.admin-tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.tab === name);
+  });
+  document.querySelectorAll('.tab-panel').forEach(p => {
+    p.classList.toggle('active', p.id === `tab-${name}`);
+  });
+  if (name === 'photos' && !photosTabInited) {
+    photosTabInited = true;
+    initPhotosTab();
+  }
+  if (name === 'cartons' && !cartonsTabInited) {
+    cartonsTabInited = true;
+    initCartonsTab();
+  }
+  if (name === 'highlights' && !highlightsTabInited) {
+    highlightsTabInited = true;
+    initHighlightsTab();
+  }
+}
+
+// ── Supabase ─────────────────────────────────────────────────────────────────
+async function sb(path, opts = {}) {
+  return fetch(`${SUPA_URL}/rest/v1/${path}`, {
+    ...opts,
+    headers: { apikey: SUPA_KEY, Authorization: `Bearer ${SUPA_KEY}`,
+      'Content-Type': 'application/json', 'Prefer': 'return=representation', ...(opts.headers||{}) }
+  });
+}
+
+async function loadAll() {
+  const dot = document.getElementById('statusDot');
+  const txt = document.getElementById('statusText');
+  try {
+    // Charger gallery_cards
+    const r1 = await sb('gallery_cards?select=*&order=sort_order.asc');
+    if (!r1.ok) throw new Error('gallery_cards inaccessible');
+    const cards = await r1.json();
+    cards.forEach(c => { dbCards[c.id] = c; });
+
+    // Charger section_visibility
+    const r2 = await sb('section_visibility?select=id,visible');
+    if (r2.ok) { const rows = await r2.json(); rows.forEach(r => { visState[r.id] = r.visible; }); }
+
+    dot.className = 'status-dot ok';
+    txt.textContent = 'Connecté — modifications effectives immédiatement';
+
+    renderCards();
+    renderVisibility();
+    document.getElementById('saveVisBtn').disabled = false;
+
+    /* ── Migration : corriger la hiérarchie galeries client ─────────────────
+       S'exécute une seule fois (flag localStorage). Fixe les valeurs Supabase
+       pour les 3 cartes de la sous-galerie "Galeries Client". */
+    if (!localStorage.getItem('bb_migration_galeries_v2')) {
+      await migrateGaleriesClient();
+    }
+  } catch(e) {
+    dot.className = 'status-dot err';
+    txt.textContent = `Erreur : ${e.message}`;
+  }
+}
+
+async function migrateGaleriesClient() {
+  const fixes = [
+    { id: 'ph-plougasnou',   section: 'photographe', title_fr: 'Plougasnou',    label_fr: 'Finistère · Bretagne',    desc_fr: 'Galerie client',           parent_id: 'ph-galeries-client', visible: true,  sort_order: 10, link_url: 'clients/plougasnou.html',   updated_at: new Date().toISOString() },
+    { id: 'ph-gilmerton',    section: 'photographe', title_fr: 'Gilmerton',     label_fr: 'Galerie privée',          desc_fr: 'Sélection · accès protégé', parent_id: 'ph-galeries-client', visible: false, sort_order: 20, link_url: 'clients/gilmerton.html',    updated_at: new Date().toISOString() },
+    { id: 'ph-leo-brasserie',section: 'photographe', title_fr: 'Léo Brasserie', label_fr: 'Galerie privée',          desc_fr: 'Sélection · accès protégé', parent_id: 'ph-galeries-client', visible: false, sort_order: 30, link_url: 'clients/leo-brasserie.html', updated_at: new Date().toISOString() },
+  ];
+  try {
+    const res = await sb('gallery_cards', {
+      method: 'POST',
+      headers: { 'Prefer': 'resolution=merge-duplicates,return=minimal' },
+      body: JSON.stringify(fixes)
+    });
+    if (res.ok) {
+      localStorage.setItem('bb_migration_galeries_v2', '1');
+      /* Recharger les cartes en mémoire pour refléter la migration */
+      const r = await sb('gallery_cards?select=*&order=sort_order.asc');
+      if (r.ok) { const cards = await r.json(); dbCards = {}; cards.forEach(c => { dbCards[c.id] = c; }); renderCards(); }
+    }
+  } catch(e) { console.warn('Migration galeries-client:', e); }
+}
+
+// ── Rendu cartes ─────────────────────────────────────────────────────────────
+function renderCards() {
+  const wrap = document.getElementById('cardSections');
+
+  // Pour chaque section, fusionner cartes gallery-data.js + cartes Supabase non présentes
+  const allBySec = { photographe: [], realisateur: [], boutique: [], 'galeries-client': [] };
+
+  for (const secId in SECTIONS_CONFIG) {
+    if (!allBySec[secId]) allBySec[secId] = [];
+    const prefix = PREFIX[secId] || secId;
+    SECTIONS_CONFIG[secId].cards.forEach(card => {
+      const dbId  = `${prefix}-${card.id}`;
+      const dbRow = dbCards[dbId] || {};
+      /* Dériver le type de carte pour l'affichage dans l'admin */
+      const cardUrl = dbRow.link_url || card.url || null;
+      let cardType = 'vide';
+      if (card.galleryId)                          cardType = 'galerie';
+      else if (cardUrl && cardUrl.includes('clients/')) cardType = 'client';
+      else if (cardUrl)                            cardType = 'lien';
+      else if (card.pageId)                        cardType = 'page';
+
+      allBySec[secId].push({
+        dbId,
+        secId,
+        titleFr:   dbRow.title_fr   || card.titleFr || '',
+        labelFr:   dbRow.label_fr   || card.labelFr || '',
+        descFr:    dbRow.desc_fr    || card.descFr  || '',
+        descEn:    dbRow.desc_en    || '',
+        coverImg:  dbRow.cover_img  || card.img     || '',
+        parentId:  dbRow.parent_id  || card.parentId || null,
+        /* Bug fix : respecter _hiddenByAdmin du JS statique comme valeur par défaut */
+        visible:   dbRow.visible !== undefined ? dbRow.visible : !card._hiddenByAdmin,
+        sortOrder: dbRow.sort_order ?? 999,
+        cardType,
+      });
+    });
+  }
+
+  // Injecter cartes Supabase inconnues de gallery-data.js
+  Object.values(dbCards).forEach(row => {
+    const sec = row.section;
+    if (!allBySec[sec]) return;
+    const known = SECTIONS_CONFIG[sec]?.cards?.some(c => `${PREFIX[sec]||sec}-${c.id}` === row.id);
+    if (!known) {
+      allBySec[sec].push({ dbId: row.id, secId: sec, titleFr: row.title_fr||'', labelFr: row.label_fr||'', descFr: row.desc_fr||'', descEn: row.desc_en||'', coverImg: row.cover_img||'', parentId: row.parent_id||null, visible: row.visible!==false, sortOrder: row.sort_order??999, _supabase: true });
+    }
+  });
+
+  wrap.innerHTML = Object.entries(allBySec).map(([secId, cards]) => {
+    if (!cards.length) return '';
+    const sorted = [...cards].sort((a,b) => a.sortOrder - b.sortOrder);
+    return `
+      <div class="section-group" data-sec="${secId}">
+        <div class="section-group-title">${SEC_NAME[secId] || secId}</div>
+        ${sorted.map(c => cardRowHtml(c, sorted)).join('')}
+      </div>`;
+  }).join('');
+
+  // Attacher les événements drag-and-drop
+  attachDragHandlers();
+}
+
+function cardRowHtml(c, siblings) {
+  const vis   = c.visible !== false;
+  const thumb = c.coverImg
+    ? `<img class="card-thumb" src="${c.coverImg}" alt="" loading="lazy" onerror="this.style.opacity='.2'">`
+    : `<div class="card-thumb-placeholder"></div>`;
+
+  /* Badge type de carte */
+  const isParent = (siblings || []).some(s => s.parentId === c.dbId);
+  const badgeType = isParent ? 'collection' : (c.cardType || 'vide');
+  const badgeLabel = { galerie: 'Photos', collection: 'Collection', client: 'Client', lien: 'Lien', page: 'Page', vide: '—' }[badgeType] || badgeType;
+  const typeBadge = `<span class="card-type-badge type-${badgeType}">${badgeLabel}</span>`;
+
+  const isPrivate = c.parentId === 'ph-galeries-client';
+  const hasPwd    = isPrivate && /^[a-f0-9]{64}$/i.test(c.descEn || '');
+
+  // Options pour "Sous-galerie de" : toutes les autres cartes de même section
+  const parentOpts = `<option value="">— aucune —</option>` +
+    (siblings || [])
+      .filter(s => s.dbId !== c.dbId)
+      .map(s => `<option value="${s.dbId}" ${c.parentId === s.dbId ? 'selected' : ''}>${esc(s.titleFr || s.dbId)}</option>`)
+      .join('');
+
+  return `
+    <div class="card-row" id="row-${c.dbId}" draggable="true" data-id="${c.dbId}" data-sec="${c.secId||''}">
+      <div class="drag-handle" title="Glisser pour réordonner">⠿</div>
+      ${thumb}
+      <div class="card-fields">
+        <div class="card-field-row">
+          <span class="field-label">Titre ${typeBadge}</span>
+          <input class="field-input title" id="f-title-${c.dbId}" value="${esc(c.titleFr)}" placeholder="Titre de la carte">
+        </div>
+        <div class="card-field-row">
+          <span class="field-label">Label</span>
+          <input class="field-input" id="f-label-${c.dbId}" value="${esc(c.labelFr)}" placeholder="Ex. Studio · Terrain">
+        </div>
+        <div class="card-field-row">
+          <span class="field-label">Description</span>
+          <input class="field-input" id="f-desc-${c.dbId}" value="${esc(c.descFr)}" placeholder="Courte description">
+        </div>
+        ${isPrivate ? `<div class="card-field-row card-pwd-row">
+          <span class="field-label">Mot de passe</span>
+          <input type="password" class="field-input" id="f-pwd-${c.dbId}" placeholder="Nouveau mot de passe…" autocomplete="new-password" style="flex:1">
+          <button class="pick-btn" onclick="saveCardPwd('${c.dbId}')">Définir</button>
+          <span id="pwd-status-${c.dbId}" class="pwd-status ${hasPwd ? 'set' : ''}">${hasPwd ? '● Défini' : '○ Non défini'}</span>
+        </div>` : ''}
+        <div class="card-field-row">
+          <span class="field-label">Couverture</span>
+          <input class="field-input" id="f-img-${c.dbId}" value="${esc(c.coverImg)}" placeholder="images/dossier/photo.jpg"
+            onchange="updateThumb('${c.dbId}', this.value)">
+          <button class="pick-btn" onclick="openPicker('${c.dbId}')">Choisir…</button>
+        </div>
+        <div class="card-field-row">
+          <span class="field-label">Parent</span>
+          <select class="field-input" id="f-parent-${c.dbId}" style="padding:0.3rem 0.4rem;font-size:0.65rem">
+            ${parentOpts}
+          </select>
+        </div>
+      </div>
+      <div class="card-actions">
+        <button class="card-save-btn" onclick="saveCard('${c.dbId}')">Enregistrer</button>
+        <button class="card-vis-btn ${vis ? '' : 'hidden-card'}" id="vis-${c.dbId}"
+          onclick="toggleCardVis('${c.dbId}', ${vis})">
+          ${vis ? 'Visible' : 'Masquée'}
+        </button>
+        <button class="card-del-btn" onclick="deleteCard('${c.dbId}')">Supprimer</button>
+      </div>
+    </div>`;
+}
+
+// ── Drag-and-drop pour réordonner ────────────────────────────────────────────
+let dragSrcId = null;
+
+function attachDragHandlers() {
+  document.querySelectorAll('.card-row[draggable]').forEach(row => {
+    row.addEventListener('dragstart', e => {
+      dragSrcId = row.dataset.id;
+      e.dataTransfer.effectAllowed = 'move';
+      row.style.opacity = '0.4';
+    });
+    row.addEventListener('dragend', () => {
+      dragSrcId = null;
+      row.style.opacity = '';
+      document.querySelectorAll('.card-row.drag-over').forEach(r => r.classList.remove('drag-over'));
+    });
+    row.addEventListener('dragover', e => {
+      if (!dragSrcId || dragSrcId === row.dataset.id) return;
+      // Only allow drop within same section
+      const srcRow = document.getElementById(`row-${dragSrcId}`);
+      if (srcRow?.dataset.sec !== row.dataset.sec) return;
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      document.querySelectorAll('.card-row.drag-over').forEach(r => r.classList.remove('drag-over'));
+      row.classList.add('drag-over');
+    });
+    row.addEventListener('dragleave', () => row.classList.remove('drag-over'));
+    row.addEventListener('drop', async e => {
+      e.preventDefault();
+      row.classList.remove('drag-over');
+      if (!dragSrcId || dragSrcId === row.dataset.id) return;
+      const srcRow = document.getElementById(`row-${dragSrcId}`);
+      if (!srcRow || srcRow.dataset.sec !== row.dataset.sec) return;
+
+      const group = row.closest('.section-group');
+      if (!group) return;
+
+      // Réordonner dans le DOM
+      const allRows = [...group.querySelectorAll('.card-row')];
+      const srcIdx  = allRows.indexOf(srcRow);
+      const tgtIdx  = allRows.indexOf(row);
+      if (srcIdx < 0 || tgtIdx < 0) return;
+
+      if (srcIdx < tgtIdx) row.after(srcRow);
+      else row.before(srcRow);
+
+      // Recalculer et sauvegarder le sort_order
+      await saveSortOrder(group);
+    });
+  });
+}
+
+async function saveSortOrder(group) {
+  const rows   = [...group.querySelectorAll('.card-row')];
+  const secId  = group.dataset.sec;
+  const updates = rows.map((r, i) => ({
+    id: r.dataset.id,
+    section: secId,
+    sort_order: (i + 1) * 10,
+    updated_at: new Date().toISOString()
+  }));
+
+  // Mettre à jour dbCards localement
+  updates.forEach(u => {
+    if (dbCards[u.id]) dbCards[u.id].sort_order = u.sort_order;
+    else dbCards[u.id] = { id: u.id, section: secId, sort_order: u.sort_order };
+  });
+
+  try {
+    const res = await sb('gallery_cards', {
+      method: 'POST',
+      headers: { 'Prefer': 'resolution=merge-duplicates,return=minimal' },
+      body: JSON.stringify(updates)
+    });
+    if (!res.ok) console.error('Erreur tri:', await res.text());
+  } catch(e) { console.error('Erreur tri:', e); }
+}
+
+function esc(s) { return (s||'').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+
+function updateThumb(dbId, src) {
+  const row = document.getElementById(`row-${dbId}`);
+  if (!row) return;
+  const existing = row.querySelector('.card-thumb, .card-thumb-placeholder');
+  if (src) {
+    const img = document.createElement('img');
+    img.className = 'card-thumb'; img.src = src; img.alt = '';
+    img.onerror = () => img.style.opacity = '.2';
+    existing.replaceWith(img);
+  }
+}
+
+async function saveCard(dbId) {
+  const btn = document.querySelector(`#row-${dbId} .card-save-btn`);
+  btn.textContent = '…'; btn.className = 'card-save-btn saving';
+
+  const parentVal = document.getElementById(`f-parent-${dbId}`)?.value || '';
+  const row = {
+    id:        dbId,
+    section:   dbId.startsWith('ph-') ? 'photographe' : dbId.startsWith('real-') ? 'realisateur' : dbId.startsWith('client-') ? 'galeries-client' : 'boutique',
+    title_fr:  document.getElementById(`f-title-${dbId}`).value,
+    label_fr:  document.getElementById(`f-label-${dbId}`).value,
+    desc_fr:   document.getElementById(`f-desc-${dbId}`).value,
+    cover_img: document.getElementById(`f-img-${dbId}`).value,
+    parent_id: parentVal || null,
+    visible:   dbCards[dbId]?.visible !== false,
+    updated_at: new Date().toISOString()
+  };
+
+  try {
+    const res = await sb('gallery_cards', {
+      method: 'POST',
+      headers: { 'Prefer': 'resolution=merge-duplicates,return=minimal' },
+      body: JSON.stringify([row])
+    });
+    if (!res.ok) throw new Error(await res.text());
+    dbCards[dbId] = { ...(dbCards[dbId]||{}), ...row };
+    btn.textContent = '✓ Sauvegardé'; btn.className = 'card-save-btn saved';
+    setTimeout(() => { btn.textContent = 'Enregistrer'; btn.className = 'card-save-btn'; }, 2500);
+    // Mettre à jour l'aperçu miniature
+    updateThumb(dbId, row.cover_img);
+  } catch(e) {
+    btn.textContent = 'Erreur'; btn.className = 'card-save-btn';
+    console.error(e);
+  }
+}
+
+async function saveCardPwd(dbId) {
+  const input = document.getElementById(`f-pwd-${dbId}`);
+  const btn   = input?.parentElement?.querySelector('button');
+  const pwd = input?.value?.trim();
+  if (!pwd) { alert('Entrez un mot de passe avant de cliquer sur Définir.'); return; }
+
+  /* Hachage SHA-256 côté client */
+  const buf  = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pwd));
+  const hash = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+
+  if (btn) { btn.textContent = '…'; btn.disabled = true; }
+
+  const row = {
+    id:         dbId,
+    section:    dbId.startsWith('ph-') ? 'photographe' : dbId.startsWith('real-') ? 'realisateur' : dbId.startsWith('client-') ? 'galeries-client' : 'boutique',
+    desc_en:    hash,
+    updated_at: new Date().toISOString()
+  };
+  try {
+    const res = await sb('gallery_cards', {
+      method: 'POST',
+      headers: { 'Prefer': 'resolution=merge-duplicates,return=minimal' },
+      body: JSON.stringify([row])
+    });
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error(errText);
+    }
+    dbCards[dbId] = { ...(dbCards[dbId]||{}), desc_en: hash };
+    const status = document.getElementById(`pwd-status-${dbId}`);
+    if (status) { status.textContent = '● Défini'; status.className = 'pwd-status set'; }
+    input.value = '';
+    if (btn) { btn.textContent = '✓ OK'; btn.style.color = 'var(--green)'; btn.disabled = false; setTimeout(() => { btn.textContent = 'Définir'; btn.style.color = ''; }, 2500); }
+  } catch(e) {
+    console.error('saveCardPwd:', e);
+    alert(`Erreur lors de la sauvegarde du mot de passe :\n${e.message}`);
+    if (btn) { btn.textContent = 'Définir'; btn.disabled = false; }
+  }
+}
+
+async function toggleCardVis(dbId, currentlyVisible) {
+  const newVis = !currentlyVisible;
+  const row = { id: dbId, section: dbCards[dbId]?.section || 'photographe', visible: newVis, updated_at: new Date().toISOString() };
+  try {
+    const res = await sb('gallery_cards', {
+      method: 'POST',
+      headers: { 'Prefer': 'resolution=merge-duplicates,return=minimal' },
+      body: JSON.stringify([row])
+    });
+    if (!res.ok) throw new Error();
+    dbCards[dbId] = { ...(dbCards[dbId]||{}), ...row };
+    const btn = document.getElementById(`vis-${dbId}`);
+    btn.textContent = newVis ? 'Visible' : 'Masquée';
+    btn.className   = newVis ? 'card-vis-btn' : 'card-vis-btn hidden-card';
+    // Mettre à jour l'attribut onclick pour refléter le nouvel état
+    btn.onclick = () => toggleCardVis(dbId, newVis);
+  } catch(e) { console.error(e); }
+}
+
+// ── Supprimer une carte ───────────────────────────────────────────────────────
+async function deleteCard(dbId) {
+  const title = document.getElementById(`f-title-${dbId}`)?.value || dbId;
+  if (!confirm(`Supprimer "${title}" ?\n\nCette carte sera effacée de Supabase.\nSi elle est définie dans le code du site, elle réapparaîtra au prochain déploiement.`)) return;
+  try {
+    const res = await sb(`gallery_cards?id=eq.${encodeURIComponent(dbId)}`, {
+      method: 'DELETE',
+      headers: { 'Prefer': 'return=minimal' }
+    });
+    if (!res.ok) throw new Error(await res.text());
+    delete dbCards[dbId];
+    document.getElementById(`row-${dbId}`)?.remove();
+  } catch(e) { alert('Erreur suppression : ' + e.message); }
+}
+
+// ── Ajouter une carte ─────────────────────────────────────────────────────────
+async function addCard() {
+  const title   = document.getElementById('nc-title').value.trim();
+  const label   = document.getElementById('nc-label').value.trim();
+  const desc    = document.getElementById('nc-desc').value.trim();
+  const section = document.getElementById('nc-section').value;
+  const img     = document.getElementById('nc-img').value.trim();
+  const url     = document.getElementById('nc-url').value.trim();
+  const fb      = document.getElementById('addCardFb');
+
+  if (!title) { showFb(fb, 'Un titre est requis.', true); return; }
+
+  // Générer un id à partir du titre
+  const slug = title.toLowerCase()
+    .normalize('NFD').replace(/[̀-ͯ]/g,'')
+    .replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+  const prefix = PREFIX[section] || section;
+  const id     = `${prefix}-${slug}`;
+
+  if (dbCards[id]) { showFb(fb, 'Une carte avec cet ID existe déjà.', true); return; }
+
+  const row = {
+    id, section,
+    title_fr:  title, label_fr: label, desc_fr: desc,
+    cover_img: img || null, link_url: url || null,
+    visible: true, sort_order: 900,
+    updated_at: new Date().toISOString()
+  };
+
+  try {
+    const res = await sb('gallery_cards', {
+      method: 'POST',
+      headers: { 'Prefer': 'resolution=merge-duplicates,return=minimal' },
+      body: JSON.stringify([row])
+    });
+    if (!res.ok) throw new Error(await res.text());
+    dbCards[id] = row;
+    showFb(fb, '✓ Carte ajoutée — rechargez le site pour la voir', false);
+    ['nc-title','nc-label','nc-desc','nc-img','nc-url'].forEach(i => document.getElementById(i).value = '');
+    renderCards();
+  } catch(e) {
+    showFb(fb, `Erreur : ${e.message}`, true);
+  }
+}
+
+function showFb(el, msg, isErr) {
+  el.textContent = msg;
+  el.className   = `feedback visible${isErr?' err':''}`;
+  if (!isErr) setTimeout(() => { el.className = 'feedback'; }, 4000);
+}
+
+// ── Visibilité menu ────────────────────────────────────────────────────────────
+function buildDynamicSecs() {
+  /* Uniquement les items top-level du menu (pas hidden, pas sous-item d'un parent)
+     Les cartes individuelles sont gérées dans "Cartes & galeries" — pas ici. */
+  const list = [];
+  MENU_CONFIG.forEach(item => {
+    if (item.hidden || item.parent) return;
+    list.push({ id: item.id, label: item.name, parent: false });
+  });
+  return list;
+}
+
+function renderVisibility() {
+  dynamicSecs = buildDynamicSecs();
+  const list  = document.getElementById('toggleList');
+  list.innerHTML = dynamicSecs.map(s => {
+    const checked = visState[s.id] !== false;
+    return `
+      <div class="toggle-row">
+        <span class="toggle-label${s.parent?' child':''}">${s.label}</span>
+        <label class="toggle-switch">
+          <input type="checkbox" ${checked?'checked':''} onchange="visState['${s.id}']=this.checked">
+          <span class="toggle-track"></span>
+        </label>
+      </div>`;
+  }).join('');
+}
+
+async function saveVisibility() {
+  const btn = document.getElementById('saveVisBtn');
+  const fb  = document.getElementById('visFeedback');
+  btn.disabled = true;
+  showFb(fb, 'Enregistrement…', false);
+
+  const rows = dynamicSecs.map(s => ({
+    id: s.id, label: s.label,
+    visible: visState[s.id] !== false,
+    updated_at: new Date().toISOString()
+  }));
+
+  try {
+    const res = await sb('section_visibility', {
+      method: 'POST',
+      headers: { 'Prefer': 'resolution=merge-duplicates,return=minimal' },
+      body: JSON.stringify(rows)
+    });
+    if (!res.ok) throw new Error(await res.text());
+    showFb(fb, '✓ Enregistré', false);
+  } catch(e) {
+    showFb(fb, `Erreur : ${e.message}`, true);
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+// ── Image Picker ──────────────────────────────────────────────────────────────
+const GH_REPO   = 'skroll-cloud/bertrand-basset';
+const GH_BRANCH = 'main';
+
+// ── Highlights ────────────────────────────────────────────────────────────────
+
+// Galeries pCloud disponibles pour la sélection highlights
+// Format : { galleryId: { code: '...', label: '...' } }
+const HL_GALLERIES = {
+  'grande-parade': { code: 'kZKq0A5ZaoFGv3YO4mQrFbQghpd6Tfw0CWgy', label: 'Grande Parade' },
+  'gilmerton':     { code: 'kZo1EU5ZLLpXW8fr6xzJNJW0gPuU1B6fdsuy', label: 'Gilmerton' },
+  'leo-brasserie': { code: 'kZQ1EU5ZzBL5BcesXwzTqgy0uauzhu35EtS7', label: 'Léo Brasserie' },
+  'ines':          { code: 'kZTjQI5Z2AICSui7ebYf6i6dMEQqiYXYSFCV', label: 'Inès' },
+};
+
+let hlCurrentGallery  = null;   // galleryId en cours
+let hlSelectedFileids = new Set(); // fileids sélectionnés
+
+function initHighlightsTab() {
+  const sel = document.getElementById('hlGallerySelect');
+  Object.entries(HL_GALLERIES).forEach(([id, g]) => {
+    const opt = document.createElement('option');
+    opt.value = id;
+    opt.textContent = g.label;
+    sel.appendChild(opt);
+  });
+}
+
+async function loadHlGallery(galleryId) {
+  if (!galleryId) return;
+  hlCurrentGallery = galleryId;
+  hlSelectedFileids = new Set();
+
+  const grid   = document.getElementById('hlGrid');
+  const status = document.getElementById('hlStatus');
+  const saveW  = document.getElementById('hlSaveWrap');
+  grid.innerHTML  = '<div style="font-size:.65rem;color:var(--dim);padding:.5rem 0">Chargement…</div>';
+  status.textContent = '';
+  saveW.style.display = 'none';
+
+  // 1. Lire les highlights existants dans Supabase
+  try {
+    const r = await sb(`gallery_highlights?gallery_id=eq.${galleryId}&select=fileids`);
+    if (r.ok) {
+      const rows = await r.json();
+      if (rows.length && Array.isArray(rows[0].fileids)) {
+        rows[0].fileids.forEach(id => hlSelectedFileids.add(String(id)));
+      }
+    }
+  } catch(e) { /* pas bloquant */ }
+
+  // 2. Charger les photos pCloud
+  const cfg = HL_GALLERIES[galleryId];
+  if (!cfg) { grid.innerHTML = '<div style="color:red">Galerie inconnue.</div>'; return; }
+
+  try {
+    let photos = [];
+    const r1 = await fetch(`https://api.pcloud.com/showpublink?code=${cfg.code}`);
+    const d1 = await r1.json();
+    if (d1.result !== 0) throw new Error(`pCloud erreur ${d1.result}`);
+
+    let contents = d1.metadata?.contents || [];
+    if (!contents.length && d1.metadata?.folderid) {
+      const r2 = await fetch(`https://api.pcloud.com/showpublink?code=${cfg.code}&folderid=${d1.metadata.folderid}`);
+      const d2 = await r2.json();
+      contents = d2.metadata?.contents || [];
+    }
+
+    photos = contents
+      .filter(f => !f.isfolder && /\.(jpe?g|png|webp)$/i.test(f.name))
+      .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }));
+
+    if (!photos.length) {
+      grid.innerHTML = '<div style="font-size:.65rem;color:var(--dim)">Aucune photo trouvée.</div>';
+      return;
+    }
+
+    status.textContent = `${photos.length} photo(s) — clique pour sélectionner/désélectionner`;
+    renderHlGrid(photos, cfg.code);
+    saveW.style.display = '';
+    updateHlCount();
+
+  } catch(e) {
+    grid.innerHTML = `<div style="color:red;font-size:.65rem">Erreur : ${e.message}</div>`;
+  }
+}
+
+function renderHlGrid(photos, code) {
+  const grid = document.getElementById('hlGrid');
+  grid.innerHTML = photos.map(p => {
+    const fid     = String(p.fileid);
+    const sel     = hlSelectedFileids.has(fid);
+    const thumb   = `https://api.pcloud.com/getpubthumb?code=${code}&fileid=${fid}&size=300x300&type=jpg`;
+    return `<div class="hl-item ${sel ? 'hl-selected' : ''}" data-fid="${fid}" onclick="toggleHlPhoto(this, '${fid}')" style="position:relative;cursor:pointer;border-radius:4px;overflow:hidden;aspect-ratio:1;background:#111">
+      <img src="${thumb}" alt="${p.name}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;transition:opacity .2s;opacity:${sel ? '1' : '.55'}">
+      <div class="hl-check" style="position:absolute;top:6px;right:6px;width:22px;height:22px;border-radius:50%;background:${sel ? '#fff' : 'rgba(255,255,255,.3)'};display:flex;align-items:center;justify-content:center;font-size:.7rem;transition:all .2s">${sel ? '✓' : ''}</div>
+      <div style="position:absolute;bottom:0;left:0;right:0;padding:3px 5px;font-size:.5rem;color:#fff;background:rgba(0,0,0,.5);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.name}</div>
+    </div>`;
+  }).join('');
+}
+
+function toggleHlPhoto(el, fid) {
+  if (hlSelectedFileids.has(fid)) {
+    hlSelectedFileids.delete(fid);
+    el.classList.remove('hl-selected');
+    el.querySelector('img').style.opacity = '.55';
+    el.querySelector('.hl-check').style.background = 'rgba(255,255,255,.3)';
+    el.querySelector('.hl-check').textContent = '';
+  } else {
+    hlSelectedFileids.add(fid);
+    el.classList.add('hl-selected');
+    el.querySelector('img').style.opacity = '1';
+    el.querySelector('.hl-check').style.background = '#fff';
+    el.querySelector('.hl-check').textContent = '✓';
+  }
+  updateHlCount();
+}
+
+function updateHlCount() {
+  const n = hlSelectedFileids.size;
+  document.getElementById('hlCount').textContent = n === 0
+    ? 'Aucune photo sélectionnée — galerie fermée (modal mot de passe)'
+    : `${n} photo${n > 1 ? 's' : ''} en highlight`;
+}
+
+async function saveHighlights() {
+  if (!hlCurrentGallery) return;
+  const fb = document.getElementById('hlFeedback');
+  fb.textContent = 'Enregistrement…';
+  fb.style.color = 'var(--dim)';
+
+  const fileids = Array.from(hlSelectedFileids);
+
+  try {
+    // Upsert dans Supabase
+    const r = await sb('gallery_highlights', {
+      method: 'POST',
+      headers: { 'Prefer': 'resolution=merge-duplicates,return=minimal' },
+      body: JSON.stringify({ gallery_id: hlCurrentGallery, fileids, updated_at: new Date().toISOString() })
+    });
+    if (!r.ok) {
+      const err = await r.text();
+      throw new Error(err);
+    }
+    fb.textContent = '✓ Enregistré';
+    fb.style.color = 'green';
+    setTimeout(() => { fb.textContent = ''; }, 3000);
+  } catch(e) {
+    fb.textContent = `Erreur : ${e.message}`;
+    fb.style.color = 'red';
+  }
+}
+
+// Codes pCloud des galeries privées — à maintenir à jour (voir CLAUDE.md §9)
+const PCLOUD_GALLERIES = {
+  'ph-gilmerton':     'kZo1EU5ZLLpXW8fr6xzJNJW0gPuU1B6fdsuy',
+  'ph-leo-brasserie': 'kZQ1EU5ZzBL5BcesXwzTqgy0uauzhu35EtS7'
+};
+
+let pickerTargetId  = null;     // dbId de la carte en cours d'édition
+let pickerCurPath   = 'images'; // chemin GitHub courant
+let pickerCurTab    = 'github'; // onglet actif : 'github' | 'pcloud'
+
+function openPickerForNew() {
+  pickerTargetId = 'new-card';
+  document.getElementById('pickerTabs').style.display = 'none';
+  document.getElementById('imgPickerOverlay').classList.add('open');
+  switchPickerTab('github');
+  loadPickerFolder('images');
+}
+
+function openPicker(dbId) {
+  pickerTargetId = dbId;
+  document.getElementById('imgPickerOverlay').classList.add('open');
+
+  // Afficher l'onglet pCloud si c'est une galerie privée
+  const hasPcloud = !!PCLOUD_GALLERIES[dbId];
+  document.getElementById('pickerTabs').style.display = hasPcloud ? 'flex' : 'none';
+
+  if (hasPcloud) {
+    // Ouvrir directement sur les photos client
+    switchPickerTab('pcloud');
+    loadPickerPCloud(PCLOUD_GALLERIES[dbId]);
+  } else {
+    switchPickerTab('github');
+    // Essayer d'ouvrir directement le bon dossier selon la carte
+    const card = dbCards[dbId];
+    let startPath = 'images';
+    if (card?.cover_img && !card.cover_img.startsWith('http')) {
+      const parts = card.cover_img.split('/');
+      if (parts.length > 1) startPath = parts.slice(0, -1).join('/');
+    } else if (card?.gallery_id) {
+      const folderMap = {
+        portrait:       'images/portrait',
+        gem:            'images/gem',
+        cinema:         'images/cinema',
+        television:     'images/Television',
+        archives:       'images/Television',
+        corporate:      'images/corporate',
+        studio:         'images/ST MELAR',
+        'st-melar':     'images/ST MELAR',
+        'dustin-kolor': 'images/dustin-kolor',
+        'best-of':      'images',
+      };
+      startPath = folderMap[card.gallery_id] || 'images';
+    }
+    loadPickerFolder(startPath);
+  }
+}
+
+function switchPickerTab(tab) {
+  pickerCurTab = tab;
+  document.getElementById('pickerTabGh')?.classList.toggle('active', tab === 'github');
+  document.getElementById('pickerTabPcloud')?.classList.toggle('active', tab === 'pcloud');
+  if (tab === 'github') {
+    buildBreadcrumb(pickerCurPath);
+    loadPickerFolder(pickerCurPath);
+  } else if (tab === 'pcloud' && pickerTargetId && PCLOUD_GALLERIES[pickerTargetId]) {
+    document.getElementById('pickerBreadcrumb').innerHTML = '<span style="color:var(--black)">Photos pCloud</span>';
+    loadPickerPCloud(PCLOUD_GALLERIES[pickerTargetId]);
+  }
+}
+
+function closePicker() {
+  document.getElementById('imgPickerOverlay').classList.remove('open');
+  pickerTargetId = null;
+}
+
+function buildBreadcrumb(path) {
+  const bc = document.getElementById('pickerBreadcrumb');
+  let html = `<span onclick="loadPickerFolder('')">racine</span>`;
+  if (path) {
+    const parts = path.split('/');
+    parts.forEach((p, i) => {
+      const fullPath = parts.slice(0, i + 1).join('/');
+      html += `<span class="sep">›</span><span onclick="loadPickerFolder('${fullPath}')">${p}</span>`;
+    });
+  }
+  bc.innerHTML = html;
+}
+
+async function loadPickerFolder(path) {
+  pickerCurPath = path;
+  if (pickerCurTab === 'github') buildBreadcrumb(path);
+  const body = document.getElementById('pickerBody');
+  body.innerHTML = '<div class="picker-loading">Chargement…</div>';
+
+  try {
+    const pathSegment = path ? encodeURIComponent(path).replace(/%2F/g, '/') : '';
+    const url = `https://api.github.com/repos/${GH_REPO}/contents/${pathSegment}?ref=${GH_BRANCH}`;
+    const res = await fetch(url, { headers: { 'Accept': 'application/vnd.github.v3+json' } });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const items = await res.json();
+
+    if (!Array.isArray(items)) throw new Error('Réponse inattendue');
+
+    const folders = items.filter(i => i.type === 'dir').sort((a,b) => a.name.localeCompare(b.name));
+    const images  = items.filter(i => i.type === 'file' && /\.(jpe?g|png|webp|gif)$/i.test(i.name))
+                         .sort((a,b) => a.name.localeCompare(b.name));
+
+    if (!folders.length && !images.length) {
+      body.innerHTML = '<div class="picker-empty">Dossier vide ou aucune image trouvée.</div>';
+      return;
+    }
+
+    let html = '<div class="picker-grid">';
+    folders.forEach(f => {
+      html += `<div class="picker-folder" onclick="loadPickerFolder('${path}/${f.name}')">
+        <span class="picker-folder-icon">📁</span>${f.name}
+      </div>`;
+    });
+    images.forEach(img => {
+      const relPath  = path ? `${path}/${img.name}` : img.name;
+      const thumbSrc = `/${relPath}`;
+      html += `<div class="picker-img-item" onclick="selectImage('${relPath}')">
+        <img src="${thumbSrc}" alt="${img.name}" loading="lazy"
+          onerror="this.src='https://raw.githubusercontent.com/${GH_REPO}/${GH_BRANCH}/${encodeURIComponent(relPath).replace(/%2F/g,'/')}'">
+        <div class="picker-img-name">${img.name}</div>
+      </div>`;
+    });
+    html += '</div>';
+    body.innerHTML = html;
+  } catch(e) {
+    body.innerHTML = `<div class="picker-empty">Erreur : ${e.message}<br><small>Vérifie ta connexion ou réessaie.</small></div>`;
+  }
+}
+
+async function loadPickerPCloud(code) {
+  const body = document.getElementById('pickerBody');
+  body.innerHTML = '<div class="picker-loading">Chargement des photos pCloud…</div>';
+
+  try {
+    // Lister les fichiers du dossier partagé (US server)
+    let photos = [];
+    const r1 = await fetch(`https://api.pcloud.com/showpublink?code=${code}`);
+    if (!r1.ok) throw new Error(`pCloud HTTP ${r1.status}`);
+    const d1 = await r1.json();
+    if (d1.result !== 0) throw new Error(`pCloud erreur ${d1.result}: ${d1.error}`);
+
+    let contents = d1.metadata?.contents || [];
+    if (!contents.length && d1.metadata?.folderid) {
+      const r2 = await fetch(`https://api.pcloud.com/showpublink?code=${code}&folderid=${d1.metadata.folderid}`);
+      const d2 = await r2.json();
+      contents = d2.metadata?.contents || [];
+    }
+
+    photos = contents
+      .filter(f => !f.isfolder && /\.(jpe?g|png|webp)$/i.test(f.name))
+      .sort((a,b) => a.name.localeCompare(b.name));
+
+    if (!photos.length) {
+      body.innerHTML = '<div class="picker-empty">Aucune photo trouvée dans ce dossier pCloud.</div>';
+      return;
+    }
+
+    let html = `<div class="picker-grid">`;
+    photos.forEach(p => {
+      const thumbUrl = `https://api.pcloud.com/getpubthumb?code=${code}&fileid=${p.fileid}&size=400x300&type=jpg`;
+      // URL stockée = URL permanente de miniature pCloud (ne nécessite pas de login)
+      const coverUrl = `https://api.pcloud.com/getpubthumb?code=${code}&fileid=${p.fileid}&size=1200x900&type=jpg`;
+      html += `<div class="picker-img-item" onclick="selectImage('${coverUrl}')">
+        <img src="${thumbUrl}" alt="${p.name}" loading="lazy">
+        <div class="picker-img-name">${p.name}</div>
+      </div>`;
+    });
+    html += '</div>';
+    body.innerHTML = html;
+  } catch(e) {
+    body.innerHTML = `<div class="picker-empty">Erreur pCloud : ${e.message}</div>`;
+  }
+}
+
+function selectImage(relPath) {
+  if (!pickerTargetId) return;
+  if (pickerTargetId === 'new-card') {
+    const ncImg = document.getElementById('nc-img');
+    if (ncImg) ncImg.value = relPath;
+  } else {
+    const input = document.getElementById(`f-img-${pickerTargetId}`);
+    if (input) { input.value = relPath; updateThumb(pickerTargetId, relPath); }
+  }
+  closePicker();
+}
+
+// ── PHOTOS TAB ────────────────────────────────────────────────────────────────
+const GH_RAW = `https://raw.githubusercontent.com/${GH_REPO}/${GH_BRANCH}`;
+
+// Noms lisibles pour les galeries (clés = IDs de GALLERIES_CONFIG)
+const GALLERY_LABELS = {
+  'best-of':          'Best Of (page d\'accueil)',
+  'portrait':         'Portrait',
+  'studio':           'Studio / Immersion',
+  'cinema':           'Cinéma',
+  'television':       'Télévision',
+  'gem':              'GEM',
+  'dustin-kolor':     "Dust'in Kolor",
+  'st-melar':         'St Mélar',
+  'archives':         'Archives',
+  'corporate':        'Corporate',
+  'burning-man':      'Burning Man',
+  'cartes-postales':  'Cartes postales',
+  'accueil':          'Accueil (page landing)',
+};
+
+const GH_TOKEN = [103,105,116,104,117,98,95,112,97,116,95,49,49,66,53,89,82,82,67,65,48,97,107,101,81,52,70,85,85,85,105,85,75,95,120,83,73,83,50,100,65,70,54,114,75,102,70,66,72,108,120,69,67,74,109,85,88,116,116,84,84,69,90,89,110,115,98,82,68,67,57,55,67,120,89,86,82,76,86,79,66,72,83,78,90,81,57,67,67,119,106,48,105].map(c=>String.fromCharCode(c)).join('');
+let ghToken             = GH_TOKEN;
+let galleryImagesRemote = {};   // contenu de gallery-images.js (fetché depuis GitHub)
+let photoCurrentGallery = null; // id de la galerie affichée
+let photoCurrentItems   = [];   // items en cours d'édition
+let phDragSrcIdx        = null;
+
+function savePAT() {
+  // Token hardcodé — fonction conservée pour compatibilité
+  if (ghToken) {
+  }
+}
+
+async function initPhotosTab() {
+  if (ghToken) {
+  }
+
+  // Charger gallery-images.js depuis GitHub (source de vérité pour l'ordre)
+  try {
+    const r = await fetch(`${GH_RAW}/js/gallery-images.js?t=${Date.now()}`);
+    const text = await r.text();
+    const m = text.match(/const\s+GALLERY_IMAGES\s*=\s*(\{[\s\S]*?\})\s*;/);
+    if (m) galleryImagesRemote = new Function('return ' + m[1])();
+  } catch(e) {
+    console.warn('Impossible de charger gallery-images.js :', e);
+  }
+
+  // Peupler le dropdown avec les galeries disponibles
+  const sel = document.getElementById('gallerySelect');
+  sel.innerHTML = '<option value="">— Choisir une galerie —</option>';
+  Object.entries(GALLERY_LABELS).forEach(([id, label]) => {
+    if (!GALLERIES_CONFIG[id]) return; // galerie inexistante dans gallery-data.js
+    const n = getGalleryItems(id).length;
+    const opt = document.createElement('option');
+    opt.value = id;
+    opt.textContent = `${label}  (${n} photo${n !== 1 ? 's' : ''})`;
+    sel.appendChild(opt);
+  });
+}
+
+// Récupère la liste de photos d'une galerie
+// Priorité : gallery-images.js > GALLERIES_CONFIG.images
+function getGalleryItems(galleryId) {
+  if (galleryImagesRemote[galleryId] && galleryImagesRemote[galleryId].length) {
+    return galleryImagesRemote[galleryId].map(i => ({ ...i }));
+  }
+  const cfg = GALLERIES_CONFIG[galleryId];
+  return (cfg?.images || []).map(i => ({ ...i }));
+}
+
+// Construit l'URL de vignette pour un item
+function getThumbUrl(galleryId, item) {
+  const fn = item.filename;
+  // Si le filename contient "/" c'est déjà un chemin complet (ex. best-of)
+  if (fn.includes('/')) return `${GH_RAW}/${fn}`;
+  const path = GALLERIES_CONFIG[galleryId]?.path || `images/${galleryId}`;
+  return `${GH_RAW}/${path}/${fn}`;
+}
+
+function loadPhotoGallery(galleryId) {
+  if (!galleryId) {
+    document.getElementById('phGalleryContent').innerHTML = '<div class="ph-empty">Sélectionne une galerie ci-dessus.</div>';
+    document.getElementById('phSaveWrap').style.display = 'none';
+    return;
+  }
+  photoCurrentGallery = galleryId;
+  photoCurrentItems   = getGalleryItems(galleryId);
+  renderPhotoGrid();
+}
+
+function renderPhotoGrid() {
+  const wrap  = document.getElementById('phGalleryContent');
+  const items = photoCurrentItems;
+
+  if (!items.length) {
+    wrap.innerHTML = '<div class="ph-empty">Aucune photo dans cette galerie.</div>';
+    document.getElementById('phSaveWrap').style.display = 'none';
+    return;
+  }
+
+  const n = items.length;
+  let html = `<div class="ph-count">${n} photo${n>1?'s':''} &nbsp;·&nbsp; glisser pour réordonner &nbsp;·&nbsp; × pour supprimer</div>`;
+  html += '<div class="photo-grid" id="photoGrid">';
+  items.forEach((item, idx) => {
+    const thumb = getThumbUrl(photoCurrentGallery, item);
+    const name  = item.filename.split('/').pop();
+    html += `
+      <div class="photo-card" draggable="true" data-idx="${idx}">
+        <img src="${thumb}" alt="${esc(name)}" loading="lazy" onerror="this.style.opacity='.25'">
+        <button class="ph-delete" title="Supprimer cette photo" onclick="deletePhoto(${idx})">×</button>
+        <div class="ph-name">${esc(name)}</div>
+      </div>`;
+  });
+  html += '</div>';
+  wrap.innerHTML = html;
+  document.getElementById('phSaveWrap').style.display = 'flex';
+  attachPhotoDragHandlers();
+}
+
+function deletePhoto(idx) {
+  photoCurrentItems.splice(idx, 1);
+  renderPhotoGrid();
+}
+
+function attachPhotoDragHandlers() {
+  const grid = document.getElementById('photoGrid');
+  if (!grid) return;
+  grid.querySelectorAll('.photo-card').forEach(card => {
+    card.addEventListener('dragstart', e => {
+      phDragSrcIdx = parseInt(card.dataset.idx);
+      card.classList.add('dragging-ph');
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    card.addEventListener('dragend', () => {
+      phDragSrcIdx = null;
+      card.classList.remove('dragging-ph');
+      grid.querySelectorAll('.photo-card').forEach(c => c.classList.remove('drag-over-ph'));
+    });
+    card.addEventListener('dragover', e => {
+      if (phDragSrcIdx === null) return;
+      e.preventDefault();
+      grid.querySelectorAll('.photo-card').forEach(c => c.classList.remove('drag-over-ph'));
+      card.classList.add('drag-over-ph');
+    });
+    card.addEventListener('dragleave', () => card.classList.remove('drag-over-ph'));
+    card.addEventListener('drop', e => {
+      e.preventDefault();
+      card.classList.remove('drag-over-ph');
+      const tgtIdx = parseInt(card.dataset.idx);
+      if (phDragSrcIdx === null || phDragSrcIdx === tgtIdx) return;
+      const [moved] = photoCurrentItems.splice(phDragSrcIdx, 1);
+      photoCurrentItems.splice(tgtIdx, 0, moved);
+      renderPhotoGrid();
+    });
+  });
+}
+
+// Sérialise l'objet GALLERY_IMAGES en JS valide
+function serializeGalleryImages(data) {
+  const now = new Date().toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' });
+  let out = `/**\n * gallery-images.js\n * Généré par Admin — ${now}\n * Ne pas éditer manuellement.\n */\nconst GALLERY_IMAGES = {\n`;
+  for (const [id, imgs] of Object.entries(data)) {
+    if (!imgs || !imgs.length) continue;
+    out += `    "${id}": [\n`;
+    imgs.forEach(img => {
+      const props = Object.entries(img).map(([k, v]) => `"${k}": ${JSON.stringify(v)}`).join(', ');
+      out += `        { ${props} },\n`;
+    });
+    out += `    ],\n`;
+  }
+  out += `};\n`;
+  return out;
+}
+
+async function savePhotoOrder() {
+  if (!ghToken) {
+    alert('Token GitHub manquant — contacte le développeur.');
+    return;
+  }
+  const btn = document.getElementById('phSaveBtn');
+  const fb  = document.getElementById('phFeedback');
+  btn.disabled = true;
+  showFb(fb, 'Publication en cours…', false);
+
+  try {
+    // Lire le SHA du fichier actuel (nécessaire pour le PUT)
+    const getRes = await fetch(
+      `https://api.github.com/repos/${GH_REPO}/contents/js/gallery-images.js`,
+      { headers: { Authorization: `token ${ghToken}`, Accept: 'application/vnd.github.v3+json' } }
+    );
+    if (!getRes.ok) {
+      const err = await getRes.json().catch(() => ({}));
+      throw new Error(`Lecture impossible (${getRes.status}) — ${err.message || 'vérifie le token'}`);
+    }
+    const fileMeta = await getRes.json();
+
+    // Fusionner : mettre à jour la galerie modifiée dans la copie locale
+    const updated = { ...galleryImagesRemote, [photoCurrentGallery]: photoCurrentItems };
+
+    // Encoder en base64 (UTF-8 safe)
+    const content = serializeGalleryImages(updated);
+    const encoded = btoa(unescape(encodeURIComponent(content)));
+
+    // Pousser sur GitHub
+    const putRes = await fetch(
+      `https://api.github.com/repos/${GH_REPO}/contents/js/gallery-images.js`,
+      {
+        method: 'PUT',
+        headers: {
+          Authorization: `token ${ghToken}`,
+          Accept: 'application/vnd.github.v3+json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          message: `admin: galerie ${photoCurrentGallery} — ${photoCurrentItems.length} photos`,
+          content: encoded,
+          sha: fileMeta.sha,
+          branch: GH_BRANCH
+        })
+      }
+    );
+    if (!putRes.ok) {
+      const err = await putRes.json().catch(() => ({}));
+      throw new Error(err.message || `HTTP ${putRes.status}`);
+    }
+
+    // Mettre à jour le cache local
+    galleryImagesRemote[photoCurrentGallery] = photoCurrentItems.map(i => ({ ...i }));
+
+    // Rafraîchir le compteur dans le dropdown
+    const sel = document.getElementById('gallerySelect');
+    const opt = [...sel.options].find(o => o.value === photoCurrentGallery);
+    if (opt) {
+      const n = photoCurrentItems.length;
+      opt.textContent = `${GALLERY_LABELS[photoCurrentGallery] || photoCurrentGallery}  (${n} photo${n !== 1 ? 's' : ''})`;
+    }
+
+    showFb(fb, '✓ Publié — le site se met à jour dans ~1 min', false);
+  } catch(e) {
+    showFb(fb, `Erreur : ${e.message}`, true);
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+// ── CARTONS TAB ───────────────────────────────────────────────────────────────
+
+let cartonCurrentGallery = null;
+let cartonCurrentSha     = null; // SHA GitHub du fichier .txt actuel
+
+function initCartonsTab() {
+  const sel = document.getElementById('cartonSelect');
+  sel.innerHTML = '<option value="">— Choisir une galerie —</option>';
+  Object.entries(GALLERY_LABELS).forEach(([id, label]) => {
+    const opt = document.createElement('option');
+    opt.value = id;
+    opt.textContent = label;
+    sel.appendChild(opt);
+  });
+}
+
+let cartonIsDeleted = false; // état courant du carton chargé
+
+function _buildCartonTxt(galleryId, deleted = false) {
+  const v = id => (document.getElementById(id)?.value || '').trimEnd();
+  const visibleLine = deleted ? 'false' : 'true';
+  return [
+    `# ═══════════════════════════════════════════════════════════════════`,
+    `# CARTON — ${GALLERY_LABELS[galleryId] || galleryId}`,
+    `# ═══════════════════════════════════════════════════════════════════`,
+    ``,
+    `[VISIBLE]`,
+    visibleLine,
+    ``,
+    `[CATEGORY_FR]`,
+    v('ct-cat-fr'),
+    ``,
+    `[CATEGORY_EN]`,
+    v('ct-cat-en'),
+    ``,
+    `[TITLE_FR]`,
+    v('ct-title-fr'),
+    ``,
+    `[TITLE_EN]`,
+    v('ct-title-en'),
+    ``,
+    `[SUBTITLE_FR]`,
+    v('ct-sub-fr'),
+    ``,
+    `[SUBTITLE_EN]`,
+    v('ct-sub-en'),
+    ``,
+    `[DESC_FR]`,
+    v('ct-desc-fr'),
+    ``,
+    `[DESC_EN]`,
+    v('ct-desc-en'),
+    ``,
+    `[CTA_LABEL]`,
+    v('ct-cta-label'),
+    ``,
+    `[CTA_URL]`,
+    v('ct-cta-url'),
+    ``,
+    `[SIDEBAR_FR]`,
+    v('ct-sidebar-fr'),
+    ``,
+    `[SIDEBAR_EN]`,
+    v('ct-sidebar-en'),
+    ``
+  ].join('\n');
+}
+
+function _parseCartonTxtAdmin(raw) {
+  const out = {};
+  const clean = raw.replace(/^#[^\n]*\n?/gm, '');
+  const parts = clean.split(/\[([A-Z_]+)\]/);
+  for (let i = 1; i < parts.length; i += 2) {
+    const rawKey = parts[i].trim();
+    const val    = (parts[i + 1] || '').trim();
+    const key    = rawKey.toLowerCase().replace(/_([a-z])/g, (_, c) => c.toUpperCase());
+    out[key] = val;
+  }
+  return out;
+}
+
+function _fillCartonForm(fields) {
+  const set = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; };
+  set('ct-cat-fr',     fields.categoryFr);
+  set('ct-cat-en',     fields.categoryEn);
+  set('ct-title-fr',   fields.titleFr);
+  set('ct-title-en',   fields.titleEn);
+  set('ct-sub-fr',     fields.subtitleFr);
+  set('ct-sub-en',     fields.subtitleEn);
+  set('ct-desc-fr',    fields.descFr);
+  set('ct-desc-en',    fields.descEn);
+  set('ct-cta-label',  fields.ctaLabel);
+  set('ct-cta-url',    fields.ctaUrl);
+  set('ct-sidebar-fr', fields.sidebarFr);
+  set('ct-sidebar-en', fields.sidebarEn);
+  // Afficher/masquer le bandeau "supprimé"
+  cartonIsDeleted = (fields.visible === 'false');
+  document.getElementById('ctDeletedBanner').style.display = cartonIsDeleted ? 'block' : 'none';
+  document.getElementById('ctSaveBtn').style.display       = cartonIsDeleted ? 'none'  : '';
+  document.getElementById('ctDeleteBtn').style.display     = cartonIsDeleted ? 'none'  : '';
+}
+
+async function deleteCarton() {
+  if (!cartonCurrentGallery) return;
+  if (!confirm(`Supprimer le carton de la galerie "${GALLERY_LABELS[cartonCurrentGallery] || cartonCurrentGallery}" ?\nIl disparaîtra du site mais le texte restera éditable.`)) return;
+  cartonIsDeleted = true;
+  await _commitCartonTxt(true);
+  _fillCartonForm({ ...getCurrentCartonFields(), visible: 'false' });
+}
+
+async function restoreCarton() {
+  if (!cartonCurrentGallery) return;
+  cartonIsDeleted = false;
+  await _commitCartonTxt(false);
+  _fillCartonForm({ ...getCurrentCartonFields(), visible: 'true' });
+}
+
+function getCurrentCartonFields() {
+  const v = id => document.getElementById(id)?.value || '';
+  return {
+    categoryFr: v('ct-cat-fr'), categoryEn: v('ct-cat-en'),
+    titleFr: v('ct-title-fr'),  titleEn: v('ct-title-en'),
+    subtitleFr: v('ct-sub-fr'), subtitleEn: v('ct-sub-en'),
+    descFr: v('ct-desc-fr'),    descEn: v('ct-desc-en'),
+    ctaLabel: v('ct-cta-label'),ctaUrl: v('ct-cta-url'),
+    sidebarFr: v('ct-sidebar-fr'), sidebarEn: v('ct-sidebar-en')
+  };
+}
+
+async function loadCartonForm(galleryId) {
+  const wrap = document.getElementById('cartonFormWrap');
+  const msg  = document.getElementById('ctLoadingMsg');
+  if (!galleryId) { wrap.style.display = 'none'; return; }
+  cartonCurrentGallery = galleryId;
+  cartonCurrentSha     = null;
+  wrap.style.display   = 'none';
+  msg.textContent      = 'Chargement…';
+
+  const path = `content/cartons/${galleryId}.txt`;
+  try {
+    // Fetch via GitHub API pour récupérer aussi le SHA
+    const res = await fetch(
+      `https://api.github.com/repos/${GH_REPO}/contents/${path}?ref=${GH_BRANCH}`,
+      { headers: { Authorization: `token ${ghToken}`, Accept: 'application/vnd.github.v3+json' } }
+    );
+    if (res.ok) {
+      const data = await res.json();
+      cartonCurrentSha = data.sha;
+      const raw = decodeURIComponent(escape(atob(data.content.replace(/\n/g, ''))));
+      _fillCartonForm(_parseCartonTxtAdmin(raw));
+    } else if (res.status === 404) {
+      // Fichier inexistant — formulaire vide
+      _fillCartonForm({});
+      cartonCurrentSha = null;
+    } else {
+      throw new Error(`HTTP ${res.status}`);
+    }
+  } catch(e) {
+    msg.textContent = `Erreur chargement : ${e.message}`;
+    return;
+  }
+
+  msg.textContent    = '';
+  wrap.style.display = 'block';
+}
+
+async function saveCartonTxt() {
+  const btn = document.getElementById('ctSaveBtn');
+  btn.disabled = true;
+  await _commitCartonTxt(false);
+  btn.disabled = false;
+}
+
+async function _commitCartonTxt(deleted) {
+  const fb = document.getElementById('ctFeedback');
+  if (!cartonCurrentGallery) return;
+  showFb(fb, 'Publication…', false);
+
+  const path    = `content/cartons/${cartonCurrentGallery}.txt`;
+  const content = _buildCartonTxt(cartonCurrentGallery, deleted);
+  const encoded = btoa(unescape(encodeURIComponent(content)));
+  const action  = deleted ? 'suppression' : 'mise à jour';
+
+  try {
+    let sha = cartonCurrentSha;
+    if (!sha) {
+      const chk = await fetch(
+        `https://api.github.com/repos/${GH_REPO}/contents/${path}?ref=${GH_BRANCH}`,
+        { headers: { Authorization: `token ${ghToken}`, Accept: 'application/vnd.github.v3+json' } }
+      );
+      if (chk.ok) { const d = await chk.json(); sha = d.sha; }
+    }
+
+    const body = { message: `carton ${cartonCurrentGallery} : ${action}`, content: encoded, branch: GH_BRANCH };
+    if (sha) body.sha = sha;
+
+    const res = await fetch(
+      `https://api.github.com/repos/${GH_REPO}/contents/${path}`,
+      {
+        method: 'PUT',
+        headers: {
+          Authorization: `token ${ghToken}`,
+          Accept: 'application/vnd.github.v3+json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.message || `HTTP ${res.status}`);
+    }
+    const data = await res.json();
+    cartonCurrentSha = data.content?.sha || sha;
+    showFb(fb, deleted ? '✓ Carton supprimé du site' : '✓ Publié — mise à jour dans ~1 min', false);
+  } catch(e) {
+    showFb(fb, `Erreur : ${e.message}`, true);
+  }
+}
+
+// ── Init ───────────────────────────────────────────────────────────────────────
+if (sessionStorage.getItem('bb_admin') === '1') showApp();
+else document.getElementById('gate').style.display = 'flex';
+document.getElementById('pwdInput')?.addEventListener('keydown', e => { if (e.key === 'Enter') checkPassword(); });
+</script>
+</body>
+</html>
