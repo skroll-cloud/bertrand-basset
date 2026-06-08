@@ -229,14 +229,14 @@ body{font-family:'IBM Plex Sans',sans-serif;font-weight:300;font-size:13px;
   <!-- Brouillons -->
   <div id="tab-drafts" style="display:none">
     <p class="tab-hint">
-      Toutes les galeries du site &mdash; v&eacute;rifier le template et le chemin photos avant de les rendre visibles dans la navigation.
+      Galeries non publi&eacute;es. <strong>Pr&ecirc;t &agrave; publier</strong> = photos en place, moteur SPA configur&eacute;. <strong>&Agrave; configurer</strong> = template ou lien pCloud &agrave; compl&eacute;ter. Cliquer pour &eacute;diter, puis <strong>Publier &rarr;</strong> pour rendre visible sur le site.
     </p>
     <div id="draftList" class="draft-grid"></div>
   </div>
 
   <!-- Galeries -->
   <div id="tab-galleries" style="display:none">
-    <p class="tab-hint">Cliquer une galerie pour &eacute;diter &mdash; les modifications sont sauvegard&eacute;es dans Supabase, aucun d&eacute;ploiement n&eacute;cessaire.</p>
+    <p class="tab-hint">Galeries publi&eacute;es sur le site. Cliquer pour &eacute;diter nom, section, mots de passe, t&eacute;l&eacute;chargement et vente.</p>
     <div id="galleryList" class="gallery-list"></div>
     <div id="galFeedback" class="feedback"></div>
   </div>
@@ -297,7 +297,7 @@ async function loadDB(){
     var res=await Promise.all([
       sbGet('section_visibility?select=id,visible,label'),
       sbGet('gallery_cards?select=id,visible,sort_order,title_fr,cover_img,section,gallery_id,link_url&order=sort_order.asc'),
-      sbGet('gallery_settings?select=gallery_id,view_password,dl_password,download_enabled,buy_jpeg_enabled,buy_jpeg_price,buy_print_enabled')
+      sbGet('gallery_settings?select=gallery_id,view_password,dl_password,download_enabled,buy_jpeg_enabled,buy_jpeg_price,buy_print_enabled,pcloud_code')
     ]);
     res[0].forEach(function(r){DB.menuVis[r.id]=r.visible;DB.menuLabel[r.id]=r.label||'';});
     res[1].forEach(function(r){DB.cards[r.id]=r;});
@@ -442,72 +442,149 @@ function buildItem1(sub,secMap){
 }
 
 /* ===== BROUILLONS TAB ===== */
-/* Section labels for display */
-var SEC_LABEL={
-  'ph-portrait':'Portrait','ph-reportage':'Reportage','ph-series':'Séries',
-  'ph-exposition':'Exposition','ph-clients':'Galeries clients',
-  realisateur:'Réalisateur',boutique:'Boutique',photographe:'Photographe'
-};
-
-function cardType(card){
-  if(card.url)return'client';
-  if(card.galleryId)return'spa';
-  if(card.pageId)return'page';
-  return'—';
+/* Prêt à publier = galleryId + image (SPA engine, photos déjà là) */
+function isDraftReady(card,dbId){
+  var img=(DB.cards[dbId]||{}).cover_img||card.img||'';
+  return !!(card.galleryId&&img);
 }
 
 function renderDrafts(){
   var list=document.getElementById('draftList');
   list.innerHTML='';
-  /* Collect all cards from all sections, including their static section */
-  var all=[];
+  var ready=[],toConfig=[];
   Object.keys(SECTIONS_CONFIG).forEach(function(secId){
     var sec=SECTIONS_CONFIG[secId];
     var prefix=PREFIX[secId]||secId;
     sec.cards.forEach(function(card){
       var dbId=prefix+'-'+card.id;
       var dbRow=DB.cards[dbId]||{};
+      if(cardIsVis(dbId,card))return;/* published → Galeries tab */
       var name=dbRow.title_fr||card.titleFr||card.titleEn||card.id;
       var img=dbRow.cover_img||card.img||'';
-      var accUrl=dbRow.link_url||card.url||'';
-      var type=cardType(card);
-      var isVis=cardIsVis(dbId,card);
+      var settId=galSettingsId(card);
+      var settRow=DB_SETTINGS[settId]||{};
       var eff=cardEffectiveSection(dbId,secId);
-      all.push({card:card,dbId:dbId,name:name,img:img,accUrl:accUrl,
-        type:type,isVis:isVis,staticSection:secId,effectiveSection:eff});
+      var e={card:card,dbId:dbId,name:name,img:img,settId:settId,settRow:settRow,secId:secId,eff:eff};
+      isDraftReady(card,dbId)?ready.push(e):toConfig.push(e);
     });
   });
 
-  /* Sort: static section order */
-  all.forEach(function(entry){
-    var item=document.createElement('div');
-    item.className='draft-item';
+  function sep(label){
+    var d=document.createElement('div');
+    d.className='tree-sep';d.textContent=label;return d;
+  }
 
-    var thumb=entry.img
-      ?'<img class="draft-thumb" src="'+esc(entry.img)+'" loading="lazy" onerror="this.outerHTML=\'<div class=draft-thumb-empty></div>\'">'
-      :'<div class="draft-thumb-empty"></div>';
+  if(ready.length){
+    list.appendChild(sep('Prêt à publier'));
+    ready.forEach(function(e){list.appendChild(buildDraftItem(e));});
+  }
+  if(toConfig.length){
+    list.appendChild(sep('À configurer'));
+    toConfig.forEach(function(e){list.appendChild(buildDraftItem(e));});
+  }
+  if(!ready.length&&!toConfig.length){
+    list.innerHTML='<p class="tab-placeholder">Toutes les galeries sont publiées.</p>';
+  }
+}
 
-    var accBtn=entry.accUrl
-      ?'<a class="acc-btn" href="'+esc(entry.accUrl)+'" target="_blank" rel="noopener">Accéder</a>'
-      :'';
-
-    var secLabel=SEC_LABEL[entry.effectiveSection]||entry.effectiveSection;
-    var imgPath=entry.img?'<code style="font-size:9px;color:var(--dim)">'+esc(entry.img)+'</code>':'<em style="color:var(--dim);font-size:9px">Pas d\'image</em>';
-
-    item.innerHTML=
-      thumb+
-      '<div class="draft-info">'+
-        '<div class="draft-name">'+esc(entry.name)+'</div>'+
-        '<div class="draft-meta">'+
-          '<span class="draft-tag '+(entry.type==='client'?'client':'spa')+'">'+esc(entry.type)+'</span>'+
-          '<span class="draft-tag">'+esc(secLabel)+'</span>'+
-          imgPath+
+function buildDraftItem(e){
+  var thumbHtml=e.img
+    ?'<img class="gal-thumb" src="'+esc(e.img)+'" loading="lazy" onerror="this.style.display=\'none\'">'
+    :'<div class="gal-thumb-empty"></div>';
+  var secOpts=SEC_OPTIONS.map(function(o){
+    return'<option value="'+o.v+'"'+(e.eff===o.v?' selected':'')+'>'+o.l+'</option>';
+  }).join('');
+  var secLabel=(SEC_OPTIONS.find(function(o){return o.v===e.eff;})||{l:e.eff}).l;
+  var isClient=!!e.card.url;
+  var pcloudCode=e.settRow.pcloud_code||'';
+  var pcloudHtml='';
+  if(isClient){
+    pcloudHtml=
+      '<div class="gal-field full">'+
+        '<span class="gal-label">Code pCloud &mdash; depuis u.pcloud.link/publink/show?code=<strong>CODE</strong></span>'+
+        '<input class="gal-input" type="text" data-field="pcloud_code" placeholder="Ex: kZKq0A5Z…" value="'+esc(pcloudCode)+'">'+
+      '</div>'+
+      '<div class="gal-field full">'+
+        '<span class="gal-label">Highlights</span>'+
+        '<a class="gal-hl-link" href="admin.html#highlights" target="_blank">Gérer les highlights →</a>'+
+      '</div>';
+  }
+  var item=document.createElement('div');
+  item.className='gal-item';item.id='draft-'+e.dbId;
+  item.innerHTML=
+    '<div class="gal-header" onclick="toggleGal(this)">'+
+      thumbHtml+
+      '<span class="gal-name">'+esc(e.name)+'</span>'+
+      '<span class="gal-sec-badge">'+esc(secLabel)+'</span>'+
+      '<span class="gal-vis-dot"></span>'+
+      '<span class="gal-chevron">&#8250;</span>'+
+    '</div>'+
+    '<div class="gal-body">'+
+      '<div class="gal-form">'+
+        '<div class="gal-field full"><span class="gal-label">Nom</span>'+
+          '<input class="gal-input" type="text" data-field="name" value="'+esc(e.name)+'"></div>'+
+        '<div class="gal-field full"><span class="gal-label">Section</span>'+
+          '<select class="gal-select" data-field="section">'+secOpts+'</select></div>'+
+        pcloudHtml+
+        '<div class="gal-actions">'+
+          '<button class="gal-cancel-btn" onclick="closeGal(this)">Fermer</button>'+
+          '<button class="gal-save-btn" onclick="saveDraft(this,\''+e.dbId+'\',\''+e.settId+'\',\''+e.secId+'\')">Enregistrer</button>'+
+          '<button class="gal-save-btn" style="background:var(--black);color:var(--white)" onclick="publishDraft(this,\''+e.dbId+'\',\''+e.settId+'\',\''+e.secId+'\')">Publier &#8594;</button>'+
         '</div>'+
       '</div>'+
-      '<div class="draft-actions">'+accBtn+'</div>';
+    '</div>';
+  return item;
+}
 
-    list.appendChild(item);
-  });
+async function saveDraft(btn,dbId,settId,staticSection){
+  btn.disabled=true;btn.textContent='Enregistrement…';
+  var body=btn.closest('.gal-body');
+  var f=function(field){return body.querySelector('[data-field="'+field+'"]');};
+  var name=f('name').value.trim();
+  var section=f('section').value;
+  var pcloudInput=f('pcloud_code');
+  var pcloudCode=pcloudInput?pcloudInput.value.trim():null;
+  try{
+    await sbUpsert('gallery_cards',[{id:dbId,section:section,title_fr:name||undefined,updated_at:new Date().toISOString()}]);
+    if(pcloudCode!==null){
+      await sbUpsert('gallery_settings',[{gallery_id:settId,pcloud_code:pcloudCode,updated_at:new Date().toISOString()}]);
+      DB_SETTINGS[settId]=DB_SETTINGS[settId]||{};
+      DB_SETTINGS[settId].pcloud_code=pcloudCode;
+    }
+    if(!DB.cards[dbId])DB.cards[dbId]={};
+    Object.assign(DB.cards[dbId],{section:section,title_fr:name});
+    var nameEl=body.previousElementSibling.querySelector('.gal-name');
+    if(nameEl&&name)nameEl.textContent=name;
+    var badge=body.previousElementSibling.querySelector('.gal-sec-badge');
+    if(badge)badge.textContent=(SEC_OPTIONS.find(function(o){return o.v===section;})||{l:section}).l;
+    galFeedback('Brouillon «'+name+'» enregistré','ok');
+  }catch(err){galFeedback('Erreur : '+err.message,'err');}
+  btn.disabled=false;btn.textContent='Enregistrer';
+}
+
+async function publishDraft(btn,dbId,settId,staticSection){
+  btn.disabled=true;btn.textContent='Publication…';
+  var body=btn.closest('.gal-body');
+  var f=function(field){return body.querySelector('[data-field="'+field+'"]');};
+  var name=f('name').value.trim();
+  var section=f('section').value;
+  var pcloudInput=f('pcloud_code');
+  var pcloudCode=pcloudInput?pcloudInput.value.trim():null;
+  try{
+    await sbUpsert('gallery_cards',[{id:dbId,section:section,visible:true,title_fr:name||undefined,updated_at:new Date().toISOString()}]);
+    if(pcloudCode!==null){
+      await sbUpsert('gallery_settings',[{gallery_id:settId,pcloud_code:pcloudCode,updated_at:new Date().toISOString()}]);
+    }
+    if(!DB.cards[dbId])DB.cards[dbId]={};
+    Object.assign(DB.cards[dbId],{section:section,visible:true,title_fr:name});
+    var item=document.getElementById('draft-'+dbId);
+    if(item)item.remove();
+    galFeedback('«'+name+'» publié — visible dans Galeries','ok');
+    renderGalleries();
+  }catch(err){
+    btn.disabled=false;btn.textContent='Publier →';
+    galFeedback('Erreur : '+err.message,'err');
+  }
 }
 
 /* ===== EXPAND ===== */
@@ -607,11 +684,14 @@ function galSettingsId(card){
 function renderGalleries(){
   var list=document.getElementById('galleryList');
   list.innerHTML='';
+  var count=0;
   Object.keys(SECTIONS_CONFIG).forEach(function(secId){
     var sec=SECTIONS_CONFIG[secId];
     var prefix=PREFIX[secId]||secId;
     sec.cards.forEach(function(card){
       var dbId=prefix+'-'+card.id;
+      if(!cardIsVis(dbId,card))return;/* brouillon → Brouillons tab */
+      count++;
       var dbRow=DB.cards[dbId]||{};
       var settId=galSettingsId(card);
       var settRow=DB_SETTINGS[settId]||{};
@@ -714,6 +794,9 @@ function renderGalleries(){
       list.appendChild(item);
     });
   });
+  if(!count){
+    list.innerHTML='<p class="tab-placeholder">Aucune galerie publiée. Utilisez <strong>Brouillons</strong> pour publier.</p>';
+  }
 }
 
 function toggleGal(header){
