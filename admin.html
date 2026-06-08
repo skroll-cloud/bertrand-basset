@@ -330,7 +330,6 @@ function renderTree(){
     tree.appendChild(sep);
     hidden.forEach(function(item){tree.appendChild(buildItem0(item,true,secMap));});
   }
-  initAllSortables();
 }
 
 function buildItem0(item,locked,secMap){
@@ -339,14 +338,12 @@ function buildItem0(item,locked,secMap){
   el.dataset.menuId=item.id;
   var subs=MENU_CONFIG.filter(function(i){return i.parent===item.id;});
   var hasSub=subs.length>0;
-  var hasSec=item.type==='section'&&!!SECTIONS_CONFIG[item.sectionId];
-  var canExp=hasSub||hasSec;
   var isVis=menuIsVis(item.id);
   var name=displayName(item);
 
   var row=document.createElement('div');row.className='item-row';
   row.innerHTML=
-    (canExp?'<button class="exp-btn" onclick="toggleExp(this)">&#8250;</button>':'<span class="exp-ph"></span>')+
+    (hasSub?'<button class="exp-btn" onclick="toggleExp(this)">&#8250;</button>':'<span class="exp-ph"></span>')+
     '<span class="item-name" contenteditable="'+(locked?'false':'true')+'"'+
       ' onblur="saveLabel(this,\''+item.id+'\')"'+
       ' onkeydown="if(event.key===\'Enter\'){this.blur();event.preventDefault()}">'+esc(name)+'</span>'+
@@ -355,10 +352,9 @@ function buildItem0(item,locked,secMap){
       ' onclick="toggleMenuVis(\''+item.id+'\',this)">'+(isVis?'Visible':'Masqué')+'</button>';
   el.appendChild(row);
 
-  if(canExp){
+  if(hasSub){
     var ch=document.createElement('div');ch.className='children';
-    if(hasSub){subs.forEach(function(sub){ch.appendChild(buildItem1(sub,secMap));});}
-    else{ch.appendChild(buildCardList(item.sectionId,secMap));}
+    subs.forEach(function(sub){ch.appendChild(buildItem1(sub,secMap));});
     el.appendChild(ch);
   }
   return el;
@@ -369,12 +365,13 @@ function buildItem1(sub,secMap){
   el.className='item1';el.dataset.menuId=sub.id;
   var isVis=menuIsVis(sub.id);
   var name=displayName(sub);
-  var cards=secMap[sub.sectionId]||[];
+  var secId=sub.sectionId;
+  var cards=secId&&secMap[secId]?secMap[secId]:[];
 
   var row=document.createElement('div');row.className='item-row';
   row.innerHTML=
     '<span class="exp-ph"></span>'+
-    '<button class="exp-btn" onclick="toggleExp(this)">&#8250;</button>'+
+    '<span class="exp-ph"></span>'+
     '<span class="item-name" contenteditable="true"'+
       ' onblur="saveLabel(this,\''+sub.id+'\')"'+
       ' onkeydown="if(event.key===\'Enter\'){this.blur();event.preventDefault()}">'+esc(name)+'</span>'+
@@ -382,65 +379,6 @@ function buildItem1(sub,secMap){
     '<button class="vis-btn'+(isVis?'':' hidden')+'"'+
       ' onclick="toggleMenuVis(\''+sub.id+'\',this)">'+(isVis?'Visible':'Masqué')+'</button>';
   el.appendChild(row);
-
-  var ch=document.createElement('div');ch.className='children';
-  ch.appendChild(buildCardList(sub.sectionId,secMap));
-  el.appendChild(ch);
-  return el;
-}
-
-function buildCardList(sectionId,secMap){
-  var list=document.createElement('div');
-  list.className='card-list';list.dataset.sectionId=sectionId;
-  var cards=secMap[sectionId]||[];
-  if(!cards.length){
-    var note=document.createElement('div');
-    note.className='card-list-empty';note.textContent='— vide — glisser ici pour déposer';
-    list.appendChild(note);
-  }
-  cards.forEach(function(entry){
-    list.appendChild(buildCardEl(entry.card,entry.dbId,entry.effectiveSection));
-  });
-  return list;
-}
-
-function buildCardEl(card,dbId,section){
-  var el=document.createElement('div');
-  el.className='item2';
-  el.dataset.cardId=dbId;
-  el.dataset.section=section;
-
-  var dbRow=DB.cards[dbId]||{};
-  var isVis=cardIsVis(dbId,card);
-  var name=dbRow.title_fr||card.titleFr||card.titleEn||card.id;
-  var img=dbRow.cover_img||card.img||'';
-  var accUrl=dbRow.link_url||card.url||'';
-
-  el.dataset.titleFr=name;
-  el.dataset.img=img;
-  el.dataset.galleryId=card.galleryId||'';
-  el.dataset.linkUrl=accUrl;
-
-  var thumb=img
-    ?'<img class="thumb" src="'+esc(img)+'" loading="lazy" onerror="this.outerHTML=\'<div class=thumb-empty></div>\'">'
-    :'<div class="thumb-empty"></div>';
-
-  var accHtml=accUrl
-    ?'<a class="acc-btn" href="'+esc(accUrl)+'" target="_blank" rel="noopener">Accéder</a>'
-    :'';
-
-  el.innerHTML=
-    '<div class="item-row">'+
-      '<span class="drag-handle" title="Glisser">&#8942;</span>'+
-      '<span class="exp-ph"></span>'+
-      thumb+
-      '<span class="item-name" contenteditable="true"'+
-        ' onblur="saveCardName(this,\''+dbId+'\',\''+section+'\')"'+
-        ' onkeydown="if(event.key===\'Enter\'){this.blur();event.preventDefault()}">'+esc(name)+'</span>'+
-      accHtml+
-      '<button class="vis-btn'+(isVis?'':' hidden')+'"'+
-        ' onclick="toggleCardVis(\''+dbId+'\',\''+section+'\',this)">'+(isVis?'Visible':'Masqué')+'</button>'+
-    '</div>';
   return el;
 }
 
@@ -519,71 +457,6 @@ function toggleExp(btn){
   var parent=btn.closest('.item0,.item1');
   var ch=parent.querySelector(':scope>.children');
   if(ch)ch.classList.toggle('open');
-}
-
-/* ===== SORTABLE ===== */
-function initAllSortables(){
-  document.querySelectorAll('.card-list').forEach(function(list){
-    Sortable.create(list,{
-      group:'gallery-cards',
-      handle:'.drag-handle',
-      animation:150,
-      ghostClass:'sortable-ghost',
-      dragClass:'sortable-drag',
-      onStart:function(){
-        /* Open all sections so user can drop anywhere */
-        document.querySelectorAll('.children').forEach(function(c){c.classList.add('open');});
-        document.querySelectorAll('.exp-btn').forEach(function(b){b.classList.add('open');});
-      },
-      onEnd:function(evt){
-        var fromSec=evt.from.dataset.sectionId;
-        var toSec=evt.to.dataset.sectionId;
-        var cardEl=evt.item;
-
-        /* Remove empty-section note if present */
-        var note=evt.to.querySelector('.card-list-empty');
-        if(note)note.remove();
-
-        if(fromSec===toSec){
-          saveCardOrder(evt.to,toSec);
-        }else{
-          cardEl.dataset.section=toSec;
-          /* Update event handlers on moved card */
-          var dbId=cardEl.dataset.cardId;
-          var nameEl=cardEl.querySelector('.item-name');
-          var visBtn=cardEl.querySelector('.vis-btn');
-          if(nameEl)nameEl.setAttribute('onblur','saveCardName(this,\''+dbId+'\',\''+toSec+'\')');
-          if(visBtn)visBtn.setAttribute('onclick','toggleCardVis(\''+dbId+'\',\''+toSec+'\',this)');
-
-          sbUpsert('gallery_cards',[{
-            id:dbId,section:toSec,
-            title_fr:cardEl.dataset.titleFr||'',
-            cover_img:cardEl.dataset.img||null,
-            gallery_id:cardEl.dataset.galleryId||null,
-            link_url:cardEl.dataset.linkUrl||null,
-            updated_at:new Date().toISOString()
-          }]).then(function(){
-            saveCardOrder(evt.from,fromSec,true);
-            saveCardOrder(evt.to,toSec,true);
-            showFeedback('Déplacé vers «'+toSec+'»');
-          }).catch(function(e){showFeedback('Erreur : '+e.message,'err');});
-        }
-      }
-    });
-  });
-}
-
-/* ===== SAVE — Card order ===== */
-async function saveCardOrder(listEl,sectionId,silent){
-  var items=Array.from(listEl.querySelectorAll(':scope>.item2'));
-  var updates=items.map(function(el,i){
-    return{id:el.dataset.cardId,sort_order:i,updated_at:new Date().toISOString()};
-  });
-  if(!updates.length)return;
-  try{
-    await sbUpsert('gallery_cards',updates);
-    if(!silent)showFeedback('Ordre sauvegardé');
-  }catch(e){showFeedback('Erreur : '+e.message,'err');}
 }
 
 /* ===== SAVE — Card name ===== */
