@@ -455,8 +455,13 @@ class Portfolio {
     /* Logo B : remonter d'un cran dans la hiérarchie de navigation */
     navigateUp() {
         if (this.currentGalleryId) {
-            /* Dans une galerie SPA → retour à la section qui l'a ouverte */
-            if (this._lastSectionId) {
+            if (this._cameFromPhotoGrid) {
+                /* On était dans le slideshow ouvert depuis la grille → retour à la grille */
+                const gid = this.currentGalleryId;
+                this._cameFromPhotoGrid = false;
+                this.showGalleryGrid(gid);
+            } else if (this._lastSectionId) {
+                /* Dans une galerie SPA → retour à la section qui l'a ouverte */
                 this.showSectionGrid(this._lastSectionId);
             } else {
                 this.exitUniverseMode();
@@ -481,14 +486,15 @@ class Portfolio {
         }
     }
 
-    openGallery(id) {
+    openGallery(id, startIndex = 0, fromGrid = false) {
         const g = this.galleries[id];
         if (!g?.items?.length) return;
         history.pushState({ view: 'gallery', id }, '', '#' + id);
-        this.currentGallery   = g;
-        this.currentGalleryId = id;
-        this.currentPageId    = null;
-        this.currentIndex     = 0;
+        this.currentGallery      = g;
+        this.currentGalleryId    = id;
+        this.currentPageId       = null;
+        this.currentIndex        = 0;
+        this._cameFromPhotoGrid  = fromGrid;
         this.stopSlideshow();
         this.stopAudio();
         this.gridMode = false;
@@ -507,8 +513,63 @@ class Portfolio {
             this.exitUniverseMode();
         }
 
-        this.showItem(0);
+        this.showItem(startIndex);
         if (g.autoplay && this.autoplaying) this.startSlideshow();
+    }
+
+    /* Grille de photos — s'affiche avant le slideshow */
+    showGalleryGrid(id) {
+        const g = this.galleries[id];
+        if (!g?.items?.length) { this.openGallery(id); return; }
+
+        const imgItems = [];
+        g.items.forEach((item, idx) => {
+            if (item.type === 'image' || item.type === 'accueil-image') {
+                imgItems.push({ item, idx });
+            }
+        });
+        if (!imgItems.length) { this.openGallery(id); return; }
+
+        this.stopSlideshow();
+        this.stopAudio();
+        this.currentGallery     = g;
+        this.currentGalleryId   = id;
+        this.currentPageId      = null;
+        this._cameFromPhotoGrid = false; /* on EST dans la grille, pas dans le slide */
+        this.gridMode           = false;
+        document.getElementById('site')?.classList.remove('films-mode');
+
+        const menuItem  = MENU_CONFIG.find(i => i.galleryId === id && i.type === 'gallery');
+        const parentId  = menuItem?.parent;
+        const parentGrp = parentId ? MENU_CONFIG.find(i => i.id === parentId && i.type === 'group') : null;
+        if (parentGrp) this.enterUniverseMode(parentGrp, id);
+        else this.exitUniverseMode();
+
+        const rows = imgItems.map(({ item, idx }) =>
+            `<div class="photo-grid-item" data-index="${idx}">
+                <img src="${item.src}" loading="lazy">
+            </div>`
+        ).join('');
+
+        const container = document.getElementById('galleryContainer');
+        container.innerHTML = `<div class="photo-grid-wrap"><div class="photo-grid">${rows}</div></div>`;
+        container.classList.remove('grid-mode');
+        container.classList.add('page-mode', 'active');
+
+        container.querySelectorAll('.photo-grid-item').forEach(el => {
+            el.addEventListener('click', () => {
+                this.openGallery(id, parseInt(el.dataset.index, 10), true);
+            });
+        });
+
+        const counter = document.querySelector('.gallery-counter');
+        if (counter) counter.textContent = `${imgItems.length} photos`;
+        const descEl = document.getElementById('galleryDesc');
+        if (descEl) descEl.innerHTML = '';
+        const footerCap = document.getElementById('footerCaption');
+        if (footerCap) footerCap.innerHTML = '';
+
+        history.pushState({ view: 'gallery', id }, '', '#' + id);
     }
 
     enterUniverseMode(group, activeId) {
@@ -1222,8 +1283,7 @@ class Portfolio {
     }
 
     openGalleryFromSection(galleryId) {
-        this.openGallery(galleryId);
-        const navLink = document.querySelector(`[data-gallery="${galleryId}"]`);
+        this.showGalleryGrid(galleryId);
         /* Ne pas changer l'item actif dans la sidebar — on reste dans la section */
     }
 
