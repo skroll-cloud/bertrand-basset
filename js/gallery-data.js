@@ -47,6 +47,12 @@ const T = {
 const MENU_CONFIG = [
   { "id": "best-of",             "name": "BEST OF",              "type": "gallery", "galleryId": "best-of", "hidden": true },
   { "id": "photographe",         "name": "PHOTOGRAPHE",          "type": "section", "sectionId": "photographe" },
+  /* ── Sous-menu PHOTOGRAPHE (visible dans universeNav quand on entre dans la section) ── */
+  { "id": "ph-portrait",         "name": "Portrait",             "type": "section", "sectionId": "ph-portrait",   "parent": "photographe" },
+  { "id": "ph-reportage",        "name": "Reportage",            "type": "section", "sectionId": "ph-reportage",  "parent": "photographe" },
+  { "id": "ph-series",           "name": "Séries",               "type": "section", "sectionId": "ph-series",     "parent": "photographe" },
+  { "id": "ph-exposition",       "name": "Exposition",           "type": "section", "sectionId": "ph-exposition", "parent": "photographe" },
+  { "id": "ph-clients",          "name": "Galeries clients",     "type": "section", "sectionId": "ph-clients",    "parent": "photographe" },
   { "id": "realisateur",         "name": "RÉALISATEUR",          "type": "section", "sectionId": "realisateur" },
   { "id": "auteur",              "name": "AUTEUR",               "type": "page",    "pageId": "auteur",    "hidden": true },
   { "id": "travailler-ensemble", "name": "TRAVAILLER ENSEMBLE",  "type": "page",    "pageId": "travailler-ensemble" },
@@ -69,10 +75,16 @@ const MENU_CONFIG = [
 /* ─── SECTIONS CONFIG ────────────────────────────────────────── */
 /* Cartes affichées dans la grille quand on clique sur une section */
 const SECTIONS_CONFIG = {
+    /* ── PHOTOGRAPHE — section racine (vide : le sous-menu s'affiche dans la sidebar) ── */
     "photographe": {
         titleFr: "Photographe", titleEn: "Photographer",
+        cards: []
+    },
+
+    /* ── Portrait ── */
+    "ph-portrait": {
+        titleFr: "Portrait", titleEn: "Portrait",
         cards: [
-            /* ── Galeries perso de Bertrand ── */
             {
                 id: "portrait", galleryId: "portrait",
                 labelFr: "Studio · Terrain", labelEn: "Studio · Location",
@@ -82,6 +94,65 @@ const SECTIONS_CONFIG = {
                 img: "images/portrait/conversation-02.jpg",
                 _hiddenByAdmin: true
             },
+        ]
+    },
+
+    /* ── Reportage ── */
+    "ph-reportage": {
+        titleFr: "Reportage", titleEn: "Reportage",
+        cards: [
+            {
+                id: "st-melar", galleryId: "st-melar",
+                labelFr: "Résidence · EHPAD Lanmeur", labelEn: "Residency · EHPAD Lanmeur",
+                titleFr: "St Mélar", titleEn: "St Mélar",
+                descFr: "Une semaine dans un EHPAD",
+                descEn: "A week in a care home",
+                img: "images/ST MELAR/stmelar-1.jpg",
+                _hiddenByAdmin: true
+            },
+            {
+                id: "plougasnou",
+                labelFr: "Finistère · Bretagne", labelEn: "Finistère · Brittany",
+                titleFr: "Plougasnou", titleEn: "Plougasnou",
+                descFr: "Série documentaire · territoire",
+                descEn: "Documentary series · territory",
+                img: "images/ST MELAR/stmelar-1.jpg",
+                _hiddenByAdmin: true
+            },
+            {
+                id: "salarie-ehpad",
+                labelFr: "Immersion · Travail", labelEn: "Immersion · Work",
+                titleFr: "Salarié EHPAD", titleEn: "Care home worker",
+                descFr: "Le quotidien des soignants",
+                descEn: "A caregiver's daily life",
+                img: null,
+                _hiddenByAdmin: true
+            },
+            {
+                id: "immersion",
+                labelFr: "Documentaire", labelEn: "Documentary",
+                titleFr: "Immersion", titleEn: "Immersion",
+                descFr: "EHPAD, territoire, métier",
+                descEn: "Care homes, territory, craft",
+                img: null,
+                _hiddenByAdmin: true
+            },
+            {
+                id: "plateau",
+                labelFr: "Cinéma · Théâtre", labelEn: "Cinema · Theatre",
+                titleFr: "Shooting plateau & scène", titleEn: "On-set & stage",
+                descFr: "Acteurs, équipes, making-of",
+                descEn: "Actors, crews, making-of",
+                img: null,
+                _hiddenByAdmin: true
+            },
+        ]
+    },
+
+    /* ── Séries ── */
+    "ph-series": {
+        titleFr: "Séries", titleEn: "Series",
+        cards: [
             {
                 id: "gem", galleryId: "gem",
                 labelFr: "Santé mentale · Morlaix", labelEn: "Mental health · Morlaix",
@@ -101,70 +172,7 @@ const SECTIONS_CONFIG = {
                 _hiddenByAdmin: true
             },
             {
-                id: "plougasnou", url: "clients/plougasnou.html",
-                labelFr: "Finistère · Bretagne", labelEn: "Finistère · Brittany",
-                titleFr: "Plougasnou", titleEn: "Plougasnou",
-                descFr: "Série documentaire · territoire",
-                descEn: "Documentary series · territory",
-                img: "images/ST MELAR/stmelar-1.jpg",
-                _hiddenByAdmin: true
-            },
-            {
-                id: "salarie-ehpad", galleryId: null,
-                labelFr: "Immersion · Travail", labelEn: "Immersion · Work",
-                titleFr: "Salarié EHPAD", titleEn: "Care home worker",
-                descFr: "Le quotidien des soignants",
-                descEn: "A caregiver's daily life",
-                img: null,
-                _hiddenByAdmin: true   /* pas encore de contenu */
-            },
-            {
-                id: "carre-das", galleryId: null,
-                labelFr: "Projet · Série", labelEn: "Project · Series",
-                titleFr: "Carré d'As", titleEn: "Carré d'As",
-                descFr: "Série photographique",
-                descEn: "Photography series",
-                img: null,
-                _hiddenByAdmin: true   /* pas encore de contenu */
-            },
-            {
-                id: "lumiere", galleryId: null,
-                labelFr: "Recherche artistique", labelEn: "Artistic research",
-                titleFr: "Lumière Lente", titleEn: "Slow Light",
-                descFr: "Une esthétique en développement",
-                descEn: "An aesthetic in development",
-                img: null,
-                _hiddenByAdmin: true   /* pas encore de contenu */
-            },
-            {
-                id: "plateau", galleryId: null,
-                labelFr: "Cinéma · Théâtre", labelEn: "Cinema · Theatre",
-                titleFr: "Shooting plateau & scène", titleEn: "On-set & stage",
-                descFr: "Acteurs, équipes, making-of",
-                descEn: "Actors, crews, making-of",
-                img: null,
-                _hiddenByAdmin: true   /* pas encore de contenu */
-            },
-            {
-                id: "immersion", galleryId: "studio",
-                labelFr: "Documentaire", labelEn: "Documentary",
-                titleFr: "Immersion", titleEn: "Immersion",
-                descFr: "EHPAD, territoire, métier",
-                descEn: "Care homes, territory, craft",
-                img: "images/ST MELAR/stmelar-1.jpg",
-                _hiddenByAdmin: true   /* galerie studio vide pour l'instant */
-            },
-            {
-                id: "st-melar", galleryId: "st-melar",
-                labelFr: "Résidence · EHPAD Lanmeur", labelEn: "Residency · EHPAD Lanmeur",
-                titleFr: "St Mélar", titleEn: "St Mélar",
-                descFr: "Une semaine dans un EHPAD",
-                descEn: "A week in a care home",
-                img: "images/ST MELAR/stmelar-1.jpg",
-                _hiddenByAdmin: true
-            },
-            {
-                id: "burning-man", galleryId: null,
+                id: "burning-man", galleryId: "burning-man",
                 labelFr: "Nevada · 2016", labelEn: "Nevada · 2016",
                 titleFr: "Burning Man", titleEn: "Burning Man",
                 descFr: "Désert du Nevada · Black Rock City",
@@ -172,7 +180,53 @@ const SECTIONS_CONFIG = {
                 img: "images/dustin-kolor/04.jpg",
                 _hiddenByAdmin: true
             },
-            /* ── Galeries clients (déplacées depuis galeries-client) ── */
+            {
+                id: "cartes-postales", galleryId: "cartes-postales",
+                labelFr: "Série · Bretagne", labelEn: "Series · Brittany",
+                titleFr: "Cartes postales", titleEn: "Postcards",
+                descFr: "Série photographique",
+                descEn: "Photography series",
+                img: "images/cartes-postales/cp-01.jpg",
+                _hiddenByAdmin: true
+            },
+            {
+                id: "carre-das",
+                labelFr: "Projet · Série", labelEn: "Project · Series",
+                titleFr: "Carré d'As", titleEn: "Carré d'As",
+                descFr: "Série photographique",
+                descEn: "Photography series",
+                img: null,
+                _hiddenByAdmin: true
+            },
+            {
+                id: "lumiere",
+                labelFr: "Recherche artistique", labelEn: "Artistic research",
+                titleFr: "Lumière Lente", titleEn: "Slow Light",
+                descFr: "Une esthétique en développement",
+                descEn: "An aesthetic in development",
+                img: null,
+                _hiddenByAdmin: true
+            },
+        ]
+    },
+
+    /* ── Exposition ── */
+    "ph-exposition": {
+        titleFr: "Exposition", titleEn: "Exhibition",
+        cards: []
+    },
+
+    /* ── Galeries clients ── */
+    "ph-clients": {
+        titleFr: "Galeries clients", titleEn: "Client galleries",
+        cards: [
+            {
+                id: "grande-parade", url: "clients/grande-parade.html",
+                labelFr: "Galerie client", labelEn: "Client gallery",
+                titleFr: "Grande Parade", titleEn: "Grande Parade",
+                descFr: "Galerie · accès protégé", descEn: "Gallery · protected access",
+                img: "https://api.pcloud.com/getpubthumb?code=kZKq0A5ZaoFGv3YO4mQrFbQghpd6Tfw0CWgy&fileid=88890561791&size=600x900&type=jpg"
+            },
             {
                 id: "ines", url: "clients/ines.html",
                 labelFr: "Galerie privée", labelEn: "Private gallery",
@@ -180,14 +234,6 @@ const SECTIONS_CONFIG = {
                 descFr: "Sélection · accès protégé", descEn: "Selection · protected access",
                 img: "https://api.pcloud.com/getpubthumb?code=kZTjQI5Z2AICSui7ebYf6i6dMEQqiYXYSFCV&fileid=88476285883&size=600x900&type=jpg",
                 _hiddenByAdmin: true
-            },
-            {
-                id: "grande-parade", url: "clients/grande-parade.html",
-                labelFr: "Galerie client", labelEn: "Client gallery",
-                titleFr: "Grande Parade", titleEn: "Grande Parade",
-                descFr: "Galerie · accès protégé", descEn: "Gallery · protected access",
-                img: "https://api.pcloud.com/getpubthumb?code=kZKq0A5ZaoFGv3YO4mQrFbQghpd6Tfw0CWgy&fileid=88890561791&size=600x900&type=jpg"
-                /* seule galerie visible — étalon du système */
             },
             {
                 id: "gilmerton", url: "clients/gilmerton.html",
@@ -291,6 +337,7 @@ const SECTIONS_CONFIG = {
             },
         ]
     },
+
     "realisateur": {
         titleFr: "Réalisateur", titleEn: "Filmmaker",
         cards: [
@@ -367,10 +414,6 @@ const SECTIONS_CONFIG = {
         ]
     },
 
-    "galeries-client": {
-        titleFr: "Galeries Client", titleEn: "Client Galleries",
-        cards: []
-    }
 };
 
 /* ─── PAGES CONFIG ───────────────────────────────────────────── */
@@ -430,31 +473,6 @@ const GALLERIES_CONFIG = {
         }
 ],
         captions: {"02.jpg":{"en":"","fr":"Jean-Philippe Davodeau\nActeur"},"conversation-02.jpg":{"en":"","fr":"Antoine Asnar\nActeur"},"Imane02@bertrandbasset 2.jpg":{"en":"","fr":"Imene\nActrice"},"JF.jpg":{"en":"","fr":"Jean-François\nSerie GEM"},"L1020630.jpg":{"en":"","fr":"Patrick Ewen\nConteur"},"portrait-02.jpg":{"en":"","fr":"Ange-Marine Chénevat\nActrice"},"L1060508.jpg":{"en":"","fr":"Ange-Marine Chénevat\nActrice"}},
-    },
-
-    "conversation-s-": {
-        path:          "images/conversation",
-        autoplay:      true,
-        autoplayDelay: 4,
-        cartons: [
-        {
-                "cid": "cmmkol4ggyqr",
-                "position": 0,
-                "titleFr": "",
-                "titleEn": "",
-                "subtitleFr": "",
-                "subtitleEn": "",
-                "descFr": "Un peu plus qu'une photo, une rencontre, une conversation entre vous et moi.\n\nUne conversation, c'est d'abord une rencontre où on prend le temps, on discute, dans un lieu de votre choix, sans appareil photo. Puis, on reprend la conversation pour la séance photo, on cherche ensemble à capturer le fruit de notre rencontre. C'est une démarche qui rompt avec l'instanéité, une sorte d'éloge de la lenteur, parce que le résultat sera plus intemporelle, fruit d'une maturation.\n\nLe rendu peut-être photographique, sonore ou sous la forme d'entretien mémoire.\n\nContactez moi pour en savoir plus.",
-                "descEn": "More than a photo — a conversation between you and me.\n\nIn the form of a documentary series or individual portrait, a conversation can take the shape of a photograph, a recorded interview or a memory film. Multiple approaches are possible depending on the project, the subject, the person.\n\nContact me to find out more.",
-                "ctaLabel": "",
-                "ctaUrl": "",
-                "categoryFr": "",
-                "categoryEn": "",
-                "sidebarFr": "",
-                "sidebarEn": ""
-        }
-],
-        captions: {},
     },
 
     "studio": {

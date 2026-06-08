@@ -138,7 +138,11 @@ class Portfolio {
                 const dbMap   = {};
                 dbCards.forEach(r => { dbMap[r.id] = r; });
 
-                const prefixMap = { photographe: 'ph', realisateur: 'real', boutique: 'shop', 'galeries-client': 'client' };
+                const prefixMap = {
+                    photographe: 'ph', realisateur: 'real', boutique: 'shop', 'galeries-client': 'client',
+                    'ph-portrait': 'ph', 'ph-reportage': 'ph', 'ph-series': 'ph',
+                    'ph-exposition': 'ph', 'ph-clients': 'ph'
+                };
 
                 for (const secId in SECTIONS_CONFIG) {
                     const sec    = SECTIONS_CONFIG[secId];
@@ -469,19 +473,23 @@ class Portfolio {
         if (g.autoplay && this.autoplaying) this.startSlideshow();
     }
 
-    enterUniverseMode(group, activeGalleryId) {
+    enterUniverseMode(group, activeId) {
         const siblings = MENU_CONFIG.filter(i => i.parent === group.id && !i.hidden && !i._hiddenByAdmin);
         const uNav     = document.getElementById('universeNav');
         const mNav     = document.getElementById('mainNav');
         if (!uNav) return;
 
         const items = siblings.map(s => {
-            const isActive = s.galleryId && s.galleryId === activeGalleryId;
+            const isActive = activeId && (s.galleryId === activeId || s.sectionId === activeId || s.id === activeId);
             if (s.type === 'gallery') {
                 const count = this.galleries[s.galleryId]?.items?.filter(i => i.type === 'image').length || '';
                 return `<div class="universe-item${isActive ? ' active' : ''}" data-gallery="${s.galleryId}">
                     <span class="universe-item-title">${s.name}</span>
                     ${count ? `<span class="universe-item-num">${String(count).padStart(2,'0')}</span>` : ''}
+                </div>`;
+            } else if (s.type === 'section') {
+                return `<div class="universe-item${isActive ? ' active' : ''}" data-section="${s.sectionId}">
+                    <span class="universe-item-title">${s.name}</span>
                 </div>`;
             } else if (s.type === 'link') {
                 return `<div class="universe-item" data-href="${s.url}">
@@ -504,6 +512,9 @@ class Portfolio {
         uNav.querySelector('#universeBackBtn').addEventListener('click', () => this.exitUniverseMode());
         uNav.querySelectorAll('.universe-item[data-gallery]').forEach(el => {
             el.addEventListener('click', () => { this.openGallery(el.dataset.gallery); });
+        });
+        uNav.querySelectorAll('.universe-item[data-section]').forEach(el => {
+            el.addEventListener('click', () => { this.showSectionGrid(el.dataset.section); });
         });
         uNav.querySelectorAll('.universe-item[data-href]').forEach(el => {
             el.addEventListener('click', () => { window.location.href = el.dataset.href; });
@@ -979,12 +990,38 @@ class Portfolio {
     showSectionGrid(sectionId) {
         const sec = SECTIONS_CONFIG[sectionId];
         if (!sec) return;
+
+        /* ── Sous-menu : si cette section a des enfants dans MENU_CONFIG → universeNav ── */
+        const subSecs = MENU_CONFIG.filter(i => i.parent === sectionId && i.type === 'section' && !i.hidden && !i._hiddenByAdmin);
+        if (subSecs.length > 0) {
+            const parentItem = { id: sectionId, name: (sec.titleFr || sectionId).toUpperCase() };
+            this.enterUniverseMode(parentItem, null);
+            this.showSectionGrid(subSecs[0].sectionId);
+            return;
+        }
+
+        /* ── Si c'est une sous-section, rester en universeNav et mettre à jour l'actif ── */
+        const myMenuItem  = MENU_CONFIG.find(i => i.sectionId === sectionId);
+        const isSubSection = !!(myMenuItem?.parent);
+
         this.currentGallery   = null;
         this.currentGalleryId = null;
         this.currentPageId    = sectionId;
         this.stopSlideshow();
         this.stopAudio();
-        this.exitUniverseMode();
+
+        if (!isSubSection) {
+            this.exitUniverseMode();
+        } else {
+            /* Mettre l'item actif dans universeNav */
+            const uNav = document.getElementById('universeNav');
+            if (uNav) {
+                uNav.querySelectorAll('.universe-item').forEach(el => {
+                    el.classList.toggle('active', el.dataset.section === sectionId);
+                });
+            }
+        }
+
         history.pushState({ view: 'section', id: sectionId }, '', '#' + sectionId);
 
         const container = document.getElementById('galleryContainer');
@@ -997,7 +1034,11 @@ class Portfolio {
         const title = lang === 'en' ? sec.titleEn : sec.titleFr;
 
         /* Préfixe de section pour dériver les clés sans Supabase */
-        const prefixMap = { photographe: 'ph', realisateur: 'real', boutique: 'shop', 'galeries-client': 'client' };
+        const prefixMap = {
+            photographe: 'ph', realisateur: 'real', boutique: 'shop', 'galeries-client': 'client',
+            'ph-portrait': 'ph', 'ph-reportage': 'ph', 'ph-series': 'ph',
+            'ph-exposition': 'ph', 'ph-clients': 'ph'
+        };
         const secPrefix = prefixMap[sectionId] || sectionId;
 
         /* Construire la map des enfants : parentDbId → [cartes enfants] */
