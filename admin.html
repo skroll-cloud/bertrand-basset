@@ -426,6 +426,7 @@ function buildItem1(sub,secMap){
   var name=displayName(sub);
   var secId=sub.sectionId;
   var cards=secId&&secMap[secId]?secMap[secId]:[];
+  var visCount=cards.filter(function(e){return cardIsVis(e.dbId,e.card);}).length;
 
   var row=document.createElement('div');row.className='item-row';
   row.innerHTML=
@@ -434,7 +435,7 @@ function buildItem1(sub,secMap){
     '<span class="item-name" contenteditable="true"'+
       ' onblur="saveLabel(this,\''+sub.id+'\')"'+
       ' onkeydown="if(event.key===\'Enter\'){this.blur();event.preventDefault()}">'+esc(name)+'</span>'+
-    '<span class="badge">'+cards.length+' carte'+(cards.length!==1?'s':'')+'</span>'+
+    '<span class="badge">'+visCount+' carte'+(visCount!==1?'s':'')+'</span>'+
     '<button class="vis-btn'+(isVis?'':' hidden')+'"'+
       ' onclick="toggleMenuVis(\''+sub.id+'\',this)">'+(isVis?'Visible':'Masqué')+'</button>';
   el.appendChild(row);
