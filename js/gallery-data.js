@@ -72,21 +72,15 @@ const SECTIONS_CONFIG = {
     "photographe": {
         titleFr: "Photographe", titleEn: "Photographer",
         cards: [
+            /* ── Galeries perso de Bertrand ── */
             {
                 id: "portrait", galleryId: "portrait",
                 labelFr: "Studio · Terrain", labelEn: "Studio · Location",
                 titleFr: "Portrait", titleEn: "Portrait",
                 descFr: "Dirigeant, artiste, acteur, particulier",
                 descEn: "Executive, artist, actor, individual",
-                img: "images/portrait/conversation-02.jpg"
-            },
-            {
-                id: "serie-expo", galleryId: "gem",
-                labelFr: "Projet · Recherche", labelEn: "Project · Research",
-                titleFr: "Série & Exposition", titleEn: "Series & Exhibition",
-                descFr: "Projets photo documentaires et expositions",
-                descEn: "Documentary photo projects and exhibitions",
-                img: "images/gem/JeanFrancois.jpg"
+                img: "images/portrait/conversation-02.jpg",
+                _hiddenByAdmin: true
             },
             {
                 id: "gem", galleryId: "gem",
@@ -94,7 +88,8 @@ const SECTIONS_CONFIG = {
                 titleFr: "GEM", titleEn: "GEM",
                 descFr: "Grande Cause Nationale 2025",
                 descEn: "Grande Cause Nationale 2025",
-                img: "images/gem/JeanFrancois.jpg"
+                img: "images/gem/JeanFrancois.jpg",
+                _hiddenByAdmin: true
             },
             {
                 id: "dustin-kolor-ph", url: "dustin-kolor/index.html",
@@ -102,7 +97,8 @@ const SECTIONS_CONFIG = {
                 titleFr: "Dust'in Kolor", titleEn: "Dust'in Kolor",
                 descFr: "Série chromatique · Tempêtes de sable",
                 descEn: "Chromatic series · Sandstorms",
-                img: "images/dustin-kolor/01.jpg"
+                img: "images/dustin-kolor/01.jpg",
+                _hiddenByAdmin: true
             },
             {
                 id: "plougasnou", url: "clients/plougasnou.html",
@@ -164,7 +160,8 @@ const SECTIONS_CONFIG = {
                 titleFr: "St Mélar", titleEn: "St Mélar",
                 descFr: "Une semaine dans un EHPAD",
                 descEn: "A week in a care home",
-                img: "images/ST MELAR/stmelar-1.jpg"
+                img: "images/ST MELAR/stmelar-1.jpg",
+                _hiddenByAdmin: true
             },
             {
                 id: "burning-man", galleryId: null,
@@ -189,8 +186,8 @@ const SECTIONS_CONFIG = {
                 labelFr: "Galerie client", labelEn: "Client gallery",
                 titleFr: "Grande Parade", titleEn: "Grande Parade",
                 descFr: "Galerie · accès protégé", descEn: "Gallery · protected access",
-                img: "https://api.pcloud.com/getpubthumb?code=kZKq0A5ZaoFGv3YO4mQrFbQghpd6Tfw0CWgy&fileid=88890561791&size=600x900&type=jpg",
-                _hiddenByAdmin: true
+                img: "https://api.pcloud.com/getpubthumb?code=kZKq0A5ZaoFGv3YO4mQrFbQghpd6Tfw0CWgy&fileid=88890561791&size=600x900&type=jpg"
+                /* seule galerie visible — étalon du système */
             },
             {
                 id: "gilmerton", url: "clients/gilmerton.html",

@@ -134,6 +134,17 @@
       color: var(--dim); cursor: pointer; transition: all .15s; white-space: nowrap;
     }
     .card-del-btn:hover { border-color: var(--red); color: var(--red); }
+    .card-type-badge {
+      display: inline-block; font-size: 0.4rem; letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 0.1rem 0.35rem; border-radius: 2px; border: 1px solid currentColor;
+      margin-left: 0.4rem; vertical-align: middle; font-weight: 400;
+    }
+    .type-galerie { color: #2a7ae4; }
+    .type-collection { color: #9b59b6; }
+    .type-client  { color: #27ae60; }
+    .type-lien    { color: #e67e22; }
+    .type-page    { color: #7f8c8d; }
+    .type-vide    { color: #ccc; border-color: #eee; }
     .pwd-status { font-size: 0.5rem; letter-spacing: 0.06em; color: var(--dim); white-space: nowrap; }
     .pwd-status.set { color: var(--green); }
     .card-pwd-row { background: #fafafa; border-radius: 2px; padding: 0.3rem 0; }
@@ -603,6 +614,14 @@ function renderCards() {
     SECTIONS_CONFIG[secId].cards.forEach(card => {
       const dbId  = `${prefix}-${card.id}`;
       const dbRow = dbCards[dbId] || {};
+      /* Dériver le type de carte pour l'affichage dans l'admin */
+      const cardUrl = dbRow.link_url || card.url || null;
+      let cardType = 'vide';
+      if (card.galleryId)                          cardType = 'galerie';
+      else if (cardUrl && cardUrl.includes('clients/')) cardType = 'client';
+      else if (cardUrl)                            cardType = 'lien';
+      else if (card.pageId)                        cardType = 'page';
+
       allBySec[secId].push({
         dbId,
         secId,
@@ -612,8 +631,10 @@ function renderCards() {
         descEn:    dbRow.desc_en    || '',
         coverImg:  dbRow.cover_img  || card.img     || '',
         parentId:  dbRow.parent_id  || card.parentId || null,
-        visible:   dbRow.visible !== undefined ? dbRow.visible : true,
-        sortOrder: dbRow.sort_order ?? 999
+        /* Bug fix : respecter _hiddenByAdmin du JS statique comme valeur par défaut */
+        visible:   dbRow.visible !== undefined ? dbRow.visible : !card._hiddenByAdmin,
+        sortOrder: dbRow.sort_order ?? 999,
+        cardType,
       });
     });
   }
@@ -648,6 +669,12 @@ function cardRowHtml(c, siblings) {
     ? `<img class="card-thumb" src="${c.coverImg}" alt="" loading="lazy" onerror="this.style.opacity='.2'">`
     : `<div class="card-thumb-placeholder"></div>`;
 
+  /* Badge type de carte */
+  const isParent = (siblings || []).some(s => s.parentId === c.dbId);
+  const badgeType = isParent ? 'collection' : (c.cardType || 'vide');
+  const badgeLabel = { galerie: 'Photos', collection: 'Collection', client: 'Client', lien: 'Lien', page: 'Page', vide: '—' }[badgeType] || badgeType;
+  const typeBadge = `<span class="card-type-badge type-${badgeType}">${badgeLabel}</span>`;
+
   const isPrivate = c.parentId === 'ph-galeries-client';
   const hasPwd    = isPrivate && /^[a-f0-9]{64}$/i.test(c.descEn || '');
 
@@ -664,7 +691,7 @@ function cardRowHtml(c, siblings) {
       ${thumb}
       <div class="card-fields">
         <div class="card-field-row">
-          <span class="field-label">Titre</span>
+          <span class="field-label">Titre ${typeBadge}</span>
           <input class="field-input title" id="f-title-${c.dbId}" value="${esc(c.titleFr)}" placeholder="Titre de la carte">
         </div>
         <div class="card-field-row">
