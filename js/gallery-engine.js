@@ -455,20 +455,16 @@ class Portfolio {
     /* Logo B : remonter d'un cran dans la hiérarchie de navigation */
     navigateUp() {
         if (this.currentGalleryId) {
-            /* Dans une galerie SPA → retour à la section */
+            /* Dans une galerie SPA → retour à la section qui l'a ouverte */
             if (this._lastSectionId) {
                 this.showSectionGrid(this._lastSectionId);
             } else {
                 this.exitUniverseMode();
+                this.openHomeGallery();
             }
-        } else if (this.currentPageId && SECTIONS_CONFIG[this.currentPageId]) {
-            /* Dans une grille de section → retour au menu principal */
-            this.exitUniverseMode();
-        } else if (this.currentPageId) {
-            /* Dans une page (infos, travailler-ensemble…) → retour au menu */
-            this.exitUniverseMode();
         } else {
-            /* Menu principal → ouvrir la galerie par défaut */
+            /* Dans une section, sous-section, page, ou nulle part → galerie par défaut */
+            this.exitUniverseMode();
             this.openHomeGallery();
         }
         this.setActiveLink(null);
