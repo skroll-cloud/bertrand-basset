@@ -1146,6 +1146,17 @@ class Portfolio {
             }
         });
 
+        /* Trier par sort_order au moment du rendu (source de vérité = Supabase) */
+        if (this._dbCards) {
+            const pfx = prefixMap[sectionId] || sectionId;
+            sec.cards.forEach(card => {
+                const key = card._dbId || `${pfx}-${card.id}`;
+                const row = this._dbCards[key];
+                if (row && row.sort_order != null) card._sortOrder = row.sort_order;
+            });
+            sec.cards.sort((a, b) => (a._sortOrder ?? 999) - (b._sortOrder ?? 999));
+        }
+
         /* Seules les cartes de premier niveau (sans parentId) sont affichées */
         const topCards = sec.cards.filter(card => !card._hiddenByAdmin && !card.parentId);
 
