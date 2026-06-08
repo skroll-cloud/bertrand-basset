@@ -339,9 +339,9 @@ body {
 .universe-item.active .universe-item-num { color: var(--red); }
 
 .universe-item-title {
-    font-size: 0.65rem;
+    font-size: 0.8rem;
     font-weight: 400;
-    letter-spacing: 0.1em;
+    letter-spacing: 0;
     text-transform: uppercase;
     color: var(--black);
     flex: 1;

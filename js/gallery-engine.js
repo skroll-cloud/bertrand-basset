@@ -541,9 +541,7 @@ class Portfolio {
             return '';
         }).join('');
 
-        uNav.innerHTML = `
-            <div class="universe-group-title">${group.name}</div>
-            <div class="universe-items">${items}</div>`;
+        uNav.innerHTML = `<div class="universe-items">${items}</div>`;
 
         /* bind clicks */
         uNav.querySelectorAll('.universe-item[data-gallery]').forEach(el => {

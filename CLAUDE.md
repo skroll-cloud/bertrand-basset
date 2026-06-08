@@ -4,6 +4,8 @@
 > **Règle absolue** : ne jamais inventer un nouveau design de page.
 > Toute nouvelle page ou section s'intègre dans le système existant.
 
+> **Règle typographie navigation** : les sous-menus (universe nav) utilisent EXACTEMENT la même police, taille et graisse que le menu principal : `font-size: 0.8rem`, `font-weight: 400`, `letter-spacing: 0`, `text-transform: uppercase`. Pas de titre de groupe dans le sous-menu (supprimé dans `enterUniverseMode()`). Ne jamais réintroduire de différence de taille entre niveaux de menu.
+
 ---
 
 ## 1. Stack & déploiement
