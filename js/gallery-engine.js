@@ -292,9 +292,7 @@ class Portfolio {
         document.querySelector('.landing .brand-block')?.addEventListener('click', () => this.enterSite());
         document.getElementById('homeLink')?.addEventListener('click', e => {
             e.preventDefault();
-            this.openHomeGallery();
-            this.setActiveLink(null);
-            this.closeMenu();
+            this.navigateUp();
         });
         document.getElementById('menuToggle')?.addEventListener('click', () => this.toggleMenu());
         document.getElementById('prevBtn')?.addEventListener('click',  e => { e.preventDefault(); this.prev(); });
@@ -454,6 +452,29 @@ class Portfolio {
         this.openGallery(SITE_CONFIG.defaultGallery || 'portrait');
     }
 
+    /* Logo B : remonter d'un cran dans la hiérarchie de navigation */
+    navigateUp() {
+        if (this.currentGalleryId) {
+            /* Dans une galerie SPA → retour à la section */
+            if (this._lastSectionId) {
+                this.showSectionGrid(this._lastSectionId);
+            } else {
+                this.exitUniverseMode();
+            }
+        } else if (this.currentPageId && SECTIONS_CONFIG[this.currentPageId]) {
+            /* Dans une grille de section → retour au menu principal */
+            this.exitUniverseMode();
+        } else if (this.currentPageId) {
+            /* Dans une page (infos, travailler-ensemble…) → retour au menu */
+            this.exitUniverseMode();
+        } else {
+            /* Menu principal → ouvrir la galerie par défaut */
+            this.openHomeGallery();
+        }
+        this.setActiveLink(null);
+        this.closeMenu();
+    }
+
     toggleAutoplay() {
         this.autoplaying = !this.autoplaying;
         document.getElementById('autoplayToggle')?.classList.toggle('active', this.autoplaying);
@@ -525,12 +546,10 @@ class Portfolio {
         }).join('');
 
         uNav.innerHTML = `
-            <button class="universe-back" id="universeBackBtn">‹ Menu</button>
             <div class="universe-group-title">${group.name}</div>
             <div class="universe-items">${items}</div>`;
 
         /* bind clicks */
-        uNav.querySelector('#universeBackBtn').addEventListener('click', () => this.exitUniverseMode());
         uNav.querySelectorAll('.universe-item[data-gallery]').forEach(el => {
             el.addEventListener('click', () => { this.openGallery(el.dataset.gallery); });
         });
@@ -1028,6 +1047,7 @@ class Portfolio {
         this.currentGallery   = null;
         this.currentGalleryId = null;
         this.currentPageId    = sectionId;
+        this._lastSectionId   = sectionId;
         this.stopSlideshow();
         this.stopAudio();
 

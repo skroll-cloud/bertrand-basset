@@ -25,12 +25,12 @@
 
     /* ── HEADER ─────────────────────────────────────────── */
     .g-header {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1100;
       display: flex; align-items: center; justify-content: space-between;
       padding: .9rem 1.6rem;
-      background: linear-gradient(to bottom, rgba(15,15,15,.95), rgba(15,15,15,0));
+      background: linear-gradient(to bottom, rgba(15,15,15,.85), rgba(15,15,15,0));
     }
-    .header-brand img { width: 18px; opacity: .5; transition: opacity .15s; filter: invert(1); }
+    .header-brand img { width: 18px; opacity: .85; transition: opacity .15s; filter: invert(1); }
     .header-brand:hover img { opacity: 1; }
     .header-title {
       font-size: .55rem; letter-spacing: .18em; text-transform: uppercase;
@@ -359,7 +359,7 @@
 
 <!-- ── HEADER ── -->
 <header class="g-header">
-  <a href="index.html" class="header-brand" title="Retour aux galeries">
+  <a href="../index.html#ph-reportage" class="header-brand" title="Retour au site">
     <img src="../assets/logo-b.svg" alt="B">
   </a>
   <span class="header-title" id="headerTitle"></span>
