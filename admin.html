@@ -14,9 +14,9 @@
   --light: #e0e0e0;
   --red:   #c41e1e;
   --green: #27ae60;
+  --blue:  #1a6fb5;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
 body {
   font-family: 'IBM Plex Sans', sans-serif;
   font-weight: 300; font-size: 13px;
@@ -24,7 +24,7 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* ── Auth ─────────────────────────────────── */
+/* ── Auth ─── */
 .auth-wrap { display:flex; align-items:center; justify-content:center; min-height:100vh; }
 .auth-box  { display:flex; flex-direction:column; align-items:center; gap:16px; width:260px; }
 .auth-logo { font-size:28px; font-weight:400; letter-spacing:.08em; }
@@ -43,9 +43,8 @@ body {
 .auth-btn:hover { background:var(--black); color:var(--white); }
 .auth-error { font-size:10px; color:var(--red); min-height:14px; text-align:center; }
 
-/* ── Layout ───────────────────────────────── */
-.admin-wrap { max-width:740px; margin:0 auto; padding:32px 24px 100px; }
-
+/* ── Layout ─── */
+.admin-wrap { max-width:760px; margin:0 auto; padding:32px 24px 100px; }
 .admin-header {
   display:flex; align-items:center; justify-content:space-between;
   padding-bottom:20px; border-bottom:1px solid var(--light); margin-bottom:28px;
@@ -53,12 +52,12 @@ body {
 .admin-site { font-size:9px; letter-spacing:.2em; text-transform:uppercase; color:var(--dim); }
 .status-line { display:flex; align-items:center; gap:7px; font-size:10px; color:var(--dim); }
 .status-dot { width:6px; height:6px; border-radius:50%; background:var(--light); transition:background .3s; }
-.status-dot.ok      { background:var(--green); }
-.status-dot.err     { background:var(--red); }
+.status-dot.ok { background:var(--green); }
+.status-dot.err { background:var(--red); }
 .status-dot.loading { background:#f0b429; animation:blink 1s infinite; }
 @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.4} }
 
-/* ── Tabs ─────────────────────────────────── */
+/* ── Tabs ─── */
 .tabs { display:flex; border-bottom:1px solid var(--light); margin-bottom:28px; }
 .tab-btn {
   padding:8px 20px; border:none; border-bottom:2px solid transparent;
@@ -68,104 +67,124 @@ body {
 }
 .tab-btn:hover { color:var(--black); }
 .tab-btn.active { color:var(--black); border-bottom-color:var(--black); }
-
 .tab-hint { font-size:10px; color:var(--dim); margin-bottom:24px; line-height:1.6; }
 .tab-hint strong { font-weight:400; color:var(--gray); }
 
-/* ── Menu Tree ────────────────────────────── */
-.nav-tree { display:flex; flex-direction:column; }
+/* ── Tree — Level 0 (top menu items) ─── */
+.tree { display:flex; flex-direction:column; }
+.item0 { border-top:1px solid var(--light); }
+.item0:last-of-type { border-bottom:1px solid var(--light); }
+.item0.code-hidden { opacity:.4; }
+.item0.code-hidden .item-name { font-style:italic; }
 
-/* Level 0 — top menu items */
-.nav-item0 { border-top:1px solid var(--light); }
-.nav-item0:last-of-type { border-bottom:1px solid var(--light); }
+/* ── Tree — Level 1 (sub-sections) ─── */
+.item1 { border-top:1px solid #efefef; background:#fdfdfd; }
 
-/* Level 1 — sub-sections */
-.nav-item1 { border-top:1px solid #f0f0f0; background:#fdfdfd; }
+/* ── Tree — Level 2 (gallery cards) ─── */
+.item2 { border-top:1px solid #f5f5f5; background:#fbfbfb; }
 
-/* Row shared */
-.nav-row {
-  display:flex; align-items:center; gap:10px;
-  padding:10px 0; min-height:44px;
+/* ── Rows ─── */
+.item-row {
+  display:flex; align-items:center; gap:9px;
+  padding:9px 0; min-height:44px;
 }
-.nav-item0 > .nav-row { padding-left:0; }
-.nav-item1 > .nav-row { padding-left:20px; }
+.item0 > .item-row { padding-left:0; }
+.item1 > .item-row { padding-left:18px; }
+.item2 > .item-row { padding-left:34px; }
 
-/* Expand arrow */
-.expand-btn {
+/* Drag handle */
+.drag-handle {
+  cursor:grab; color:var(--dim); font-size:13px; flex-shrink:0;
+  width:18px; text-align:center; opacity:0; transition:opacity .15s; user-select:none;
+}
+.item-row:hover .drag-handle { opacity:1; }
+.drag-handle:active { cursor:grabbing; }
+
+/* Expand */
+.exp-btn {
   background:none; border:none; cursor:pointer; padding:0;
   font-size:11px; color:var(--dim); flex-shrink:0; width:14px; text-align:center;
   transition:transform .2s, color .15s; line-height:1; user-select:none;
 }
-.expand-btn:hover { color:var(--black); }
-.expand-btn.open  { transform:rotate(90deg); }
-.expand-ph { width:14px; flex-shrink:0; }
+.exp-btn:hover { color:var(--black); }
+.exp-btn.open  { transform:rotate(90deg); }
+.exp-ph { width:14px; flex-shrink:0; }
 
-/* Name — editable */
-.nav-name {
-  flex:1; font-size:12px; font-weight:300;
-  min-width:0; cursor:text;
+/* Thumb */
+.thumb { width:44px; height:29px; object-fit:cover; flex-shrink:0; background:#eee; }
+.thumb-empty { width:44px; height:29px; background:#f0f0f0; flex-shrink:0; }
+
+/* Item name */
+.item-name {
+  flex:1; font-size:12px; font-weight:300; outline:none;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
   border-bottom:1px solid transparent; transition:border-color .15s;
-  outline:none; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
 }
-.nav-item0 > .nav-row .nav-name {
+.item0 > .item-row .item-name {
   font-size:10px; font-weight:400; letter-spacing:.1em; text-transform:uppercase;
 }
-.nav-item1 > .nav-row .nav-name { color:var(--gray); }
-
-.nav-name[contenteditable="true"]:hover { border-bottom-color:var(--dim); }
-.nav-name[contenteditable="true"]:focus {
+.item1 > .item-row .item-name { color:var(--gray); }
+.item-name[contenteditable="true"] { cursor:text; }
+.item-name[contenteditable="true"]:hover { border-bottom-color:var(--dim); }
+.item-name[contenteditable="true"]:focus {
   border-bottom-color:var(--black); outline:none;
   text-overflow:clip; white-space:normal;
 }
 
-/* Type badge */
-.nav-type {
+/* Badge */
+.badge {
   font-size:8px; letter-spacing:.08em; text-transform:uppercase;
   color:var(--dim); flex-shrink:0; white-space:nowrap;
 }
 
-/* Card count */
-.nav-count {
-  font-size:9px; color:var(--dim); flex-shrink:0; white-space:nowrap;
+/* Acceder button */
+.acc-btn {
+  flex-shrink:0; padding:2px 7px; border:1px solid var(--light);
+  background:transparent; font-family:inherit; font-size:8px; font-weight:400;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--dim);
+  text-decoration:none; white-space:nowrap; transition:border-color .15s, color .15s;
+  cursor:pointer;
 }
+.acc-btn:hover { border-color:var(--black); color:var(--black); }
 
-/* Accéder link */
-.nav-link {
-  font-size:9px; color:var(--dim); text-decoration:none; flex-shrink:0;
-  letter-spacing:.06em; transition:color .15s;
-}
-.nav-link:hover { color:var(--black); }
-
-/* Vis button */
+/* Visibility button */
 .vis-btn {
   flex-shrink:0; padding:3px 9px; border:1px solid var(--light);
   background:transparent; font-family:inherit; font-size:8px; font-weight:400;
   letter-spacing:.12em; text-transform:uppercase; color:var(--dim);
   cursor:pointer; white-space:nowrap; transition:border-color .15s, color .15s;
 }
-.vis-btn:hover   { border-color:var(--black); color:var(--black); }
-.vis-btn.hidden  { border-color:var(--red); color:var(--red); }
-.vis-btn.saving  { opacity:.4; pointer-events:none; }
-.vis-btn.locked  { opacity:.3; cursor:default; pointer-events:none; border-style:dashed; }
-
-/* Code-hidden items */
-.nav-item0.code-hidden { opacity:.4; }
-.nav-item0.code-hidden .nav-name { font-style:italic; }
+.vis-btn:hover  { border-color:var(--black); color:var(--black); }
+.vis-btn.hidden { border-color:var(--red); color:var(--red); }
+.vis-btn.saving { opacity:.4; pointer-events:none; }
+.vis-btn.locked { opacity:.3; cursor:default; pointer-events:none; border-style:dashed; }
 
 /* Children container */
-.nav-children { display:none; }
-.nav-children.open { display:block; }
+.children { display:none; }
+.children.open { display:block; }
 
-/* Name-save pending indicator */
-.nav-name.pending { color:var(--gray); }
+/* Card drop target (empty section) — min height so you can drop into empty sections */
+.card-list { min-height:10px; }
+.card-list:empty::after {
+  content:'— vide — glisser ici pour déposer'; display:block;
+  padding:8px 0 8px 34px; font-size:10px; color:var(--dim);
+  border-top:1px solid #f5f5f5; font-style:italic;
+}
 
 /* Separator */
-.nav-sep {
+.tree-sep {
   display:flex; align-items:center; gap:12px;
   padding:20px 0 6px; font-size:9px; letter-spacing:.14em;
   text-transform:uppercase; color:var(--dim);
 }
-.nav-sep::after { content:''; flex:1; height:1px; background:var(--light); }
+.tree-sep::after { content:''; flex:1; height:1px; background:var(--light); }
+
+/* Sortable states */
+.sortable-ghost { opacity:.2; background:#f0f0f0; }
+.sortable-drag  { background:#fff; box-shadow:0 2px 16px rgba(0,0,0,.12); z-index:100; }
+
+/* Drop indicator */
+.drop-target { outline:2px dashed var(--blue); outline-offset:-2px; }
 
 /* Feedback */
 .feedback { margin-top:16px; font-size:10px; color:var(--dim); min-height:16px; }
@@ -173,15 +192,12 @@ body {
 .feedback.err { color:var(--red); }
 
 /* Placeholder tab */
-.tab-placeholder {
-  text-align:center; padding:80px 0;
-  font-size:12px; color:var(--dim); font-style:italic;
-}
+.tab-placeholder { text-align:center; padding:80px 0; font-size:12px; color:var(--dim); font-style:italic; }
 </style>
 </head>
 <body>
 
-<!-- ══════════════════════════ AUTH ══════════════════════════ -->
+<!-- AUTH -->
 <div id="authScreen" class="auth-wrap">
   <div class="auth-box">
     <div class="auth-logo">B</div>
@@ -193,9 +209,8 @@ body {
   </div>
 </div>
 
-<!-- ══════════════════════════ ADMIN ══════════════════════════ -->
+<!-- ADMIN -->
 <div id="adminWrap" class="admin-wrap" style="display:none">
-
   <header class="admin-header">
     <div class="admin-site">Administration &middot; bertrandbasset.com</div>
     <div class="status-line">
@@ -209,43 +224,52 @@ body {
     <button class="tab-btn" onclick="switchTab('galleries',this)">Galeries</button>
   </div>
 
-  <!-- ── Tab Navigation ── -->
   <div id="tab-nav">
     <p class="tab-hint">
-      Cliquer le <strong>nom</strong> pour l&rsquo;&eacute;diter &mdash; Entr&eacute;e ou clic ext&eacute;rieur pour sauvegarder &middot;
-      <strong>Visible / Masqu&eacute;</strong> sauvegard&eacute; automatiquement &middot;
-      <strong>&rsaquo;</strong> pour voir les sous-sections
+      Cliquer le <strong>nom</strong> pour &eacute;diter &middot;
+      <strong>&rsaquo;</strong> pour d&eacute;plier &middot;
+      <strong>&#8942;</strong> glisser pour r&eacute;ordonner ou changer de section &middot;
+      <strong>Accéder</strong> pour ouvrir
     </p>
-    <div id="navTree" class="nav-tree"></div>
+    <div id="navTree" class="tree"></div>
     <div id="navFeedback" class="feedback"></div>
   </div>
 
-  <!-- ── Tab Galeries ── -->
   <div id="tab-galleries" style="display:none">
     <div class="tab-placeholder">Gestion d&eacute;taill&eacute;e des galeries &mdash; prochainement</div>
   </div>
-
 </div>
 
-<!-- Site data -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
 <script src="js/gallery-data.js?v=20260608a"></script>
-
 <script>
-/* ====================================================
+/* =============================================================
    CONSTANTS
-   ==================================================== */
+   ============================================================= */
 var SUPA_URL = 'https://suecslynruuputmujudg.supabase.co/rest/v1';
 var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN1ZWNzbHlucnV1cHV0bXVqdWRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY1MTYyODcsImV4cCI6MjA5MjA5MjI4N30.c9Pa_x6MEcJdqVekBodSYpu3it-riVU1hYhC-m5iCsU';
 var PWD_HASH = 'fd8faf112b549a3c0ace23b2b0c25171195a07494895830426b5cece2ba3796b';
 
-var DB = { menuVis: {}, menuLabel: {} };
+/* Maps sectionId → DB prefix */
+var PREFIX = {
+  photographe:'ph','ph-portrait':'ph','ph-reportage':'ph',
+  'ph-series':'ph','ph-exposition':'ph','ph-clients':'ph',
+  realisateur:'real', boutique:'shop'
+};
 
-/* ====================================================
+/* In-memory state */
+var DB = {
+  menuVis:   {},   /* menuId → bool */
+  menuLabel: {},   /* menuId → string */
+  cards:     {}    /* dbId  → row    */
+};
+
+/* =============================================================
    AUTH
-   ==================================================== */
+   ============================================================= */
 async function sha256(s) {
   var b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
-  return Array.from(new Uint8Array(b)).map(function(x){ return x.toString(16).padStart(2,'0'); }).join('');
+  return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,'0');}).join('');
 }
 async function checkPwd() {
   var h = await sha256(document.getElementById('pwdInput').value);
@@ -258,273 +282,439 @@ async function checkPwd() {
   }
 }
 
-/* ====================================================
+/* =============================================================
    SUPABASE
-   ==================================================== */
+   ============================================================= */
 function sbH(extra) {
-  var h = { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY, 'Content-Type': 'application/json' };
-  if (extra) Object.assign(h, extra);
+  var h = { 'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json' };
+  if (extra) Object.assign(h,extra);
   return h;
 }
 async function sbGet(path) {
-  var r = await fetch(SUPA_URL + '/' + path, { headers: sbH() });
+  var r = await fetch(SUPA_URL+'/'+path,{headers:sbH()});
   if (!r.ok) throw new Error(await r.text());
   return r.json();
 }
 async function sbUpsert(table, body) {
-  var r = await fetch(SUPA_URL + '/' + table, {
-    method: 'POST',
-    headers: sbH({ 'Prefer': 'resolution=merge-duplicates,return=minimal' }),
-    body: JSON.stringify(Array.isArray(body) ? body : [body])
+  var r = await fetch(SUPA_URL+'/'+table, {
+    method:'POST',
+    headers:sbH({'Prefer':'resolution=merge-duplicates,return=minimal'}),
+    body:JSON.stringify(Array.isArray(body)?body:[body])
   });
   if (!r.ok) throw new Error(await r.text());
 }
 
-/* ====================================================
+/* =============================================================
    LOAD DB
-   ==================================================== */
+   ============================================================= */
 async function loadDB() {
-  setStatus('loading', 'Chargement…');
+  setStatus('loading','Chargement…');
   try {
-    var rows = await sbGet('section_visibility?select=id,visible,label');
-    rows.forEach(function(r){
+    var results = await Promise.all([
+      sbGet('section_visibility?select=id,visible,label'),
+      sbGet('gallery_cards?select=id,visible,sort_order,title_fr,cover_img,section,gallery_id,link_url&order=sort_order.asc')
+    ]);
+    results[0].forEach(function(r){
       DB.menuVis[r.id]   = r.visible;
       DB.menuLabel[r.id] = r.label || '';
     });
-    setStatus('ok', 'Synchronisé');
+    results[1].forEach(function(r){ DB.cards[r.id] = r; });
+    setStatus('ok','Synchronisé');
   } catch(e) {
-    setStatus('err', 'Erreur Supabase');
+    setStatus('err','Erreur Supabase');
     console.error(e);
   }
   renderTree();
 }
-function setStatus(state, label) {
-  document.getElementById('statusDot').className = 'status-dot ' + state;
-  document.getElementById('statusLabel').textContent = label;
+function setStatus(st,lbl){
+  document.getElementById('statusDot').className='status-dot '+st;
+  document.getElementById('statusLabel').textContent=lbl;
 }
 
-/* ====================================================
+/* =============================================================
    TABS
-   ==================================================== */
-function switchTab(name, btn) {
-  document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+   ============================================================= */
+function switchTab(name,btn){
+  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
   btn.classList.add('active');
-  document.getElementById('tab-nav').style.display       = name === 'nav'       ? '' : 'none';
-  document.getElementById('tab-galleries').style.display = name === 'galleries' ? '' : 'none';
+  document.getElementById('tab-nav').style.display       = name==='nav'?'':'none';
+  document.getElementById('tab-galleries').style.display = name==='galleries'?'':'none';
 }
 
-/* ====================================================
+/* =============================================================
    FEEDBACK
-   ==================================================== */
+   ============================================================= */
 var feedTimer;
-function showFeedback(msg, cls) {
-  cls = cls || 'ok';
-  var el = document.getElementById('navFeedback');
-  el.textContent = msg;
-  el.className = 'feedback ' + cls;
+function showFeedback(msg,cls){
+  cls=cls||'ok';
+  var el=document.getElementById('navFeedback');
+  el.textContent=msg; el.className='feedback '+cls;
   clearTimeout(feedTimer);
-  feedTimer = setTimeout(function(){ el.textContent = ''; el.className = 'feedback'; }, 3000);
+  feedTimer=setTimeout(function(){el.textContent='';el.className='feedback';},3500);
 }
 
-/* ====================================================
-   VISIBILITY HELPERS
-   ==================================================== */
-function menuIsVisible(id) {
-  return id in DB.menuVis ? DB.menuVis[id] !== false : true;
+/* =============================================================
+   HELPERS
+   ============================================================= */
+function menuIsVis(id){ return id in DB.menuVis ? DB.menuVis[id]!==false : true; }
+function displayName(item){ return DB.menuLabel[item.id]||item.name; }
+function cardIsVis(dbId,card){
+  var row=DB.cards[dbId];
+  if (row && row.visible!==null && row.visible!==undefined) return row.visible;
+  return !card._hiddenByAdmin;
 }
-function displayName(item) {
-  return DB.menuLabel[item.id] || item.name;
+/* Which section a card currently belongs to (DB override or static) */
+function cardSection(dbId,staticSection){
+  var row=DB.cards[dbId];
+  return (row && row.section) ? row.section : staticSection;
 }
-
-/* ====================================================
-   HTML ESCAPE
-   ==================================================== */
-function esc(s) {
+function esc(s){
   return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
+/* Get the full card data (for saving on drag) */
+function getCardData(dbId,card){
+  var row=DB.cards[dbId]||{};
+  return {
+    titleFr:   row.title_fr  || card.titleFr  || card.id,
+    img:       row.cover_img || card.img       || '',
+    galleryId: row.gallery_id|| card.galleryId || null,
+    url:       row.link_url  || card.url       || null
+  };
+}
 
-/* ====================================================
+/* =============================================================
    RENDER TREE
-   ==================================================== */
-function renderTree() {
-  var tree = document.getElementById('navTree');
-  tree.innerHTML = '';
+   ============================================================= */
 
-  var visible = MENU_CONFIG.filter(function(i){ return !i.parent && !i.hidden; });
-  var hidden  = MENU_CONFIG.filter(function(i){ return !i.parent &&  i.hidden; });
+/* Build a flat list of { sectionId, cards } taking DB section moves into account.
+   Returns: { [sectionId]: Card[] } */
+function buildSectionMap(){
+  var map = {};
+  /* Initialize all sections empty */
+  Object.keys(SECTIONS_CONFIG).forEach(function(id){ map[id]=[]; });
 
-  visible.forEach(function(item){ tree.appendChild(buildItem0(item, false)); });
+  /* For each static card, assign to its effective section */
+  Object.keys(SECTIONS_CONFIG).forEach(function(secId){
+    var sec    = SECTIONS_CONFIG[secId];
+    var prefix = PREFIX[secId]||secId;
+    sec.cards.forEach(function(card){
+      var dbId      = prefix+'-'+card.id;
+      var effSec    = cardSection(dbId, secId);
+      if (!map[effSec]) map[effSec]=[];
+      map[effSec].push({ card:card, dbId:dbId, staticSection:secId });
+    });
+  });
 
-  if (hidden.length) {
-    var sep = document.createElement('div');
-    sep.className = 'nav-sep';
-    sep.textContent = 'Masqués dans le code';
+  /* Sort each section by DB sort_order */
+  Object.keys(map).forEach(function(secId){
+    map[secId].sort(function(a,b){
+      var oA=(DB.cards[a.dbId]||{}).sort_order; if(oA===null||oA===undefined)oA=9999;
+      var oB=(DB.cards[b.dbId]||{}).sort_order; if(oB===null||oB===undefined)oB=9999;
+      return oA-oB;
+    });
+  });
+  return map;
+}
+
+function renderTree(){
+  var tree=document.getElementById('navTree');
+  tree.innerHTML='';
+
+  var secMap = buildSectionMap();
+
+  var visible = MENU_CONFIG.filter(function(i){return !i.parent&&!i.hidden;});
+  var hidden  = MENU_CONFIG.filter(function(i){return !i.parent&& i.hidden;});
+
+  visible.forEach(function(item){ tree.appendChild(buildItem0(item,false,secMap)); });
+
+  if (hidden.length){
+    var sep=document.createElement('div');
+    sep.className='tree-sep'; sep.textContent='Masqués dans le code';
     tree.appendChild(sep);
-    hidden.forEach(function(item){ tree.appendChild(buildItem0(item, true)); });
+    hidden.forEach(function(item){ tree.appendChild(buildItem0(item,true,secMap)); });
   }
+
+  /* Init SortableJS on all card lists — cross-section drag with shared group */
+  initAllSortables();
 }
 
-/* ── Level 0 ── */
-function buildItem0(item, codeLocked) {
-  var el = document.createElement('div');
-  el.className = 'nav-item0' + (codeLocked ? ' code-hidden' : '');
-  el.dataset.menuId = item.id;
+/* ── Item level 0 ── */
+function buildItem0(item,locked,secMap){
+  var el=document.createElement('div');
+  el.className='item0'+(locked?' code-hidden':'');
+  el.dataset.menuId=item.id;
 
-  var subItems  = MENU_CONFIG.filter(function(i){ return i.parent === item.id; });
-  var hasSubs   = subItems.length > 0;
-  var hasSec    = item.type === 'section' && !!SECTIONS_CONFIG[item.sectionId];
-  var expandable = hasSubs || hasSec;
+  var subs  =MENU_CONFIG.filter(function(i){return i.parent===item.id;});
+  var hasSub=subs.length>0;
+  var hasSec=item.type==='section'&&!!SECTIONS_CONFIG[item.sectionId];
+  var canExp=hasSub||hasSec;
+  var isVis =menuIsVis(item.id);
+  var name  =displayName(item);
 
-  var isVis  = menuIsVisible(item.id);
-  var name   = displayName(item);
-
-  /* Count for section items */
-  var countLabel = '';
-  if (item.type === 'section' && !hasSubs && SECTIONS_CONFIG[item.sectionId]) {
-    var n = SECTIONS_CONFIG[item.sectionId].cards.length;
-    countLabel = n + ' carte' + (n !== 1 ? 's' : '');
-  }
-
-  /* Acceder link */
-  var accederHtml = makeAccederHtml(item);
-
-  var row = document.createElement('div');
-  row.className = 'nav-row';
-  row.innerHTML =
-    (expandable
-      ? '<button class="expand-btn" onclick="toggleExpand(this)">›</button>'
-      : '<span class="expand-ph"></span>') +
-    '<span class="nav-name" contenteditable="' + (!codeLocked ? 'true' : 'false') + '"' +
-      ' onblur="saveLabel(this,\'' + item.id + '\')"' +
-      ' onkeydown="if(event.key===\'Enter\'){this.blur();event.preventDefault()}">' +
-      esc(name) +
-    '</span>' +
-    (countLabel ? '<span class="nav-count">' + esc(countLabel) + '</span>' : '') +
-    '<span class="nav-type">' + esc(item.type) + '</span>' +
-    accederHtml +
-    '<button class="vis-btn' + (isVis ? '' : ' hidden') + (codeLocked ? ' locked' : '') + '"' +
-      ' onclick="toggleMenuVis(\'' + item.id + '\',this)">' +
-      (isVis ? 'Visible' : 'Masqué') +
-    '</button>';
-
+  var row=document.createElement('div');
+  row.className='item-row';
+  row.innerHTML=
+    (canExp?'<button class="exp-btn" onclick="toggleExp(this)">›</button>':'<span class="exp-ph"></span>')+
+    '<span class="item-name" contenteditable="'+(locked?'false':'true')+'"'+
+      ' onblur="saveLabel(this,\''+item.id+'\')"'+
+      ' onkeydown="if(event.key===\'Enter\'){this.blur();event.preventDefault()}">'+
+      esc(name)+'</span>'+
+    '<span class="badge">'+esc(item.type)+'</span>'+
+    '<a class="acc-btn" href="index.html" target="_blank" rel="noopener">Accéder</a>'+
+    '<button class="vis-btn'+(isVis?'':' hidden')+(locked?' locked':'\')+'"'+
+      ' onclick="toggleMenuVis(\''+item.id+'\',this)">'+
+      (isVis?'Visible':'Masqué')+'</button>';
   el.appendChild(row);
 
-  /* Sub-sections */
-  if (expandable) {
-    var children = document.createElement('div');
-    children.className = 'nav-children';
-
-    if (hasSubs) {
-      subItems.forEach(function(sub){ children.appendChild(buildItem1(sub)); });
-    } else if (hasSec) {
-      /* Show a brief summary, no cards */
-      var sec = SECTIONS_CONFIG[item.sectionId];
-      var n = sec ? sec.cards.length : 0;
-      var note = document.createElement('div');
-      note.style.cssText = 'padding:6px 0 6px 24px;font-size:10px;color:var(--dim);border-top:1px solid #f5f5f5;';
-      note.textContent = n + ' galerie' + (n !== 1 ? 's' : '') + ' — gérées dans l\'onglet Galeries';
-      children.appendChild(note);
+  if (canExp){
+    var ch=document.createElement('div');
+    ch.className='children';
+    if (hasSub){
+      subs.forEach(function(sub){ ch.appendChild(buildItem1(sub,secMap)); });
+    } else {
+      ch.appendChild(buildCardList(item.sectionId,secMap));
     }
-
-    el.appendChild(children);
+    el.appendChild(ch);
   }
-
   return el;
 }
 
-/* ── Level 1 : sub-sections ── */
-function buildItem1(sub) {
-  var el = document.createElement('div');
-  el.className = 'nav-item1';
-  el.dataset.menuId = sub.id;
+/* ── Item level 1 (sub-section) ── */
+function buildItem1(sub,secMap){
+  var el=document.createElement('div');
+  el.className='item1';
+  el.dataset.menuId=sub.id;
 
-  var sec       = SECTIONS_CONFIG[sub.sectionId];
-  var cardCount = sec ? sec.cards.length : 0;
-  var isVis     = menuIsVisible(sub.id);
-  var name      = displayName(sub);
+  var isVis=menuIsVis(sub.id);
+  var name=displayName(sub);
+  var cards=secMap[sub.sectionId]||[];
 
-  var row = document.createElement('div');
-  row.className = 'nav-row';
-  row.innerHTML =
-    '<span class="expand-ph"></span>' +
-    '<span class="nav-name" contenteditable="true"' +
-      ' onblur="saveLabel(this,\'' + sub.id + '\')"' +
-      ' onkeydown="if(event.key===\'Enter\'){this.blur();event.preventDefault()}">' +
-      esc(name) +
-    '</span>' +
-    '<span class="nav-count">' + cardCount + ' carte' + (cardCount !== 1 ? 's' : '') + '</span>' +
-    '<button class="vis-btn' + (isVis ? '' : ' hidden') + '"' +
-      ' onclick="toggleMenuVis(\'' + sub.id + '\',this)">' +
-      (isVis ? 'Visible' : 'Masqué') +
-    '</button>';
-
+  var row=document.createElement('div');
+  row.className='item-row';
+  row.innerHTML=
+    '<span class="exp-ph"></span>'+
+    '<button class="exp-btn" onclick="toggleExp(this)">›</button>'+
+    '<span class="item-name" contenteditable="true"'+
+      ' onblur="saveLabel(this,\''+sub.id+'\')"'+
+      ' onkeydown="if(event.key===\'Enter\'){this.blur();event.preventDefault()}">'+
+      esc(name)+'</span>'+
+    '<span class="badge">'+cards.length+' carte'+(cards.length!==1?'s':'')+'</span>'+
+    '<button class="vis-btn'+(isVis?'':' hidden')+'"'+
+      ' onclick="toggleMenuVis(\''+sub.id+'\',this)">'+
+      (isVis?'Visible':'Masqué')+'</button>';
   el.appendChild(row);
+
+  var ch=document.createElement('div');
+  ch.className='children';
+  ch.appendChild(buildCardList(sub.sectionId,secMap));
+  el.appendChild(ch);
+
   return el;
 }
 
-/* Acceder HTML for an item */
-function makeAccederHtml(item) {
-  var url = null;
-  if (item.url) {
-    url = item.url;
-  } else if (item.type === 'link' || item.type === 'external') {
-    url = item.url;
-  }
-  /* For items linking to a section/page on the SPA, open the site root */
-  if (!url && (item.type === 'gallery' || item.type === 'section' || item.type === 'page')) {
-    url = 'index.html';
-  }
-  if (!url) return '';
-  return '<a class="nav-link" href="' + esc(url) + '" target="_blank" rel="noopener">→</a>';
+/* ── Card list (level 2 container) ── */
+function buildCardList(sectionId,secMap){
+  var list=document.createElement('div');
+  list.className='card-list';
+  list.dataset.sectionId=sectionId;
+
+  var cards=secMap[sectionId]||[];
+  cards.forEach(function(entry){
+    list.appendChild(buildCardEl(entry.card,entry.dbId,sectionId));
+  });
+  return list;
 }
 
-/* ====================================================
+/* ── Card element (level 2) ── */
+function buildCardEl(card,dbId,currentSection){
+  var el=document.createElement('div');
+  el.className='item2';
+  el.dataset.cardId=dbId;
+  el.dataset.section=currentSection;
+
+  var dbRow=DB.cards[dbId]||{};
+  var isVis=cardIsVis(dbId,card);
+  var name=dbRow.title_fr||card.titleFr||card.titleEn||card.id;
+  var img=dbRow.cover_img||card.img||'';
+  var href=dbRow.link_url||card.url||'index.html';
+
+  /* Store full data for drag save */
+  el.dataset.titleFr  = name;
+  el.dataset.img      = img;
+  el.dataset.galleryId= card.galleryId||'';
+  el.dataset.linkUrl  = dbRow.link_url||card.url||'';
+
+  var thumb=img
+    ?'<img class="thumb" src="'+esc(img)+'" loading="lazy" onerror="this.outerHTML=\'<div class=thumb-empty></div>\'">'
+    :'<div class="thumb-empty"></div>';
+
+  el.innerHTML=
+    '<div class="item-row">'+
+      '<span class="drag-handle" title="Glisser pour déplacer">&#8942;</span>'+
+      '<span class="exp-ph"></span>'+
+      thumb+
+      '<span class="item-name" contenteditable="true"'+
+        ' onblur="saveCardName(this,\''+dbId+'\',\''+currentSection+'\')"'+
+        ' onkeydown="if(event.key===\'Enter\'){this.blur();event.preventDefault()}">'+
+        esc(name)+'</span>'+
+      '<a class="acc-btn" href="'+esc(href)+'" target="_blank" rel="noopener">Accéder</a>'+
+      '<button class="vis-btn'+(isVis?'':' hidden')+'"'+
+        ' onclick="toggleCardVis(\''+dbId+'\',\''+currentSection+'\',this)">'+
+        (isVis?'Visible':'Masqué')+'</button>'+
+    '</div>';
+
+  return el;
+}
+
+/* =============================================================
    EXPAND / COLLAPSE
-   ==================================================== */
-function toggleExpand(btn) {
+   ============================================================= */
+function toggleExp(btn){
   btn.classList.toggle('open');
-  var parent   = btn.closest('.nav-item0');
-  var children = parent.querySelector(':scope > .nav-children');
-  if (children) children.classList.toggle('open');
+  var parent=btn.closest('.item0,.item1');
+  var ch=parent.querySelector(':scope>.children');
+  if(ch) ch.classList.toggle('open');
 }
 
-/* ====================================================
-   SAVE — Label (name)
-   ==================================================== */
-async function saveLabel(el, id) {
-  var name = el.textContent.trim();
-  var prev = DB.menuLabel[id] || '';
-  /* Restore original MENU_CONFIG name if blank */
-  var orig = (MENU_CONFIG.find(function(i){ return i.id === id; }) || {}).name || '';
-  if (!name) { el.textContent = prev || orig; return; }
-  if (name === prev) return;
+/* =============================================================
+   SORTABLEJS — cross-section drag
+   ============================================================= */
+function initAllSortables(){
+  document.querySelectorAll('.card-list').forEach(function(list){
+    Sortable.create(list,{
+      group:'gallery-cards',     /* shared group → cross-section drag */
+      handle:'.drag-handle',
+      animation:150,
+      ghostClass:'sortable-ghost',
+      dragClass:'sortable-drag',
+      onStart:function(evt){
+        /* Expand all sections so user can drop anywhere */
+        document.querySelectorAll('.children').forEach(function(c){c.classList.add('open');});
+        document.querySelectorAll('.exp-btn').forEach(function(b){b.classList.add('open');});
+      },
+      onEnd:function(evt){
+        var fromSection=evt.from.dataset.sectionId;
+        var toSection  =evt.to.dataset.sectionId;
+        var cardEl     =evt.item;
+
+        if (fromSection===toSection){
+          /* Same section — just reorder */
+          saveCardOrder(evt.to, toSection);
+        } else {
+          /* Cross-section move */
+          cardEl.dataset.section=toSection;
+          var dbId=cardEl.dataset.cardId;
+          var payload={
+            id:         dbId,
+            section:    toSection,
+            title_fr:   cardEl.dataset.titleFr,
+            cover_img:  cardEl.dataset.img||null,
+            gallery_id: cardEl.dataset.galleryId||null,
+            link_url:   cardEl.dataset.linkUrl||null,
+            updated_at: new Date().toISOString()
+          };
+          sbUpsert('gallery_cards',[payload])
+            .then(function(){
+              /* Update sort orders in both sections */
+              saveCardOrder(evt.from, fromSection, true);
+              saveCardOrder(evt.to,   toSection,   true);
+              showFeedback('Déplacé de «'+fromSection+'» vers «'+toSection+'»');
+              /* Update onblur save context on card name */
+              var nameEl=cardEl.querySelector('.item-name');
+              if(nameEl){
+                nameEl.setAttribute('onblur','saveCardName(this,\''+dbId+'\',\''+toSection+'\')');
+              }
+              var visBtn=cardEl.querySelector('.vis-btn');
+              if(visBtn){
+                visBtn.setAttribute('onclick','toggleCardVis(\''+dbId+'\',\''+toSection+'\',this)');
+              }
+            })
+            .catch(function(e){ showFeedback('Erreur : '+e.message,'err'); });
+        }
+      }
+    });
+  });
+}
+
+/* =============================================================
+   SAVE — Card order
+   ============================================================= */
+async function saveCardOrder(listEl, sectionId, silent){
+  var items=Array.from(listEl.querySelectorAll(':scope>.item2'));
+  var updates=items.map(function(el,i){
+    return { id:el.dataset.cardId, sort_order:i, updated_at:new Date().toISOString() };
+  });
+  if (!updates.length) return;
   try {
-    await sbUpsert('section_visibility', { id: id, label: name, updated_at: new Date().toISOString() });
-    DB.menuLabel[id] = name;
-    showFeedback('Nom sauvegardé : « ' + name + ' »');
-  } catch(e) {
-    el.textContent = prev || orig;
-    showFeedback('Erreur : ' + e.message, 'err');
-  }
+    await sbUpsert('gallery_cards',updates);
+    if(!silent) showFeedback('Ordre sauvegardé');
+  } catch(e){ showFeedback('Erreur : '+e.message,'err'); }
 }
 
-/* ====================================================
-   SAVE — Visibility
-   ==================================================== */
-async function toggleMenuVis(id, btn) {
-  var nowVis = btn.classList.contains('hidden');
+/* =============================================================
+   SAVE — Card name
+   ============================================================= */
+async function saveCardName(el, dbId, section){
+  var name=el.textContent.trim();
+  var prev=(DB.cards[dbId]||{}).title_fr||'';
+  if (!name||name===prev) return;
+  try {
+    await sbUpsert('gallery_cards',[{ id:dbId, section:section, title_fr:name, updated_at:new Date().toISOString() }]);
+    if(!DB.cards[dbId]) DB.cards[dbId]={};
+    DB.cards[dbId].title_fr=name;
+    /* Update data-titleFr on the element */
+    var parent=el.closest('.item2');
+    if(parent) parent.dataset.titleFr=name;
+    showFeedback('Nom sauvegardé : «'+name+'»');
+  } catch(e){ el.textContent=prev; showFeedback('Erreur : '+e.message,'err'); }
+}
+
+/* =============================================================
+   SAVE — Menu item label (name)
+   ============================================================= */
+async function saveLabel(el,id){
+  var name=el.textContent.trim();
+  var prev=DB.menuLabel[id]||'';
+  var orig=(MENU_CONFIG.find(function(i){return i.id===id;})||{}).name||'';
+  if (!name){ el.textContent=prev||orig; return; }
+  if (name===prev) return;
+  try {
+    await sbUpsert('section_visibility',[{ id:id, label:name, updated_at:new Date().toISOString() }]);
+    DB.menuLabel[id]=name;
+    showFeedback('Nom sauvegardé : «'+name+'»');
+  } catch(e){ el.textContent=prev||orig; showFeedback('Erreur : '+e.message,'err'); }
+}
+
+/* =============================================================
+   SAVE — Menu visibility
+   ============================================================= */
+async function toggleMenuVis(id,btn){
+  var nowVis=btn.classList.contains('hidden');
   btn.classList.add('saving');
   try {
-    await sbUpsert('section_visibility', { id: id, visible: nowVis, updated_at: new Date().toISOString() });
-    DB.menuVis[id] = nowVis;
-    btn.classList.toggle('hidden', !nowVis);
-    btn.textContent = nowVis ? 'Visible' : 'Masqué';
-    showFeedback(nowVis
-      ? '« ' + (DB.menuLabel[id] || id) + ' » affiché'
-      : '« ' + (DB.menuLabel[id] || id) + ' » masqué');
-  } catch(e) {
-    showFeedback('Erreur : ' + e.message, 'err');
-  }
+    await sbUpsert('section_visibility',[{ id:id, visible:nowVis, updated_at:new Date().toISOString() }]);
+    DB.menuVis[id]=nowVis;
+    btn.classList.toggle('hidden',!nowVis);
+    btn.textContent=nowVis?'Visible':'Masqué';
+    showFeedback(nowVis?'Affiché':'Masqué');
+  } catch(e){ showFeedback('Erreur : '+e.message,'err'); }
+  btn.classList.remove('saving');
+}
+
+/* =============================================================
+   SAVE — Card visibility
+   ============================================================= */
+async function toggleCardVis(dbId,section,btn){
+  var nowVis=btn.classList.contains('hidden');
+  btn.classList.add('saving');
+  try {
+    await sbUpsert('gallery_cards',[{ id:dbId, section:section, visible:nowVis, updated_at:new Date().toISOString() }]);
+    if(!DB.cards[dbId]) DB.cards[dbId]={};
+    DB.cards[dbId].visible=nowVis;
+    btn.classList.toggle('hidden',!nowVis);
+    btn.textContent=nowVis?'Visible':'Masqué';
+    showFeedback(nowVis?'Carte affichée':'Carte masquée');
+  } catch(e){ showFeedback('Erreur : '+e.message,'err'); }
   btn.classList.remove('saving');
 }
 </script>

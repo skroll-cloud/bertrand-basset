@@ -176,9 +176,17 @@ class Portfolio {
                             : row.visible === false; // visible par défaut → caché seulement si admin dit false
                     });
 
-                    /* Injecter les cartes Supabase qui n'existent pas dans gallery-data.js */
+                    /* Retirer les cartes déplacées vers une autre section via l'admin */
+                    sec.cards = sec.cards.filter(card => {
+                        const key = `${prefix}-${card.id}`;
+                        const row = dbMap[key];
+                        return !row || !row.section || row.section === secId;
+                    });
+
+                    /* Injecter les cartes Supabase qui n'existent pas dans gallery-data.js
+                       (y compris les cartes déplacées depuis une autre section) */
                     dbCards
-                        .filter(r => r.section === secId && !sec.cards.find(c => `${prefix}-${c.id}` === r.id))
+                        .filter(r => r.section === secId && !sec.cards.find(c => (c._dbId || `${prefix}-${c.id}`) === r.id))
                         .forEach(r => {
                             sec.cards.push({
                                 id:        r.id.replace(new RegExp(`^${prefix}-`), ''),
