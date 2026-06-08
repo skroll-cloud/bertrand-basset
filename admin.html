@@ -426,19 +426,54 @@ function buildItem1(sub,secMap){
   var name=displayName(sub);
   var secId=sub.sectionId;
   var cards=secId&&secMap[secId]?secMap[secId]:[];
-  var visCount=cards.filter(function(e){return cardIsVis(e.dbId,e.card);}).length;
+  var visCards=cards.filter(function(e){return cardIsVis(e.dbId,e.card);});
 
   var row=document.createElement('div');row.className='item-row';
   row.innerHTML=
-    '<span class="exp-ph"></span>'+
+    (visCards.length?'<button class="exp-btn" onclick="toggleExp(this)">&#8250;</button>':'<span class="exp-ph"></span>')+
     '<span class="exp-ph"></span>'+
     '<span class="item-name" contenteditable="true"'+
       ' onblur="saveLabel(this,\''+sub.id+'\')"'+
       ' onkeydown="if(event.key===\'Enter\'){this.blur();event.preventDefault()}">'+esc(name)+'</span>'+
-    '<span class="badge">'+visCount+' carte'+(visCount!==1?'s':'')+'</span>'+
+    '<span class="badge">'+visCards.length+' carte'+(visCards.length!==1?'s':'')+'</span>'+
     '<button class="vis-btn'+(isVis?'':' hidden')+'"'+
       ' onclick="toggleMenuVis(\''+sub.id+'\',this)">'+(isVis?'Visible':'Masqué')+'</button>';
   el.appendChild(row);
+
+  if(visCards.length){
+    var ch=document.createElement('div');ch.className='children';
+    var cl=document.createElement('div');cl.className='card-list';cl.dataset.secId=secId;
+    visCards.forEach(function(e){
+      var dbRow=DB.cards[e.dbId]||{};
+      var cname=dbRow.title_fr||e.card.titleFr||e.card.titleEn||e.card.id;
+      var cimg=dbRow.cover_img||e.card.img||'';
+      var ci=document.createElement('div');
+      ci.className='item2';ci.dataset.dbId=e.dbId;ci.dataset.section=secId;
+      ci.innerHTML=
+        '<div class="item-row">'+
+          '<span class="drag-handle" title="Glisser pour réordonner">&#8942;</span>'+
+          (cimg?'<img class="thumb" src="'+esc(cimg)+'" loading="lazy" onerror="this.outerHTML=\'<div class=thumb-empty></div>\'">':'<div class="thumb-empty"></div>')+
+          '<span class="item-name">'+esc(cname)+'</span>'+
+        '</div>';
+      cl.appendChild(ci);
+    });
+    ch.appendChild(cl);
+    el.appendChild(ch);
+    /* Drag-and-drop */
+    Sortable.create(cl,{
+      handle:'.drag-handle',animation:120,ghostClass:'sortable-ghost',dragClass:'sortable-drag',
+      onEnd:function(evt){
+        var items=evt.to.querySelectorAll('.item2');
+        var updates=[];
+        items.forEach(function(it,idx){
+          updates.push({id:it.dataset.dbId,section:it.dataset.section,sort_order:idx,updated_at:new Date().toISOString()});
+        });
+        sbUpsert('gallery_cards',updates)
+          .then(function(){showFeedback('Ordre sauvegardé');})
+          .catch(function(e){showFeedback('Erreur : '+e.message,'err');});
+      }
+    });
+  }
   return el;
 }
 
