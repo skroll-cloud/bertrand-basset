@@ -131,6 +131,60 @@ body{font-family:'IBM Plex Sans',sans-serif;font-weight:300;font-size:13px;
 .feedback.ok{color:var(--green)}.feedback.err{color:var(--red)}
 
 .tab-placeholder{text-align:center;padding:80px 0;font-size:12px;color:var(--dim);font-style:italic}
+
+/* ── Gallery editor ── */
+.gallery-list{display:flex;flex-direction:column}
+.gal-item{border-top:1px solid var(--light)}
+.gal-item:last-child{border-bottom:1px solid var(--light)}
+.gal-header{display:flex;align-items:center;gap:10px;padding:10px 0;cursor:pointer;user-select:none}
+.gal-header:hover .gal-name{color:var(--black)}
+.gal-thumb{width:56px;height:37px;object-fit:cover;flex-shrink:0;background:#eee}
+.gal-thumb-empty{width:56px;height:37px;background:#f0f0f0;flex-shrink:0}
+.gal-name{flex:1;font-size:12px;font-weight:300}
+.gal-sec-badge{font-size:8px;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--dim);padding:2px 6px;border:1px solid var(--light)}
+.gal-vis-dot{width:7px;height:7px;border-radius:50%;background:var(--light);flex-shrink:0}
+.gal-vis-dot.on{background:var(--green)}
+.gal-chevron{font-size:11px;color:var(--dim);transition:transform .2s;flex-shrink:0}
+.gal-chevron.open{transform:rotate(90deg)}
+.gal-body{display:none;padding:0 0 20px 66px;background:#fdfdfd}
+.gal-body.open{display:block}
+.gal-form{display:grid;grid-template-columns:1fr 1fr;gap:12px 24px;margin-top:12px}
+.gal-field{display:flex;flex-direction:column;gap:4px}
+.gal-field.full{grid-column:1/-1}
+.gal-label{font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.gal-input{padding:6px 9px;border:1px solid var(--light);font-family:inherit;
+  font-size:12px;font-weight:300;background:transparent;color:var(--black);outline:none}
+.gal-input:focus{border-color:var(--black)}
+.gal-select{padding:6px 9px;border:1px solid var(--light);font-family:inherit;
+  font-size:12px;font-weight:300;background:transparent;color:var(--black);
+  outline:none;-webkit-appearance:none;cursor:pointer}
+.gal-toggle-row{display:flex;align-items:center;gap:8px;margin-top:2px}
+.gal-toggle{position:relative;display:inline-block;width:34px;height:18px;flex-shrink:0}
+.gal-toggle input{opacity:0;width:0;height:0}
+.gal-slider{position:absolute;inset:0;background:var(--light);border-radius:9px;transition:.2s;cursor:pointer}
+.gal-slider::before{content:"";position:absolute;height:12px;width:12px;left:3px;top:3px;
+  background:white;border-radius:50%;transition:.2s}
+.gal-toggle input:checked + .gal-slider{background:var(--black)}
+.gal-toggle input:checked + .gal-slider::before{transform:translateX(16px)}
+.gal-toggle-label{font-size:11px;color:var(--gray)}
+.gal-price-row{display:flex;align-items:center;gap:6px;margin-top:4px}
+.gal-price-input{width:70px;padding:4px 7px;border:1px solid var(--light);
+  font-family:inherit;font-size:11px;background:transparent;outline:none}
+.gal-price-input:focus{border-color:var(--black)}
+.gal-currency{font-size:10px;color:var(--dim)}
+.gal-actions{grid-column:1/-1;display:flex;gap:8px;justify-content:flex-end;margin-top:4px}
+.gal-save-btn{padding:6px 20px;border:1px solid var(--black);background:transparent;
+  font-family:inherit;font-size:8px;font-weight:400;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--black);cursor:pointer;transition:background .15s,color .15s}
+.gal-save-btn:hover{background:var(--black);color:var(--white)}
+.gal-save-btn:disabled{opacity:.4;pointer-events:none}
+.gal-cancel-btn{padding:6px 14px;border:1px solid var(--light);background:transparent;
+  font-family:inherit;font-size:8px;font-weight:400;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--dim);cursor:pointer}
+.gal-hl-link{display:inline-block;font-size:9px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--dim);text-decoration:underline;cursor:pointer}
+.gal-hl-link:hover{color:var(--black)}
 </style>
 </head>
 <body>
@@ -180,9 +234,11 @@ body{font-family:'IBM Plex Sans',sans-serif;font-weight:300;font-size:13px;
     <div id="draftList" class="draft-grid"></div>
   </div>
 
-  <!-- Galeries (futur) -->
+  <!-- Galeries -->
   <div id="tab-galleries" style="display:none">
-    <div class="tab-placeholder">Gestion d&eacute;taill&eacute;e &mdash; prochainement</div>
+    <p class="tab-hint">Cliquer une galerie pour &eacute;diter &mdash; les modifications sont sauvegard&eacute;es dans Supabase, aucun d&eacute;ploiement n&eacute;cessaire.</p>
+    <div id="galleryList" class="gallery-list"></div>
+    <div id="galFeedback" class="feedback"></div>
   </div>
 </div>
 
@@ -240,14 +296,17 @@ async function loadDB(){
   try{
     var res=await Promise.all([
       sbGet('section_visibility?select=id,visible,label'),
-      sbGet('gallery_cards?select=id,visible,sort_order,title_fr,cover_img,section,gallery_id,link_url&order=sort_order.asc')
+      sbGet('gallery_cards?select=id,visible,sort_order,title_fr,cover_img,section,gallery_id,link_url&order=sort_order.asc'),
+      sbGet('gallery_settings?select=gallery_id,view_password,dl_password,download_enabled,buy_jpeg_enabled,buy_jpeg_price,buy_print_enabled')
     ]);
     res[0].forEach(function(r){DB.menuVis[r.id]=r.visible;DB.menuLabel[r.id]=r.label||'';});
     res[1].forEach(function(r){DB.cards[r.id]=r;});
+    res[2].forEach(function(r){DB_SETTINGS[r.gallery_id]=r;});
     setStatus('ok','Synchronisé');
   }catch(e){setStatus('err','Erreur Supabase');console.error(e);}
   renderTree();
   renderDrafts();
+  renderGalleries();
 }
 function setStatus(st,lbl){
   document.getElementById('statusDot').className='status-dot '+st;
@@ -515,6 +574,228 @@ async function toggleCardVis(dbId,section,btn){
     showFeedback(nowVis?'Carte affichée':'Carte masquée');
   }catch(e){showFeedback('Erreur : '+e.message,'err');}
   btn.classList.remove('saving');
+}
+
+/* ===== GALERIES TAB ===== */
+var DB_SETTINGS={};/* gallery_settings cache keyed by gallery_id */
+
+var SEC_OPTIONS=[
+  {v:'ph-portrait',   l:'Portrait'},
+  {v:'ph-reportage',  l:'Reportage'},
+  {v:'ph-series',     l:'Séries'},
+  {v:'ph-exposition', l:'Exposition'},
+  {v:'ph-clients',    l:'Galeries clients'},
+  {v:'realisateur',   l:'Réalisateur'},
+  {v:'boutique',      l:'Boutique'}
+];
+
+async function loadGallerySettings(){
+  var rows=await sbGet('gallery_settings?select=gallery_id,view_password,dl_password,download_enabled,buy_jpeg_enabled,buy_jpeg_price,buy_print_enabled');
+  rows.forEach(function(r){DB_SETTINGS[r.gallery_id]=r;});
+}
+
+function galId(card,secId){
+  var prefix=PREFIX[secId]||secId;
+  return prefix+'-'+card.id;
+}
+
+function galSettingsId(card){
+  /* gallery_settings uses gallery_id field from the card or the card.id itself */
+  return card.galleryId||card.id;
+}
+
+function renderGalleries(){
+  var list=document.getElementById('galleryList');
+  list.innerHTML='';
+  Object.keys(SECTIONS_CONFIG).forEach(function(secId){
+    var sec=SECTIONS_CONFIG[secId];
+    var prefix=PREFIX[secId]||secId;
+    sec.cards.forEach(function(card){
+      var dbId=prefix+'-'+card.id;
+      var dbRow=DB.cards[dbId]||{};
+      var settId=galSettingsId(card);
+      var settRow=DB_SETTINGS[settId]||{};
+      var eff=cardEffectiveSection(dbId,secId);
+      var name=dbRow.title_fr||card.titleFr||card.titleEn||card.id;
+      var img=dbRow.cover_img||card.img||'';
+      var isVis=cardIsVis(dbId,card);
+      var secLabel=(SEC_OPTIONS.find(function(o){return o.v===eff;})||{l:eff}).l;
+
+      var item=document.createElement('div');item.className='gal-item';
+
+      var thumbHtml=img
+        ?'<img class="gal-thumb" src="'+esc(img)+'" loading="lazy" onerror="this.style.display=\'none\'">'
+        :'<div class="gal-thumb-empty"></div>';
+
+      /* Build section select options */
+      var secOpts=SEC_OPTIONS.map(function(o){
+        return '<option value="'+o.v+'"'+(eff===o.v?' selected':'')+'>'+o.l+'</option>';
+      }).join('');
+
+      /* Build settings toggles */
+      var dlChk=settRow.download_enabled?'checked':'';
+      var jpegChk=settRow.buy_jpeg_enabled?'checked':'';
+      var printChk=settRow.buy_print_enabled?'checked':'';
+      var jpegPrice=settRow.buy_jpeg_price||0;
+
+      /* Highlights link: only if there's a pCloud-backed gallery */
+      var hlHtml='';
+      /* client galleries have url, SPA galleries have galleryId */
+      hlHtml='<span class="gal-label">Highlights</span>'+
+        '<span style="font-size:10px;color:var(--dim);margin-top:2px">'+
+          (card.url?'<a class="gal-hl-link" href="admin.html#highlights" target="_blank">Gérer les highlights →</a>':'—')+'</span>';
+
+      item.innerHTML=
+        '<div class="gal-header" onclick="toggleGal(this)">'+
+          thumbHtml+
+          '<span class="gal-name">'+esc(name)+'</span>'+
+          '<span class="gal-sec-badge">'+esc(secLabel)+'</span>'+
+          '<span class="gal-vis-dot'+(isVis?' on':'')+'"></span>'+
+          '<span class="gal-chevron">&#8250;</span>'+
+        '</div>'+
+        '<div class="gal-body">'+
+          '<div class="gal-form">'+
+            '<div class="gal-field full">'+
+              '<span class="gal-label">Nom</span>'+
+              '<input class="gal-input" type="text" data-field="name" value="'+esc(name)+'">'+
+            '</div>'+
+            '<div class="gal-field">'+
+              '<span class="gal-label">Section</span>'+
+              '<select class="gal-select" data-field="section">'+secOpts+'</select>'+
+            '</div>'+
+            '<div class="gal-field">'+
+              '<span class="gal-label">Visibilité</span>'+
+              '<label class="gal-toggle-row">'+
+                '<label class="gal-toggle"><input type="checkbox" data-field="visible"'+(isVis?' checked':'')+'>'+
+                  '<span class="gal-slider"></span></label>'+
+                '<span class="gal-toggle-label">Visible sur le site</span>'+
+              '</label>'+
+            '</div>'+
+            '<div class="gal-field">'+
+              '<span class="gal-label">Mot de passe visionnage</span>'+
+              '<input class="gal-input" type="text" data-field="view_password" placeholder="vide = sans mdp" value="'+esc(settRow.view_password||'')+'">'+
+            '</div>'+
+            '<div class="gal-field">'+
+              '<span class="gal-label">Mot de passe téléchargement</span>'+
+              '<input class="gal-input" type="text" data-field="dl_password" placeholder="vide = téléchargement libre" value="'+esc(settRow.dl_password||'')+'">'+
+            '</div>'+
+            '<div class="gal-field">'+
+              '<span class="gal-label">Téléchargement</span>'+
+              '<label class="gal-toggle-row">'+
+                '<label class="gal-toggle"><input type="checkbox" data-field="download_enabled" '+dlChk+'>'+
+                  '<span class="gal-slider"></span></label>'+
+                '<span class="gal-toggle-label">Autoriser le téléchargement</span>'+
+              '</label>'+
+            '</div>'+
+            '<div class="gal-field">'+
+              '<span class="gal-label">Achat JPEG</span>'+
+              '<label class="gal-toggle-row">'+
+                '<label class="gal-toggle"><input type="checkbox" data-field="buy_jpeg_enabled" '+jpegChk+'>'+
+                  '<span class="gal-slider"></span></label>'+
+                '<span class="gal-toggle-label">Proposer à la vente</span>'+
+              '</label>'+
+            '</div>'+
+            '<div class="gal-field">'+
+              '<span class="gal-label">Achat tirage</span>'+
+              '<label class="gal-toggle-row">'+
+                '<label class="gal-toggle"><input type="checkbox" data-field="buy_print_enabled" '+printChk+'>'+
+                  '<span class="gal-slider"></span></label>'+
+                '<span class="gal-toggle-label">Proposer à la vente</span>'+
+              '</label>'+
+            '</div>'+
+            '<div class="gal-field">'+hlHtml+'</div>'+
+            '<div class="gal-actions">'+
+              '<button class="gal-cancel-btn" onclick="closeGal(this)">Fermer</button>'+
+              '<button class="gal-save-btn" onclick="saveGallery(this,\''+dbId+'\',\''+settId+'\',\''+secId+'\')">Enregistrer</button>'+
+            '</div>'+
+          '</div>'+/* .gal-form */
+        '</div>';/* .gal-body */
+
+      list.appendChild(item);
+    });
+  });
+}
+
+function toggleGal(header){
+  var body=header.nextElementSibling;
+  var chev=header.querySelector('.gal-chevron');
+  var isOpen=body.classList.contains('open');
+  /* Close all */
+  document.querySelectorAll('.gal-body.open').forEach(function(b){
+    b.classList.remove('open');
+    b.previousElementSibling.querySelector('.gal-chevron').classList.remove('open');
+  });
+  if(!isOpen){body.classList.add('open');chev.classList.add('open');}
+}
+
+function closeGal(btn){
+  var body=btn.closest('.gal-body');
+  var header=body.previousElementSibling;
+  body.classList.remove('open');
+  header.querySelector('.gal-chevron').classList.remove('open');
+}
+
+async function saveGallery(btn,dbId,settId,staticSection){
+  btn.disabled=true;btn.textContent='Enregistrement…';
+  var body=btn.closest('.gal-body');
+  var f=function(field){return body.querySelector('[data-field="'+field+'"]');};
+  var name=f('name').value.trim();
+  var section=f('section').value;
+  var visible=f('visible').checked;
+  var viewPwd=f('view_password').value.trim();
+  var dlPwd=f('dl_password').value.trim();
+  var dlEnabled=f('download_enabled').checked;
+  var jpegEnabled=f('buy_jpeg_enabled').checked;
+  var printEnabled=f('buy_print_enabled').checked;
+
+  try{
+    /* Save card */
+    await sbUpsert('gallery_cards',[{
+      id:dbId,section:section,visible:visible,
+      title_fr:name||undefined,
+      updated_at:new Date().toISOString()
+    }]);
+    /* Save settings */
+    await sbUpsert('gallery_settings',[{
+      gallery_id:settId,
+      view_password:viewPwd||null,
+      dl_password:dlPwd||null,
+      download_enabled:dlEnabled,
+      buy_jpeg_enabled:jpegEnabled,
+      buy_print_enabled:printEnabled,
+      updated_at:new Date().toISOString()
+    }]);
+    /* Also sync gallery_passwords for email function */
+    if(viewPwd||dlPwd){
+      await sbUpsert('gallery_passwords',[{
+        gallery_id:settId,
+        view_password:viewPwd||null,
+        dl_password:dlPwd||null
+      }]).catch(function(){});/* ignore if service_role restricted */
+    }
+    /* Update local caches */
+    if(!DB.cards[dbId])DB.cards[dbId]={};
+    Object.assign(DB.cards[dbId],{section:section,visible:visible,title_fr:name});
+    DB_SETTINGS[settId]={gallery_id:settId,view_password:viewPwd,dl_password:dlPwd,
+      download_enabled:dlEnabled,buy_jpeg_enabled:jpegEnabled,buy_print_enabled:printEnabled};
+    /* Update header dot */
+    var dot=body.previousElementSibling.querySelector('.gal-vis-dot');
+    if(dot)dot.classList.toggle('on',visible);
+    var secLabel=(SEC_OPTIONS.find(function(o){return o.v===section;})||{l:section}).l;
+    var badge=body.previousElementSibling.querySelector('.gal-sec-badge');
+    if(badge)badge.textContent=secLabel;
+    var nameEl=body.previousElementSibling.querySelector('.gal-name');
+    if(nameEl&&name)nameEl.textContent=name;
+
+    galFeedback('Galerie «'+name+'» enregistrée','ok');
+  }catch(e){galFeedback('Erreur : '+e.message,'err');}
+  btn.disabled=false;btn.textContent='Enregistrer';
+}
+
+function galFeedback(msg,cls){
+  var el=document.getElementById('galFeedback');
+  el.textContent=msg;el.className='feedback '+(cls||'ok');
+  setTimeout(function(){el.textContent='';el.className='feedback';},4000);
 }
 </script>
 </body>

@@ -54,22 +54,16 @@ const MENU_CONFIG = [
   { "id": "ph-exposition",       "name": "Exposition",           "type": "section", "sectionId": "ph-exposition", "parent": "photographe" },
   { "id": "ph-clients",          "name": "Galeries clients",     "type": "section", "sectionId": "ph-clients",    "parent": "photographe" },
   { "id": "realisateur",         "name": "RÉALISATEUR",          "type": "section", "sectionId": "realisateur" },
-  { "id": "auteur",              "name": "AUTEUR",               "type": "page",    "pageId": "auteur",    "hidden": true },
   { "id": "travailler-ensemble", "name": "TRAVAILLER ENSEMBLE",  "type": "page",    "pageId": "travailler-ensemble" },
 
   /* ── BOUTIQUE ── grille de vignettes (comme PHOTOGRAPHE/RÉALISATEUR) ── */
   { "id": "boutique",            "name": "BOUTIQUE",             "type": "section", "sectionId": "boutique" },
-  { "id": "boutique-dk",         "name": "DUST'IN KOLOR",        "type": "link",    "url": "dustin-kolor/index.html", "hidden": true },
-  { "id": "boutique-portrait",   "name": "SÉANCE PORTRAIT",      "type": "page",    "pageId": "contact",              "hidden": true },
-  { "id": "boutique-projet",     "name": "ME PROPOSER UN PROJET","type": "page",    "pageId": "contact",              "hidden": true },
-
   { "id": "infos",               "name": "INFOS",                "type": "page",    "pageId": "infos" },
 
-  /* ── Cachés ── */
+  /* ── Cachés (pages prêtes, à activer depuis l'admin) ── */
   { "id": "galeries-client", "name": "GALERIES CLIENT",  "type": "section", "sectionId": "galeries-client", "hidden": true },
-  { "id": "post-production", "name": "POST-PRODUCTION", "type": "page",    "pageId": "post-production", "hidden": true },
-  { "id": "films-player",    "name": "VOIR LES FILMS",  "type": "page",    "pageId": "films-player",    "hidden": true },
-  { "id": "archives",        "name": "ARCHIVES",        "type": "gallery", "galleryId": "archives",     "hidden": true }
+  { "id": "post-production", "name": "POST-PRODUCTION",  "type": "page",    "pageId": "post-production",    "hidden": true },
+  { "id": "auteur",          "name": "AUTEUR",            "type": "page",    "pageId": "auteur",             "hidden": true }
 ];
 
 /* ─── SECTIONS CONFIG ────────────────────────────────────────── */
