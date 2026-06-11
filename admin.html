@@ -132,6 +132,27 @@ body{font-family:'IBM Plex Sans',sans-serif;font-weight:300;font-size:13px;
 
 .tab-placeholder{text-align:center;padding:80px 0;font-size:12px;color:var(--dim);font-style:italic}
 
+/* ── Photos tab ── */
+.ph-toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+.ph-status{font-size:11px;color:var(--dim);margin-bottom:14px;min-height:14px}
+.ph-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-bottom:80px}
+.ph-tile{position:relative;border:1px solid var(--light-gray);background:#fff;cursor:grab;user-select:none}
+.ph-tile:active{cursor:grabbing}
+.ph-tile img{width:100%;aspect-ratio:3/2;object-fit:cover;display:block;pointer-events:none}
+.ph-tile.hidden-ph img{opacity:.25;filter:grayscale(1)}
+.ph-tile .ph-name{font-size:9px;color:var(--dim);padding:4px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ph-tile .ph-ord{position:absolute;top:4px;left:4px;background:rgba(0,0,0,.55);color:#fff;font-size:9px;padding:1px 5px;border-radius:2px}
+.ph-tools{position:absolute;top:4px;right:4px;display:flex;gap:4px}
+.ph-tool{width:24px;height:24px;border:none;border-radius:2px;background:rgba(0,0,0,.55);color:#fff;
+  font-size:12px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s}
+.ph-tool:hover{background:rgba(0,0,0,.8)}
+.ph-tool.star.on{background:#c4a31e;color:#fff}
+.ph-tool.eye.off{background:var(--red)}
+.ph-savebar{position:fixed;bottom:0;left:0;right:0;background:rgba(250,250,250,.97);border-top:1px solid var(--light-gray);
+  display:flex;align-items:center;gap:14px;justify-content:flex-end;padding:12px 24px;z-index:50}
+.ph-count{font-size:11px;color:var(--dim)}
+.ph-tile.sortable-ghost{opacity:.3}
+
 /* ── Gallery editor ── */
 .gallery-list{display:flex;flex-direction:column}
 .gal-item{border-top:1px solid var(--light)}
@@ -213,6 +234,7 @@ body{font-family:'IBM Plex Sans',sans-serif;font-weight:300;font-size:13px;
     <button class="tab-btn active" onclick="switchTab('nav',this)">Navigation</button>
     <button class="tab-btn" onclick="switchTab('drafts',this)">Brouillons</button>
     <button class="tab-btn" onclick="switchTab('galleries',this)">Galeries</button>
+    <button class="tab-btn" onclick="switchTab('photos',this)">Photos</button>
   </div>
 
   <!-- Navigation -->
@@ -240,10 +262,34 @@ body{font-family:'IBM Plex Sans',sans-serif;font-weight:300;font-size:13px;
     <div id="galleryList" class="gallery-list"></div>
     <div id="galFeedback" class="feedback"></div>
   </div>
+
+  <!-- Photos -->
+  <div id="tab-photos" style="display:none">
+    <p class="tab-hint">
+      Coller le <strong>lien du dossier pCloud</strong>, puis g&eacute;rer les photos :
+      <strong>glisser</strong> pour r&eacute;ordonner &middot;
+      <strong>&#9788;</strong> masquer/afficher &middot;
+      <strong>&#9733;</strong> highlight (teaser public) &middot;
+      puis <strong>Enregistrer</strong>. Aucun d&eacute;ploiement &mdash; effet imm&eacute;diat sur le site.
+    </p>
+    <div class="ph-toolbar">
+      <select id="phGallerySelect" class="gal-select" style="max-width:220px" onchange="phSelectGallery()"></select>
+      <input id="phPcloudInput" class="gal-input" type="text" style="flex:1;min-width:200px"
+        placeholder="Lien pCloud — https://u.pcloud.link/publink/show?code=…">
+      <button class="gal-save-btn" onclick="phSaveCode()">Charger</button>
+    </div>
+    <div id="phStatus" class="ph-status"></div>
+    <div id="phGrid" class="ph-grid"></div>
+    <div class="ph-savebar" id="phSaveBar" style="display:none">
+      <span id="phCount" class="ph-count"></span>
+      <button class="gal-save-btn" onclick="phSaveAll(this)">Enregistrer l'ordre, les photos masqu&eacute;es et les highlights</button>
+    </div>
+    <div id="phFeedback" class="feedback"></div>
+  </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
-<script src="js/gallery-data.js?v=20260608a"></script>
+<script src="js/gallery-data.js?v=20260611a"></script>
 <script>
 var SUPA_URL='https://suecslynruuputmujudg.supabase.co/rest/v1';
 var SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN1ZWNzbHlucnV1cHV0bXVqdWRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY1MTYyODcsImV4cCI6MjA5MjA5MjI4N30.c9Pa_x6MEcJdqVekBodSYpu3it-riVU1hYhC-m5iCsU';
@@ -297,7 +343,7 @@ async function loadDB(){
     var res=await Promise.all([
       sbGet('section_visibility?select=id,visible,label'),
       sbGet('gallery_cards?select=id,visible,sort_order,title_fr,cover_img,section,gallery_id,link_url&order=sort_order.asc'),
-      sbGet('gallery_settings?select=gallery_id,view_password,dl_password,download_enabled,buy_jpeg_enabled,buy_jpeg_price,buy_print_enabled,pcloud_code')
+      sbGet('gallery_settings?select=gallery_id,view_hash,dl_hash,download_enabled,buy_jpeg_enabled,buy_jpeg_price,buy_print_enabled,pcloud_code,photo_order,hidden_fileids')
     ]);
     res[0].forEach(function(r){DB.menuVis[r.id]=r.visible;DB.menuLabel[r.id]=r.label||'';});
     res[1].forEach(function(r){DB.cards[r.id]=r;});
@@ -317,9 +363,10 @@ function setStatus(st,lbl){
 function switchTab(name,btn){
   document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
   btn.classList.add('active');
-  ['nav','drafts','galleries'].forEach(function(t){
+  ['nav','drafts','galleries','photos'].forEach(function(t){
     document.getElementById('tab-'+t).style.display=t===name?'':'none';
   });
+  if(name==='photos')phInitTab();
 }
 
 /* Feedback */
@@ -541,8 +588,8 @@ function buildDraftItem(e){
         '<input class="gal-input" type="text" data-field="pcloud_code" placeholder="Ex: kZKq0A5Z…" value="'+esc(pcloudCode)+'">'+
       '</div>'+
       '<div class="gal-field full">'+
-        '<span class="gal-label">Highlights</span>'+
-        '<a class="gal-hl-link" href="admin.html#highlights" target="_blank">Gérer les highlights →</a>'+
+        '<span class="gal-label">Photos &amp; highlights</span>'+
+        '<a class="gal-hl-link" href="#" onclick="openPhotosFor(\''+esc(e.settId)+'\');return false">Gérer les photos →</a>'+
       '</div>';
   }
   var item=document.createElement('div');
@@ -579,7 +626,7 @@ async function saveDraft(btn,dbId,settId,staticSection){
   var name=f('name').value.trim();
   var section=f('section').value;
   var pcloudInput=f('pcloud_code');
-  var pcloudCode=pcloudInput?pcloudInput.value.trim():null;
+  var pcloudCode=pcloudInput?normalizePCloud(pcloudInput.value):null;
   try{
     await sbUpsert('gallery_cards',[{id:dbId,section:section,title_fr:name||undefined,updated_at:new Date().toISOString()}]);
     if(pcloudCode!==null){
@@ -605,7 +652,7 @@ async function publishDraft(btn,dbId,settId,staticSection){
   var name=f('name').value.trim();
   var section=f('section').value;
   var pcloudInput=f('pcloud_code');
-  var pcloudCode=pcloudInput?pcloudInput.value.trim():null;
+  var pcloudCode=pcloudInput?normalizePCloud(pcloudInput.value):null;
   try{
     await sbUpsert('gallery_cards',[{id:dbId,section:section,visible:true,title_fr:name||undefined,updated_at:new Date().toISOString()}]);
     if(pcloudCode!==null){
@@ -702,11 +749,6 @@ var SEC_OPTIONS=[
   {v:'boutique',      l:'Boutique'}
 ];
 
-async function loadGallerySettings(){
-  var rows=await sbGet('gallery_settings?select=gallery_id,view_password,dl_password,download_enabled,buy_jpeg_enabled,buy_jpeg_price,buy_print_enabled');
-  rows.forEach(function(r){DB_SETTINGS[r.gallery_id]=r;});
-}
-
 function galId(card,secId){
   var prefix=PREFIX[secId]||secId;
   return prefix+'-'+card.id;
@@ -757,9 +799,9 @@ function renderGalleries(){
       /* Highlights link: only if there's a pCloud-backed gallery */
       var hlHtml='';
       /* client galleries have url, SPA galleries have galleryId */
-      hlHtml='<span class="gal-label">Highlights</span>'+
+      hlHtml='<span class="gal-label">Photos &amp; highlights</span>'+
         '<span style="font-size:10px;color:var(--dim);margin-top:2px">'+
-          (card.url?'<a class="gal-hl-link" href="admin.html#highlights" target="_blank">Gérer les highlights →</a>':'—')+'</span>';
+          (card.url?'<a class="gal-hl-link" href="#" onclick="openPhotosFor(\''+esc(settId)+'\');return false">Gérer les photos →</a>':'—')+'</span>';
 
       item.innerHTML=
         '<div class="gal-header" onclick="toggleGal(this)">'+
@@ -788,12 +830,12 @@ function renderGalleries(){
               '</label>'+
             '</div>'+
             '<div class="gal-field">'+
-              '<span class="gal-label">Mot de passe visionnage</span>'+
-              '<input class="gal-input" type="text" data-field="view_password" placeholder="vide = sans mdp" value="'+esc(settRow.view_password||'')+'">'+
+              '<span class="gal-label">Mot de passe visionnage'+(settRow.view_hash?' · défini ✓':'')+'</span>'+
+              '<input class="gal-input" type="text" data-field="view_password" placeholder="'+(settRow.view_hash?'vide = inchangé · - pour supprimer':'aucun — taper pour définir')+'" value="">'+
             '</div>'+
             '<div class="gal-field">'+
-              '<span class="gal-label">Mot de passe téléchargement</span>'+
-              '<input class="gal-input" type="text" data-field="dl_password" placeholder="vide = téléchargement libre" value="'+esc(settRow.dl_password||'')+'">'+
+              '<span class="gal-label">Mot de passe téléchargement'+(settRow.dl_hash?' · défini ✓':'')+'</span>'+
+              '<input class="gal-input" type="text" data-field="dl_password" placeholder="'+(settRow.dl_hash?'vide = inchangé · - pour supprimer':'aucun — taper pour définir')+'" value="">'+
             '</div>'+
             '<div class="gal-field">'+
               '<span class="gal-label">Téléchargement</span>'+
@@ -874,29 +916,36 @@ async function saveGallery(btn,dbId,settId,staticSection){
       title_fr:name||undefined,
       updated_at:new Date().toISOString()
     }]);
-    /* Save settings */
-    await sbUpsert('gallery_settings',[{
+    /* Save settings — mdp stockés en HASH SHA-256 (jamais en clair côté public) */
+    var prev=DB_SETTINGS[settId]||{};
+    var sett={
       gallery_id:settId,
-      view_password:viewPwd||null,
-      dl_password:dlPwd||null,
       download_enabled:dlEnabled,
       buy_jpeg_enabled:jpegEnabled,
       buy_print_enabled:printEnabled,
       updated_at:new Date().toISOString()
-    }]);
-    /* Also sync gallery_passwords for email function */
-    if(viewPwd||dlPwd){
+    };
+    /* vide = inchangé · "-" = supprimer · sinon = nouveau mdp */
+    if(viewPwd==='-')sett.view_hash=null;
+    else if(viewPwd)sett.view_hash=await sha256(viewPwd);
+    if(dlPwd==='-')sett.dl_hash=null;
+    else if(dlPwd)sett.dl_hash=await sha256(dlPwd);
+    await sbUpsert('gallery_settings',[sett]);
+    /* Clair → gallery_passwords (table write-only pour mémo, lecture service_role) */
+    if((viewPwd&&viewPwd!=='-')||(dlPwd&&dlPwd!=='-')){
       await sbUpsert('gallery_passwords',[{
         gallery_id:settId,
-        view_password:viewPwd||null,
-        dl_password:dlPwd||null
-      }]).catch(function(){});/* ignore if service_role restricted */
+        view_password:(viewPwd&&viewPwd!=='-')?viewPwd:null,
+        dl_password:(dlPwd&&dlPwd!=='-')?dlPwd:null
+      }]).catch(function(){});/* non bloquant */
     }
     /* Update local caches */
     if(!DB.cards[dbId])DB.cards[dbId]={};
     Object.assign(DB.cards[dbId],{section:section,visible:visible,title_fr:name});
-    DB_SETTINGS[settId]={gallery_id:settId,view_password:viewPwd,dl_password:dlPwd,
-      download_enabled:dlEnabled,buy_jpeg_enabled:jpegEnabled,buy_print_enabled:printEnabled};
+    DB_SETTINGS[settId]=Object.assign({},prev,{gallery_id:settId,
+      view_hash:('view_hash'in sett)?sett.view_hash:prev.view_hash,
+      dl_hash:('dl_hash'in sett)?sett.dl_hash:prev.dl_hash,
+      download_enabled:dlEnabled,buy_jpeg_enabled:jpegEnabled,buy_print_enabled:printEnabled});
     /* Update header dot */
     var dot=body.previousElementSibling.querySelector('.gal-vis-dot');
     if(dot)dot.classList.toggle('on',visible);
@@ -913,6 +962,226 @@ async function saveGallery(btn,dbId,settId,staticSection){
 
 function galFeedback(msg,cls){
   var el=document.getElementById('galFeedback');
+  el.textContent=msg;el.className='feedback '+(cls||'ok');
+  setTimeout(function(){el.textContent='';el.className='feedback';},4000);
+}
+
+/* ═════════════════════════════════════════════════════════════
+   PHOTOS TAB — lien pCloud, ordre (drag), masquage, highlights
+   Tout est stocké dans Supabase : gallery_settings.photo_order,
+   gallery_settings.hidden_fileids, gallery_highlights.fileids
+   ═════════════════════════════════════════════════════════════ */
+var PCLOUD_API='https://api.pcloud.com';
+var PH={gid:null,photos:[],hidden:{},stars:{},sortable:null};
+
+/* Lien pCloud complet OU code nu → code nu */
+function normalizePCloud(v){
+  v=(v||'').trim();
+  if(!v)return '';
+  var m=v.match(/code=([A-Za-z0-9]+)/);
+  return m?m[1]:v;
+}
+
+/* Liste des galeries gérables : cartes clients (url galerie.html) + lignes gallery_settings */
+function phGalleryList(){
+  var seen={},list=[];
+  Object.keys(SECTIONS_CONFIG).forEach(function(secId){
+    SECTIONS_CONFIG[secId].cards.forEach(function(card){
+      if(!card.url)return;
+      var m=card.url.match(/galerie\.html\?g=([a-z0-9-]+)/);
+      var gid=m?m[1]:(card.galleryId||card.id);
+      if(seen[gid])return;seen[gid]=1;
+      var prefix=PREFIX[secId]||secId;
+      var dbRow=DB.cards[prefix+'-'+card.id]||{};
+      list.push({gid:gid,label:dbRow.title_fr||card.titleFr||card.id});
+    });
+  });
+  Object.keys(DB_SETTINGS).forEach(function(gid){
+    if(!seen[gid]){seen[gid]=1;list.push({gid:gid,label:gid});}
+  });
+  list.sort(function(a,b){return a.label.localeCompare(b.label,'fr');});
+  return list;
+}
+
+function phInitTab(){
+  var sel=document.getElementById('phGallerySelect');
+  if(sel.options.length)return;/* déjà initialisé */
+  var list=phGalleryList();
+  sel.innerHTML='<option value="">— Choisir une galerie —</option>'+
+    list.map(function(g){return '<option value="'+esc(g.gid)+'">'+esc(g.label)+'</option>';}).join('');
+}
+
+function openPhotosFor(gid){
+  /* depuis Brouillons/Galeries : bascule sur l'onglet Photos pré-sélectionné */
+  var btns=document.querySelectorAll('.tab-btn');
+  switchTab('photos',btns[btns.length-1]);
+  document.getElementById('phGallerySelect').value=gid;
+  phSelectGallery();
+}
+
+function phSelectGallery(){
+  var gid=document.getElementById('phGallerySelect').value;
+  PH.gid=gid||null;PH.photos=[];PH.hidden={};PH.stars={};
+  document.getElementById('phGrid').innerHTML='';
+  document.getElementById('phSaveBar').style.display='none';
+  document.getElementById('phStatus').textContent='';
+  var inp=document.getElementById('phPcloudInput');
+  inp.value='';
+  if(!gid)return;
+  var code=(DB_SETTINGS[gid]||{}).pcloud_code||'';
+  inp.value=code;
+  if(code)phLoadPhotos();
+  else document.getElementById('phStatus').textContent='Pas de lien pCloud — collez le lien du dossier partagé puis cliquez Charger.';
+}
+
+async function phSaveCode(){
+  if(!PH.gid){phFeedback('Choisissez d’abord une galerie','err');return;}
+  var code=normalizePCloud(document.getElementById('phPcloudInput').value);
+  if(!code){phFeedback('Collez un lien pCloud valide','err');return;}
+  document.getElementById('phPcloudInput').value=code;
+  try{
+    await sbUpsert('gallery_settings',[{gallery_id:PH.gid,pcloud_code:code,updated_at:new Date().toISOString()}]);
+    DB_SETTINGS[PH.gid]=DB_SETTINGS[PH.gid]||{gallery_id:PH.gid};
+    DB_SETTINGS[PH.gid].pcloud_code=code;
+    phFeedback('Lien pCloud enregistré');
+    phLoadPhotos();
+  }catch(e){phFeedback('Erreur : '+e.message,'err');}
+}
+
+async function phLoadPhotos(){
+  var gid=PH.gid;
+  var code=(DB_SETTINGS[gid]||{}).pcloud_code;
+  var grid=document.getElementById('phGrid');
+  var status=document.getElementById('phStatus');
+  if(!code)return;
+  status.textContent='Chargement des photos pCloud…';
+  grid.innerHTML='';
+  try{
+    var r=await fetch(PCLOUD_API+'/showpublink?code='+code);
+    var d=await r.json();
+    if(d.result!==0)throw new Error('pCloud '+d.result+' : '+(d.error||''));
+    var contents=(d.metadata&&d.metadata.contents)||[];
+    if(!contents.length&&d.metadata&&d.metadata.folderid){
+      r=await fetch(PCLOUD_API+'/showpublink?code='+code+'&folderid='+d.metadata.folderid);
+      d=await r.json();
+      contents=(d.metadata&&d.metadata.contents)||[];
+    }
+    var files=contents.filter(function(i){return !i.isfolder&&/\.(jpe?g|png|webp)$/i.test(i.name);})
+      .sort(function(a,b){return a.name.localeCompare(b.name,undefined,{numeric:true,sensitivity:'base'});});
+    if(!files.length){status.textContent='Aucune photo dans ce dossier pCloud.';return;}
+
+    /* Appliquer l'ordre sauvegardé */
+    var sett=DB_SETTINGS[gid]||{};
+    var order=Array.isArray(sett.photo_order)?sett.photo_order.map(String):null;
+    if(order&&order.length){
+      var pos={};order.forEach(function(fid,i){pos[fid]=i;});
+      files.sort(function(a,b){
+        var pa=(String(a.fileid)in pos)?pos[String(a.fileid)]:Infinity;
+        var pb=(String(b.fileid)in pos)?pos[String(b.fileid)]:Infinity;
+        if(pa!==pb)return pa-pb;
+        return a.name.localeCompare(b.name,undefined,{numeric:true,sensitivity:'base'});
+      });
+    }
+    PH.photos=files.map(function(f){return{id:String(f.fileid),name:f.name};});
+
+    /* Masquées */
+    PH.hidden={};
+    (Array.isArray(sett.hidden_fileids)?sett.hidden_fileids:[]).forEach(function(fid){PH.hidden[String(fid)]=1;});
+
+    /* Highlights */
+    PH.stars={};
+    try{
+      var hl=await sbGet('gallery_highlights?gallery_id=eq.'+gid+'&select=fileids');
+      if(hl.length&&Array.isArray(hl[0].fileids))hl[0].fileids.forEach(function(fid){PH.stars[String(fid)]=1;});
+    }catch(e){}
+
+    phRenderGrid(code);
+    status.textContent='';
+  }catch(e){
+    status.textContent='Erreur pCloud : '+e.message;
+  }
+}
+
+function phRenderGrid(code){
+  var grid=document.getElementById('phGrid');
+  grid.innerHTML=PH.photos.map(function(p,i){
+    var hid=PH.hidden[p.id]?1:0,star=PH.stars[p.id]?1:0;
+    return '<div class="ph-tile'+(hid?' hidden-ph':'')+'" data-fid="'+p.id+'">'+
+      '<img src="'+PCLOUD_API+'/getpubthumb?code='+code+'&fileid='+p.id+'&size=360x240&type=jpg" loading="lazy">'+
+      '<span class="ph-ord">'+(i+1)+'</span>'+
+      '<div class="ph-tools">'+
+        '<button class="ph-tool star'+(star?' on':'')+'" title="Highlight (teaser public)" onclick="phToggleStar(this,\''+p.id+'\')">★</button>'+
+        '<button class="ph-tool eye'+(hid?' off':'')+'" title="Masquer / afficher" onclick="phToggleHide(this,\''+p.id+'\')">'+(hid?'✖':'☼')+'</button>'+
+      '</div>'+
+      '<div class="ph-name">'+esc(p.name)+'</div>'+
+    '</div>';
+  }).join('');
+  if(PH.sortable)PH.sortable.destroy();
+  PH.sortable=Sortable.create(grid,{animation:150,ghostClass:'sortable-ghost',onEnd:phRefreshNums});
+  document.getElementById('phSaveBar').style.display='';
+  phRefreshCount();
+}
+
+function phRefreshNums(){
+  var tiles=document.querySelectorAll('#phGrid .ph-tile');
+  tiles.forEach(function(t,i){t.querySelector('.ph-ord').textContent=i+1;});
+  phRefreshCount();
+}
+
+function phRefreshCount(){
+  var n=PH.photos.length;
+  var h=Object.keys(PH.hidden).length;
+  var s=Object.keys(PH.stars).length;
+  document.getElementById('phCount').textContent=
+    n+' photo'+(n>1?'s':'')+' · '+h+' masquée'+(h>1?'s':'')+' · '+s+' highlight'+(s>1?'s':'');
+}
+
+function phToggleHide(btn,fid){
+  if(PH.hidden[fid])delete PH.hidden[fid];else PH.hidden[fid]=1;
+  var tile=btn.closest('.ph-tile');
+  var hid=!!PH.hidden[fid];
+  tile.classList.toggle('hidden-ph',hid);
+  btn.classList.toggle('off',hid);
+  btn.innerHTML=hid?'✖':'☼';
+  phRefreshCount();
+}
+
+function phToggleStar(btn,fid){
+  if(PH.stars[fid])delete PH.stars[fid];else PH.stars[fid]=1;
+  btn.classList.toggle('on',!!PH.stars[fid]);
+  phRefreshCount();
+}
+
+async function phSaveAll(btn){
+  if(!PH.gid)return;
+  btn.disabled=true;btn.textContent='Enregistrement…';
+  try{
+    var order=Array.prototype.map.call(
+      document.querySelectorAll('#phGrid .ph-tile'),
+      function(t){return t.dataset.fid;});
+    var hidden=Object.keys(PH.hidden);
+    var stars=order.filter(function(fid){return PH.stars[fid];});/* highlights dans l'ordre des photos */
+    await sbUpsert('gallery_settings',[{
+      gallery_id:PH.gid,
+      photo_order:order,
+      hidden_fileids:hidden,
+      updated_at:new Date().toISOString()
+    }]);
+    await sbUpsert('gallery_highlights',[{
+      gallery_id:PH.gid,
+      fileids:stars,
+      updated_at:new Date().toISOString()
+    }]);
+    DB_SETTINGS[PH.gid]=DB_SETTINGS[PH.gid]||{gallery_id:PH.gid};
+    DB_SETTINGS[PH.gid].photo_order=order;
+    DB_SETTINGS[PH.gid].hidden_fileids=hidden;
+    phFeedback('Ordre, masquage et highlights enregistrés — en ligne immédiatement');
+  }catch(e){phFeedback('Erreur : '+e.message,'err');}
+  btn.disabled=false;btn.textContent='Enregistrer l’ordre, les photos masquées et les highlights';
+}
+
+function phFeedback(msg,cls){
+  var el=document.getElementById('phFeedback');
   el.textContent=msg;el.className='feedback '+(cls||'ok');
   setTimeout(function(){el.textContent='';el.className='feedback';},4000);
 }

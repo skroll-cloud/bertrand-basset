@@ -1,5 +1,5 @@
 # CLAUDE.md — Cahier des charges site Bertrand Basset
-*Dernière mise à jour : 07 juin 2026*
+*Dernière mise à jour : 11 juin 2026 — refonte galeries clients (galerie.html dynamique + onglet Photos admin) + nettoyage repo*
 
 > **Règle absolue** : ne jamais inventer un nouveau design de page.
 > Toute nouvelle page ou section s'intègre dans le système existant.
@@ -13,7 +13,7 @@
 - **Site statique** hébergé sur GitHub Pages
 - Domaine : `bertrandbasset.com` (DNS Cloudflare → GitHub Pages)
 - Repo : `skroll-cloud/bertrand-basset.git`
-- PAT : encodé en char codes dans `admin.html` (ne pas modifier)
+- PAT : encodé en char codes dans `old/admin-2026-06-08.html` ligne ~1418 (dossier local uniquement, hors repo)
 - **Opérations git** : toujours depuis `/sessions/[session-name]/repo-push`
   Le nom de session change à chaque démarrage — vérifier avec `ls /sessions/` au début de chaque session.
   Le dossier monté `/sessions/.../mnt/site-v1` est en FUSE — git y est interdit (EPERM).
@@ -48,9 +48,7 @@ git push origin main
 ```
 
 **Note** : GitHub push protection bloque les tokens en clair et en base64.
-Le PAT dans admin.html est encodé en tableau de char codes pour contourner ce filtre.
-
-**PAT actuel** : encodé en char codes dans `admin.html` (ligne ~1179). NE PAS écrire en clair dans les fichiers commités — push protection GitHub le bloquera. Le PAT de déploiement est visible dans le remote du repo `/sessions/loving-pensive-clarke/repo-push`.
+**PAT actuel** : encodé en char codes dans `old/admin-2026-06-08.html` (ligne ~1418, `GH_TOKEN`), dossier local uniquement — PAS dans le repo. NE PAS écrire le PAT en clair dans les fichiers commités — push protection GitHub le bloquera. L'admin actuel (`admin.html`) ne contient plus de PAT : il ne déploie rien.
 
 ---
 
@@ -226,76 +224,61 @@ document.getElementById('homeLink')?.addEventListener('click', e => {
 
 ---
 
-## 5. Galeries clients — architecture
+## 5. Galeries clients — architecture (refonte 11/06/2026)
 
-### Règle d'accès
-- Chaque galerie a **une URL propre et partageable** : `bertrandbasset.com/clients/[nom].html`
-- Elles sont aussi accessibles via la section `galeries-client` dans le site (cachée dans le nav pour l'instant)
-- `clients/index.html` : portail de liste des galeries (accès direct par URL, hors nav principale)
+### ⚠️ Une seule page dynamique : `clients/galerie.html?g=ID`
 
-### Mot de passe master
-Toute galerie accepte **deux mots de passe** :
-1. Son mot de passe propre (SHA-256 hardcodé dans le fichier)
-2. Le mot de passe maître **`fullaccess`** (SHA-256 = `44ffde91067d45353ee3b6ec012580e30fea73b60654a905013269cb092b7b8d`)
+**Toutes** les galeries clients pCloud passent par `clients/galerie.html`.
+La page lit TOUT depuis Supabase au chargement (paramètre `?g=gallery_id`) :
 
-```js
-if (hash === PWD_HASH || hash === MASTER_HASH) { /* accès accordé */ }
-```
+| Donnée | Source Supabase |
+|--------|-----------------|
+| Code pCloud | `gallery_settings.pcloud_code` |
+| Ordre des photos | `gallery_settings.photo_order` (jsonb, fileids) |
+| Photos masquées | `gallery_settings.hidden_fileids` (jsonb, fileids) |
+| Hash mdp visionnage | `gallery_settings.view_hash` (SHA-256) |
+| Hash mdp téléchargement | `gallery_settings.dl_hash` (SHA-256) |
+| Highlights (teaser public) | `gallery_highlights.fileids` |
+| Nom affiché | `gallery_cards.title_fr` (fallback : gallery_id) |
 
-### ⚠️ Deux générations de templates — ergonomies différentes
+Les anciens fichiers `clients/[nom].html` sont des **redirects** vers `galerie.html?g=[nom]`
+(les URLs partagées aux clients restent valides). Ne pas les supprimer.
 
-| Génération | Fichiers | Accès | Fonctionnalités |
-|-----------|----------|-------|-----------------|
-| **Ancienne** (2 tiers) | `gilmerton.html`, `leo-brasserie.html` | Mot de passe unique → grille complète | Sélection photos + envoi par email + téléchargement ZIP |
-| **Nouvelle** (3 tiers) | `grande-parade.html`, template `galerie-template.html` | Highlights sélectionnés dans admin → demande d'accès par email → mdp téléchargement | Highlights depuis Supabase, gate slide, modal demande email, voir toutes les photos avec mdp, télécharger avec mdp séparé |
+### Comportement d'accès (3 tiers)
+- `view_hash` + `dl_hash` définis → highlights publics → gate → mdp view (visionnage) ou mdp DL (sélection + ZIP)
+- Aucun hash → galerie **en accès libre** (mode visionnage direct)
+- Mot de passe maître `fullaccess` (hash `44ffde91...`) accepté partout en visionnage
 
-**À terme** : standardiser les anciennes galeries sur le nouveau template 3 tiers.
+### 🔐 Sécurité mots de passe
+- **Jamais de mot de passe en clair lisible par anon.** `gallery_settings` ne contient que des hash.
+- Le clair est dans `gallery_passwords` (lecture service_role uniquement ; anon = write-only pour l'admin).
+- L'admin calcule le SHA-256 côté client à l'enregistrement.
 
-### Protocole — créer une nouvelle galerie client (template 3 tiers)
+### Protocole — créer une nouvelle galerie client
 
-Bertrand dit : **"pCloud lien dossier + (optionnel) mot de passe + photo vignette"**
+Bertrand dit : **"lien pCloud + nom"**. Tout se passe dans l'**admin**, AUCUN fichier à créer :
+1. Admin → onglet **Brouillons** (ou Photos) → coller le lien pCloud (le code est extrait automatiquement)
+2. Onglet **Photos** : ordonner (glisser-déposer), masquer (☼), choisir les highlights (★) → Enregistrer
+3. Onglet **Galeries** : définir les mots de passe view/DL → Enregistrer (hash auto)
+4. La carte (gallery-data.js `SECTIONS_CONFIG["ph-clients"]`) doit avoir `url: "clients/galerie.html?g=ID"` — si la carte n'existe pas encore, l'ajouter puis bumper `?v=` et déployer (seule étape nécessitant un déploiement)
+5. URL partageable : `bertrandbasset.com/clients/galerie.html?g=ID`
 
-Claude fait :
-1. Récupérer le code pCloud depuis l'URL : `u.pcloud.link/publink/show?code=CODE`
-2. Vérifier que c'est un **dossier** (pas un fichier — `.jpg` dans le titre = erreur)
-3. Copier `clients/grande-parade.html` → `clients/[nom].html`
-4. Modifier les constantes CONFIG :
-   ```js
-   const CONFIG = {
-     GALLERY_NAME:  'Nom',
-     PCLOUD_CODE:   'CODE_PCLOUD',
-     PWD_VIEW_HASH: 'sha256_mdp_visionnage',
-     PWD_DL_HASH:   'sha256_mdp_telechargement',
-     CARD_ID:       'client-nom',
-     GALLERY_ID:    'nom-galerie',  // clé dans gallery_highlights + gallery_passwords Supabase
-     NOTIF_EMAIL:   'yellowshoesstudio@gmail.com',
-   };
-   ```
-5. Insérer le mot de passe en clair dans Supabase (pour envoi email) :
-   ```sql
-   INSERT INTO gallery_passwords (gallery_id, view_password, dl_password)
-   VALUES ('nom-galerie', 'MotDePasseView', 'MotDePasseDL');
-   ```
-6. Ajouter la galerie dans `HL_GALLERIES` de `admin.html` pour la sélection highlights
-7. Ajouter la carte dans `SECTIONS_CONFIG["galeries-client"]` (gallery-data.js)
-8. Ajouter la carte dans `clients/index.html` avec vignette pCloud
-9. Déployer depuis le repo-push de la session courante
+### Galeries actives (gallery_settings)
 
-### Galeries actives
+| gallery_id | pCloud code | Mdp view | Mdp DL |
+|------------|-------------|----------|--------|
+| grande-parade | `kZKq0A5ZaoFGv3YO4mQrFbQghpd6Tfw0CWgy` | `GrandeParade` | `GrandeParadeDL` |
+| gilmerton | `kZo1EU5ZLLpXW8fr6xzJNJW0gPuU1B6fdsuy` | `Gilmerton` | même |
+| leo-brasserie | `kZQ1EU5ZzBL5BcesXwzTqgy0uauzhu35EtS7` | `Léo` | même |
+| ines | `kZTjQI5Z2AICSui7ebYf6i6dMEQqiYXYSFCV` | hash repris de l'ancien fichier | même |
+| ange-marine, antoine-asnar, olivier-cuisine, pauline-gourret, shooting-bebe-armel | codes en base | aucun (accès libre) | aucun |
 
-| Galerie | Fichier | Type | pCloud code | Vignette fileid | Mot de passe view | Mot de passe DL |
-|---------|---------|------|-------------|-----------------|-------------------|-----------------|
-| Gilmerton | `clients/gilmerton.html` | Ancienne (2 tiers) | `kZo1EU5ZLLpXW8fr6xzJNJW0gPuU1B6fdsuy` | 88201126472 | `Gilmerton` | même |
-| Léo Brasserie | `clients/leo-brasserie.html` | Ancienne (2 tiers) | `kZQ1EU5ZzBL5BcesXwzTqgy0uauzhu35EtS7` | 88089443232 | `Léo` | même |
-| Grande Parade | `clients/grande-parade.html` | Nouvelle (3 tiers) | `kZKq0A5ZaoFGv3YO4mQrFbQghpd6Tfw0CWgy` | 88890561791 | `GrandeParade` | `GrandeParadeDL` |
-| Inès | — | Nouvelle (3 tiers, à créer) | `kZTjQI5Z2AICSui7ebYf6i6dMEQqiYXYSFCV` | — | à définir | — |
+Cas particuliers hors `galerie.html` : `studio-lr.html` et `plougasnou.html` (photos locales, pas de pCloud — à migrer quand Bertrand fournira les liens pCloud).
 
 ### Propriétés techniques communes
-- **Exception à la règle showPage()** : fichiers HTML séparés (plein écran, logique propre)
+- **Exception à la règle showPage()** : `galerie.html` est un fichier plein écran à logique propre
 - Thème sombre (fond `#0f0f0f`) — UX photo professionnelle
 - Password gate : SHA-256 côté client (Web Crypto API) + sessionStorage pour l'auth
-- Lightbox : Fullscreen API (`element.requestFullscreen()`)
-- pCloud : EU first (`eapi.pcloud.com`), fallback US (`api.pcloud.com`)
 - Le compte pCloud de Bertrand est sur le serveur **US** (`api.pcloud.com`)
 
 ---
@@ -305,7 +288,7 @@ Claude fait :
 ```
 site-v1/
 ├── index.html              — Point d'entrée unique du site (landing + site)
-├── admin.html              — Interface d'administration (PAT hardcodé en char codes)
+├── admin.html              — Interface d'administration (100 % Supabase, sans PAT)
 ├── panier.html             — Panier universel (toutes les boutiques)
 ├── merci.html              — Page de confirmation de commande
 ├── qr-cartes.html          — QR codes pour l'exposition Dust'in Kolor
@@ -333,10 +316,14 @@ site-v1/
 │   └── ST MELAR/           (7 photos — gallery-images.js clé "st-melar")
 ├── clients/
 │   ├── index.html          — Liste des galeries clients (portail direct)
-│   ├── gilmerton.html      — Galerie Gilmerton (ancienne, 2 tiers)
-│   ├── leo-brasserie.html  — Galerie Léo Brasserie (ancienne, 2 tiers)
-│   ├── grande-parade.html  — Galerie Grande Parade (nouvelle, 3 tiers)
-│   └── galerie-template.html — Template 3 tiers (base pour nouvelles galeries)
+│   ├── galerie.html        — ⭐ PAGE UNIQUE dynamique (?g=ID, tout depuis Supabase)
+│   ├── grande-parade.html, gilmerton.html, leo-brasserie.html, ines.html,
+│   │   ange-marine.html, antoine-asnar.html, olivier-cuisine.html,
+│   │   pauline-gourret.html, shooting-bebe-armel.html, derezo-ephad.html,
+│   │   imene.html, jp-davodeau.html, louis-boudot.html, patrick-ewen.html
+│   │                       — redirects vers galerie.html?g=… (URLs partagées préservées)
+│   ├── studio-lr.html      — ancienne génération, photos locales (à migrer)
+│   └── plougasnou.html     — ancienne génération, photos locales (à migrer)
 ├── content/
 │   └── cartons/            — Fichiers .txt par galerie (override inline carton)
 ├── dustin-kolor/
@@ -462,49 +449,45 @@ Dans `photographe` : `plougasnou`, `salarie-ehpad`, `carre-das`, `lumiere`, `pla
 
 ---
 
-## 10. Admin — fonctionnalités
+## 10. Admin — fonctionnalités (réécrit 08/06, onglet Photos ajouté 11/06)
 
 Fichier : `admin.html`
 Mot de passe admin : `bertrand2025`
+**L'admin ne déploie plus rien sur GitHub** — tout passe par Supabase, effet immédiat.
+(L'ancien admin avec PAT GitHub est archivé localement dans `old/admin-2026-06-08.html` — le PAT y est encodé en char codes ligne ~1418. Ce dossier `old/` n'est PAS dans le repo.)
 
-### 5 onglets
+### 4 onglets
 
 | Onglet | Fonctionnalité |
 |--------|----------------|
-| **Cartes & galeries** | Modifier titre/label/desc/image de chaque carte, drag-and-drop pour réordonner, bouton Visible/Masquée |
-| **Visibilité menu** | Activer/désactiver les items du nav principal |
-| **Photos** | Réordonner et supprimer les photos d'une galerie (déploie sur GitHub) |
-| **Cartons** | Éditer le texte des cartons par galerie (déploie sur GitHub) |
-| **Highlights** | Choisir les photos affichées publiquement en teaser sur chaque galerie client (sauvegardé dans Supabase, aucun déploiement) |
+| **Navigation** | Arborescence du menu : renommer, masquer/afficher, drag-and-drop pour réordonner ou changer de section |
+| **Brouillons** | Galeries non publiées : nom, section, lien pCloud, bouton Publier → |
+| **Galeries** | Galeries publiées : nom, section, visibilité, **mots de passe** (hash auto), téléchargement, vente |
+| **Photos** | **Coller le lien pCloud · réordonner (drag) · masquer (☼/✖) · highlights (★)** — tout dans Supabase |
 
-### Sections visibles dans "Cartes & galeries"
+### Onglet Photos — fonctionnement
 
-PHOTOGRAPHE · RÉALISATEUR · BOUTIQUE · **GALERIES CLIENT**
+1. Choisir la galerie dans la liste (auto-peuplée depuis les cartes clients + gallery_settings)
+2. Coller le lien pCloud (URL complète acceptée, le code est extrait automatiquement) → Charger
+3. Les photos s'affichent : glisser pour réordonner, ☼ pour masquer/afficher, ★ pour highlight
+4. **Enregistrer** → `gallery_settings.photo_order` + `hidden_fileids` + `gallery_highlights.fileids`
+5. La galerie publique (`clients/galerie.html?g=ID`) applique tout au chargement — aucun déploiement
 
-### Onglet Highlights — fonctionnement
+### Mots de passe (onglet Galeries)
 
-1. Choisir une galerie dans la liste (se peuple depuis `HL_GALLERIES` dans `admin.html`)
-2. Toutes les photos pCloud s'affichent — cliquer pour sélectionner (✓)
-3. **Enregistrer** → sauvegardé dans `gallery_highlights` (Supabase)
-4. La galerie publique lit ces fileids au chargement et les affiche en teaser
-5. Si aucun highlight configuré → la galerie affiche directement le modal mot de passe
-
-Pour **ajouter une galerie** dans l'onglet Highlights : ajouter une entrée dans `HL_GALLERIES` (admin.html) :
-```js
-const HL_GALLERIES = {
-  'grande-parade': { code: 'kZKq0A5Z...', label: 'Grande Parade' },
-  // ajouter ici
-};
-```
+- Champ vide = inchangé · taper `-` = supprimer le mdp · taper un mdp = le définir
+- L'admin enregistre le **hash SHA-256** dans `gallery_settings.view_hash` / `dl_hash`
+- Le clair part dans `gallery_passwords` (write-only pour anon, lecture service_role uniquement)
 
 ### Supabase — tables
 
 - URL : `https://suecslynruuputmujudg.supabase.co`
-- Table `gallery_cards` : overrides de cartes (titre, label, desc, img, visible, sort_order, parent_id)
-- Table `section_visibility` : état visible/masqué des items de nav
-- Table `gallery_highlights` : fileids pCloud sélectionnés en highlight par galerie (`gallery_id` PK, `fileids` jsonb)
-- Table `gallery_passwords` : mots de passe en clair par galerie (`gallery_id` PK, `view_password`, `dl_password`) — **service_role uniquement**, accès anon interdit
-- Table `gallery_access_requests` : demandes d'accès email des visiteurs (`id`, `gallery_id`, `email`, `status`, `requested_at`)
+- Table `gallery_cards` : overrides de cartes (titre, cover_img, visible, sort_order, section)
+- Table `section_visibility` : état visible/masqué + label des items de nav
+- Table `gallery_settings` : `gallery_id` PK, `pcloud_code`, `photo_order` jsonb, `hidden_fileids` jsonb, `view_hash`, `dl_hash`, `download_enabled`, `buy_jpeg_enabled`, `buy_jpeg_price`, `buy_print_enabled`
+- Table `gallery_highlights` : fileids pCloud en highlight par galerie (`gallery_id` PK, `fileids` jsonb)
+- Table `gallery_passwords` : mots de passe en clair (`gallery_id` PK) — **lecture service_role uniquement**, anon = INSERT/UPDATE seulement
+- Table `gallery_access_requests` : demandes d'accès email des visiteurs
 
 ---
 
@@ -666,15 +649,16 @@ Ils ne viennent **pas** d'un dossier pCloud (limitation API — voir §11) mais 
 ### Flux complet
 
 ```
-Admin (onglet Highlights)
+Admin (onglet Photos)
     → charge toutes les photos pCloud de la galerie
-    → Bertrand sélectionne 5-12 photos
-    → sauvegarde fileids dans Supabase (gallery_highlights)
+    → Bertrand marque 5-12 photos d'une ★
+    → Enregistrer → fileids dans Supabase (gallery_highlights)
 
-Galerie publique (grande-parade.html)
-    → au chargement : lit gallery_highlights depuis Supabase
+Galerie publique (clients/galerie.html?g=ID)
+    → au chargement : lit gallery_settings + gallery_highlights depuis Supabase
     → si fileids trouvés → showHighlight() : affiche les photos sélectionnées
     → si vide → showGate() : ouvre directement le modal mot de passe
+    → si aucun mdp défini → galerie en accès libre direct
 
 Gate slide (pleine largeur, sous les highlights)
     → affiche "+X PHOTOS DANS LA GALERIE COMPLÈTE"

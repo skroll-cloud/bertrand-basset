@@ -215,14 +215,14 @@ const SECTIONS_CONFIG = {
         titleFr: "Galeries clients", titleEn: "Client galleries",
         cards: [
             {
-                id: "grande-parade", url: "clients/grande-parade.html",
+                id: "grande-parade", url: "clients/galerie.html?g=grande-parade",
                 labelFr: "Galerie client", labelEn: "Client gallery",
                 titleFr: "Grande Parade", titleEn: "Grande Parade",
                 descFr: "Galerie · accès protégé", descEn: "Gallery · protected access",
                 img: "https://api.pcloud.com/getpubthumb?code=kZKq0A5ZaoFGv3YO4mQrFbQghpd6Tfw0CWgy&fileid=88890561791&size=600x900&type=jpg"
             },
             {
-                id: "ines", url: "clients/ines.html",
+                id: "ines", url: "clients/galerie.html?g=ines",
                 labelFr: "Galerie privée", labelEn: "Private gallery",
                 titleFr: "Inès", titleEn: "Inès",
                 descFr: "Sélection · accès protégé", descEn: "Selection · protected access",
@@ -230,7 +230,7 @@ const SECTIONS_CONFIG = {
                 _hiddenByAdmin: true
             },
             {
-                id: "gilmerton", url: "clients/gilmerton.html",
+                id: "gilmerton", url: "clients/galerie.html?g=gilmerton",
                 labelFr: "Galerie privée", labelEn: "Private gallery",
                 titleFr: "Gilmerton", titleEn: "Gilmerton",
                 descFr: "Remise de commande · accès protégé", descEn: "Order delivery · protected access",
@@ -238,7 +238,7 @@ const SECTIONS_CONFIG = {
                 _hiddenByAdmin: true
             },
             {
-                id: "leo-brasserie", url: "clients/leo-brasserie.html",
+                id: "leo-brasserie", url: "clients/galerie.html?g=leo-brasserie",
                 labelFr: "Galerie privée", labelEn: "Private gallery",
                 titleFr: "Léo Brasserie", titleEn: "Léo Brasserie",
                 descFr: "Remise de commande · accès protégé", descEn: "Order delivery · protected access",
@@ -246,38 +246,38 @@ const SECTIONS_CONFIG = {
                 _hiddenByAdmin: true
             },
             {
-                id: "ange-marine", url: "clients/ange-marine.html",
+                id: "ange-marine", url: "clients/galerie.html?g=ange-marine",
                 labelFr: "Portrait", labelEn: "Portrait",
                 titleFr: "Ange Marine", titleEn: "Ange Marine",
-                img: "clients/ange-marine/L1060508.jpg",
+                img: "https://api.pcloud.com/getpubthumb?code=kZn7LA5ZrbtpHV9kvIpCCWf5XDYpmV12bW4V&fileid=85370248666&size=600x900&type=jpg",
                 _hiddenByAdmin: true
             },
             {
-                id: "antoine-asnar", url: "clients/antoine-asnar.html",
+                id: "antoine-asnar", url: "clients/galerie.html?g=antoine-asnar",
                 labelFr: "Portrait", labelEn: "Portrait",
                 titleFr: "Antoine Asnar", titleEn: "Antoine Asnar",
-                img: "clients/antoine-asnar/StudioB.AntoineAsnar 1.jpg",
+                img: "https://api.pcloud.com/getpubthumb?code=kZg7LA5ZTIOnU4N16EkvO2K5AaTDIf1ifDUV&fileid=85034771168&size=600x900&type=jpg",
                 _hiddenByAdmin: true
             },
             {
-                id: "olivier-cuisine", url: "clients/olivier-cuisine.html",
+                id: "olivier-cuisine", url: "clients/galerie.html?g=olivier-cuisine",
                 labelFr: "Corporate", labelEn: "Corporate",
                 titleFr: "Olivier Cuisine", titleEn: "Olivier Cuisine",
-                img: "clients/olivier-cuisine/Atelier_Plougasnou.jpg",
+                img: "https://api.pcloud.com/getpubthumb?code=kZE7LA5Zkdb48MEpcjbV6Yg7qCG520EGbkUX&fileid=85377657359&size=600x900&type=jpg",
                 _hiddenByAdmin: true
             },
             {
-                id: "pauline-gourret", url: "clients/pauline-gourret.html",
+                id: "pauline-gourret", url: "clients/galerie.html?g=pauline-gourret",
                 labelFr: "Portrait", labelEn: "Portrait",
                 titleFr: "Pauline Gourret", titleEn: "Pauline Gourret",
-                img: "clients/pauline-gourret/Pauline Gourret 01@bertrandbasset.jpg",
+                img: "https://api.pcloud.com/getpubthumb?code=kZd7LA5ZAyEWKYJLUxzw9hzJpaaGiFJPlM6X&fileid=81245479829&size=600x900&type=jpg",
                 _hiddenByAdmin: true
             },
             {
-                id: "shooting-bebe-armel", url: "clients/shooting-bebe-armel.html",
+                id: "shooting-bebe-armel", url: "clients/galerie.html?g=shooting-bebe-armel",
                 labelFr: "Portrait", labelEn: "Portrait",
                 titleFr: "Shooting Bébé — Armel", titleEn: "Shooting Bébé — Armel",
-                img: "clients/shooting-bebe-armel/ARMEL01@bertrandbasset.jpg",
+                img: "https://api.pcloud.com/getpubthumb?code=kZf8kn5ZYe1zjGkz4D4OHXE2fFxLGhlneiFX&fileid=79147592978&size=600x900&type=jpg",
                 _hiddenByAdmin: true
             },
             {
@@ -288,31 +288,31 @@ const SECTIONS_CONFIG = {
                 _hiddenByAdmin: true
             },
             {
-                id: "derezo-ephad", url: "clients/derezo-ephad.html",
+                id: "derezo-ephad", url: "clients/galerie.html?g=derezo-ephad",
                 labelFr: "Portrait", labelEn: "Portrait",
                 titleFr: "Derezo Ephad", titleEn: "Derezo Ephad",
                 _hiddenByAdmin: true
             },
             {
-                id: "imene", url: "clients/imene.html",
+                id: "imene", url: "clients/galerie.html?g=imene",
                 labelFr: "Portrait", labelEn: "Portrait",
                 titleFr: "Imène", titleEn: "Imène",
                 _hiddenByAdmin: true
             },
             {
-                id: "jp-davodeau", url: "clients/jp-davodeau.html",
+                id: "jp-davodeau", url: "clients/galerie.html?g=jp-davodeau",
                 labelFr: "Portrait", labelEn: "Portrait",
                 titleFr: "JP Davodeau", titleEn: "JP Davodeau",
                 _hiddenByAdmin: true
             },
             {
-                id: "louis-boudot", url: "clients/louis-boudot.html",
+                id: "louis-boudot", url: "clients/galerie.html?g=louis-boudot",
                 labelFr: "Portrait", labelEn: "Portrait",
                 titleFr: "Louis Boudot", titleEn: "Louis Boudot",
                 _hiddenByAdmin: true
             },
             {
-                id: "patrick-ewen", url: "clients/patrick-ewen.html",
+                id: "patrick-ewen", url: "clients/galerie.html?g=patrick-ewen",
                 labelFr: "Portrait", labelEn: "Portrait",
                 titleFr: "Patrick Ewen", titleEn: "Patrick Ewen",
                 _hiddenByAdmin: true
