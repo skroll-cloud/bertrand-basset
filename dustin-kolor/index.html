@@ -485,7 +485,7 @@
         simple:  { taille:'30 × 45 cm', support:'Museum Etching 350g', prix:145, ed:30 },
         dibond:  { taille:'30 × 45 cm', support:'Museum Etching 350g', montage:'Dibond 2mm', prix:300, ed:30 },
         chassis: { taille:'30 × 45 cm', support:'Museum Etching 350g', montage:'Dibond 2mm + châssis rentrant', prix:350, ed:30 },
-        grand:   { taille:'60 × 90 cm', support:'Museum Etching 350g', montage:'Dibond 2mm', prix:[820,1050,1230], ed:10, vendus:1 }
+        grand:   { taille:'60 × 90 cm', support:'Museum Etching 350g', montage:'Dibond 2mm', prix:590, ed:30, vendus:1 }
       }
     },
     { slug:'flying-car-orange',      num:'02', img:'02.jpg',
@@ -495,7 +495,7 @@
         simple:  { taille:'28 × 50 cm', support:'Museum Etching 350g', prix:175, ed:30 },
         dibond:  { taille:'28 × 50 cm', support:'Museum Etching 350g', montage:'Dibond 2mm', prix:300, ed:30 },
         chassis: { taille:'28 × 50 cm', support:'Museum Etching 350g', montage:'Dibond 2mm + châssis rentrant', prix:350, ed:30 },
-        grand:   { taille:'70 × 124 cm', support:'Museum Etching 350g', montage:'Dibond 2mm', prix:[1290,1550,1800], ed:10, vendus:1 }
+        grand:   { taille:'70 × 124 cm', support:'Museum Etching 350g', montage:'Dibond 2mm', prix:990, ed:30, vendus:1 }
       }
     },
     { slug:'after-the-storm-vert',   num:'03', img:'03.jpg',
@@ -505,7 +505,7 @@
         simple:  { taille:'28 × 50 cm', support:'Museum Etching 350g', prix:175, ed:30 },
         dibond:  { taille:'28 × 50 cm', support:'Museum Etching 350g', montage:'Dibond 2mm', prix:300, ed:30 },
         chassis: { taille:'28 × 50 cm', support:'Museum Etching 350g', montage:'Dibond 2mm + châssis rentrant', prix:350, ed:30 },
-        grand:   { taille:'70 × 124 cm', support:'Museum Etching 350g', montage:'Dibond 2mm', prix:[1290,1550,1800], ed:10, vendus:2 }
+        grand:   { taille:'70 × 124 cm', support:'Museum Etching 350g', montage:'Dibond 2mm', prix:990, ed:30, vendus:2 }
       }
     },
     { slug:'lost-in-the-dust-rouge', num:'04', img:'04.jpg',
@@ -515,7 +515,7 @@
         simple:  { taille:'30 × 40 cm', support:'Museum Etching 350g', prix:140, ed:30 },
         dibond:  { taille:'30 × 40 cm', support:'Museum Etching 350g', montage:'Dibond 2mm', prix:300, ed:30 },
         chassis: { taille:'30 × 40 cm', support:'Museum Etching 350g', montage:'Dibond 2mm + châssis rentrant', prix:330, ed:30 },
-        grand:   { taille:'60 × 80 cm', support:'Museum Etching 350g', montage:'Dibond 2mm', prix:[890,1100,1300], ed:10, vendus:1 }
+        grand:   { taille:'60 × 80 cm', support:'Museum Etching 350g', montage:'Dibond 2mm', prix:590, ed:30, vendus:1 }
       }
     },
     { slug:'camp-lighters-jaune',    num:'05', img:'05.jpg',
@@ -525,7 +525,7 @@
         simple:  { taille:'20 × 50 cm', support:'Museum Etching 350g', prix:150, ed:30 },
         dibond:  { taille:'20 × 50 cm', support:'Museum Etching 350g', montage:'Dibond 2mm', prix:340, ed:30 },
         chassis: { taille:'20 × 50 cm', support:'Museum Etching 350g', montage:'Dibond 2mm + châssis rentrant', prix:385, ed:30 },
-        grand:   { taille:'40 × 100 cm', support:'Museum Etching 350g', montage:'Dibond 2mm', prix:[790,980,1180], ed:10, vendus:1 }
+        grand:   { taille:'40 × 100 cm', support:'Museum Etching 350g', montage:'Dibond 2mm', prix:490, ed:30, vendus:1 }
       }
     },
     { slug:'im-here-bleu',           num:'06', img:'06.jpg',
@@ -535,7 +535,7 @@
         simple:  { taille:'30 × 40 cm', support:'Museum Etching 350g', prix:140, ed:30 },
         dibond:  { taille:'30 × 40 cm', support:'Museum Etching 350g', montage:'Dibond 2mm', prix:300, ed:30 },
         chassis: { taille:'30 × 40 cm', support:'Museum Etching 350g', montage:'Dibond 2mm + châssis rentrant', prix:330, ed:30 },
-        grand:   { taille:'60 × 80 cm', support:'Museum Etching 350g', montage:'Dibond 2mm', prix:[890,1100,1300], ed:10, vendus:1 }
+        grand:   { taille:'60 × 80 cm', support:'Museum Etching 350g', montage:'Dibond 2mm', prix:590, ed:30, vendus:1 }
       }
     },
     { slug:'umbrellas-way-rose',     num:'08', img:'08.jpg',
@@ -545,7 +545,7 @@
         simple:  { taille:'30 × 40 cm', support:'Museum Etching 350g', prix:140, ed:30 },
         dibond:  { taille:'30 × 40 cm', support:'Museum Etching 350g', montage:'Dibond 2mm', prix:300, ed:30 },
         chassis: { taille:'30 × 40 cm', support:'Museum Etching 350g', montage:'Dibond 2mm + châssis rentrant', prix:330, ed:30 },
-        grand:   { taille:'60 × 80 cm', support:'Museum Etching 350g', montage:'Dibond 2mm', prix:[890,1100,1300], ed:10, vendus:1 }
+        grand:   { taille:'60 × 80 cm', support:'Museum Etching 350g', montage:'Dibond 2mm', prix:590, ed:30, vendus:1 }
       }
     }
   ];
@@ -634,9 +634,8 @@
 
     let prix, taille_label, type_label;
     if (activeFmt === 'grand') {
-      const pi = fmt.vendus < 3 ? 0 : fmt.vendus < 7 ? 1 : 2;
-      prix = fmt.prix[pi];
-      type_label = (lang==='fr' ? 'Grand format' : 'Large format') + ' — ' + T[lang].paliers[pi];
+      prix = fmt.prix;
+      type_label = lang==='fr' ? 'Grand format' : 'Large format';
     } else {
       prix = fmt.prix;
       type_label = lang==='fr'
@@ -701,21 +700,13 @@
     html += '<div class="fmt-prix-block">';
     if (isGrand) {
       const dispo = fmt.ed - fmt.vendus;
-      const pi = fmt.vendus < 3 ? 0 : fmt.vendus < 7 ? 1 : 2;
-      html += `<div class="fmt-row"><span class="fmt-label">${t.edition_lbl}</span><span class="fmt-val">${t.ed_10}</span></div>`;
+      html += `<div class="fmt-row"><span class="fmt-label">${t.edition_lbl}</span><span class="fmt-val">${t.ed_30}</span></div>`;
       html += `<div class="fmt-row"><span class="fmt-label">${t.dispo_lbl}</span><span class="fmt-val">${dispo} / ${fmt.ed}</span></div>`;
-      html += '<div class="fmt-prix-grid">';
-      fmt.prix.forEach((p,i) => {
-        const isCur = i === pi;
-        html += `<div class="fmt-prix-tier${isCur?' current':''}">
-          <div class="tier-range">${t.paliers[i]}</div>
-          <div class="tier-val">${p.toLocaleString('fr-FR')} €</div>
-        </div>`;
-      });
-      html += '</div>';
+      html += `<div class="fmt-prix-main">${fmt.prix.toLocaleString('fr-FR')} <span style="font-size:1rem">€</span></div>`;
+      html += `<div class="fmt-prix-note">${t.prix_fixe} — ${t.ed_30}</div>`;
       const epuise = fmt.vendus >= fmt.ed;
       html += `<button class="panel-add-btn" id="panelAddBtn" onclick="addToCart()" ${epuise?'disabled':''}>
-        ${epuise ? t.epuise : t.ajouter + ' — ' + fmt.prix[pi].toLocaleString('fr-FR') + ' €'}
+        ${epuise ? t.epuise : t.ajouter + ' — ' + fmt.prix.toLocaleString('fr-FR') + ' €'}
       </button>`;
     } else {
       html += `<div class="fmt-prix-main">${fmt.prix.toLocaleString('fr-FR')} <span style="font-size:1rem">€</span></div>`;

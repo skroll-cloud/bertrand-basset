@@ -166,16 +166,16 @@
 <div class="page" id="page"></div>
 
 <script>
-const BASE  = 'https://bertrandbasset.com/boutique.html?id=';
+const BASE  = 'https://bertrandbasset.com/dustin-kolor/boutique.html?id=';
 const PAYER = 'https://bertrandbasset.com/payer.html';
 
 const EDITIONS = [
-  { slug:'sandstorm-feu',          num:'01', titre:'Sandstorm',        hex:'#FF4500', format:'60 × 90 cm',  prix:'950 €',  papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm' },
-  { slug:'flying-car-orange',      num:'02', titre:'Flying Car',       hex:'#FF6600', format:'70 × 124 cm', prix:'1 290 €',papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm' },
-  { slug:'lost-in-the-dust-rouge', num:'04', titre:'Lost in the Dust', hex:'#CC0000', format:'60 × 80 cm',  prix:'890 €',  papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm' },
-  { slug:'camp-lighters-jaune',    num:'05', titre:'Lamp Lighters',    hex:'#FFB300', format:'40 × 100 cm', prix:'790 €',  papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm' },
-  { slug:'im-here-bleu',           num:'06', titre:"I'm Here",         hex:'#0066CC', format:'60 × 80 cm',  prix:'890 €',  papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm' },
-  { slug:'umbrellas-way-rose',     num:'08', titre:'Umbrellas Way',    hex:'#FF1493', format:'60 × 80 cm',  prix:'890 €',  papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm' },
+  { slug:'sandstorm-feu',          num:'01', titre:'Sandstorm',        hex:'#FF4500', format:'60 × 90 cm',  prix:'590 €',  papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm' },
+  { slug:'flying-car-orange',      num:'02', titre:'Flying Car',       hex:'#FF6600', format:'70 × 124 cm', prix:'990 €',papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm' },
+  { slug:'lost-in-the-dust-rouge', num:'04', titre:'Lost in the Dust', hex:'#CC0000', format:'60 × 80 cm',  prix:'590 €',  papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm' },
+  { slug:'camp-lighters-jaune',    num:'05', titre:'Camp Lighters',    hex:'#FFB300', format:'40 × 100 cm', prix:'490 €',  papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm' },
+  { slug:'im-here-bleu',           num:'06', titre:"I'm Here",         hex:'#0066CC', format:'60 × 80 cm',  prix:'590 €',  papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm' },
+  { slug:'umbrellas-way-rose',     num:'08', titre:'Umbrellas Way',    hex:'#FF1493', format:'60 × 80 cm',  prix:'590 €',  papier:'Hahnemühle Museum Etching 350g, contrecollé Aludibon 2mm' },
 ];
 
 function textColor(hex) {
@@ -205,15 +205,15 @@ function makeArtworkCarton(ed) {
     </div>
     <div class="c-body">
       <div class="c-info">
-        <div class="c-limited">Série limitée à 10 exemplaires</div>
+        <div class="c-limited">Série limitée à 30 exemplaires</div>
         <div class="c-signed">Numérotée et signée par l'artiste<br>Certificat d'authenticité inclus</div>
         <div class="c-specs"><strong>${ed.format}</strong> · ${ed.papier}<br>Tirage d'art : Pix in the City, Auray</div>
       </div>
       <div class="c-bottom">
         <div class="c-prix">
-          <div class="c-prix-label">3 premiers tirages</div>
+          <div class="c-prix-label">Prix</div>
           <div class="c-prix-val">${ed.prix}</div>
-          <div class="c-prix-note">Prix progressif ensuite</div>
+          <div class="c-prix-note">Édition numérotée · prix unique</div>
         </div>
         <div class="c-qr-wrap">
           <div class="c-qr" id="${qid}"></div>
