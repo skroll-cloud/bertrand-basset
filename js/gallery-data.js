@@ -56,8 +56,11 @@ const MENU_CONFIG = [
   { "id": "realisateur",         "name": "RÉALISATEUR",          "type": "section", "sectionId": "realisateur" },
   { "id": "travailler-ensemble", "name": "TRAVAILLER ENSEMBLE",  "type": "page",    "pageId": "travailler-ensemble" },
 
-  /* ── BOUTIQUE ── grille de vignettes (comme PHOTOGRAPHE/RÉALISATEUR) ── */
+  /* ── BOUTIQUE ── sous-menu (comme PHOTOGRAPHE) : séance, travailler ensemble, tirages ── */
   { "id": "boutique",            "name": "BOUTIQUE",             "type": "section", "sectionId": "boutique" },
+  { "id": "shop-seance",         "name": "Séance portrait",      "type": "page", "pageId": "contact",             "parent": "boutique" },
+  { "id": "shop-te",             "name": "Travailler ensemble",  "type": "page", "pageId": "travailler-ensemble", "parent": "boutique" },
+  { "id": "shop-tirages",        "name": "Vente tirage",         "type": "link", "url": "dustin-kolor/index.html", "parent": "boutique" },
   { "id": "infos",               "name": "INFOS",                "type": "page",    "pageId": "infos" },
 
   /* ── Cachés (pages prêtes, à activer depuis l'admin) ── */

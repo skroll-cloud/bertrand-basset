@@ -647,7 +647,11 @@ class Portfolio {
             el.addEventListener('click', () => { window.location.href = el.dataset.href; });
         });
         uNav.querySelectorAll('.universe-item[data-page]').forEach(el => {
-            el.addEventListener('click', () => { this.showPage(el.dataset.page); });
+            el.addEventListener('click', () => {
+                uNav.querySelectorAll('.universe-item').forEach(i => i.classList.remove('active'));
+                el.classList.add('active');
+                this.showPage(el.dataset.page);
+            });
         });
 
         if (mNav) mNav.style.display = 'none';
@@ -1119,11 +1123,24 @@ class Portfolio {
         if (!sec) return;
 
         /* ── Sous-menu : si cette section a des enfants dans MENU_CONFIG → universeNav ── */
-        const subSecs = MENU_CONFIG.filter(i => i.parent === sectionId && i.type === 'section' && !i.hidden && !i._hiddenByAdmin);
-        if (subSecs.length > 0) {
+        const subItems = MENU_CONFIG.filter(i => i.parent === sectionId && !i.hidden && !i._hiddenByAdmin);
+        const subSecs  = subItems.filter(i => i.type === 'section');
+        if (subItems.length > 0) {
             const parentItem = { id: sectionId, name: (sec.titleFr || sectionId).toUpperCase() };
+            if (subSecs.length > 0) {
+                /* Au moins une sous-section → l'ouvrir (comportement PHOTOGRAPHE) */
+                this.enterUniverseMode(parentItem, null);
+                this.showSectionGrid(subSecs[0].sectionId);
+                return;
+            }
+            /* Que des pages/liens (ex. BOUTIQUE) → ouvrir le premier enfant de type page */
+            const firstPage = subItems.find(i => i.type === 'page');
+            if (firstPage) {
+                this.enterUniverseMode(parentItem, firstPage.id);
+                this.showPage(firstPage.pageId);
+                return;
+            }
             this.enterUniverseMode(parentItem, null);
-            this.showSectionGrid(subSecs[0].sectionId);
             return;
         }
 
