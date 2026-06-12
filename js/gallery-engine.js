@@ -225,6 +225,38 @@ class Portfolio {
                 /* Stocker dbCards globalement pour showSectionGrid (sous-galeries) */
                 this._dbCards = dbMap;
             }
+
+            /* ── 3. Best-of dynamique : photos ajoutées depuis l'admin + texte du carton ── */
+            try {
+                const bo = this.galleries && this.galleries['best-of'];
+                if (bo) {
+                    const [bpRes, stRes] = await Promise.all([
+                        fetch(`${SUPA_URL}/rest/v1/bestof_photos?select=pcloud_code,fileid,title,subtitle&order=sort_order.asc,added_at.asc`, { headers: hdrs }),
+                        fetch(`${SUPA_URL}/rest/v1/site_texts?id=eq.bestof-carton&select=fr,en`, { headers: hdrs })
+                    ]);
+                    if (bpRes.ok) {
+                        const rows = await bpRes.json();
+                        rows.forEach(r => {
+                            bo.items.push({
+                                type: 'image',
+                                src: `https://api.pcloud.com/getpubthumb?code=${r.pcloud_code}&fileid=${r.fileid}&size=2048x2048&type=jpg`,
+                                title: r.title || '',
+                                subtitle: r.subtitle || ''
+                            });
+                        });
+                    }
+                    if (stRes.ok) {
+                        const t = (await stRes.json())[0];
+                        if (t && (t.fr || t.en)) {
+                            const carton = bo.items.find(i => i.type === 'carton');
+                            if (carton) {
+                                if (t.fr) carton.titleFr = t.fr;
+                                carton.titleEn = t.en || t.fr || carton.titleEn;
+                            }
+                        }
+                    }
+                }
+            } catch(e) { /* non bloquant */ }
         } catch(e) { /* Silencieux — site fonctionnel même si Supabase inaccessible */ }
     }
 

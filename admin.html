@@ -147,6 +147,7 @@ body{font-family:'IBM Plex Sans',sans-serif;font-weight:300;font-size:13px;
   font-size:12px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s}
 .ph-tool:hover{background:rgba(0,0,0,.8)}
 .ph-tool.star.on{background:#c4a31e;color:#fff}
+.ph-tool.heart.on{background:var(--red);color:#fff}
 .ph-tool.eye.off{background:var(--red)}
 .ph-savebar{position:fixed;bottom:0;left:0;right:0;background:rgba(250,250,250,.97);border-top:1px solid var(--light-gray);
   display:flex;align-items:center;gap:14px;justify-content:flex-end;padding:12px 24px;z-index:50}
@@ -276,7 +277,12 @@ body{font-family:'IBM Plex Sans',sans-serif;font-weight:300;font-size:13px;
       <select id="phGallerySelect" class="gal-select" style="max-width:220px" onchange="phSelectGallery()"></select>
       <input id="phPcloudInput" class="gal-input" type="text" style="flex:1;min-width:200px"
         placeholder="Lien pCloud — https://u.pcloud.link/publink/show?code=…">
-      <button class="gal-save-btn" onclick="phSaveCode()">Charger</button>
+      <button class="gal-save-btn" id="phLoadBtn" onclick="phSaveCode()">Charger</button>
+    </div>
+    <div id="phBestofText" style="display:none;margin-bottom:14px">
+      <span class="gal-label" style="display:block;margin-bottom:4px">Texte du carton d'accueil (FR)</span>
+      <textarea id="phBestofTextarea" class="gal-input" rows="3" style="width:100%;resize:vertical;font-family:inherit"></textarea>
+      <button class="gal-save-btn" style="margin-top:6px" onclick="phSaveBestofText(this)">Enregistrer le texte</button>
     </div>
     <div id="phStatus" class="ph-status"></div>
     <div id="phGrid" class="ph-grid"></div>
@@ -972,7 +978,13 @@ function galFeedback(msg,cls){
    gallery_settings.hidden_fileids, gallery_highlights.fileids
    ═════════════════════════════════════════════════════════════ */
 var PCLOUD_API='https://api.pcloud.com';
-var PH={gid:null,photos:[],hidden:{},stars:{},sortable:null};
+var PH={gid:null,photos:[],hidden:{},stars:{},bestof:{},sortable:null,mode:'gallery'};
+var BESTOF_KEY='__bestof';
+
+async function sbDelete(table,filter){
+  var r=await fetch(SUPA_URL+'/'+table+'?'+filter,{method:'DELETE',headers:sbH()});
+  if(!r.ok)throw new Error(await r.text());
+}
 
 /* Lien pCloud complet OU code nu → code nu */
 function normalizePCloud(v){
@@ -1008,6 +1020,7 @@ function phInitTab(){
   if(sel.options.length)return;/* déjà initialisé */
   var list=phGalleryList();
   sel.innerHTML='<option value="">— Choisir une galerie —</option>'+
+    '<option value="'+BESTOF_KEY+'">♥ Best of (accueil)</option>'+
     list.map(function(g){return '<option value="'+esc(g.gid)+'">'+esc(g.label)+'</option>';}).join('');
 }
 
@@ -1022,12 +1035,18 @@ function openPhotosFor(gid){
 function phSelectGallery(){
   var gid=document.getElementById('phGallerySelect').value;
   PH.gid=gid||null;PH.photos=[];PH.hidden={};PH.stars={};
+  PH.mode=(gid===BESTOF_KEY)?'bestof':'gallery';
   document.getElementById('phGrid').innerHTML='';
   document.getElementById('phSaveBar').style.display='none';
   document.getElementById('phStatus').textContent='';
   var inp=document.getElementById('phPcloudInput');
   inp.value='';
+  inp.style.display=PH.mode==='bestof'?'none':'';
+  document.getElementById('phLoadBtn').style.display=PH.mode==='bestof'?'none':'';
+  var txtWrap=document.getElementById('phBestofText');
+  if(txtWrap)txtWrap.style.display=PH.mode==='bestof'?'':'none';
   if(!gid)return;
+  if(PH.mode==='bestof'){phLoadBestof();return;}
   var code=(DB_SETTINGS[gid]||{}).pcloud_code||'';
   inp.value=code;
   if(code)phLoadPhotos();
@@ -1095,6 +1114,13 @@ async function phLoadPhotos(){
       if(hl.length&&Array.isArray(hl[0].fileids))hl[0].fileids.forEach(function(fid){PH.stars[String(fid)]=1;});
     }catch(e){}
 
+    /* Photos déjà au best-of (pour marquer les ♥) */
+    PH.bestof={};
+    try{
+      var bo=await sbGet('bestof_photos?select=fileid');
+      bo.forEach(function(r){PH.bestof[String(r.fileid)]=1;});
+    }catch(e){}
+
     phRenderGrid(code);
     status.textContent='';
   }catch(e){
@@ -1110,6 +1136,7 @@ function phRenderGrid(code){
       '<img src="'+PCLOUD_API+'/getpubthumb?code='+code+'&fileid='+p.id+'&size=360x240&type=jpg" loading="lazy">'+
       '<span class="ph-ord">'+(i+1)+'</span>'+
       '<div class="ph-tools">'+
+        '<button class="ph-tool heart'+(PH.bestof[p.id]?' on':'')+'" title="Ajouter / retirer du Best of (accueil)" onclick="phToggleBestof(this,\''+p.id+'\')">♥</button>'+
         '<button class="ph-tool star'+(star?' on':'')+'" title="Highlight (teaser public)" onclick="phToggleStar(this,\''+p.id+'\')">★</button>'+
         '<button class="ph-tool eye'+(hid?' off':'')+'" title="Masquer / afficher" onclick="phToggleHide(this,\''+p.id+'\')">'+(hid?'✖':'☼')+'</button>'+
       '</div>'+
@@ -1119,6 +1146,7 @@ function phRenderGrid(code){
   if(PH.sortable)PH.sortable.destroy();
   PH.sortable=Sortable.create(grid,{animation:150,ghostClass:'sortable-ghost',onEnd:phRefreshNums});
   document.getElementById('phSaveBar').style.display='';
+  document.querySelector('#phSaveBar .gal-save-btn').textContent='Enregistrer l’ordre, les photos masquées et les highlights';
   phRefreshCount();
 }
 
@@ -1129,6 +1157,11 @@ function phRefreshNums(){
 }
 
 function phRefreshCount(){
+  if(PH.mode==='bestof'){
+    var nb=document.querySelectorAll('#phGrid .ph-tile').length;
+    document.getElementById('phCount').textContent=nb+' photo'+(nb>1?'s':'')+' au Best of (après les 4 photos historiques)';
+    return;
+  }
   var n=PH.photos.length;
   var h=Object.keys(PH.hidden).length;
   var s=Object.keys(PH.stars).length;
@@ -1159,25 +1192,114 @@ async function phSaveAll(btn){
     var order=Array.prototype.map.call(
       document.querySelectorAll('#phGrid .ph-tile'),
       function(t){return t.dataset.fid;});
-    var hidden=Object.keys(PH.hidden);
-    var stars=order.filter(function(fid){return PH.stars[fid];});/* highlights dans l'ordre des photos */
-    await sbUpsert('gallery_settings',[{
-      gallery_id:PH.gid,
-      photo_order:order,
-      hidden_fileids:hidden,
-      updated_at:new Date().toISOString()
-    }]);
-    await sbUpsert('gallery_highlights',[{
-      gallery_id:PH.gid,
-      fileids:stars,
-      updated_at:new Date().toISOString()
-    }]);
-    DB_SETTINGS[PH.gid]=DB_SETTINGS[PH.gid]||{gallery_id:PH.gid};
-    DB_SETTINGS[PH.gid].photo_order=order;
-    DB_SETTINGS[PH.gid].hidden_fileids=hidden;
-    phFeedback('Ordre, masquage et highlights enregistrés — en ligne immédiatement');
+    if(PH.mode==='bestof'){
+      /* Ordre du best-of : sort_order = position dans la grille */
+      for(var i=0;i<order.length;i++){
+        await sbUpsert('bestof_photos',[{id:order[i],sort_order:i}]);
+      }
+      phFeedback('Ordre du Best of enregistré — en ligne immédiatement');
+    }else{
+      var hidden=Object.keys(PH.hidden);
+      var stars=order.filter(function(fid){return PH.stars[fid];});/* highlights dans l'ordre des photos */
+      await sbUpsert('gallery_settings',[{
+        gallery_id:PH.gid,
+        photo_order:order,
+        hidden_fileids:hidden,
+        updated_at:new Date().toISOString()
+      }]);
+      await sbUpsert('gallery_highlights',[{
+        gallery_id:PH.gid,
+        fileids:stars,
+        updated_at:new Date().toISOString()
+      }]);
+      DB_SETTINGS[PH.gid]=DB_SETTINGS[PH.gid]||{gallery_id:PH.gid};
+      DB_SETTINGS[PH.gid].photo_order=order;
+      DB_SETTINGS[PH.gid].hidden_fileids=hidden;
+      phFeedback('Ordre, masquage et highlights enregistrés — en ligne immédiatement');
+    }
   }catch(e){phFeedback('Erreur : '+e.message,'err');}
-  btn.disabled=false;btn.textContent='Enregistrer l’ordre, les photos masquées et les highlights';
+  btn.disabled=false;
+  btn.textContent=PH.mode==='bestof'?'Enregistrer l’ordre du Best of':'Enregistrer l’ordre, les photos masquées et les highlights';
+}
+
+/* ── BEST OF ───────────────────────────────────────────── */
+async function phToggleBestof(btn,fid){
+  var gid=PH.gid;
+  var code=(DB_SETTINGS[gid]||{}).pcloud_code;
+  if(!code)return;
+  var rowId=code+':'+fid;
+  btn.disabled=true;
+  try{
+    if(PH.bestof[fid]){
+      await sbDelete('bestof_photos','id=eq.'+encodeURIComponent(rowId));
+      delete PH.bestof[fid];
+      phFeedback('Retirée du Best of');
+    }else{
+      await sbUpsert('bestof_photos',[{id:rowId,pcloud_code:code,fileid:String(fid),sort_order:999}]);
+      PH.bestof[fid]=1;
+      phFeedback('♥ Ajoutée au Best of (accueil)');
+    }
+    btn.classList.toggle('on',!!PH.bestof[fid]);
+  }catch(e){phFeedback('Erreur : '+e.message,'err');}
+  btn.disabled=false;
+}
+
+async function phLoadBestof(){
+  var grid=document.getElementById('phGrid');
+  var status=document.getElementById('phStatus');
+  status.textContent='Chargement du Best of…';
+  grid.innerHTML='';
+  try{
+    var rows=await sbGet('bestof_photos?select=id,pcloud_code,fileid,title&order=sort_order.asc,added_at.asc');
+    /* Texte du carton */
+    try{
+      var st=await sbGet('site_texts?id=eq.bestof-carton&select=fr');
+      document.getElementById('phBestofTextarea').value=(st[0]&&st[0].fr)||
+        "Je fabrique des images,<br>je raconte des histoires,<br>parfois en même temps.";
+    }catch(e){}
+    if(!rows.length){
+      status.textContent='Aucune photo ajoutée. Ouvrez une galerie et cliquez ♥ sur les photos à mettre en avant. Les 4 photos historiques du carrousel restent en place.';
+      return;
+    }
+    grid.innerHTML=rows.map(function(r,i){
+      return '<div class="ph-tile" data-fid="'+esc(r.id)+'">'+
+        '<img src="'+PCLOUD_API+'/getpubthumb?code='+esc(r.pcloud_code)+'&fileid='+esc(r.fileid)+'&size=360x240&type=jpg" loading="lazy">'+
+        '<span class="ph-ord">'+(i+1)+'</span>'+
+        '<div class="ph-tools">'+
+          '<button class="ph-tool eye off" title="Retirer du Best of" onclick="phRemoveBestof(this,\''+esc(r.id)+'\')">✖</button>'+
+        '</div>'+
+        '<div class="ph-name">'+esc(r.title||r.fileid)+'</div>'+
+      '</div>';
+    }).join('');
+    if(PH.sortable)PH.sortable.destroy();
+    PH.sortable=Sortable.create(grid,{animation:150,ghostClass:'sortable-ghost',onEnd:phRefreshNums});
+    document.getElementById('phSaveBar').style.display='';
+    document.getElementById('phCount').textContent=rows.length+' photo'+(rows.length>1?'s':'')+' au Best of (après les 4 photos historiques)';
+    document.querySelector('#phSaveBar .gal-save-btn').textContent='Enregistrer l’ordre du Best of';
+    status.textContent='';
+  }catch(e){status.textContent='Erreur : '+e.message;}
+}
+
+async function phRemoveBestof(btn,rowId){
+  btn.disabled=true;
+  try{
+    await sbDelete('bestof_photos','id=eq.'+encodeURIComponent(rowId));
+    var tile=btn.closest('.ph-tile');
+    if(tile)tile.remove();
+    phRefreshNums();
+    phFeedback('Retirée du Best of');
+  }catch(e){phFeedback('Erreur : '+e.message,'err');btn.disabled=false;}
+}
+
+async function phSaveBestofText(btn){
+  btn.disabled=true;btn.textContent='Enregistrement…';
+  try{
+    await sbUpsert('site_texts',[{id:'bestof-carton',
+      fr:document.getElementById('phBestofTextarea').value.trim(),
+      updated_at:new Date().toISOString()}]);
+    phFeedback('Texte du carton enregistré — en ligne immédiatement');
+  }catch(e){phFeedback('Erreur : '+e.message,'err');}
+  btn.disabled=false;btn.textContent='Enregistrer le texte';
 }
 
 function phFeedback(msg,cls){

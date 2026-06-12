@@ -144,6 +144,15 @@
     </div>
     <div class="boutique-overlay" id="boutiqueOverlay" onclick="window.portfolio?.closeBoutiquePanel()"></div>
 
+    <!-- Bandeau site en construction (retirer quand le site est prêt) -->
+    <div id="constructionBanner" style="position:fixed;bottom:0;left:0;right:0;z-index:2000;
+        text-align:center;padding:0.55rem 1rem;
+        background:rgba(250,250,250,0.92);backdrop-filter:blur(6px);
+        border-top:1px solid var(--light-gray);
+        font-size:0.6rem;font-weight:400;letter-spacing:0.18em;text-transform:uppercase;color:var(--gray);">
+        Site en construction &middot; les galeries compl&egrave;tes arrivent bient&ocirc;t
+    </div>
+
     <!-- Custom cursor -->
     <div class="custom-cursor" id="customCursor">
         <svg viewBox="0 0 24 24">
@@ -156,7 +165,7 @@
     <!-- Données du site (config, galeries, textes) — géré via admin ou sur demande -->
     <script src="js/gallery-data.js?v=20260611a"></script>
     <!-- Moteur du site (Portfolio class) — géré par Claude -->
-    <script src="js/gallery-engine.js?v=20260608h"></script>
+    <script src="js/gallery-engine.js?v=20260612a"></script>
 
 
 </body>
