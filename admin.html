@@ -295,7 +295,8 @@ body{font-family:'IBM Plex Sans',sans-serif;font-weight:300;font-size:13px;
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
-<script src="js/gallery-data.js?v=20260612b"></script>
+<script src="js/gallery-images.js?v=20260606b"></script>
+<script src="js/gallery-data.js?v=20260613a"></script>
 <script>
 var SUPA_URL='https://suecslynruuputmujudg.supabase.co/rest/v1';
 var SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN1ZWNzbHlucnV1cHV0bXVqdWRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY1MTYyODcsImV4cCI6MjA5MjA5MjI4N30.c9Pa_x6MEcJdqVekBodSYpu3it-riVU1hYhC-m5iCsU';
@@ -995,9 +996,11 @@ function normalizePCloud(v){
   return m?m[1]:v;
 }
 
-/* Liste des galeries gérables : cartes clients (url galerie.html) + lignes gallery_settings */
+/* Liste des galeries gérables : pCloud (galeries clients) + locales (portrait, cinéma…) */
 function phGalleryList(){
-  var seen={},list=[];
+  var seen={},pcloud=[],local=[];
+
+  /* ── pCloud : cartes avec url galerie.html + lignes gallery_settings ── */
   Object.keys(SECTIONS_CONFIG).forEach(function(secId){
     SECTIONS_CONFIG[secId].cards.forEach(function(card){
       if(!card.url)return;
@@ -1006,23 +1009,69 @@ function phGalleryList(){
       if(seen[gid])return;seen[gid]=1;
       var prefix=PREFIX[secId]||secId;
       var dbRow=DB.cards[prefix+'-'+card.id]||{};
-      list.push({gid:gid,label:dbRow.title_fr||card.titleFr||card.id});
+      pcloud.push({gid:gid,label:dbRow.title_fr||card.titleFr||card.id});
     });
   });
   Object.keys(DB_SETTINGS).forEach(function(gid){
-    if(!seen[gid]){seen[gid]=1;list.push({gid:gid,label:gid});}
+    if(!seen[gid]){seen[gid]=1;pcloud.push({gid:gid,label:gid});}
   });
-  list.sort(function(a,b){return a.label.localeCompare(b.label,'fr');});
-  return list;
+  pcloud.sort(function(a,b){return a.label.localeCompare(b.label,'fr');});
+
+  /* ── Locales : GALLERY_IMAGES (gallery-images.js) ── */
+  function labelForGid(gid){
+    var lbl=gid;
+    Object.keys(SECTIONS_CONFIG).forEach(function(sid){
+      SECTIONS_CONFIG[sid].cards.forEach(function(c){
+        if((c.galleryId||c.id)===gid&&(c.titleFr||c.titleEn))lbl=c.titleFr||c.titleEn;
+      });
+    });
+    return lbl;
+  }
+  if(typeof GALLERY_IMAGES!=='undefined'){
+    Object.keys(GALLERY_IMAGES).forEach(function(gid){
+      if(seen[gid]||!GALLERY_IMAGES[gid]||!GALLERY_IMAGES[gid].length)return;
+      seen[gid]=1;local.push({gid:gid,label:labelForGid(gid),local:true});
+    });
+  }
+  /* also GALLERIES_CONFIG entries with explicit images array */
+  if(typeof GALLERIES_CONFIG!=='undefined'){
+    Object.keys(GALLERIES_CONFIG).forEach(function(gid){
+      if(seen[gid])return;
+      var g=GALLERIES_CONFIG[gid];
+      if(!g.images||!g.images.length)return;
+      seen[gid]=1;local.push({gid:gid,label:labelForGid(gid),local:true});
+    });
+  }
+  local.sort(function(a,b){return a.label.localeCompare(b.label,'fr');});
+
+  return {pcloud:pcloud,local:local};
+}
+
+function phIsLocalGallery(gid){
+  if(!gid)return false;
+  if(typeof GALLERY_IMAGES!=='undefined'&&GALLERY_IMAGES[gid]&&GALLERY_IMAGES[gid].length)return true;
+  if(typeof GALLERIES_CONFIG!=='undefined'&&GALLERIES_CONFIG[gid]&&
+     GALLERIES_CONFIG[gid].images&&GALLERIES_CONFIG[gid].images.length)return true;
+  return false;
 }
 
 function phInitTab(){
   var sel=document.getElementById('phGallerySelect');
   if(sel.options.length)return;/* déjà initialisé */
-  var list=phGalleryList();
-  sel.innerHTML='<option value="">— Choisir une galerie —</option>'+
-    '<option value="'+BESTOF_KEY+'">♥ Best of (accueil)</option>'+
-    list.map(function(g){return '<option value="'+esc(g.gid)+'">'+esc(g.label)+'</option>';}).join('');
+  var lists=phGalleryList();
+  var html='<option value="">— Choisir une galerie —</option>'+
+    '<option value="'+BESTOF_KEY+'">♥ Best of (accueil)</option>';
+  if(lists.pcloud.length){
+    html+='<optgroup label="Galeries clients (pCloud)">';
+    html+=lists.pcloud.map(function(g){return '<option value="'+esc(g.gid)+'">'+esc(g.label)+'</option>';}).join('');
+    html+='</optgroup>';
+  }
+  if(lists.local.length){
+    html+='<optgroup label="Galeries locales (♥ best of uniquement)">';
+    html+=lists.local.map(function(g){return '<option value="'+esc(g.gid)+'">'+esc(g.label)+'</option>';}).join('');
+    html+='</optgroup>';
+  }
+  sel.innerHTML=html;
 }
 
 function openPhotosFor(gid){
@@ -1036,18 +1085,20 @@ function openPhotosFor(gid){
 function phSelectGallery(){
   var gid=document.getElementById('phGallerySelect').value;
   PH.gid=gid||null;PH.photos=[];PH.hidden={};PH.stars={};
-  PH.mode=(gid===BESTOF_KEY)?'bestof':'gallery';
+  PH.mode=(gid===BESTOF_KEY)?'bestof':phIsLocalGallery(gid)?'local':'gallery';
   document.getElementById('phGrid').innerHTML='';
   document.getElementById('phSaveBar').style.display='none';
   document.getElementById('phStatus').textContent='';
   var inp=document.getElementById('phPcloudInput');
   inp.value='';
-  inp.style.display=PH.mode==='bestof'?'none':'';
-  document.getElementById('phLoadBtn').style.display=PH.mode==='bestof'?'none':'';
+  var showPcloud=(PH.mode==='gallery');
+  inp.style.display=showPcloud?'':'none';
+  document.getElementById('phLoadBtn').style.display=showPcloud?'':'none';
   var txtWrap=document.getElementById('phBestofText');
   if(txtWrap)txtWrap.style.display=PH.mode==='bestof'?'':'none';
   if(!gid)return;
   if(PH.mode==='bestof'){phLoadBestof();return;}
+  if(PH.mode==='local'){phLoadLocalPhotos();return;}
   var code=(DB_SETTINGS[gid]||{}).pcloud_code||'';
   inp.value=code;
   if(code)phLoadPhotos();
@@ -1163,6 +1214,12 @@ function phRefreshCount(){
     document.getElementById('phCount').textContent=nb+' photo'+(nb>1?'s':'')+' au Best of (après les 4 photos historiques)';
     return;
   }
+  if(PH.mode==='local'){
+    var n=PH.photos.length;
+    var bo=PH.photos.filter(function(p){return PH.bestof[p.id];}).length;
+    document.getElementById('phCount').textContent=n+' photo'+(n>1?'s':'')+' · '+bo+' au Best of';
+    return;
+  }
   var n=PH.photos.length;
   var h=Object.keys(PH.hidden).length;
   var s=Object.keys(PH.stars).length;
@@ -1226,9 +1283,17 @@ async function phSaveAll(btn){
 /* ── BEST OF ───────────────────────────────────────────── */
 async function phToggleBestof(btn,fid){
   var gid=PH.gid;
-  var code=(DB_SETTINGS[gid]||{}).pcloud_code;
-  if(!code)return;
-  var rowId=code+':'+fid;
+  var isLocal=(PH.mode==='local');
+  var rowId,entry;
+  if(isLocal){
+    rowId='local:'+fid;
+    entry={id:rowId,pcloud_code:'',fileid:fid,sort_order:999};
+  }else{
+    var code=(DB_SETTINGS[gid]||{}).pcloud_code;
+    if(!code)return;
+    rowId=code+':'+fid;
+    entry={id:rowId,pcloud_code:code,fileid:String(fid),sort_order:999};
+  }
   btn.disabled=true;
   try{
     if(PH.bestof[fid]){
@@ -1236,11 +1301,12 @@ async function phToggleBestof(btn,fid){
       delete PH.bestof[fid];
       phFeedback('Retirée du Best of');
     }else{
-      await sbUpsert('bestof_photos',[{id:rowId,pcloud_code:code,fileid:String(fid),sort_order:999}]);
+      await sbUpsert('bestof_photos',[entry]);
       PH.bestof[fid]=1;
       phFeedback('♥ Ajoutée au Best of (accueil)');
     }
     btn.classList.toggle('on',!!PH.bestof[fid]);
+    if(isLocal)phRefreshCount();
   }catch(e){phFeedback('Erreur : '+e.message,'err');}
   btn.disabled=false;
 }
@@ -1263,8 +1329,11 @@ async function phLoadBestof(){
       return;
     }
     grid.innerHTML=rows.map(function(r,i){
+      var imgSrc=r.pcloud_code
+        ?PCLOUD_API+'/getpubthumb?code='+esc(r.pcloud_code)+'&fileid='+esc(r.fileid)+'&size=360x240&type=jpg'
+        :esc(r.fileid);
       return '<div class="ph-tile" data-fid="'+esc(r.id)+'">'+
-        '<img src="'+PCLOUD_API+'/getpubthumb?code='+esc(r.pcloud_code)+'&fileid='+esc(r.fileid)+'&size=360x240&type=jpg" loading="lazy">'+
+        '<img src="'+imgSrc+'" loading="lazy">'+
         '<span class="ph-ord">'+(i+1)+'</span>'+
         '<div class="ph-tools">'+
           '<button class="ph-tool eye off" title="Retirer du Best of" onclick="phRemoveBestof(this,\''+esc(r.id)+'\')">✖</button>'+
@@ -1301,6 +1370,49 @@ async function phSaveBestofText(btn){
     phFeedback('Texte du carton enregistré — en ligne immédiatement');
   }catch(e){phFeedback('Erreur : '+e.message,'err');}
   btn.disabled=false;btn.textContent='Enregistrer le texte';
+}
+
+/* ── GALERIES LOCALES (portrait, cinéma, archives…) ────── */
+function phLoadLocalPhotos(){
+  var gid=PH.gid;
+  var cfg=GALLERIES_CONFIG[gid]||{};
+  var path=cfg.path||('images/'+gid);
+  var imgs=(cfg.images&&cfg.images.length)?cfg.images:
+           (typeof GALLERY_IMAGES!=='undefined'?GALLERY_IMAGES[gid]||[]:[]  );
+  if(!imgs.length){
+    document.getElementById('phStatus').textContent='Aucune image trouvée pour cette galerie.';
+    return;
+  }
+  PH.photos=imgs.map(function(img){
+    var fname=img.filename||img;
+    return{id:path+'/'+fname,name:fname};
+  });
+  document.getElementById('phStatus').textContent='Chargement…';
+  sbGet('bestof_photos?select=fileid').then(function(bo){
+    PH.bestof={};
+    bo.forEach(function(r){PH.bestof[r.fileid]=1;});
+    phRenderLocalGrid();
+    document.getElementById('phStatus').textContent='';
+  }).catch(function(e){
+    PH.bestof={};
+    phRenderLocalGrid();
+    document.getElementById('phStatus').textContent='';
+  });
+}
+
+function phRenderLocalGrid(){
+  var grid=document.getElementById('phGrid');
+  grid.innerHTML=PH.photos.map(function(p,i){
+    return '<div class="ph-tile" data-fid="'+esc(p.id)+'">'+
+      '<img src="'+esc(p.id)+'" loading="lazy" onerror="this.style.opacity=\'.3\'">'+
+      '<span class="ph-ord">'+(i+1)+'</span>'+
+      '<div class="ph-tools">'+
+        '<button class="ph-tool heart'+(PH.bestof[p.id]?' on':'')+'" title="Ajouter / retirer du Best of" onclick="phToggleBestof(this,\''+esc(p.id)+'\')">♥</button>'+
+      '</div>'+
+      '<div class="ph-name">'+esc(p.name)+'</div>'+
+    '</div>';
+  }).join('');
+  phRefreshCount();
 }
 
 function phFeedback(msg,cls){

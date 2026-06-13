@@ -237,9 +237,12 @@ class Portfolio {
                     if (bpRes.ok) {
                         const rows = await bpRes.json();
                         rows.forEach(r => {
+                            const src = r.pcloud_code
+                                ? `https://api.pcloud.com/getpubthumb?code=${r.pcloud_code}&fileid=${r.fileid}&size=2048x2048&type=jpg`
+                                : r.fileid; /* photo locale : fileid = chemin relatif */
                             bo.items.push({
                                 type: 'image',
-                                src: `https://api.pcloud.com/getpubthumb?code=${r.pcloud_code}&fileid=${r.fileid}&size=2048x2048&type=jpg`,
+                                src,
                                 title: r.title || '',
                                 subtitle: r.subtitle || ''
                             });
