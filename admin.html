@@ -1029,6 +1029,7 @@ function phGalleryList(){
   }
   if(typeof GALLERY_IMAGES!=='undefined'){
     Object.keys(GALLERY_IMAGES).forEach(function(gid){
+      if(gid==='best-of')return;/* géré via ♥ Best of (accueil) */
       if(seen[gid]||!GALLERY_IMAGES[gid]||!GALLERY_IMAGES[gid].length)return;
       seen[gid]=1;local.push({gid:gid,label:labelForGid(gid),local:true});
     });
@@ -1036,6 +1037,7 @@ function phGalleryList(){
   /* also GALLERIES_CONFIG entries with explicit images array */
   if(typeof GALLERIES_CONFIG!=='undefined'){
     Object.keys(GALLERIES_CONFIG).forEach(function(gid){
+      if(gid==='best-of')return;/* géré via ♥ Best of (accueil) */
       if(seen[gid])return;
       var g=GALLERIES_CONFIG[gid];
       if(!g.images||!g.images.length)return;

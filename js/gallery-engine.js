@@ -236,17 +236,25 @@ class Portfolio {
                     ]);
                     if (bpRes.ok) {
                         const rows = await bpRes.json();
-                        rows.forEach(r => {
-                            const src = r.pcloud_code
-                                ? `https://api.pcloud.com/getpubthumb?code=${r.pcloud_code}&fileid=${r.fileid}&size=2048x2048&type=jpg`
-                                : r.fileid; /* photo locale : fileid = chemin relatif */
-                            bo.items.push({
-                                type: 'image',
-                                src,
-                                title: r.title || '',
-                                subtitle: r.subtitle || ''
+                        if (rows.length) {
+                            /* Reconstruire bo.items depuis Supabase — source unique de vérité.
+                               Le carton (position:1) est interleaved avec les photos Supabase. */
+                            const carton = bo.items.find(i => i.type === 'carton');
+                            const cartonPos = carton ? (carton.position ?? 1) : null;
+                            bo.items = [];
+                            rows.forEach((r, idx) => {
+                                const src = r.pcloud_code
+                                    ? `https://api.pcloud.com/getpubthumb?code=${r.pcloud_code}&fileid=${r.fileid}&size=2048x2048&type=jpg`
+                                    : r.fileid;
+                                bo.items.push({ type: 'image', src, title: r.title || '', subtitle: r.subtitle || '' });
+                                /* Insérer le carton après la photo à la position cartonPos */
+                                if (carton && cartonPos !== null && idx === cartonPos - 1) {
+                                    bo.items.push(carton);
+                                }
                             });
-                        });
+                            /* Si pas encore inséré (moins de photos que cartonPos), ajouter à la fin */
+                            if (carton && !bo.items.includes(carton)) bo.items.push(carton);
+                        }
                     }
                     if (stRes.ok) {
                         const t = (await stRes.json())[0];

@@ -807,12 +807,8 @@ const GALLERIES_CONFIG = {
                 "noSidebarTitle": true
             }
         ],
-        images: [
-            {"filename":"images/portrait/conversation-02.jpg","title":"Antoine Asnar","subtitle":"Portrait Studio"},
-            {"filename":"images/dustin-kolor/04.jpg","title":"Lost in the dust","subtitle":"Exposition"},
-            {"filename":"images/portrait/L1060508.jpg","title":"Ange-Marine","subtitle":"Portrait nature"},
-            {"filename":"images/cinema/1.jpg","title":"J'arrive","subtitle":"Réalisateur cinéma"}
-        ],
+        /* images[] intentionnellement vide — 100% géré via Supabase bestof_photos */
+        images: [],
         captions: {}
     },
 
