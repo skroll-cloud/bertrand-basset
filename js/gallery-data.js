@@ -54,7 +54,6 @@ const MENU_CONFIG = [
   { "id": "ph-exposition",       "name": "Exposition",           "type": "section", "sectionId": "ph-exposition", "parent": "photographe" },
   { "id": "ph-clients",          "name": "Galeries clients",     "type": "section", "sectionId": "ph-clients",    "parent": "photographe" },
   { "id": "realisateur",         "name": "RÉALISATEUR",          "type": "section", "sectionId": "realisateur" },
-  { "id": "travailler-ensemble", "name": "TRAVAILLER ENSEMBLE",  "type": "page",    "pageId": "travailler-ensemble" },
 
   /* ── BOUTIQUE ── sous-menu (comme PHOTOGRAPHE) : séance, travailler ensemble, tirages ── */
   { "id": "boutique",            "name": "BOUTIQUE",             "type": "section", "sectionId": "boutique" },

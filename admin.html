@@ -481,6 +481,7 @@ function buildItem1(sub,secMap){
   var cards=secId&&secMap[secId]?secMap[secId]:[];
   var visCards=cards.filter(function(e){return cardIsVis(e.dbId,e.card);});
 
+  var badge=secId?(visCards.length+' carte'+(visCards.length!==1?'s':'')):(sub.type==='link'?'lien':sub.type||'page');
   var row=document.createElement('div');row.className='item-row';
   row.innerHTML=
     (visCards.length?'<button class="exp-btn" onclick="toggleExp(this)">&#8250;</button>':'<span class="exp-ph"></span>')+
@@ -488,7 +489,7 @@ function buildItem1(sub,secMap){
     '<span class="item-name" contenteditable="true"'+
       ' onblur="saveLabel(this,\''+sub.id+'\')"'+
       ' onkeydown="if(event.key===\'Enter\'){this.blur();event.preventDefault()}">'+esc(name)+'</span>'+
-    '<span class="badge">'+visCards.length+' carte'+(visCards.length!==1?'s':'')+'</span>'+
+    '<span class="badge">'+badge+'</span>'+
     '<button class="vis-btn'+(isVis?'':' hidden')+'"'+
       ' onclick="toggleMenuVis(\''+sub.id+'\',this)">'+(isVis?'Visible':'Masqué')+'</button>';
   el.appendChild(row);
