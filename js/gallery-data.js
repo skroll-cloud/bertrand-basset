@@ -807,8 +807,14 @@ const GALLERIES_CONFIG = {
                 "noSidebarTitle": true
             }
         ],
-        /* images[] intentionnellement vide — 100% géré via Supabase bestof_photos */
-        images: [],
+        /* Fallback statique — écrasé par Supabase bestof_photos si disponible (live).
+           Utilisé en local (file://) quand Supabase est inaccessible. */
+        images: [
+            { filename: "images/portrait/conversation-02.jpg", path: "", title: "Antoine Asnar" },
+            { filename: "images/dustin-kolor/04.jpg",          path: "", title: "Lost in the dust" },
+            { filename: "images/portrait/L1060508.jpg",        path: "", title: "Ange-Marine" },
+            { filename: "images/cinema/1.jpg",                 path: "", title: "J'arrive" },
+        ],
         captions: {}
     },
 
