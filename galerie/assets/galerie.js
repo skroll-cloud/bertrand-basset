@@ -64,7 +64,7 @@
     $('bienvenue-texte').innerHTML =
       'Voici tes images. Choisis-en <strong>' + o + '</strong> ' + (o > 1 ? 'qui te sont offertes' : 'qui t’est offerte') +
       ' : je les retouche et je te les livre en HD. Si tu en veux des supplémentaires, elles sont à <strong>' + euros(G.prix) + '</strong>.' +
-      (G.tirage > 0 ? ' Si tu en achètes <strong>' + G.tirage + '</strong>, je t’offre un tirage.' : '');
+      (G.tirage > 0 ? ' Si tu en achètes <strong>' + G.tirage + '</strong>, je t’offre un tirage ' + G.format + '.' : '');
   })();
   function entrer(vite) {
     bienvenueOuverte = false;
@@ -287,7 +287,7 @@
     const t = $('panier-tirage');
     t.classList.toggle('gagne', tirageGagne());
     t.textContent = G.tirage <= 0 || k === 0 ? '' :
-      (tirageGagne() ? 'Un tirage t’est offert.' : 'Avec ' + G.tirage + ' images en plus, un tirage t’est offert.');
+      (tirageGagne() ? 'Un tirage ' + G.format + ' t’est offert.' : 'Avec ' + G.tirage + ' images en plus, un tirage ' + G.format + ' t’est offert.');
 
     $('panier-total').textContent = k === 0 ? '0 €' : (total() === 0 ? 'Offert' : euros(total()));
     $('envoyer').setAttribute('aria-disabled', k === 0 ? 'true' : 'false');
@@ -302,7 +302,7 @@
     const rows = ['Bonjour Bertrand,', '', 'Voici ma sélection.', '', 'Ma préférée : ' + designe(L[0].n)];
     if (offertes.length) rows.push(pluriel(offertes.length, 'Aussi offerte : ', 'Aussi offertes : ') + offertes.map((l) => designe(l.n)).join(', '));
     if (payantes.length) rows.push('', 'En plus, à ' + euros(G.prix) + ' chacune :', ...payantes.map((l) => '- ' + designe(l.n)));
-    if (tirageGagne()) rows.push('', 'Tirage offert (à partir de ' + G.tirage + ' images en plus).');
+    if (tirageGagne()) rows.push('', 'Tirage ' + G.format + ' offert (à partir de ' + G.tirage + ' images en plus).');
     rows.push('', total() ? 'Total à régler : ' + euros(total()) : 'Rien à régler.', '', G.prenom);
     return rows.join('\n');
   }
