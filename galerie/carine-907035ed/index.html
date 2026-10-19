@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Carine, vos portraits</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/galerie/assets/galerie.css">
+</head>
+<body>
+
+<header class="entete">
+  <span class="entete__marque">
+    <img src="/galerie/assets/logo-b.svg" alt="" width="28" height="28">
+    <span class="mono">Bertrand Basset</span>
+  </span>
+</header>
+
+<main>
+  <section class="accueil">
+    <h1>Carine, vos portraits</h1>
+    <p class="accueil__texte" id="accueil-texte"></p>
+  </section>
+
+  <ul class="planche" id="planche" aria-label="Les portraits"></ul>
+</main>
+
+<!-- barre du bas : apparaît dès qu'une image est choisie -->
+<div class="barre" id="barre" hidden>
+  <button type="button" class="barre__bouton" id="barre-ouvrir">
+    <span id="barre-texte"></span>
+    <span class="barre__voir">Voir ma sélection</span>
+  </button>
+</div>
+
+<!-- visionneuse plein écran -->
+<div class="vis" id="vis" role="dialog" aria-modal="true" aria-label="Visionneuse" aria-hidden="true">
+  <div class="vis__haut">
+    <span class="vis__compteur mono" id="vis-compteur"></span>
+    <button type="button" class="vis__fermer" id="vis-fermer" aria-label="Fermer">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+  <div class="vis__scene" id="vis-scene">
+    <img id="vis-image" alt="">
+    <button type="button" class="vis__fleche vis__fleche--prec" id="vis-prec" aria-label="Image précédente">
+      <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M15 4l-8 8 8 8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <button type="button" class="vis__fleche vis__fleche--suiv" id="vis-suiv" aria-label="Image suivante">
+      <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M9 4l8 8-8 8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+  <div class="vis__bas">
+    <button type="button" class="pilule pilule--claire" id="vis-choisir"></button>
+    <button type="button" class="pilule pilule--contour" id="vis-pref" hidden></button>
+  </div>
+</div>
+
+<!-- ma sélection -->
+<div class="voile" id="voile"></div>
+<aside class="panier" id="panier" role="dialog" aria-modal="true" aria-labelledby="panier-titre" aria-hidden="true">
+  <div class="panier__haut">
+    <h2 id="panier-titre">Ma sélection</h2>
+    <button type="button" class="panier__fermer" id="panier-fermer" aria-label="Fermer">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+  <div class="panier__corps">
+    <p class="panier__aide" id="panier-aide"></p>
+    <ol class="lignes" id="lignes"></ol>
+  </div>
+  <div class="panier__pied">
+    <p class="panier__calcul" id="panier-calcul"></p>
+    <p class="panier__total"><span>Total</span><strong id="panier-total"></strong></p>
+    <p class="panier__alerte" id="panier-alerte" role="status"></p>
+    <button type="button" class="pilule pilule--rouge" id="envoyer">Envoyer ma sélection</button>
+    <div class="repli" id="repli" hidden>
+      <p>Si votre application de mail ne s'est pas ouverte, copiez ce message et envoyez-le à <strong id="repli-mail"></strong>.</p>
+      <textarea id="repli-texte" readonly rows="8"></textarea>
+      <button type="button" class="pilule pilule--contour" id="copier">Copier le message</button>
+    </div>
+  </div>
+</aside>
+
+<script>window.GALERIE = {"slug": "carine-907035ed", "prenom": "Carine", "mail": "bertrand.basset@gmail.com", "offertes": 2, "prix": 30, "accueil": "", "photos": [{"n": 1, "ref": "BBASSET_CARINE 1", "src": "/galerie/carine-907035ed/img/01.jpg", "w": 1800, "h": 1800, "mini": "/galerie/carine-907035ed/img/01-t.jpg", "mw": 640, "mh": 640}, {"n": 2, "ref": "BBASSET_CARINE 2", "src": "/galerie/carine-907035ed/img/02.jpg", "w": 1200, "h": 1800, "mini": "/galerie/carine-907035ed/img/02-t.jpg", "mw": 427, "mh": 640}, {"n": 3, "ref": "BBASSET_CARINE 3", "src": "/galerie/carine-907035ed/img/03.jpg", "w": 1800, "h": 1200, "mini": "/galerie/carine-907035ed/img/03-t.jpg", "mw": 640, "mh": 427}, {"n": 4, "ref": "BBASSET_CARINE 4", "src": "/galerie/carine-907035ed/img/04.jpg", "w": 1200, "h": 1800, "mini": "/galerie/carine-907035ed/img/04-t.jpg", "mw": 427, "mh": 640}, {"n": 5, "ref": "BBASSET_CARINE 5", "src": "/galerie/carine-907035ed/img/05.jpg", "w": 1200, "h": 1800, "mini": "/galerie/carine-907035ed/img/05-t.jpg", "mw": 427, "mh": 640}, {"n": 6, "ref": "BBASSET_CARINE 6", "src": "/galerie/carine-907035ed/img/06.jpg", "w": 1440, "h": 1800, "mini": "/galerie/carine-907035ed/img/06-t.jpg", "mw": 512, "mh": 640}, {"n": 7, "ref": "BBASSET_CARINE 7", "src": "/galerie/carine-907035ed/img/07.jpg", "w": 1200, "h": 1800, "mini": "/galerie/carine-907035ed/img/07-t.jpg", "mw": 427, "mh": 640}, {"n": 8, "ref": "BBASSET_CARINE 8", "src": "/galerie/carine-907035ed/img/08.jpg", "w": 1200, "h": 1800, "mini": "/galerie/carine-907035ed/img/08-t.jpg", "mw": 427, "mh": 640}, {"n": 9, "ref": "BBASSET_CARINE 9", "src": "/galerie/carine-907035ed/img/09.jpg", "w": 1200, "h": 1800, "mini": "/galerie/carine-907035ed/img/09-t.jpg", "mw": 427, "mh": 640}, {"n": 10, "ref": "BBASSET_CARINE 10", "src": "/galerie/carine-907035ed/img/10.jpg", "w": 1200, "h": 1800, "mini": "/galerie/carine-907035ed/img/10-t.jpg", "mw": 427, "mh": 640}, {"n": 11, "ref": "BBASSET_CARINE 11", "src": "/galerie/carine-907035ed/img/11.jpg", "w": 1440, "h": 1800, "mini": "/galerie/carine-907035ed/img/11-t.jpg", "mw": 512, "mh": 640}, {"n": 12, "ref": "BBASSET_CARINE 12", "src": "/galerie/carine-907035ed/img/12.jpg", "w": 1800, "h": 1800, "mini": "/galerie/carine-907035ed/img/12-t.jpg", "mw": 640, "mh": 640}, {"n": 13, "ref": "BBASSET_CARINE 13", "src": "/galerie/carine-907035ed/img/13.jpg", "w": 1440, "h": 1800, "mini": "/galerie/carine-907035ed/img/13-t.jpg", "mw": 512, "mh": 640}, {"n": 14, "ref": "BBASSET_CARINE 14", "src": "/galerie/carine-907035ed/img/14.jpg", "w": 1200, "h": 1800, "mini": "/galerie/carine-907035ed/img/14-t.jpg", "mw": 427, "mh": 640}, {"n": 15, "ref": "BBASSET_CARINE 15", "src": "/galerie/carine-907035ed/img/15.jpg", "w": 1200, "h": 1800, "mini": "/galerie/carine-907035ed/img/15-t.jpg", "mw": 427, "mh": 640}, {"n": 16, "ref": "BBASSET_CARINE 16", "src": "/galerie/carine-907035ed/img/16.jpg", "w": 1800, "h": 1200, "mini": "/galerie/carine-907035ed/img/16-t.jpg", "mw": 640, "mh": 427}, {"n": 17, "ref": "BBASSET_CARINE 17", "src": "/galerie/carine-907035ed/img/17.jpg", "w": 1800, "h": 1200, "mini": "/galerie/carine-907035ed/img/17-t.jpg", "mw": 640, "mh": 427}, {"n": 18, "ref": "BBASSET_CARINE", "src": "/galerie/carine-907035ed/img/18.jpg", "w": 1200, "h": 1800, "mini": "/galerie/carine-907035ed/img/18-t.jpg", "mw": 427, "mh": 640}]};</script>
+<script src="/galerie/assets/galerie.js"></script>
+</body>
+</html>
