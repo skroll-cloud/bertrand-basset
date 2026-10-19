@@ -250,6 +250,19 @@ body.en-zoom .fleche { display: none; }
 .ligne__retirer:hover { color: var(--encre); }
 .vide { padding: 28px 0; color: var(--gris); }
 
+.coordonnees { margin-top: 28px; display: grid; gap: 6px; }
+.coordonnees__titre { font-size: 17px; font-weight: 500; }
+.coordonnees__titre span { font-weight: 300; color: var(--gris); }
+.coordonnees label { margin-top: 8px; font-size: 14px; color: var(--gris); }
+.coordonnees input {
+  width: 100%; min-height: 46px; padding: 0 14px;
+  border: 1px solid var(--filet); border-radius: 8px;
+  background: var(--calque); color: var(--encre);
+  font: 400 16px/1.2 var(--police-texte);
+}
+.coordonnees input:focus-visible { outline: 2px solid var(--rouge); outline-offset: 1px; }
+.coordonnees__note { margin-top: 6px; font-size: 13px; line-height: 1.5; color: var(--gris); }
+
 .panier__pied { padding: 16px 24px calc(20px + env(safe-area-inset-bottom)); border-top: 1px solid var(--filet); background: var(--papier); }
 .panier__calcul { color: var(--gris); font-size: 15px; min-height: 1.6em; }
 .panier__tirage { font-size: 15px; font-weight: 500; min-height: 1.6em; }

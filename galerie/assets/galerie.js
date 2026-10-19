@@ -14,12 +14,13 @@
   if (new URLSearchParams(location.search).get('fond') === 'noir') document.documentElement.dataset.fond = 'noir';
 
   // ---------- état : ce que la personne a choisi (gardé sur son appareil) ----------
-  let etat = { panier: [], pref: null };
+  let etat = { panier: [], pref: null, mail: '', tel: '' };
   try {
     const s = JSON.parse(localStorage.getItem(KEY));
     if (s && Array.isArray(s.panier)) {
       etat.panier = s.panier.filter((n) => parN.has(n));
       etat.pref = parN.has(s.pref) && etat.panier.includes(s.pref) ? s.pref : (etat.panier[0] || null);
+      etat.mail = typeof s.mail === 'string' ? s.mail : ''; etat.tel = typeof s.tel === 'string' ? s.tel : '';
     }
   } catch (e) { /* stockage indisponible : la page marche quand même */ }
   const sauver = () => { try { localStorage.setItem(KEY, JSON.stringify(etat)); } catch (e) {} };
@@ -293,6 +294,12 @@
     $('envoyer').setAttribute('aria-disabled', k === 0 ? 'true' : 'false');
   }
 
+  // ---------- coordonnées facultatives ----------
+  const cMail = $('c-mail'), cTel = $('c-tel');
+  cMail.value = etat.mail; cTel.value = etat.tel;
+  cMail.addEventListener('input', () => { etat.mail = cMail.value.trim(); sauver(); });
+  cTel.addEventListener('input', () => { etat.tel = cTel.value.trim(); sauver(); });
+
   // ---------- le message envoyé à Bertrand ----------
   const designe = (n) => 'n° ' + n + ' (' + parN.get(n).ref + ')';
   function message() {
@@ -303,12 +310,17 @@
     if (offertes.length) rows.push(pluriel(offertes.length, 'Aussi offerte : ', 'Aussi offertes : ') + offertes.map((l) => designe(l.n)).join(', '));
     if (payantes.length) rows.push('', 'En plus, à ' + euros(G.prix) + ' chacune :', ...payantes.map((l) => '- ' + designe(l.n)));
     if (tirageGagne()) rows.push('', 'Tirage ' + G.format + ' offert (à partir de ' + G.tirage + ' images en plus).');
-    rows.push('', total() ? 'Total à régler : ' + euros(total()) : 'Rien à régler.', '', G.prenom);
+    rows.push('', total() ? 'Total à régler : ' + euros(total()) : 'Rien à régler.');
+    if (etat.mail || etat.tel) rows.push('');
+    if (etat.mail) rows.push('Mon mail : ' + etat.mail);
+    if (etat.tel) rows.push('Mon téléphone : ' + etat.tel);
+    rows.push('', G.prenom);
     return rows.join('\n');
   }
   $('envoyer').addEventListener('click', () => {
     const alerte = $('panier-alerte');
     if (etat.panier.length === 0) { alerte.textContent = 'Ajoute d’abord au moins une image.'; return; }
+    if (etat.mail && !cMail.checkValidity()) { alerte.textContent = 'Ton adresse mail ne semble pas complète. Corrige-la ou laisse le champ vide.'; cMail.focus(); return; }
     alerte.textContent = '';
     const texte = message();
     $('repli-mail').textContent = G.mail;
