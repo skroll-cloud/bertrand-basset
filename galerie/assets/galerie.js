@@ -100,7 +100,7 @@
     cadre.style.height = Math.floor(h) + 'px';
   }
   // version moyenne pour les petits écrans, version complète pour les grands et les écrans fins
-  const srcPour = (p) => (Math.max(innerWidth, innerHeight) * (window.devicePixelRatio || 1) > 1500 ? p.src : p.med);
+  const srcPour = (p) => (Math.max(innerWidth, innerHeight) * (window.devicePixelRatio || 1) > 1300 ? p.src : p.med);
 
   function montrer(n) {
     sortirZoom();
