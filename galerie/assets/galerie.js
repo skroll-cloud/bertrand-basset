@@ -57,10 +57,15 @@
   const tirageGagne = () => G.tirage > 0 && nbPayantes() >= G.tirage;
 
   // ---------- premier écran : la consigne ----------
+  if (!G.prix_visibles) document.body.classList.add('sans-prix');
   const bienvenue = $('bienvenue');
   let bienvenueOuverte = true;
   (function consigne() {
     if (G.accueil) { $('bienvenue-texte').textContent = G.accueil; return; }
+    if (!G.prix_visibles) {
+      $('bienvenue-texte').textContent = 'Voici tes images. Choisis celles que tu aimes et mets une étoile sur ta favorite, puis envoie-moi ta sélection. Je retouche ta favorite et je te l’envoie en haute définition.';
+      return;
+    }
     const o = G.offertes;
     $('bienvenue-texte').innerHTML =
       'Voici tes images. Choisis-en <strong>' + o + '</strong> ' + (o > 1 ? 'qui te sont offertes' : 'qui t’est offerte') +
@@ -250,7 +255,8 @@
     const manque = Math.max(0, G.offertes - k);
     const payantes = L.filter((l) => !l.offerte).length;
 
-    $('panier-aide').textContent = k === 0 ? '' :
+    $('panier-aide').textContent = k === 0 ? '' : !G.prix_visibles ?
+      'Marque ta favorite avec l’étoile ☆, puis envoie ta sélection.' :
       'Ta préférée est marquée ★. Les ' + G.offertes + ' premières images sont offertes, les suivantes sont à ' + euros(G.prix) + '.';
 
     zoneLignes.innerHTML = '';
@@ -308,6 +314,16 @@
     const payantes = L.filter((l) => !l.offerte);
     const rows = ['Bonjour Bertrand,', '', 'Voici ma sélection.', '', 'Ma préférée : ' + designe(L[0].n)];
     if (offertes.length) rows.push(pluriel(offertes.length, 'Aussi offerte : ', 'Aussi offertes : ') + offertes.map((l) => designe(l.n)).join(', '));
+    if (!G.prix_visibles) {
+      const autres = L.slice(1);
+      const r2 = ['Bonjour Bertrand,', '', 'Voici ma sélection.', '', 'Ma favorite : ' + designe(L[0].n)];
+      if (autres.length) r2.push(pluriel(autres.length, 'Aussi choisie : ', 'Aussi choisies : ') + autres.map((l) => designe(l.n)).join(', '));
+      if (etat.mail || etat.tel) r2.push('');
+      if (etat.mail) r2.push('Mon mail : ' + etat.mail);
+      if (etat.tel) r2.push('Mon téléphone : ' + etat.tel);
+      r2.push('', G.prenom);
+      return r2.join('\n');
+    }
     if (payantes.length) rows.push('', 'En plus, à ' + euros(G.prix) + ' chacune :', ...payantes.map((l) => '- ' + designe(l.n)));
     if (tirageGagne()) rows.push('', 'Tirage ' + G.format + ' offert (à partir de ' + G.tirage + ' images en plus).');
     rows.push('', total() ? 'Total à régler : ' + euros(total()) : 'Rien à régler.');

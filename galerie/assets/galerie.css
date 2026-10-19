@@ -275,6 +275,9 @@ body.en-zoom .fleche { display: none; }
 .repli[hidden] { display: none; }
 .repli textarea { width: 100%; margin: 10px 0; padding: 10px 12px; border: 1px solid var(--filet); border-radius: 6px; background: var(--calque); font: 400 14px/1.5 var(--police-mono); color: var(--encre); resize: vertical; }
 
+/* ----- sans la partie argent ----- */
+body.sans-prix .ligne__prix, body.sans-prix .panier__calcul, body.sans-prix .panier__tirage, body.sans-prix .panier__total { display: none; }
+
 /* ----- téléphone ----- */
 @media (max-width: 640px) {
   body { font-size: 16px; }
