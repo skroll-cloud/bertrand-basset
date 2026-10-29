@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Grand concours : gagnez Flying Car · Bertrand Basset</title>
+<meta name="description" content="Gagnez un tirage numéroté d'une valeur de 1 000 €. Chaque carte postale achetée, une chance de gagner. Tirage au sort le 24 décembre à 16 h.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/vente.css">
+</head>
+<body>
+
+<header class="barre" id="barre">
+  <a class="marque" href="#haut" aria-label="Haut de la page"><img src="assets/logo-b.svg" alt=""><span>Bertrand Basset<i>.</i></span></a>
+  <span class="barre-d">
+    <span class="barre-temps" id="barre-temps"></span>
+    <a class="btn-feu petit" href="#cartes">Acheter une carte</a>
+  </span>
+</header>
+
+<main id="haut">
+
+  <!-- 1. LE GRAND CONCOURS -->
+  <section class="concours" aria-labelledby="t-concours">
+    <div class="concours-texte">
+      <p class="sur-titre">Grand concours</p>
+      <h1 id="t-concours">Gagnez un tirage numéroté d'une valeur de <span class="feu">1 000 €</span></h1>
+      <p class="ligne">Chaque carte postale achetée, une chance de gagner.</p>
+      <p class="date">Tirage au sort le 24 décembre, à 16 h.</p>
+      <div class="cta">
+        <a class="btn-feu" href="#cartes">Acheter une carte postale, 6 € <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2"/></svg></a>
+      </div>
+      <p class="expo"><i></i>Exposition toujours en cours à la Brasserie Graphique, Carantec</p>
+    </div>
+    <figure class="concours-photo">
+      <img src="images/concours/brasserie.jpg" alt="Flying Car, 70 × 124 cm, accroché au-dessus du bar de la Brasserie Graphique à Carantec" width="874" height="883" fetchpriority="high">
+    </figure>
+  </section>
+
+  <!-- 2. FLYING CAR, EN GRAND -->
+  <section class="grand" aria-label="Flying Car">
+    <img src="images/concours/flying-car.jpg" alt="Flying Car : un véhicule chromé glisse dans une tempête de sable orange" width="1800" height="1013" loading="lazy" id="img-lot">
+    <p class="taille">Flying Car · 70 × 124 cm</p>
+  </section>
+
+  <!-- 3. LES CARTES POSTALES -->
+  <section class="cartes" id="cartes" aria-labelledby="t-cartes">
+    <div class="cartes-tete">
+      <div>
+        <h2 id="t-cartes">Les cartes postales</h2>
+        <p class="ligne">Chaque carte postale achetée, une chance de gagner.</p>
+      </div>
+      <div class="tarifs" aria-label="Les prix">
+        <p><b>6 €</b><span>la carte</span></p>
+        <p><b>15 €</b><span>les 3</span></p>
+        <p class="serie"><b>40 €</b><span>les 9</span><button class="btn-ligne" type="button" id="b-serie">Prendre les 9</button></p>
+      </div>
+    </div>
+
+    <div class="galerie" id="galerie">
+      <div class="cp-vertical" id="cp-vertical"></div>
+      <div class="cp-paysage" id="cp-paysage"></div>
+    </div>
+
+    <div class="p-grille" id="participer">
+      <div class="p-gauche">
+        <div class="recap" aria-live="polite">
+          <p class="recap-n"><b id="r-n">0</b> <span id="r-lib">chance de gagner</span></p>
+          <p class="recap-prix" id="r-prix">0 €</p>
+        </div>
+        <p class="recap-note" id="r-note">Choisissez au moins une carte postale.</p>
+        <ul class="recap-liste" id="r-liste"></ul>
+        <p class="aide">Plus frais de port, ou retrait à Carantec du 15 décembre à fin janvier.</p>
+      </div>
+
+      <form class="form" id="form" novalidate aria-label="Commander mes cartes">
+        <div class="champs">
+          <label>Prénom<input name="prenom" autocomplete="given-name" required></label>
+          <label>Nom<input name="nom" autocomplete="family-name" required></label>
+          <label class="large">E-mail ou téléphone<input name="contact" autocomplete="email" inputmode="email" required placeholder="vous@exemple.fr ou 06 12 34 56 78"></label>
+        </div>
+        <fieldset class="remise">
+          <legend>Mes cartes</legend>
+          <label><input type="radio" name="remise" value="retrait" checked> Je les retire à Carantec</label>
+          <label><input type="radio" name="remise" value="envoi"> Envoyez-les-moi par la poste</label>
+        </fieldset>
+        <label class="case"><input type="checkbox" name="reglement" required><span>J'ai lu le <a href="#reglement">règlement</a>.</span></label>
+        <p class="erreurs" id="erreurs" role="alert" hidden></p>
+        <button class="btn-feu grand-b" type="submit">Acheter mes cartes</button>
+      </form>
+
+      <div class="merci" id="merci" hidden tabindex="-1">
+        <p class="sur-titre">Commande enregistrée</p>
+        <h3 id="merci-t"></h3>
+        <p id="merci-p"></p>
+        <p class="maquette">Maquette : rien n'est enregistré ni payé.</p>
+        <button class="btn-ligne" type="button" id="b-refaire">Modifier ma commande</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="reglement" id="reglement" aria-labelledby="t-reg">
+    <details>
+      <summary id="t-reg">Règlement du concours</summary>
+      <ol>
+        <li><b>Lot.</b> Un tirage numéroté Flying Car, 70 × 124 cm, papier Museum Etching 350 g contrecollé sur Dibond 2 mm, d'une valeur de 1 000 €.</li>
+        <li><b>Participer.</b> Chaque carte postale Dust'in Kolor achetée donne une chance de gagner. Le prénom, le nom et un contact sont demandés.</li>
+        <li><b>Cartes postales.</b> 6 € la carte, 3 pour 15 €, les 9 pour 40 €. À retirer à Carantec du 15 décembre à fin janvier, ou envoyées par la poste (frais de port en plus).</li>
+        <li><b>Tirage au sort.</b> Le 24 décembre 2026 à 16 h. Le gagnant est prévenu par le contact donné.</li>
+        <li><b>Remise du lot.</b> Retrait à la Brasserie le 31 décembre, ou envoi par colis pour 70 €.</li>
+        <li><b>Données.</b> Le prénom, le nom et le contact ne servent qu'au tirage et à la remise du lot.</li>
+      </ol>
+    </details>
+  </section>
+</main>
+
+<footer class="pied"><p><b>Bertrand Basset.</b> Dust'in Kolor, Nevada, Burning Man, août 2016.</p></footer>
+
+<div class="action" id="action" hidden>
+  <p><b id="a-n">0</b> <span id="a-lib">chance</span> · <b id="a-prix">0 €</b></p>
+  <a class="btn-feu petit" href="#participer">Commander</a>
+</div>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Image en grand" hidden>
+  <img id="lb-img" alt="">
+  <button class="rond lb-x" type="button" id="lb-fermer" aria-label="Fermer"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button>
+  <button class="rond lb-g" type="button" id="lb-prec" aria-label="Précédente"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button>
+  <button class="rond lb-d" type="button" id="lb-suiv" aria-label="Suivante"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button>
+  <div class="lb-bas"><span id="lb-leg"></span><button class="btn-feu petit" type="button" id="lb-ajout">Ajouter cette carte</button></div>
+</div>
+
+<script src="js/vente.js"></script>
+</body>
+</html>
