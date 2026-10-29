@@ -13,7 +13,7 @@
   const API = 'https://suecslynruuputmujudg.supabase.co/functions/v1/concours-commander';
   const REEL = location.hostname === 'bertrandbasset.com' || new URLSearchParams(location.search).has('reel');
   const PRIX = 6, PACK = 15;
-  const PORT = 4, FRANCO = 35;                                   // envoi par la poste : 4 €, offerts dès 35 € de cartes
+  const PORT = 4;                                                // envoi par la poste : 4 €, toujours (pas de port offert)
   const TIRAGE = new Date('2026-12-24T16:00:00+01:00');
   // titres connus de la série ; les trois autres cartes sont nommées par leur couleur
   const CARTES = [
@@ -79,7 +79,7 @@ const calcul = () => { const s = series(); return prix(total(), s); };
     // frais de port : affichés dès qu'on choisit l'envoi par la poste
     const envoi = $('#form').elements.remise.value === 'envoi', rp = $('#r-port');
     rp.hidden = !envoi || !n;
-    rp.textContent = p >= FRANCO ? 'Port offert' : `+ ${PORT} € de port, soit ${p + PORT} €`;
+    rp.textContent = `+ ${PORT} € de port, soit ${p + PORT} €`;
   }
   $('#form').addEventListener('change', e => { if (e.target.name === 'remise') maj(); });
   document.addEventListener('click', e => {
@@ -111,11 +111,11 @@ const calcul = () => { const s = series(); return prix(total(), s); };
     const box = $('#erreurs'); box.hidden = !err.length; box.innerHTML = err.map(esc).join('<br>');
     if (err.length) return;
     const det = CARTES.filter(x => qte[x.k]).map(x => `n° ${x.n}${qte[x.k] > 1 ? ' × ' + qte[x.k] : ''}`).join(', ');
-    const envoi = d.remise === 'envoi', port = envoi && calcul() < FRANCO ? PORT : 0;
+    const envoi = d.remise === 'envoi', port = envoi ? PORT : 0;
     const ou = [email, tel].filter(Boolean).join(' ou au ');
     if (REEL) { commander(d, email, tel); return; }
     $('#merci-t').textContent = `Merci ${d.prenom.trim()} : ${n} chance${n > 1 ? 's' : ''} de gagner Flying Car.`;
-    $('#merci-p').textContent = `Vos cartes postales : ${det}. Total ${calcul() + port} €${port ? ', port compris' : envoi ? ', port offert' : ''}. ${envoi ? 'Elles vous sont envoyées par la poste.' : 'À retirer à Carantec du 15 décembre à fin janvier.'} Tirage au sort le 24 décembre à 16 h à la Brasserie Graphique ; si vous gagnez, nous vous prévenons au ${ou}.`;
+    $('#merci-p').textContent = `Vos cartes postales : ${det}. Total ${calcul() + port} €${port ? ', port compris' : ''}. ${envoi ? 'Elles vous sont envoyées par la poste.' : 'À retirer à Carantec du 15 décembre à fin janvier.'} Tirage au sort le 24 décembre à 16 h à la Brasserie Graphique ; si vous gagnez, nous vous prévenons au ${ou}.`;
     $('.p-gauche').hidden = true; f.hidden = true; $('#merci').hidden = false; $('#merci').focus({ preventScroll: true });
     $('#participer').scrollIntoView({ behavior: calme ? 'auto' : 'smooth', block: 'start' });
   });
