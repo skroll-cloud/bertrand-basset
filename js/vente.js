@@ -13,6 +13,7 @@
   const API = 'https://suecslynruuputmujudg.supabase.co/functions/v1/concours-commander';
   const REEL = location.hostname === 'bertrandbasset.com' || new URLSearchParams(location.search).has('reel');
   const PRIX = 6, PACK = 15;
+  const PORT = 4, FRANCO = 35;                                   // envoi par la poste : 4 €, offerts dès 35 € de cartes
   const TIRAGE = new Date('2026-12-24T16:00:00+01:00');
   // titres connus de la série ; les trois autres cartes sont nommées par leur couleur
   const CARTES = [
@@ -75,7 +76,12 @@ const calcul = () => { const s = series(); return prix(total(), s); };
       : packs ? `${packs > 1 ? packs + ' packs de 3' : 'Pack de 3 cartes'} à 15 € : vous économisez ${packs * (3 * PRIX - PACK)} €.`
       : n === 2 ? 'Une carte de plus et les trois coûtent 15 €.' : `${n} carte${n > 1 ? 's' : ''} à 6 € l'unité.`;
     $('#r-liste').innerHTML = CARTES.filter(c => qte[c.k]).map(c => `<li><img src="${c.thumb}" alt="">${c.n}${qte[c.k] > 1 ? ' × ' + qte[c.k] : ''}</li>`).join('');
+    // frais de port : affichés dès qu'on choisit l'envoi par la poste
+    const envoi = $('#form').elements.remise.value === 'envoi', rp = $('#r-port');
+    rp.hidden = !envoi || !n;
+    rp.textContent = p >= FRANCO ? 'Port offert' : `+ ${PORT} € de port, soit ${p + PORT} €`;
   }
+  $('#form').addEventListener('change', e => { if (e.target.name === 'remise') maj(); });
   document.addEventListener('click', e => {
     const p = e.target.closest('[data-plus]'), m = e.target.closest('[data-moins]'), v = e.target.closest('[data-voir]');
     if (p) { qte[+p.dataset.plus]++; maj(); }
@@ -91,29 +97,34 @@ const calcul = () => { const s = series(); return prix(total(), s); };
   const telOk = v => /^\+?[\d\s.()-]{8,}$/.test(v) && v.replace(/\D/g, '').length >= 8;
   f.addEventListener('submit', e => {
     e.preventDefault();
-    const d = Object.fromEntries(new FormData(f)), err = [], n = total(), c = String(d.contact || '').trim();
-    ['prenom', 'nom', 'contact'].forEach(k => f.elements[k].setAttribute('aria-invalid', String(!String(d[k] || '').trim())));
+    const d = Object.fromEntries(new FormData(f)), err = [], n = total();
+    const email = String(d.email || '').trim(), tel = String(d.telephone || '').trim();
+    ['prenom', 'nom'].forEach(k => f.elements[k].setAttribute('aria-invalid', String(!String(d[k] || '').trim())));
+    f.elements.email.setAttribute('aria-invalid', String(!!email && !mailOk(email)));
+    f.elements.telephone.setAttribute('aria-invalid', String(!!tel && !telOk(tel)));
     if (!n) err.push('Choisissez au moins une carte postale : chaque carte achetée est une chance de gagner.');
     if (!String(d.prenom || '').trim() || !String(d.nom || '').trim()) err.push('Indiquez votre prénom et votre nom.');
-    if (!c) err.push('Indiquez un e-mail ou un numéro de téléphone.');
-    else if (!mailOk(c) && !telOk(c)) { err.push('Ce contact n\'a pas l\'air d\'un e-mail ou d\'un numéro de téléphone.'); f.elements.contact.setAttribute('aria-invalid', 'true'); }
+    if (!email && !tel) { err.push('Indiquez un e-mail ou un numéro de téléphone, au moins l\'un des deux.'); f.elements.email.setAttribute('aria-invalid', 'true'); f.elements.telephone.setAttribute('aria-invalid', 'true'); }
+    if (email && !mailOk(email)) err.push('Cet e-mail n\'a pas l\'air complet.');
+    if (tel && !telOk(tel)) err.push('Ce numéro de téléphone n\'a pas l\'air complet.');
     if (!d.reglement) err.push('Cochez la case du règlement.');
     const box = $('#erreurs'); box.hidden = !err.length; box.innerHTML = err.map(esc).join('<br>');
     if (err.length) return;
     const det = CARTES.filter(x => qte[x.k]).map(x => `n° ${x.n}${qte[x.k] > 1 ? ' × ' + qte[x.k] : ''}`).join(', ');
-    const envoi = d.remise === 'envoi';
-    if (REEL) { commander(d, c); return; }
+    const envoi = d.remise === 'envoi', port = envoi && calcul() < FRANCO ? PORT : 0;
+    const ou = [email, tel].filter(Boolean).join(' ou au ');
+    if (REEL) { commander(d, email, tel); return; }
     $('#merci-t').textContent = `Merci ${d.prenom.trim()} : ${n} chance${n > 1 ? 's' : ''} de gagner Flying Car.`;
-    $('#merci-p').textContent = `Vos cartes postales : ${det}. Total ${calcul()} €${envoi ? ', plus frais de port' : ''}. ${envoi ? 'Elles vous sont envoyées par la poste.' : 'À retirer à Carantec du 15 décembre à fin janvier.'} Tirage au sort le 24 décembre à 16 h ; si vous gagnez, nous vous écrivons au ${c}.`;
+    $('#merci-p').textContent = `Vos cartes postales : ${det}. Total ${calcul() + port} €${port ? ', port compris' : envoi ? ', port offert' : ''}. ${envoi ? 'Elles vous sont envoyées par la poste.' : 'À retirer à Carantec du 15 décembre à fin janvier.'} Tirage au sort le 24 décembre à 16 h à la Brasserie Graphique ; si vous gagnez, nous vous prévenons au ${ou}.`;
     $('.p-gauche').hidden = true; f.hidden = true; $('#merci').hidden = false; $('#merci').focus({ preventScroll: true });
     $('#participer').scrollIntoView({ behavior: calme ? 'auto' : 'smooth', block: 'start' });
   });
-  async function commander(d, contact) {
+  async function commander(d, email, telephone) {
     const bouton = $('button[type="submit"]', f), texte = bouton.textContent, box = $('#erreurs');
     bouton.disabled = true; bouton.textContent = 'Un instant…';
     try {
       const cartes = Object.fromEntries(CARTES.map(x => [x.n, qte[x.k]]).filter(([, q]) => q > 0));
-      const r = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prenom: d.prenom, nom: d.nom, contact, remise: d.remise, reglement: true, cartes, retour: location.origin + location.pathname }) });
+      const r = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prenom: d.prenom, nom: d.nom, email, telephone, contact: email || telephone, remise: d.remise, reglement: true, cartes, retour: location.origin + location.pathname }) });
       const j = await r.json().catch(() => ({}));
       if (r.ok && j.url) { location.href = j.url; return; }
       throw new Error(j.error || 'Le paiement n\'a pas pu s\'ouvrir. Réessayez dans un instant.');
@@ -126,7 +137,7 @@ const calcul = () => { const s = series(); return prix(total(), s); };
   const q = new URLSearchParams(location.search);
   if (q.get('merci')) {
     $('#merci-t').textContent = 'Merci ! Votre paiement est reçu.';
-    $('#merci-p').textContent = `Commande ${q.get('commande') || ''}. Chaque carte postale achetée est une chance de gagner Flying Car : tirage au sort le 24 décembre à 16 h. Vos cartes sont à retirer à Carantec du 15 décembre à fin janvier, ou vous sont envoyées par la poste.`;
+    $('#merci-p').textContent = `Commande ${q.get('commande') || ''}. Chaque carte postale achetée est une chance de gagner Flying Car : tirage au sort et remise du lot le 24 décembre à 16 h, à la Brasserie Graphique. Vos cartes sont à retirer à Carantec du 15 décembre à fin janvier, ou vous sont envoyées par la poste.`;
     $('.maquette').hidden = true; $('#b-refaire').hidden = true;
     $('.p-gauche').hidden = true; f.hidden = true; $('#merci').hidden = false;
     setTimeout(() => $('#participer').scrollIntoView({ block: 'start' }), 300);

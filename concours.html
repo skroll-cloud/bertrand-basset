@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Grand concours : gagnez Flying Car · Bertrand Basset</title>
-<meta name="description" content="Gagnez un tirage numéroté d'une valeur de 1 000 €. Chaque carte postale achetée, une chance de gagner. Tirage au sort le 24 décembre à 16 h.">
+<meta name="description" content="Gagnez un tirage numéroté d'une valeur de 1 000 €. Chaque carte postale achetée, une chance de gagner. Tirage au sort et remise du lot le 24 décembre à 16 h, à la Brasserie Graphique, Carantec.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&family=Caveat:wght@700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/vente.css">
 </head>
 <body>
@@ -28,7 +28,7 @@
       <p class="sur-titre">Grand concours</p>
       <h1 id="t-concours">Gagnez un tirage numéroté d'une valeur de <span class="feu">1 000 €</span></h1>
       <p class="ligne">Chaque carte postale achetée, une chance de gagner.</p>
-      <p class="date">Tirage au sort le 24 décembre, à 16 h.</p>
+      <p class="date">Tirage au sort et remise du lot le 24 décembre, à 16 h, à la Brasserie Graphique.</p>
       <div class="cta">
         <a class="btn-feu" href="#cartes">Acheter une carte postale, 6 € <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2"/></svg></a>
       </div>
@@ -36,13 +36,24 @@
     </div>
     <figure class="concours-photo">
       <img src="images/concours/brasserie.jpg" alt="Flying Car, 70 × 124 cm, accroché au-dessus du bar de la Brasserie Graphique à Carantec" width="874" height="883" fetchpriority="high">
+      <!-- la flèche au crayon, du texte vers le tirage accroché au mur -->
+      <svg class="fleche" viewBox="0 0 300 200" aria-hidden="true">
+        <path class="trait" d="M10 188 C 70 182, 120 150, 160 112 S 240 60, 284 70"/>
+        <path class="trait trait2" d="M12 191 C 72 184, 124 153, 163 114 S 242 62, 286 72"/>
+        <path class="trait" d="M262 54 L 286 70 L 258 82"/>
+        <text x="118" y="96" transform="rotate(-24 118 96)">celui-là !</text>
+      </svg>
     </figure>
   </section>
 
   <!-- 2. FLYING CAR, EN GRAND -->
   <section class="grand" aria-label="Flying Car">
     <img src="images/concours/flying-car.jpg" alt="Flying Car : un véhicule chromé glisse dans une tempête de sable orange" width="1800" height="1013" loading="lazy" id="img-lot">
-    <p class="taille">Flying Car · 70 × 124 cm</p>
+    <div class="lot">
+      <p class="taille">Flying Car · 70 × 124 cm</p>
+      <p class="lot-texte">Le tirage à gagner est celui-là même qui est accroché au-dessus du bar de la Brasserie Graphique depuis le printemps, celui que plus de 2 000 visiteurs ont vu cet été. Tirage numéroté sur papier Hahnemühle Museum Etching 350 g, contrecollé sur Alu-Dibond, réalisé par Pix in the City.</p>
+      <a class="lot-lien" href="dustin-kolor/">Voir toute la série Dust'in Kolor <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></a>
+    </div>
   </section>
 
   <!-- 3. LES CARTES POSTALES -->
@@ -51,6 +62,7 @@
       <div>
         <h2 id="t-cartes">Les cartes postales</h2>
         <p class="ligne">Chaque carte postale achetée, une chance de gagner.</p>
+        <p class="format">Format DL, 10 × 21 cm · finition soft touch</p>
       </div>
       <div class="tarifs" aria-label="Les prix">
         <p><b>6 €</b><span>la carte</span></p>
@@ -69,22 +81,25 @@
         <div class="recap" aria-live="polite">
           <p class="recap-n"><b id="r-n">0</b> <span id="r-lib">chance de gagner</span></p>
           <p class="recap-prix" id="r-prix">0 €</p>
+          <p class="recap-port" id="r-port" hidden></p>
         </div>
         <p class="recap-note" id="r-note">Choisissez au moins une carte postale.</p>
         <ul class="recap-liste" id="r-liste"></ul>
-        <p class="aide">Plus frais de port, ou retrait à Carantec du 15 décembre à fin janvier.</p>
+        <p class="aide">Retrait à Carantec du 15 décembre à fin janvier, ou envoi par la poste : 4 € de port, offerts dès 35 €.</p>
       </div>
 
       <form class="form" id="form" novalidate aria-label="Commander mes cartes">
         <div class="champs">
           <label>Prénom<input name="prenom" autocomplete="given-name" required></label>
           <label>Nom<input name="nom" autocomplete="family-name" required></label>
-          <label class="large">E-mail ou téléphone<input name="contact" autocomplete="email" inputmode="email" required placeholder="vous@exemple.fr ou 06 12 34 56 78"></label>
+          <label>E-mail<input name="email" type="email" autocomplete="email" inputmode="email" placeholder="vous@exemple.fr"></label>
+          <label>Téléphone<input name="telephone" type="tel" autocomplete="tel" inputmode="tel" placeholder="06 12 34 56 78"></label>
+          <p class="champs-note large">L'e-mail ou le téléphone, au moins l'un des deux : c'est là que nous vous prévenons si vous gagnez.</p>
         </div>
         <fieldset class="remise">
           <legend>Mes cartes</legend>
-          <label><input type="radio" name="remise" value="retrait" checked> Je les retire à Carantec</label>
-          <label><input type="radio" name="remise" value="envoi"> Envoyez-les-moi par la poste</label>
+          <label><input type="radio" name="remise" value="retrait" checked> Je les retire à Carantec, du 15 décembre à fin janvier</label>
+          <label><input type="radio" name="remise" value="envoi"> Envoyez-les-moi par la poste <span class="port" id="port-lib">(4 € de port, offerts dès 35 €)</span></label>
         </fieldset>
         <label class="case"><input type="checkbox" name="reglement" required><span>J'ai lu le <a href="#reglement">règlement</a>.</span></label>
         <p class="erreurs" id="erreurs" role="alert" hidden></p>
@@ -105,12 +120,12 @@
     <details>
       <summary id="t-reg">Règlement du concours</summary>
       <ol>
-        <li><b>Lot.</b> Un tirage numéroté Flying Car, 70 × 124 cm, papier Museum Etching 350 g contrecollé sur Dibond 2 mm, d'une valeur de 1 000 €.</li>
-        <li><b>Participer.</b> Chaque carte postale Dust'in Kolor achetée donne une chance de gagner. Le prénom, le nom et un contact sont demandés.</li>
-        <li><b>Cartes postales.</b> 6 € la carte, 3 pour 15 €, les 9 pour 40 €. À retirer à Carantec du 15 décembre à fin janvier, ou envoyées par la poste (frais de port en plus).</li>
-        <li><b>Tirage au sort.</b> Le 24 décembre 2026 à 16 h. Le gagnant est prévenu par le contact donné.</li>
-        <li><b>Remise du lot.</b> Retrait à la Brasserie le 31 décembre, ou envoi par colis pour 70 €.</li>
-        <li><b>Données.</b> Le prénom, le nom et le contact ne servent qu'au tirage et à la remise du lot.</li>
+        <li><b>Lot.</b> Le tirage numéroté Flying Car exposé à la Brasserie Graphique, 70 × 124 cm, papier Hahnemühle Museum Etching 350 g contrecollé sur Alu-Dibond, réalisé par Pix in the City, d'une valeur de 1 000 €.</li>
+        <li><b>Participer.</b> Chaque carte postale Dust'in Kolor achetée donne une chance de gagner. Le prénom, le nom et un e-mail ou un numéro de téléphone (au moins l'un des deux) sont demandés.</li>
+        <li><b>Cartes postales.</b> Format DL, 10 × 21 cm, finition soft touch. 6 € la carte, 3 pour 15 €, les 9 pour 40 €. À retirer à Carantec du 15 décembre à fin janvier, ou envoyées par la poste : 4 € de port, offerts dès 35 €.</li>
+        <li><b>Tirage au sort.</b> Le 24 décembre 2026 à 16 h, à la Brasserie Graphique, Carantec. Le gagnant est prévenu par e-mail ou par téléphone.</li>
+        <li><b>Remise du lot.</b> Le jour même, à la Brasserie Graphique, ou plus tard sur rendez-vous, ou envoi par colis pour 70 €.</li>
+        <li><b>Données.</b> Le prénom, le nom, l'e-mail et le téléphone ne servent qu'au tirage et à la remise du lot.</li>
       </ol>
     </details>
   </section>
