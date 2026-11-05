@@ -85,7 +85,8 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; text-wrap: balance; 
 .tarifs p { display: grid; grid-template-columns: auto auto; align-items: baseline; gap: 2px 10px; padding: 14px 20px; border-radius: 14px; background: var(--noir3); box-shadow: inset 0 0 0 1px var(--filet); }
 .tarifs b { font: 700 clamp(32px, 3vw, 46px)/1 var(--display); color: #fff; }
 .tarifs span { font: 400 13px/1 var(--mono); letter-spacing: .05em; text-transform: uppercase; color: var(--gris); }
-.tarifs .serie { box-shadow: inset 0 0 0 2px var(--feu); background: linear-gradient(160deg, rgba(255, 138, 31, .16), rgba(255, 138, 31, .03)); }
+/* la case colorée suit le choix en cours (6 €, 15 € ou 40 €) ; aucune quand le panier est vide */
+.tarifs .actif { box-shadow: inset 0 0 0 2px var(--feu); background: linear-gradient(160deg, rgba(255, 138, 31, .16), rgba(255, 138, 31, .03)); }
 .tarifs .btn-ligne { grid-column: 1 / -1; margin-top: 8px; }
 
 .galerie { display: grid; grid-template-columns: minmax(250px, 30%) minmax(0, 1fr); gap: clamp(14px, 1.6vw, 26px); align-items: start; margin-bottom: clamp(32px, 4vw, 64px); }

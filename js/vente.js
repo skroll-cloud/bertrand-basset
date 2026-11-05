@@ -75,6 +75,9 @@ const calcul = () => { const s = series(); return prix(total(), s); };
       : s ? `${s > 1 ? s + ' séries complètes' : 'La série complète'} à 40 €${n > 9 * s ? ', plus ' + (n - 9 * s) + ' carte' + (n - 9 * s > 1 ? 's' : '') : ''}.`
       : packs ? `${packs > 1 ? packs + ' packs de 3' : 'Pack de 3 cartes'} à 15 € : vous économisez ${packs * (3 * PRIX - PACK)} €.`
       : n === 2 ? 'Une carte de plus et les trois coûtent 15 €.' : `${n} carte${n > 1 ? 's' : ''} à 6 € l'unité.`;
+    // la case de prix colorée suit le choix : série, packs ou unité ; aucune sans carte
+    document.querySelectorAll('.tarifs p').forEach(el => el.classList.remove('actif'));
+    if (n) $(s ? '.tarifs .serie' : packs ? '.tarifs .pack' : '.tarifs .unite').classList.add('actif');
     $('#r-liste').innerHTML = CARTES.filter(c => qte[c.k]).map(c => `<li><img src="${c.thumb}" alt="">${c.n}${qte[c.k] > 1 ? ' × ' + qte[c.k] : ''}</li>`).join('');
     // frais de port : affichés dès qu'on choisit l'envoi par la poste
     const envoi = $('#form').elements.remise.value === 'envoi', rp = $('#r-port');
