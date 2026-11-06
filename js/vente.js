@@ -21,6 +21,7 @@
     ['06', 'Orange rouge'], ['07', 'After the Storm'], ['08', 'Lost in the Dust'], ['09', 'Flying Car']
   ].map(([n, nom, vertical], k) => ({ k, n, nom, vertical: !!vertical, src: `images/concours/carte-${n}.jpg`, thumb: `images/concours/carte-${n}-t.jpg` }));
   const qte = CARTES.map(() => 0);
+  let formule = 0;                                               // 0 = pas encore choisie ; sinon 1, 3 ou 9 cartes
   const total = () => qte.reduce((a, b) => a + b, 0);
   const SERIE = 40;                                              // les 9 cartes différentes
 const prix = (n, series = 0) => series * SERIE + (n - 9 * series) % 3 * PRIX + Math.floor((n - 9 * series) / 3) * PACK;
@@ -68,16 +69,19 @@ const calcul = () => { const s = series(); return prix(total(), s); };
       $('output', f).textContent = qte[c.k];
       $('.moins', f).disabled = qte[c.k] === 0;
     });
+    // la formule plafonne : plus de « + » quand on a ses cartes ; la série des 9 est figée
+    const plein = !formule || n >= formule;
+    CARTES.forEach(c => { const f = $(`.cp[data-k="${c.k}"]`); $('.plus', f).disabled = plein || formule === 9; $('.moins', f).disabled = qte[c.k] === 0 || formule === 9; });
+    $('#lb-ajout').disabled = plein || formule === 9;
     const lib = n > 1 ? 'chances de gagner' : 'chance de gagner';
     $('#r-n').textContent = n; $('#r-lib').textContent = lib; $('#r-prix').textContent = p + ' €';
     $('#a-n').textContent = n; $('#a-lib').textContent = n > 1 ? 'chances' : 'chance'; $('#a-prix').textContent = p + ' €';
-    $('#r-note').textContent = !n ? 'Choisissez au moins une carte postale.'
-      : s ? `${s > 1 ? s + ' séries complètes' : 'La série complète'} à 40 €${n > 9 * s ? ', plus ' + (n - 9 * s) + ' carte' + (n - 9 * s > 1 ? 's' : '') : ''}.`
-      : packs ? `${packs > 1 ? packs + ' packs de 3' : 'Pack de 3 cartes'} à 15 € : vous économisez ${packs * (3 * PRIX - PACK)} €.`
-      : n === 2 ? 'Une carte de plus et les trois coûtent 15 €.' : `${n} carte${n > 1 ? 's' : ''} à 6 € l'unité.`;
-    // la case de prix colorée suit le choix : série, packs ou unité ; aucune sans carte
-    document.querySelectorAll('.tarifs p').forEach(el => el.classList.remove('actif'));
-    if (n) $(s ? '.tarifs .serie' : packs ? '.tarifs .pack' : '.tarifs .unite').classList.add('actif');
+    const reste = formule - n;
+    $('#r-note').textContent = !formule ? 'Choisissez d\'abord votre formule : 1 carte, 3 cartes ou les 9.'
+      : formule === 9 ? 'La série complète, les 9 cartes, 40 €.'
+      : reste > 0 ? (reste === formule ? `Choisissez ${formule === 1 ? 'votre carte' : 'vos 3 cartes'} dans la galerie.` : `Encore ${reste} carte${reste > 1 ? 's' : ''} à choisir.`)
+      : formule === 1 ? 'Votre carte est choisie, 6 €.' : 'Vos 3 cartes sont choisies, 15 €.';
+    document.querySelectorAll('.tarifs .tarif').forEach(el => el.setAttribute('aria-pressed', String(+el.dataset.formule === formule)));
     $('#r-liste').innerHTML = CARTES.filter(c => qte[c.k]).map(c => `<li><img src="${c.thumb}" alt="">${c.n}${qte[c.k] > 1 ? ' × ' + qte[c.k] : ''}</li>`).join('');
     // frais de port : affichés dès qu'on choisit l'envoi par la poste
     const envoi = $('#form').elements.remise.value === 'envoi', rp = $('#r-port');
@@ -87,11 +91,17 @@ const calcul = () => { const s = series(); return prix(total(), s); };
   $('#form').addEventListener('change', e => { if (e.target.name === 'remise') maj(); });
   document.addEventListener('click', e => {
     const p = e.target.closest('[data-plus]'), m = e.target.closest('[data-moins]'), v = e.target.closest('[data-voir]');
-    if (p) { qte[+p.dataset.plus]++; maj(); }
+    if (p) { if (formule && total() < formule) qte[+p.dataset.plus]++; maj(); }
     else if (m) { qte[+m.dataset.moins] = Math.max(0, qte[+m.dataset.moins] - 1); maj(); }
     else if (v) ouvre(+v.dataset.voir);
   });
-  $('#b-serie').addEventListener('click', () => { qte.fill(Math.max(1, series())); maj(); $('#participer').scrollIntoView({ behavior: calme ? 'auto' : 'smooth', block: 'start' }); });
+  // choix de la formule : les 9 remplit la série ; descendre (ou quitter la série) vide le choix ; monter le garde
+  document.querySelectorAll('.tarifs .tarif').forEach(b => b.addEventListener('click', () => {
+    const nouvelle = +b.dataset.formule;
+    if (nouvelle === 9) qte.fill(1); else if (nouvelle < total() || formule === 9) qte.fill(0);
+    formule = nouvelle; maj();
+    $(nouvelle === 9 ? '#participer' : '#galerie').scrollIntoView({ behavior: calme ? 'auto' : 'smooth', block: 'start' });
+  }));
   maj();
 
   /* ---------- formulaire ---------- */
@@ -105,7 +115,8 @@ const calcul = () => { const s = series(); return prix(total(), s); };
     ['prenom', 'nom'].forEach(k => f.elements[k].setAttribute('aria-invalid', String(!String(d[k] || '').trim())));
     f.elements.email.setAttribute('aria-invalid', String(!!email && !mailOk(email)));
     f.elements.telephone.setAttribute('aria-invalid', String(!!tel && !telOk(tel)));
-    if (!n) err.push('Choisissez au moins une carte postale : chaque carte achetée est une chance de gagner.');
+    if (!formule) err.push('Choisissez votre formule : 1 carte, 3 cartes ou les 9.');
+    else if (n !== formule) err.push(`Il manque ${formule - n} carte${formule - n > 1 ? 's' : ''} : choisissez-les dans la galerie.`);
     if (!String(d.prenom || '').trim() || !String(d.nom || '').trim()) err.push('Indiquez votre prénom et votre nom.');
     if (!email && !tel) { err.push('Indiquez un e-mail ou un numéro de téléphone, au moins l\'un des deux.'); f.elements.email.setAttribute('aria-invalid', 'true'); f.elements.telephone.setAttribute('aria-invalid', 'true'); }
     if (email && !mailOk(email)) err.push('Cet e-mail n\'a pas l\'air complet.');
@@ -160,7 +171,7 @@ const calcul = () => { const s = series(); return prix(total(), s); };
   lb.addEventListener('click', e => { if (e.target === lb) ferme(); });
   $('#lb-prec').addEventListener('click', () => va(-1));
   $('#lb-suiv').addEventListener('click', () => va(1));
-  $('#lb-ajout').addEventListener('click', e => { qte[i]++; maj(); e.currentTarget.textContent = 'Ajoutée ✓'; setTimeout(() => { e.currentTarget.textContent = 'Ajouter cette carte'; }, 1100); });
+  $('#lb-ajout').addEventListener('click', e => { if (!formule || formule === 9 || total() >= formule) return; qte[i]++; maj(); e.currentTarget.textContent = 'Ajoutée ✓'; setTimeout(() => { e.currentTarget.textContent = 'Ajouter cette carte'; }, 1100); });
   $('#img-lot').addEventListener('click', () => ouvre(0, true));
   document.addEventListener('keydown', e => { if (lb.hidden) return; if (e.key === 'Escape') ferme(); else if (e.key === 'ArrowLeft') va(-1); else if (e.key === 'ArrowRight') va(1); });
 

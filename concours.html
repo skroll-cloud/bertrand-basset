@@ -64,10 +64,11 @@
         <p class="ligne">Chaque carte postale achetée, une chance de gagner.</p>
         <p class="format">Format DL, 10 × 21 cm · finition soft touch</p>
       </div>
-      <div class="tarifs" aria-label="Les prix">
-        <p class="unite"><b>6 €</b><span>la carte</span></p>
-        <p class="pack"><b>15 €</b><span>les 3</span></p>
-        <p class="serie"><b>40 €</b><span>les 9</span><button class="btn-ligne" type="button" id="b-serie">Prendre les 9</button></p>
+      <!-- on choisit d'abord la formule (1, 3 ou 9 cartes), puis les cartes dans la galerie (Bertrand, 5 nov.) -->
+      <div class="tarifs" role="group" aria-label="Choisissez votre formule">
+        <button class="tarif unite" type="button" data-formule="1" aria-pressed="false"><b>6 €</b><span>1 carte</span></button>
+        <button class="tarif pack" type="button" data-formule="3" aria-pressed="false"><b>15 €</b><span>3 cartes</span></button>
+        <button class="tarif serie" type="button" data-formule="9" aria-pressed="false"><b>40 €</b><span>les 9 cartes</span></button>
       </div>
     </div>
 
@@ -83,7 +84,7 @@
           <p class="recap-prix" id="r-prix">0 €</p>
           <p class="recap-port" id="r-port" hidden></p>
         </div>
-        <p class="recap-note" id="r-note">Choisissez au moins une carte postale.</p>
+        <p class="recap-note" id="r-note">Choisissez d'abord votre formule : 1 carte, 3 cartes ou les 9.</p>
         <ul class="recap-liste" id="r-liste"></ul>
         <p class="aide">Retrait à Carantec du 15 décembre à fin janvier, ou envoi par la poste, 4 € de port.</p>
       </div>
