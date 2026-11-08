@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Bertrand Basset · squelette du site</title>
+<style>/* Charte : IBM Plex Sans, fond blanc, texte #111, gris #777, rouge #c41e1e, filets #111 / #ddd, largeur 1040 px */
+* { box-sizing: border-box; }
+body { margin: 0; font-family: "IBM Plex Sans", system-ui, sans-serif; font-size: 16px; line-height: 1.5; color: #111; background: #fff; }
+a { color: inherit; text-decoration: none; border-bottom: 1px solid #ddd; }
+a:hover { border-bottom-color: #c41e1e; }
+.wrap { max-width: 1040px; margin: 0 auto; padding: 0 32px; }
+header .wrap { padding-top: 24px; padding-bottom: 24px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; border-bottom: 1px solid #111; }
+.brand { font-size: 15px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; border: 0; }
+nav { display: flex; flex-wrap: wrap; gap: 20px; font-size: 13px; letter-spacing: 0.04em; }
+nav a { border: 0; padding-bottom: 2px; }
+nav a.actif { border-bottom: 2px solid #c41e1e; }
+main { padding-top: 48px; padding-bottom: 16px; }
+h1 { font-size: 28px; font-weight: 500; margin: 0; }
+.chapo { font-size: 15px; color: #777; margin: 8px 0 0; }
+.section { font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: #777; padding: 28px 0 8px; border-bottom: 1px solid #111; margin-top: 8px; }
+.row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; padding: 12px 0; border-bottom: 1px solid #ddd; }
+.row .t { font-size: 16px; }
+.row .m { font-size: 14px; color: #777; }
+.row.col { flex-direction: column; }
+.m { font-size: 14px; color: #777; }
+.grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; padding: 16px 0; }
+.ph { border: 1px dashed #ddd; padding: 28px 8px; text-align: center; font-size: 13px; color: #777; }
+.todo { color: #777; font-style: italic; }
+.todo::before { content: "["; } .todo::after { content: "]"; }
+.note { margin: 40px 0 8px; padding: 14px 16px; border: 1px solid #ddd; font-size: 13px; color: #777; }
+.note b { color: #111; font-weight: 500; }
+.note ul { margin: 6px 0 0; padding-left: 18px; }
+footer .wrap { padding-top: 40px; padding-bottom: 48px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; font-size: 13px; color: #777; border-top: 1px solid #ddd; margin-top: 40px; }
+footer .liens { display: flex; flex-wrap: wrap; gap: 16px; }
+form.contact { display: flex; flex-direction: column; gap: 12px; max-width: 520px; padding: 16px 0; }
+form.contact input, form.contact textarea { font: inherit; padding: 10px; border: 1px solid #111; border-radius: 0; }
+form.contact button { font: inherit; padding: 10px 16px; background: #111; color: #fff; border: 0; width: max-content; }
+@media (max-width: 700px) { .grid { grid-template-columns: repeat(2, 1fr); } .wrap { padding: 0 20px; } }
+
+.intro { margin: 28px 0 8px; max-width: 720px; font-size: 15px; line-height: 1.6; }
+.intro p { margin: 0 0 12px; }
+</style></head><body>
+<header><div class="wrap"><a class="brand" href="#index">Bertrand Basset</a><nav><a href="#expo">Expo</a><a href="#immersions">Immersions</a><a href="#films">Films</a><a href="#archives">Archives</a><a href="#fabrication">Fabrication</a><a href="#transmission">Transmission</a><a href="#a-propos">À propos</a></nav></div></header>
+<main class="wrap page" id="p-index" hidden>
+<h1>Bertrand Basset</h1><p class="chapo">Photographe &amp; Réalisateur · Carantec, Finistère</p>
+<div class="note" style="margin-top:28px"><b>Visuel d'accueil</b> : pas d'image dans cette version, à placer (visuel actuel du site).</div>
+<div class="section">Actualités</div>
+<div class="row"><span class="t"><a href="https://skroll.tv">Skroll</a></span><span class="m">Épinglé · un épisode chaque soir à 18 h</span></div>
+<div class="row"><span class="t"><a href="#expo">Dust'in Kolor : exposition et concours</a></span><span class="m">Épinglé · Brasserie Graphique, Carantec</span></div>
+<div class="row"><span class="t"><a href="https://vimeo.com/1192293542/57b7d733e5">Ernest L'Hour, le dernier goémonier de l'île Callot</a></span><span class="m">Musée de la Mer, Carantec, en permanence</span></div>
+<p class="m" style="margin-top:16px">En attente, hors ligne : Shōzō (studio pas sorti) · Conversations, Plougasnou (à remonter le 17 novembre).</p>
+<p style="margin-top:24px"><a href="#a-propos">En savoir plus →</a></p>
+</main>
+<main class="wrap page" id="p-expo" hidden>
+<h1>Expo</h1><p class="chapo">Du plus récent au plus ancien.</p>
+<div class="section">En cours</div>
+<div id="dustin"></div><div class="row col"><span class="t">Dust'in Kolor</span><span class="m">depuis avril 2026, jusqu'au 31 décembre 2026 · Brasserie Graphique, Carantec · naissance de la bière Photographique</span></div>
+<div class="row col"><span class="t">Le GEM s'endimanche · Vous êtes beau</span><span class="m">depuis 2024 · GEM Le Sympa, Morlaix · exposition permanente · vernissage à La Boîte à manger, SEW, 15 oct. 2024 · label Grande cause nationale 2025 (8 oct. 2025)</span></div>
+<div class="section">À venir</div>
+<div class="row"><span class="t"><a href="#serie-conversations">Conversations</a></span><span class="m">17 nov. 2026 - 2 janv. 2027 · Médiathèque Michel Le Bris, Plougasnou · vernissage le 26 nov. à 17 h <span class="todo">à confirmer</span></span></div>
+<div class="row"><span class="t">L'EHPAD Patrouille</span><span class="m">18 mars - 21 avril 2027 · Espace Roudour</span></div>
+<div class="section">Passées</div>
+<div class="row"><span class="t">Lumière lente, sortie d'atelier · exposition collective, sept artistes</span><span class="m">12-21 juin 2026 · Galerie LC (Catherine Marghieri et Loïk Corre), Carantec</span></div>
+<div class="row col"><span class="t">Portraits croisés, photographiques et peints · Carré d'As</span><span class="m">été 2024 · 18 portraits · centre social Carré d'As, plateau Nord-Est, Morlaix · avec le peintre Christophe Pelletier</span></div>
+<div class="section">Presse</div>
+<div class="row"><span class="t"><a href="https://www.letelegramme.fr/finistere/carantec-29660/carantec-celebre-la-photographie-avec-sept-artistes-7062171.php">Carantec célèbre la photographie avec sept artistes</a></span><span class="m">Le Télégramme · 11 juin 2026</span></div>
+<div class="row"><span class="t"><a href="https://www.ouest-france.fr/bretagne/carantec-29660/creer-aujourdhui-les-archives-de-demain-lambition-de-bertrand-basset-artiste-finisterien-d7344d5e-5681-11f1-8fb2-d4cef07cd2eb">« Créer aujourd'hui les archives de demain » : l'ambition de Bertrand Basset</a></span><span class="m">Ouest-France · 25 mai 2026</span></div>
+<div class="row"><span class="t"><a href="https://www.letelegramme.fr/finistere/carantec-29660/une-exposition-et-une-nouvelle-biere-a-la-brasserie-graphique-de-carantec-7029781.php">Une exposition et une nouvelle bière à la Brasserie Graphique</a></span><span class="m">Le Télégramme · 20 avril 2026</span></div>
+<div class="row"><span class="t"><a href="https://www.letelegramme.fr/finistere/plougasnou-29630/a-plougasnou-les-acteurs-de-la-mediatheque-immortalises-en-photos-6995902.php">À Plougasnou, les acteurs de la médiathèque immortalisés en photos</a></span><span class="m">Le Télégramme · 3 mars 2026</span></div>
+<div class="row"><span class="t"><a href="https://www.ouest-france.fr/bretagne/morlaix-29600/ca-prend-aux-tripes-a-morlaix-les-adherents-du-groupe-dentraide-mutuelle-sublimes-en-photos-6ed27e00-8c59-11ef-8941-5d7a93e1e368">« Ça prend aux tripes » : les adhérents du GEM sublimés en photos</a></span><span class="m">Ouest-France · 23 oct. 2024</span></div>
+<div class="row"><span class="t"><a href="https://www.letelegramme.fr/finistere/morlaix-29600/a-morlaix-la-boite-a-manger-au-sew-accueillera-une-exposition-de-portraits-autour-de-lestime-de-soi-6679324.php">La Boîte à manger au Sew accueillera une exposition de portraits autour de l'estime de soi</a></span><span class="m">Le Télégramme · 10 oct. 2024</span></div>
+<div class="row"><span class="t"><a href="https://www.letelegramme.fr/finistere/morlaix-29600/18-portraits-dhabitants-exposes-a-carre-das-a-morlaix-6613311.php">18 portraits d'habitants exposés à Carré d'As</a></span><span class="m">Le Télégramme · 27 juin 2024</span></div>
+<div class="row"><span class="t"><a href="https://www.letelegramme.fr/finistere/morlaix-29600/vous-etes-belle-a-morlaix-un-photographe-sublime-des-personnes-atteintes-de-souffrances-psychiques-6603841.php">« Vous êtes belle ! » : un photographe sublime des personnes atteintes de souffrances psychiques</a></span><span class="m">Le Télégramme · 13 juin 2024</span></div>
+<div class="note"><b>Pour compléter cette maquette</b><ul><li>Lumière lente : pas d'image pour l'instant (choix du 5 nov.).</li><li>Conversations : vernissage du 26 nov. à confirmer ; textes et partenaires à fournir.</li><li>L'EHPAD Patrouille : visuels à rattacher (portraits studio, immersion N&B, démarche).</li></ul></div>
+</main>
+<main class="wrap page" id="p-serie-conversations" hidden>
+<h1>Conversations</h1><p class="chapo">Série · 2026 · Médiathèque Michel Le Bris, Plougasnou · exposition du 17 novembre au 2 janvier</p>
+<div class="note" style="margin-top:28px"><b>Image d'ouverture</b> : pas d'image dans cette version.</div>
+<div class="section">Texte</div>
+<div class="row"><span class="t">Le point de départ.</span><span class="m"><span class="todo">texte</span></span></div>
+<div class="row"><span class="t">Ce que j'ai fait.</span><span class="m"><span class="todo">texte</span></span></div>
+<div class="row"><span class="t">Ce que c'est devenu.</span><span class="m"><span class="todo">texte</span></span></div>
+<div class="section">Presse</div>
+<div class="row"><span class="t">Titres et liens</span><span class="m"><span class="todo">à lister</span></span></div>
+<div class="section">Partenaires</div>
+<div class="row"><span class="t">Partenaires</span><span class="m"><span class="todo">à lister</span></span></div>
+<div class="section">Les huit portraits</div>
+<div class="grid"><div class="ph">Armand · La folie des grandeurs</div><div class="ph">Elsa · 7ème mois</div><div class="ph">Gwenn · Lecture du soir</div><div class="ph">Jonathan · Florent</div><div class="ph">Margaux · Souvenirs, souvenirs</div><div class="ph">Ricardo · Conversation</div><div class="ph">Virginie · Renaissance</div><div class="ph">Yolande · Le chant des possibles</div></div>
+<p class="m"><a href="#expo">← Expo</a></p>
+</main>
+<main class="wrap page" id="p-immersions" hidden>
+<h1>Immersions</h1><p class="chapo">Photographie.</p>
+<div class="section">Immersion documentaire</div>
+<div class="row col"><span class="t">EHPAD Saint-Mélar, Lanmeur</span><span class="m">2023-2025 · Pendant une semaine, j'ai pris une chambre à l'EHPAD de Lanmeur, dans la résidence Saint-Mélar. Résidence documentaire photographique et sonore : 10 portraits et podcasts de salariés ; le visible et l'invisible, l'utile et l'inutile dans les métiers de soignants et d'aidants · DRAC Bretagne, Région Bretagne · <span class="todo">ton texte exact : à confirmer</span></span></div>
+<div class="row"><span class="t">Burning Man</span><span class="m">2016 · série reportage · Nevada · immersion de 15 jours dans la Temple Crew, avant et pendant le festival ; série artistique « Kolor » (traitement monochromatique coloré)</span></div>
+<div class="row"><span class="t">Temple Crew</span><span class="m">2016 · série photo · 15 jours dans l'équipe du Temple, Burning Man</span></div>
+<div class="section">Reportage artistique [nom à trancher]</div>
+<div class="row col"><span class="t">Compagnies de théâtre</span><span class="m">Train Fatal · Juste Après · La Régal Compagnie · La Grande Parade · Derezo</span></div>
+<div class="row col"><span class="t">Making-of de films</span><span class="m">Les Nouveaux Westerns · Danse Poussin · Jusqu'à ce que la mort nous sépare</span></div>
+<p class="m" style="margin-top:16px">Option : un seul portfolio d'images, tout mélangé, à la place des deux lignes. En attente, hors ligne : Commande (Portrait métier → Shōzō).</p>
+<div class="note"><b>Pour compléter cette maquette</b><ul><li>Texte de l'EHPAD Saint-Mélar : la phrase vient de ta dictée ; ton texte écrit n'est dans aucun fichier de old (seul reste l'ancien sous-titre « Une semaine en résidence »). À remplacer si tu le retrouves.</li><li>Majorette et La Grande Parade sont deux choses différentes : seule La Grande Parade est placée ici (Majorette = spectacle de fin de journée de la Grande Parade, plutôt reportage photo).</li><li>Nom de la section « reportage artistique » à trancher.</li><li>Train Fatal : 124 images à réduire. Temple Crew : 35 images à répartir avec Burning Man.</li><li>Pièces non trouvées : Nouveaux Westerns, Danse Poussin, Jusqu'à ce que la mort nous sépare.</li></ul></div>
+</main>
+<main class="wrap page" id="p-films" hidden>
+<h1>Films</h1><p class="chapo">Auteur-réalisateur. Du plus récent au plus ancien.</p>
+<div class="section">Fiction</div>
+<div class="row col"><span class="t"><a href="https://vimeo.com/390539243">J'arrive</a></span><span class="m">2020 · court métrage de fiction, 14 min · écrit, réalisé et post-produit par Bertrand Basset (direction de post-production), entièrement dans la baie de Morlaix · avec Christian Bouillette et Capucine Lespinas · Respiro Productions (Amélie Quéret), Abordage Films, All In One · distribution Manifest Pictures · tourné à Plougonven en novembre 2019 · après 65 ans de mariage, Hubert se retrouve seul le jour de la mort de Mamie ; sa petite-fille Léonie arrive pour l'aider ; oppressés par les adultes qui s'affairent, la meilleure idée est peut-être d'ouvrir un whisky hors d'âge</span></div>
+<div class="section">Télévision</div>
+<div class="row"><span class="t">Bionico · L'homme bionique</span><span class="m">2020 · 30 min · Auxyma · France 2, 13H15, 13 juin 2020</span></div>
+<div class="row"><span class="t">Armel Le Cléac'h · Passion Globe / À l'assaut des flots</span><span class="m">2017, diffusé 2019 · 26-30 min · Waymell · France 2, 13H15</span></div>
+<div class="row"><span class="t">Les hommes du commando Kieffer</span><span class="m">2014 · 40 min · France 2, 13H15 · rediffusé le 2 juin 2024</span></div>
+<div class="row"><span class="t">À vos postes ! L'arrivée de la télévision en France (1950-1968)</span><span class="m">2014 · 40 min · France 2, 13H15</span></div>
+<div class="section">Documentaire</div>
+<div class="row"><span class="t">Un Zèbre dans le Kreiz Breizh · DJ Zebra et le Bagad de Carhaix</span><span class="m">2013, tourné 2011 · 52 min · Sombrero &amp; Co, CNC · TV Rennes · avant-première à La Salamandre, 29 juillet 2022</span></div>
+<div class="section">En écriture</div>
+<div class="row"><span class="t">Ordure</span><span class="m">long métrage · auteur · en écriture (2024) · accompagnement Puissance et Âme, Groupe Ouest</span></div>
+<div class="row"><span class="t">Kapo</span><span class="m">court métrage <span class="todo">pas d'information dans les sources</span></span></div>
+<div class="row"><span class="t">Des grumeaux dans la pâte à crêpes</span><span class="m">unitaire TV 52 min · co-écriture avec Christophe Lemoine · en développement (2023), déposé à l'appel à projets COM Breton</span></div>
+<div class="section">Distinctions · J'arrive</div>
+<div class="row col"><span class="t">Prix (10)</span><span class="m">Prix du public, Nuit des courts métrages français, Los Angeles (15 février 2021) · Prix du Jury Jeune, Vannes · Prix du public, Vivarais · Prix coup de cœur, Huellas · Prix des étudiants, Les Œillades d'Albi · Best narrative, Short to the point (Roumanie) · Meilleur court métrage de fiction, Festifrance (Brésil) · Meilleure direction de la photographie et mention, Life Beyond Life, Turin · Most Web Short Film, Ortigia (Italie) · Prix de la meilleure histoire, Gbiennale, Sydney</span></div>
+<div class="row col"><span class="t">Sélections (32 dont les 10 prix)</span><span class="m">Clermont-Ferrand « Court en musique » · Eurydice · Un Poing c'est Court · Lublin · Tirana · Micro μ · Courts en Hiver · Alès Itinérances · Festival du film social · Clap 89 · Vébron · Des Courts en Fête · Pontault-Combault · Filmmaker Day, Turin · Théâtre Raymond Kabbaz, Los Angeles · Filmets, Barcelone · Rhode Island · Slemani (Irak) · Nizhny Novgorod · Moscou · Ingré 2022 · Fabriano 2023 · <span class="todo">le CV annonce 40 sélections et 20 prix : suite à compléter</span></span></div>
+<div class="section">Formations et accompagnements</div>
+<div class="row"><span class="t">Workshop LESS IS MORE</span><span class="m">2020 · Groupe Ouest</span></div>
+<div class="row"><span class="t">Lauréat du concours de scénario ESTRAN 7</span><span class="m">2019 · Films en Bretagne · accompagnement Groupe Ouest Développement</span></div>
+<div class="row"><span class="t">Production de fiction courte</span><span class="m">2015 · Films en Bretagne · 3 semaines</span></div>
+<div class="row"><span class="t">Étalonneur numérique sur DaVinci Resolve</span><span class="m">2015 · Vidéo Design / Courts On · 3 semaines</span></div>
+<div class="row"><span class="t">Éclairer pour le documentaire</span><span class="m">2012 · INA Formation</span></div>
+<div class="row"><span class="t"><span class="todo">autres sessions Groupe Ouest, INA</span></span><span class="m"><span class="todo">à lister</span></span></div>
+<div class="section">Presse</div>
+<div class="row"><span class="t"><a href="https://www.ouest-france.fr/bretagne/morlaix-29600/ils-creent-le-festival-du-film-foufou-a-morlaix-pour-decouvrir-des-uvres-decalees-0c0d8788-1097-11f1-9845-ccef30d01a54">Ils créent le Festival du film foufou à Morlaix</a></span><span class="m">Ouest-France · 24 fév. 2026</span></div>
+<div class="row"><span class="t"><a href="https://www.ouest-france.fr/d-day/histoire-du-debarquement/un-documentaire-sur-les-premiers-et-les-seuls-francais-a-avoir-foule-les-plages-du-debarquement-cc696512-1f56-11ef-a85f-954c5336befa">Un documentaire sur les premiers et les seuls Français à avoir foulé les plages du Débarquement</a></span><span class="m">Ouest-France · 1er juin 2024</span></div>
+<div class="row"><span class="t"><a href="https://www.letelegramme.fr/finistere/morlaix-29600/a-morlaix-l-avant-premiere-du-film-un-zebre-dans-le-kreiz-breizh-se-tiendra-vendredi-au-cinema-la-salamandre-300826.php">L'avant-première du film « Un Zèbre dans le Kreiz Breizh »</a></span><span class="m">Le Télégramme · 25 juil. 2022</span></div>
+<div class="row"><span class="t"><a href="https://www.ouest-france.fr/bretagne/morlaix-29600/morlaix-bertrand-basset-rafle-plusieurs-prix-a-l-international-704e2df4-fc53-11eb-ae94-ce48edfb62e2">Bertrand Basset rafle plusieurs prix à l'international</a></span><span class="m">Ouest-France · 14 août 2021</span></div>
+<div class="row"><span class="t"><a href="https://www.ouest-france.fr/bretagne/carantec-29660/finistere-un-realisateur-de-carantec-prime-par-le-festival-du-court-francais-a-los-angeles-7157940">Un réalisateur de Carantec primé par le festival du court français à Los Angeles</a></span><span class="m">Ouest-France · 17 fév. 2021</span></div>
+<div class="row"><span class="t"><a href="https://www.letelegramme.fr/finistere/morlaix-29600/festival-du-court-metrage-de-los-angeles-et-le-gagnant-est-jarrive-de-bertrand-basset-3758734.php">Et le gagnant est… « J'arrive » de Bertrand Basset !</a></span><span class="m">Le Télégramme · 16 fév. 2021</span></div>
+<div class="row"><span class="t"><a href="https://www.letelegramme.fr/finistere/morlaix-29600/un-court-metrage-100-pays-de-morlaix-3754552.php">Un court-métrage 100 % pays de Morlaix</a></span><span class="m">Le Télégramme · 4 fév. 2021</span></div>
+<div class="row"><span class="t"><a href="https://www.ouest-france.fr/bretagne/morlaix-29600/television-bertrand-basset-raconte-lhistoire-de-nicolas-huchet-lhomme-bionique-6867687">Bertrand Basset raconte l'histoire de Nicolas Huchet, L'homme bionique</a></span><span class="m">Ouest-France · 13 juin 2020</span></div>
+<div class="row"><span class="t"><a href="https://www.letelegramme.fr/finistere/morlaix-29600/un-court-metrage-100-morlaisien-a-la-salamandre-3613147.php">Un court-métrage 100 % morlaisien à La Salamandre</a></span><span class="m">Le Télégramme · 14 fév. 2020</span></div>
+<div class="row"><span class="t"><a href="https://www.ouest-france.fr/bretagne/plougonven-29640/plougonven-j-arrive-un-court-metrage-dans-le-pays-de-morlaix-6638075">J'arrive, un court-métrage dans le pays de Morlaix</a></span><span class="m">Ouest-France · 4 déc. 2019</span></div>
+<div class="row"><span class="t"><a href="https://www.letelegramme.fr/t-plus/film-du-documentaire-a-la-fiction-itineraire-d-un-realisateur-99859.php">Du documentaire à la fiction, itinéraire d'un réalisateur</a></span><span class="m">Le Télégramme · 18 déc. 2018</span></div>
+<div class="note"><b>Pour compléter cette maquette</b><ul><li>Plougonven : à clarifier (fiction).</li><li>Textes « en écriture » (Ordure, Kapo, Des grumeaux).</li><li>Distinctions de J'arrive : 8 sélections et 10 prix manquent par rapport au CV.</li><li>Liens Vimeo/YouTube : seul J'arrive est placé ici ; les autres films n'ont pas de lien.</li></ul></div>
+</main>
+<main class="wrap page" id="p-archives" hidden>
+<h1>Archives</h1><p class="chapo">Du plus récent au plus ancien.</p>
+<div class="intro"><p>J'ai commencé par les archives. D'abord comme recherchiste à l'INA, puis documentaliste de « Mon Œil », la satire politique et médiatique de France 2, et de l'émission 13H15, où je préparais les documentaires politiques et surtout historiques.</p><p>Puis sont venus les portraits : ceux des invités du 20H30 du dimanche (Jean Rochefort et tous les autres), réalisés à partir d'archives INA. Le concept : ne pas tourner d'images, mais portraitiser les gens par leur empreinte médiatique.</p><p>J'ai ensuite proposé à la rédaction du 13H15 des sujets historiques plus longs, le samedi et le dimanche : l'arrivée de la télévision en France (40 minutes sur les débuts de la RTF, des années 1950 aux années 1960), puis un documentaire sur le commando Kieffer, portrait croisé de trois anciens commandos du 6 juin 1944 encore capables de raconter leur histoire, entremêlé d'archives de la guerre et de l'après-guerre (Pathé, Imperial War Museum, INA, ECPAD).</p><p>Cela m'a conduit à réaliser des films de musée à partir d'archives et d'entretiens, comme « Ernest L'Hour, le dernier goémonier de l'île Callot », diffusé au musée de Carantec (entretien et archives de la Cinémathèque de Bretagne). Puis à proposer à la Cinémathèque de Bretagne, avec Pierre-Emmanuel Urcun et Sébastien Cassen, un programme court de détournement d'archives : des résidences d'écriture autour d'un stock d'archives ont donné Skroll, produit par Stank et la Cinémathèque de Bretagne, avec le soutien de la Région Bretagne.</p><p class="m"><span class="todo">texte dicté le 8 nov., mis en forme sans changer le sens : à relire. Noms à vérifier : Urcun / Urquin.</span></p></div>
+<div class="row col"><span class="t"><a href="https://skroll.tv">Skroll</a></span><span class="m">2025-2026 · programme court de détournement des archives de la Cinémathèque de Bretagne · écriture, réalisation, diffusion · avec Sébastien Cassen et Pierre-Emmanuel Urcun · production Stank, FACCA innovation-recherche · un épisode chaque soir à 18 h</span></div>
+<div class="row col"><span class="t"><a href="https://vimeo.com/1192293542/57b7d733e5">Ernest L'Hour, le dernier goémonier de l'île Callot</a></span><span class="m">2025 · 6-7 min · entretien et archives de la Cinémathèque de Bretagne · Musée de la Mer de Carantec</span></div>
+<div class="row col"><span class="t">À vos postes ! L'arrivée de la télévision en France (1950-1968)</span><span class="m">2014 · 40 min · France 2</span></div>
+<div class="row col"><span class="t">Les hommes du commando Kieffer</span><span class="m">2014 · 40 min · archives Pathé, INA · France 2</span></div>
+<div class="row col"><span class="t"><a href="https://vimeo.com/237381173/1595582296">Portraits des invités du 20H30 le dimanche</a></span><span class="m">2013-2017 · 2 min · 100 % archives INA · Jean Rochefort, Woody Allen, Muriel Robin, Philippe Bouvard, José Garcia, Daniel Cohn-Bendit, Marc Levy, Claude Lelouch, Patrick Buisson, Aurélie Filippetti, Bruel…</span></div>
+<div class="row col"><span class="t">Sujets politiques et magazines du 13H15</span><span class="m">2011-2014 · France 2 · crise de l'UMP, portrait de Patrick Buisson, élection UMP, zapping de campagne, semaine du web ; films historiques de 40 minutes ; sujets magazines</span></div>
+<div class="row col"><span class="t">France 2 · documentaliste politique et historique</span><span class="m">2011-2012 · documentaires du 13H15 le dimanche : L'Enfer de Matignon, portrait de Georges Marchais, Pompidou, VGE</span></div>
+<div class="row col"><span class="t"><a href="https://www.dailymotion.com/video/xb2fu9">France 2 · Mon Œil, avec Michel Mompontet</a></span><span class="m">2009-2012 · chronique satirique du 13H15 · 209 numéros · assistant réalisateur, documentaliste, archiviste, recherche d'images (INA, Reuters, Pathé, AFP, web)</span></div>
+<p class="m" style="margin-top:16px">En attente, hors ligne : Les Madeleines de Ploucs (pas sorties). Retirés : Marcel Le Normand (→ Fabrication), Memoria et l'offre Mémoire (→ Shōzō).</p>
+</main>
+<main class="wrap page" id="p-fabrication" hidden>
+<h1>Fabrication</h1><p class="chapo">Source : CV complet 2026. Du plus récent au plus ancien.</p>
+<div class="section">Étalonnage</div>
+<div class="row"><span class="t">Le syndrome de l'escalier · court métrage</span><span class="m">2025 · réalisation Sylvain Bresson · production Le Petit Remorqueur</span></div>
+<div class="row"><span class="t">Fait d'amour · court métrage</span><span class="m">2024 · réalisation Clémence Dirmeikis · production Respiro Production</span></div>
+<div class="row"><span class="t">Doc Littoral, version subaquatique</span><span class="m">2024-2025 · Yellow Shoes Studio, label Mer en commun</span></div>
+<div class="row"><span class="t">Rio Rojo · documentaire</span><span class="m">2023 · réalisation Guillermo Quintero · production Stank et Roméo</span></div>
+<div class="row"><span class="t">Baradoz · documentaire</span><span class="m">2023 · réalisation Hervé Beau · production Vidémo</span></div>
+<div class="row"><span class="t">Les oubliés de l'île · documentaire</span><span class="m">2023 · réalisation Sébastien Cassen · production Saison Cinq</span></div>
+<div class="row"><span class="t">Littoral · émission de la Fête maritime de Brest</span><span class="m">France 3 Bretagne</span></div>
+<div class="row"><span class="t"><a href="https://vimeo.com/390539243">J'arrive · court métrage</a></span><span class="m">2020 · réalisation Bertrand Basset · production Respiro Production</span></div>
+<div class="row"><span class="t">Poison Lune · court métrage</span><span class="m">réalisation Sébastien Cassen · production One Again et Ribin'Lab</span></div>
+<div class="row"><span class="t">Le petit Tailleur · court métrage</span><span class="m">réalisation Léo Dazin · production Equinok Films, Courts en Betton, Ribin'Lab</span></div>
+<div class="row"><span class="t">The Beach · court métrage</span><span class="m">2016 · réalisation Fanny Fallourd · production Ribin'Lab</span></div>
+<div class="row"><span class="t">La presqu'île aux trésors · institutionnel</span><span class="m">mairie de Plougastel-Daoulas · production Vidémo</span></div>
+<div class="row col"><span class="t">Prestataire étalonnage du COM Breton</span><span class="m">2014-2024 · nombreux courts métrages, clips, documentaires et films institutionnels · Yellow Shoes Studio</span></div>
+<div class="section">Étalonnage · clips</div>
+<div class="row"><span class="t">Reinz · 29200</span><span class="m">réalisation Pierre-Alphonse Hamman · Les Films de Rita et Marcel / La Même Prod</span></div>
+<div class="row"><span class="t">François Joncour · Sonar Tape</span><span class="m">réalisation Pit Hamman · Les Films de Rita et Marcel / La Même Prod</span></div>
+<div class="row"><span class="t">La Bête · Danse, danse</span><span class="m">réalisation Léo Dazin</span></div>
+<div class="row"><span class="t">Don Gabo · Boule Dégommé</span><span class="m">réalisation Pit Hamman · Les Films de Rita et Marcel / La Même Prod</span></div>
+<div class="row"><span class="t">Mineson Williams · Batucada</span><span class="m">réalisation <span class="todo">à retrouver</span></span></div>
+<div class="row"><span class="t">Reinz · Un peu de peine · autres clips</span><span class="m">réalisation <span class="todo">à retrouver</span></span></div>
+<div class="section">Direction de post-production</div>
+<div class="row col"><span class="t">Fait d'amour</span><span class="m">2024 · Clémence Dirmeikis · Respiro · montage, post-production complète, versions multiples</span></div>
+<div class="row"><span class="t">Bionico</span><span class="m">2020 · Auxyma · montage et direction de post-production</span></div>
+<div class="row"><span class="t"><a href="https://vimeo.com/390539243">J'arrive</a></span><span class="m">2020 · Respiro Productions · montage et direction de post-production</span></div>
+<div class="section">Montage (chef monteur)</div>
+<div class="row col"><span class="t">Fait d'amour · court métrage</span><span class="m">2024 · réalisation Clémence Dirmeikis · production Respiro Production · montage et post-production complète, versions multiples, étalonnage</span></div>
+<div class="row col"><span class="t">Jusqu'à ce que la mort nous sépare · court métrage</span><span class="m">2015-2016 · réalisation Germain Huard · production 1001 Films / Films en Bretagne, dispositif Estran · Avid, workflow RED 4K Raw, étalonnage</span></div>
+<div class="row"><span class="t">The Beach · court métrage</span><span class="m">2016 · réalisation Fanny Fallourd · production Ribin'Lab · montage, étalonnage, production</span></div>
+<div class="row col"><span class="t">J'arrive · Bionico</span><span class="m">2020-2022 · réalisation Bertrand Basset · Respiro / Auxyma · montage et direction de post-production</span></div>
+<div class="section">Commande · films</div>
+<div class="row"><span class="t"><a href="https://vimeo.com/1192293542/57b7d733e5">Ernest L'Hour, le dernier goémonier</a></span><span class="m">2025 · Musée de la Mer de Carantec · Yellow Shoes Studio</span></div>
+<div class="row"><span class="t">Marcel Le Normand</span><span class="m">film mémoire, 2024 · Yellow Shoes Studio</span></div>
+<div class="row col"><span class="t">Films d'entreprise</span><span class="m">Le Lavandier · Cquoicoquillage · Cozsmesoignons (2023) · MHK Sarah · Meche Argile / Bulbenn · Pad Kig · Notre-Dame de Lourdes · Saint-Joseph · film territoire Lanmeur · ECAM (2018, 2021) · CCI Morlaix · Orchestre Symphonique de Bretagne (2015) · Morlaix Communauté · MX CO Tiers-lieu (2021) · SAMSAH (2016) · SEW (2016) · Assises de la sécurité, Monaco (2017)</span></div>
+<div class="row"><span class="t">Viens dans ma boîte</span><span class="m">2018-2020 · 30 épisodes · conception, direction artistique · Pays de Morlaix</span></div>
+<div class="row"><span class="t">10 films touristiques Baie de Morlaix · Osez le Kig</span><span class="m">2018 · scénariste-réalisateur, motion design · Trophée de la communication</span></div>
+<div class="row"><span class="t"><a href="https://www.youtube.com/watch?v=O5iTddsVMyA">Films touristiques Mont d'Arrée</a></span><span class="m">road-trip dans les Monts d'Arrée</span></div>
+<div class="row"><span class="t">Films de formation, lycées pro sanitaire et social</span><span class="m">CAP AEPE, CAP EPC, Bac Pro ASSP, Bac Pro Vente, AEPA</span></div>
+<div class="row"><span class="t">Publicité TV « 100 jours pour entreprendre »</span><span class="m">2015 · scénario · chaîne nationale</span></div>
+<div class="row"><span class="t">Making-of de tournages publicitaires</span><span class="m">Duck Factory, 2015</span></div>
+<div class="row"><span class="t">100 ans de course automobile · film d'archives</span><span class="m">2012 · 52 min · FIA · réalisation collective, réalisateur-monteur</span></div>
+<div class="row"><span class="t">Motion design et animations</span><span class="m">Com'exposium, OSB, SEW, agences et start-up</span></div>
+<div class="section">Clips musicaux · réalisation</div>
+<div class="row"><span class="t"><a href="https://www.youtube.com/watch?v=yrEFAC0SkO8">Republik &amp; James Chance · Ich Bin Schmutzig</a></span><span class="m">avec Frank Darcel</span></div>
+<div class="row"><span class="t"><a href="https://vimeo.com/1053545674">Mr Leo · Sur la chaise</a></span></div>
+<div class="row"><span class="t">Émélie et Érelle</span></div>
+<div class="row"><span class="t"><a href="https://vimeo.com/220673001">Leyto</a></span><span class="m">1 jour avec : Leyto, pilote de série 2017</span></div>
+<div class="row"><span class="t">Zone Libre</span></div>
+<div class="row"><span class="t">OSB</span></div>
+<div class="row"><span class="t">Captations de concerts, portraits de musiciens</span><span class="m">Citizen Jazz · Jazz à Luz 2010</span></div>
+<div class="section">Chef opérateur</div>
+<div class="row col"><span class="t"><a href="https://www.youtube.com/watch?v=Fj8JcmKI0Iw">The Temple · web-documentaire</a></span><span class="m">8 x 6 min, 2016 · réalisation Laurent Le Gall · IRL / Nouvelles écritures France Télévisions</span></div>
+<div class="section">Co-productions Ribin'Lab</div>
+<div class="row"><span class="t">Le petit Tailleur</span><span class="m">réalisation Léo Dazin</span></div>
+<div class="row"><span class="t">The Beach</span><span class="m">réalisation Fanny Fallourd</span></div>
+<div class="row"><span class="t">Poison Lune</span><span class="m">réalisation Sébastien Cassen</span></div>
+<div class="row"><span class="t">Vidéoscopium</span><span class="m">réalisation Anthony Santoro</span></div>
+<div class="note"><b>Pour compléter cette maquette</b><ul><li>Données reprises du CV complet 2026 (tableaux Montage et Étalonnage) : réalisateur, production et année pour chaque film.</li><li>Liens YouTube / Vimeo : seuls ceux déjà connus sont placés ; Bertrand fournira les autres.</li><li>Les masters ne seront pas sur le site (trop lourds) : liens vers les films.</li></ul></div>
+</main>
+<main class="wrap page" id="p-transmission" hidden>
+<h1>Transmission</h1><p class="chapo"><span class="todo">titre à fixer : Transmission / Formation / Éducation à l'image</span> · Source : CV complet 2026</p>
+<div class="section">Formateur et intervenant (depuis 2015)</div>
+<div class="row"><span class="t">IUT de Morlaix</span><span class="m">art : management de projet</span></div>
+<div class="row"><span class="t">BTS Audiovisuel option montage, Lesneven</span><span class="m">étalonnage, DaVinci Resolve, PCP, montage, film de fin d'année</span></div>
+<div class="row"><span class="t">IUT Journalisme de Lannion</span><span class="m">éducation à l'image</span></div>
+<div class="row"><span class="t">MJC, UFFEJ / ARTE</span><span class="m">éducation à l'image et aux médias</span></div>
+<div class="row"><span class="t">Lycée de Morlaix, lycée et collège</span><span class="m">médias et métiers de l'information et de la communication</span></div>
+<div class="row"><span class="t">Formation professionnelle « production de fiction courte »</span><span class="m">3 semaines : scénario, production, juridique, financier</span></div>
+<div class="row"><span class="t">Ribin'Lab</span><span class="m">formation à l'éducation à l'image, accompagnement de premiers films</span></div>
+<div class="row"><span class="t">IUT GACO</span><span class="m">management de projet créatif</span></div>
+<div class="row col"><span class="t">Collège Saint-Augustin, Morlaix</span><span class="m">25 février 2022 · projection de J'arrive devant les élèves de 3e, suivie d'un échange · <a href="https://www.ecmorlaix.fr/actualites/college-st-augustin-bertrand-basset-invite-par-les-3emes/">article du collège</a></span></div>
+<div class="section">Projets d'éducation à l'image</div>
+<div class="row"><span class="t">Ribin'Lab · président fondateur</span><span class="m">2016-2022 · laboratoire de réalisation et d'écriture, premiers films, studio partagé à Lanmeur · réseau RAPACE, 53 associations, 30 films aidés par an</span></div>
+<div class="row"><span class="t">La Maison de l'Image, Pays de Morlaix</span><span class="m">2017-2020 · lieu ressource éducation aux médias · incubateur ESS TAG 29 / ADESS</span></div>
+<div class="row"><span class="t">Vous êtes beau</span><span class="m">2024 · avec des étudiantes de l'IUT de Morlaix · Master gestion de projets artistiques et culturels</span></div>
+<div class="row"><span class="t">Animateur et chef de camps</span><span class="m">1998-2002 · adolescents, France et étranger</span></div>
+<div class="section">Engagements</div>
+<div class="row"><span class="t">Cinéma La Salamandre, Morlaix · co-président</span><span class="m">2019-2026 · passage de 1 à 3 salles, 15 salariés</span></div>
+<div class="row"><span class="t">SEW, Manufacture des tabacs, Morlaix · co-président</span><span class="m">2019-2026</span></div>
+<div class="row"><span class="t">Films en Bretagne · bureau, trésorier, collège auteurs-réalisateurs</span><span class="m">2021-2022 · négociation COM et FACCA avec la Région</span></div>
+<div class="row"><span class="t">KUB · conseil d'administration</span><span class="m">2015-2016</span></div>
+<div class="row"><span class="t">GEM Le Sympa · partenaire créatif</span><span class="m">depuis 2024</span></div>
+<div class="row"><span class="t">Doc à Billy · trésorier</span><span class="m">2003-2005</span></div>
+<p class="m" style="margin-top:16px"><span class="todo">garder cette section sur le site ? à décider</span></p>
+<div class="note"><b>Pour compléter cette maquette</b><ul><li>Articles sur les projections à la MJC pour Ribin'Lab et le workshop d'écriture de série avec Arte (SEW) : à fournir.</li><li>Pistes de profil à confirmer : co-écriture de Canal 88 (avec Anthony Santoro).</li></ul></div>
+</main>
+<main class="wrap page" id="p-a-propos" hidden>
+<h1>À propos</h1>
+<div class="section">Démarche</div>
+<div class="row"><span class="t"><span class="todo">ton texte, à choisir dans le doc</span></span></div>
+<div class="section">Biographie</div>
+<div class="row"><span class="t"><span class="todo">ta bio</span></span></div>
+<p class="m" style="margin-top:16px">Le parcours complet est sur <a href="https://www.linkedin.com/in/bertrand-basset-359790b3/">LinkedIn</a>.</p>
+<div class="note"><b>Portrait</b> : pas d'image dans cette version.</div>
+<div class="section">Lexique</div>
+<div class="row"><span class="t">Lumière lente</span></div>
+<div class="row"><span class="t">La conversation</span></div>
+<div class="row"><span class="t">Notre C</span></div>
+<div class="row"><span class="t">S'endimancher</span></div>
+<div class="row"><span class="t">Sortie d'atelier</span></div>
+<div id="ecrire"></div><div class="section">Écrire</div>
+<form class="contact" onsubmit="return false"><input placeholder="Nom"><input type="email" placeholder="E-mail"><textarea rows="5" placeholder="Message"></textarea><button type="button">Envoyer</button></form>
+<p class="m">Formulaire de maquette : non branché.</p>
+</main>
+<footer><div class="wrap"><span>Bertrand Basset · Photographe &amp; Réalisateur · Carantec</span><span class="liens"><a href="https://www.instagram.com/">Instagram</a><a href="https://www.linkedin.com/in/bertrand-basset-359790b3/">LinkedIn</a><a href="https://www.youtube.com/@bertrandbasset">YouTube</a><a href="https://vimeo.com/bertrandbasset">Vimeo</a><a href="#a-propos">Contact</a><a href="#">Mentions légales</a></span></div></footer>
+<script>
+var nav={'serie-conversations':'expo'};
+function go(){var h=(location.hash||'#index').slice(1);if(!document.getElementById('p-'+h))h='index';
+document.querySelectorAll('.page').forEach(function(e){e.hidden=e.id!=='p-'+h});
+var a=nav[h]||h;document.querySelectorAll('header nav a').forEach(function(l){l.classList.toggle('actif',l.getAttribute('href')==='#'+a)});
+window.scrollTo(0,0)}
+addEventListener('hashchange',go);go();</script></body></html>
