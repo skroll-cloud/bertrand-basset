@@ -1,4 +1,4 @@
-/* lecteur de série : une image / mosaïque, fond clair / sombre, flèches, clic sur l'image, audio si l'entretien existe */
+/* lecteur de série : une image à la fois, flèches, clic sur l'image, audio si l'entretien existe */
 (function(){
 var D=JSON.parse(document.getElementById('serie-data').textContent),i=0,mode='un';
 var st=document.getElementById('stage'),img=document.getElementById('img'),cap=document.getElementById('cap'),cnt=document.getElementById('cnt'),
@@ -9,15 +9,11 @@ var jeton=0;
 function show(){var d=D[i],j=++jeton;img.style.opacity=0;var n=new Image();n.onload=function(){if(j!==jeton)return;img.src=d.src;img.alt=d.cap;img.style.opacity=1};n.src=d.src;
  legende(d.cap);cnt.textContent=(i+1)+' / '+D.length;
  if(aw){au.pause();if(d.audio){au.src=d.audio;aw.hidden=false;an.hidden=true}else{aw.hidden=true;an.hidden=false}}}
-function set(m){mode=m;un.hidden=m!=='un';mo.hidden=m!=='mo';document.getElementById('b-un').classList.toggle('on',m==='un');document.getElementById('b-mo').classList.toggle('on',m==='mo');show()}
+function set(m){mode=m;un.hidden=m!=='un';mo.hidden=m!=='mo';show()}
 function pas(k){i=(i+k+D.length)%D.length;show()}
 document.getElementById('prev').onclick=function(){pas(-1)};
 document.getElementById('next').onclick=function(){pas(1)};
 img.onclick=function(){if(D.length>1)pas(1)};
-document.getElementById('b-un').onclick=function(){set('un')};
-document.getElementById('b-mo').onclick=function(){set('mo')};
-document.getElementById('b-bl').onclick=function(){st.classList.remove('noir');this.classList.add('on');document.getElementById('b-no').classList.remove('on')};
-document.getElementById('b-no').onclick=function(){st.classList.add('noir');this.classList.add('on');document.getElementById('b-bl').classList.remove('on')};
 addEventListener('keydown',function(e){if(mode!=='un')return;if(e.key==='ArrowRight')pas(1);if(e.key==='ArrowLeft')pas(-1)});
 if(D.length<2){document.getElementById('prev').hidden=document.getElementById('next').hidden=true}
 set('un');
