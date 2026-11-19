@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Axel, tes portraits · Shōzō</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  /* Charte : IBM Plex Sans, fond blanc, texte #111, gris #777, rouge #c41e1e, filets #111 / #ddd, largeur 1040 px */
+  :root { --fg:#111; --gray:#777; --rule:#ddd; --rule2:#111; --red:#c41e1e; --creme:#f4f2ee; }
+  * { box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { margin:0; background:#fff; color:var(--fg); font-family:"IBM Plex Sans",system-ui,sans-serif; font-size:16px; line-height:1.55; font-weight:300; -webkit-font-smoothing:antialiased; }
+  .wrap { max-width:1040px; margin:0 auto; padding:0 32px 72px; }
+  header { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:22px 0; border-bottom:1px solid var(--rule2); }
+  .brand { display:flex; align-items:center; gap:12px; font-size:14px; font-weight:500; letter-spacing:.06em; text-transform:uppercase; }
+  .brand img { width:28px; height:28px; }
+  .sommaire { display:flex; gap:18px; flex-wrap:wrap; font-size:13px; color:var(--gray); }
+  .sommaire a { color:inherit; text-decoration:none; }
+  .sommaire a:hover { color:var(--fg); }
+  h1 { font-size:clamp(30px,5vw,44px); font-weight:500; line-height:1.1; letter-spacing:-.01em; margin:56px 0 12px; }
+  .lead { font-size:18px; max-width:38em; margin:0 0 36px; color:#333; }
+  .fav { margin:0 0 8px; }
+  .fav img { width:100%; height:auto; max-height:84vh; object-fit:contain; display:block; background:#fff; }
+  .fav figcaption { font-size:13px; color:var(--gray); margin-top:10px; display:flex; gap:14px; align-items:baseline; }
+  .fav figcaption .etoile { color:var(--red); }
+  .fav figcaption a { color:var(--fg); text-decoration:none; border-bottom:1px solid var(--rule); }
+  .fav figcaption a:hover { border-color:var(--red); }
+  section { padding:44px 0 0; }
+  .section { font-size:13px; letter-spacing:.08em; text-transform:uppercase; color:var(--gray); padding:0 0 8px; border-bottom:1px solid var(--rule2); display:flex; justify-content:space-between; gap:12px; }
+  .section .num { color:var(--fg); }
+  h2 { font-size:24px; font-weight:500; margin:22px 0 8px; }
+  p { margin:0 0 14px; max-width:40em; color:#333; }
+  .btn { display:inline-block; font:inherit; font-size:14px; font-weight:400; text-decoration:none; padding:11px 18px; border:1px solid var(--fg); color:var(--fg); background:#fff; cursor:pointer; border-radius:0; letter-spacing:.02em; }
+  .btn:hover { background:var(--creme); }
+  .btn.plein { background:var(--fg); color:#fff; }
+  .btn.plein:hover { background:#333; }
+  .btn.off { opacity:.35; pointer-events:none; }
+  .note { font-size:13px; color:var(--gray); margin-top:10px; }
+  .note.rouge { color:var(--red); }
+  .actions { display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin-top:18px; }
+
+  /* 1. les photos */
+  .photos { display:grid; grid-template-columns:repeat(4,1fr); gap:14px 12px; padding:18px 0 4px; }
+  .photo { margin:0; }
+  .photo img { width:100%; aspect-ratio:3/4; object-fit:cover; display:block; background:var(--creme); }
+  .photo figcaption { display:flex; justify-content:space-between; align-items:baseline; font-size:13px; color:var(--gray); margin-top:6px; gap:8px; }
+  .photo figcaption a { color:var(--fg); text-decoration:none; border-bottom:1px solid var(--rule); white-space:nowrap; }
+  .photo figcaption a:hover { border-color:var(--red); }
+  .photo.fav img { outline:2px solid var(--red); outline-offset:2px; }
+  .photo .etoile { color:var(--red); }
+
+  /* formulaires */
+  form { display:grid; gap:22px; max-width:44em; margin-top:18px; }
+  .q label, .q .lab { display:block; font-weight:400; margin-bottom:8px; }
+  .q input[type=text], .q input[type=email], .q textarea, .q select { width:100%; font:inherit; font-size:15px; padding:10px 12px; border:1px solid var(--rule2); background:#fff; color:var(--fg); border-radius:0; }
+  .q textarea { min-height:80px; resize:vertical; }
+  .q input:focus, .q textarea:focus, .q select:focus { outline:none; border-color:var(--red); }
+  .aide { font-size:13px; color:var(--gray); margin-top:6px; }
+  .echelle { display:flex; gap:6px; flex-wrap:wrap; }
+  .echelle label { position:relative; }
+  .echelle input { position:absolute; opacity:0; width:0; height:0; }
+  .echelle span { display:inline-block; min-width:40px; text-align:center; padding:8px 0; border:1px solid var(--rule2); font-size:14px; cursor:pointer; user-select:none; }
+  .echelle input:checked + span { background:var(--fg); color:#fff; }
+  .echelle input:focus-visible + span { outline:2px solid var(--red); outline-offset:2px; }
+  .choix { display:flex; gap:10px 24px; flex-wrap:wrap; font-size:15px; }
+  .choix label { display:flex; gap:9px; align-items:flex-start; font-weight:300; margin:0; }
+  .choix input { accent-color:var(--fg); width:17px; height:17px; margin-top:3px; flex:none; }
+  .choix.colonne { flex-direction:column; gap:8px; }
+  .merci { display:none; background:var(--creme); padding:16px 20px; max-width:40em; }
+  form.envoye .merci { display:block; }
+  form.envoye .q, form.envoye .envoyer, form.envoye .juridique { display:none; }
+  .deux { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+
+  /* 4. l'autorisation */
+  .juridique { font-size:14px; color:#333; border:1px solid var(--rule); padding:16px 18px; max-width:44em; }
+  .juridique p { font-size:14px; margin:0; }
+  .signature { border:1px solid var(--rule2); background:#fff; width:100%; max-width:520px; height:170px; touch-action:none; display:block; cursor:crosshair; }
+  .signature-ligne { display:flex; gap:12px; align-items:center; margin-top:8px; font-size:13px; color:var(--gray); }
+  .signature-ligne button { font:inherit; font-size:13px; background:none; border:0; padding:0; color:var(--gray); text-decoration:underline; cursor:pointer; }
+
+  /* 6. participer */
+  .libre { background:var(--creme); padding:28px 28px 26px; margin-top:22px; max-width:44em; }
+  .libre .etiquette { font-size:13px; letter-spacing:.08em; text-transform:uppercase; color:var(--gray); margin-bottom:6px; }
+  .libre h2 { margin-top:0; }
+
+  /* 7. les tirages */
+  table { border-collapse:collapse; width:100%; max-width:44em; margin:18px 0 10px; font-size:15px; }
+  th, td { text-align:left; padding:10px 8px; border-bottom:1px solid var(--rule); font-weight:400; }
+  th { font-size:13px; letter-spacing:.06em; text-transform:uppercase; color:var(--gray); border-bottom:1px solid var(--rule2); }
+  td.prix, th.prix { text-align:right; white-space:nowrap; }
+  td.dim { color:var(--gray); font-size:13px; }
+  .ligne { display:grid; grid-template-columns:2fr 1fr 1fr 1.6fr .8fr 28px; gap:12px; align-items:end; max-width:52em; margin-top:16px; }
+  .ligne .q { margin:0; }
+  .ligne .retirer { border:0; background:none; color:#777; font-size:20px; line-height:1; padding:0 0 10px; cursor:pointer; }
+  .ligne .retirer:hover { color:#c41e1e; }
+  #lignes .ligne:only-child .retirer { visibility:hidden; }
+  .total { font-size:15px; margin-top:14px; }
+  .total b { font-weight:500; }
+
+  footer { margin-top:64px; padding-top:20px; border-top:1px solid var(--rule); font-size:13px; color:var(--gray); display:flex; gap:20px; flex-wrap:wrap; justify-content:space-between; }
+  footer a { color:inherit; text-decoration:none; border-bottom:1px solid var(--rule); }
+
+  @media (max-width:760px) {
+    .wrap { padding:0 20px 56px; }
+    .photos { grid-template-columns:repeat(2,1fr); }
+    .deux, .ligne { grid-template-columns:1fr; }
+    .sommaire { display:none; }
+    h1 { margin-top:40px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <a class="brand" href="https://bertrandbasset.com" style="text-decoration:none;color:inherit"><img src="https://bertrandbasset.com/galerie/assets/logo-b.svg" alt=""><span>Bertrand Basset · Shōzō</span></a>
+  <nav class="sommaire"><a href="#photos">Photos</a><a href="#vernissage">Vernissage</a><a href="#questions">Question</a><a href="#avis">Avis</a><a href="#accord">Autorisation</a><a href="#tirages">Tirages</a><a href="#participer">Participer</a></nav>
+</header>
+
+<h1>Axel, tes portraits.</h1>
+<p class="lead">Merci d&#x27;être venu t&#x27;asseoir au studio cet automne. Tu étais parmi les premiers. Comme promis, voici ta favorite, celle que tu as choisie. Et je t&#x27;offre en plus un tirage A4, que tu pourras retirer le soir du vernissage, si tu es d&#x27;accord pour que je t&#x27;expose, et si tu es disponible.</p>
+<figure class="fav"><img src="https://bertrandbasset.com/galerie/axel-762a0072/img/06.jpg" alt="" width="2048" height="1365"><figcaption><span><span class="etoile">★</span> ta favorite · tirage A4 offert, à retirer au vernissage</span><span>n° 6</span><a href="https://bertrandbasset.com/galerie/axel-762a0072/hd/BertrandBasset_Axel_06.jpg" download>JPEG HD ↓</a></figcaption></figure>
+
+<section id="photos">
+  <div class="section"><span class="num">1</span><span>6 photos</span></div>
+  <h2>Toutes tes photos, en haute définition</h2>
+  <p>On a passé un bon moment, et il était très dur de choisir une seule photo : j&#x27;ai décidé de toutes te les offrir. Voici toutes les photos retouchées, à télécharger : pour toi, pour ton travail, pour un cadeau. Tu en fais ce que tu veux, je te libère tous les droits.</p>
+  <div class="photos">
+    <figure class="photo"><a href="https://bertrandbasset.com/galerie/axel-762a0072/hd/BertrandBasset_Axel_01.jpg" download><img src="https://bertrandbasset.com/galerie/axel-762a0072/img/01-t.jpg" alt="" loading="lazy"></a><figcaption><span>n° 1</span><a href="https://bertrandbasset.com/galerie/axel-762a0072/hd/BertrandBasset_Axel_01.jpg" download>JPEG HD ↓</a></figcaption></figure>
+    <figure class="photo"><a href="https://bertrandbasset.com/galerie/axel-762a0072/hd/BertrandBasset_Axel_02.jpg" download><img src="https://bertrandbasset.com/galerie/axel-762a0072/img/02-t.jpg" alt="" loading="lazy"></a><figcaption><span>n° 2</span><a href="https://bertrandbasset.com/galerie/axel-762a0072/hd/BertrandBasset_Axel_02.jpg" download>JPEG HD ↓</a></figcaption></figure>
+    <figure class="photo"><a href="https://bertrandbasset.com/galerie/axel-762a0072/hd/BertrandBasset_Axel_03.jpg" download><img src="https://bertrandbasset.com/galerie/axel-762a0072/img/03-t.jpg" alt="" loading="lazy"></a><figcaption><span>n° 3</span><a href="https://bertrandbasset.com/galerie/axel-762a0072/hd/BertrandBasset_Axel_03.jpg" download>JPEG HD ↓</a></figcaption></figure>
+    <figure class="photo"><a href="https://bertrandbasset.com/galerie/axel-762a0072/hd/BertrandBasset_Axel_04.jpg" download><img src="https://bertrandbasset.com/galerie/axel-762a0072/img/04-t.jpg" alt="" loading="lazy"></a><figcaption><span>n° 4</span><a href="https://bertrandbasset.com/galerie/axel-762a0072/hd/BertrandBasset_Axel_04.jpg" download>JPEG HD ↓</a></figcaption></figure>
+    <figure class="photo fav"><a href="https://bertrandbasset.com/galerie/axel-762a0072/hd/BertrandBasset_Axel_06.jpg" download><img src="https://bertrandbasset.com/galerie/axel-762a0072/img/06-t.jpg" alt="" loading="lazy"></a><figcaption><span><span class="etoile">★ </span>n° 6</span><a href="https://bertrandbasset.com/galerie/axel-762a0072/hd/BertrandBasset_Axel_06.jpg" download>JPEG HD ↓</a></figcaption></figure>
+    <figure class="photo"><a href="https://bertrandbasset.com/galerie/axel-762a0072/hd/BertrandBasset_Axel_07.jpg" download><img src="https://bertrandbasset.com/galerie/axel-762a0072/img/07-t.jpg" alt="" loading="lazy"></a><figcaption><span>n° 7</span><a href="https://bertrandbasset.com/galerie/axel-762a0072/hd/BertrandBasset_Axel_07.jpg" download>JPEG HD ↓</a></figcaption></figure>
+  </div>
+  <div class="actions"><a class="btn plein " href="#" id="zip-tout" download>Tout télécharger</a><span class="note" style="margin:0" id="zip-note">6 fichiers JPEG, environ 46 Mo</span></div>
+  
+</section>
+
+<section id="vernissage">
+  <div class="section"><span class="num">2</span><span>Shōzō, les premiers portraits · au studio, Carantec</span></div>
+  <h2>Le vernissage</h2>
+  <p>J&#x27;aimerais exposer la série des portraits faits dans mon nouveau studio. Es-tu d&#x27;accord ? Et si oui, quelle date te permettrait d&#x27;être là ? J&#x27;ai vraiment envie que tu y sois.</p>
+  <form class="f" data-type="vernissage">
+    <div class="q"><div class="lab">Je viens</div><div class="choix colonne">
+      <label><input type="radio" name="quand" value="1"> vendredi 4 décembre 2026, 18 h</label>
+      <label><input type="radio" name="quand" value="2"> vendredi 11 décembre 2026, 18 h</label>
+      <label><input type="radio" name="quand" value="les deux"> L'une ou l'autre, les deux m'arrangent</label>
+      <label><input type="radio" name="quand" value="aucune"> Je ne pourrai pas venir, mais je veux bien mon tirage</label>
+    </div></div>
+    <div class="q"><label for="tirage-a4">La photo de ton tirage A4 offert</label><select id="tirage-a4" name="tirage_a4"><option value="1">n° 1</option><option value="2">n° 2</option><option value="3">n° 3</option><option value="4">n° 4</option><option value="6" selected>n° 6 · ta favorite</option><option value="7">n° 7</option></select><div class="aide">Ta favorite, sauf si tu préfères une autre.</div></div>
+    <input type="hidden" name="email">
+    <div class="envoyer"><button class="btn plein" type="submit">Je réserve</button><div class="note f-note"></div></div>
+    <div class="merci">C&#x27;est noté, je te confirme la date très vite.</div>
+  </form>
+</section>
+
+<section id="questions">
+  <div class="section"><span class="num">3</span></div>
+  <h2>Une question</h2>
+  <p>Pour m&#x27;aider à avancer, une seule.</p>
+  <form class="f" data-type="questions">
+    <div class="q"><label for="q1">Pour une séance comme celle-là, avec un tirage offert, quel serait pour toi le prix juste ?</label><input type="text" id="q1" name="q1" placeholder="un chiffre, une fourchette, ou « je ne sais pas »"></div>
+    <div class="envoyer"><button class="btn plein" type="submit">Envoyer</button><div class="note f-note"></div></div>
+    <div class="merci">Merci, c&#x27;est reçu.</div>
+  </form>
+</section>
+
+<section id="avis">
+  <div class="section"><span class="num">4</span></div>
+  <h2>Un avis sur ma fiche Google</h2>
+  <p>Ça m&#x27;aiderait vraiment : pas seulement sur les photos, mais sur la séance, la conversation, le moment. Deux lignes avec tes mots à toi. Le bouton ouvre directement la fenêtre pour écrire.</p>
+  <a class="btn " href="https://search.google.com/local/writereview?placeid=ChIJjeZG7xCPjQERcb4ON0Mh4kY" target="_blank" rel="noopener">Laisser un avis</a>
+  
+</section>
+
+<section id="accord">
+  <div class="section"><span class="num">5</span></div>
+  <h2>Autorisation</h2>
+  <p>J&#x27;aimerais pouvoir montrer ce travail : sur mon site et mes réseaux, dans mes expositions, peut-être un jour dans un livre. Pour ça il me faut ton accord écrit. Tu choisis ce que tu autorises, et tu signes ici, avec le doigt ou la souris.</p>
+  <form class="f" data-type="autorisation">
+    <div class="q"><div class="lab">Ce que j'autorise</div><div class="choix colonne"><label><input type="radio" name="portee" value="Toutes mes photos de la séance" checked> Toutes mes photos de la séance</label><label><input type="radio" name="portee" value="Seulement ma favorite"> Seulement ma favorite</label></div></div>
+    <div class="q"><div class="lab">Pour</div><div class="choix colonne"><label><input type="checkbox" name="usages" value="Le site et les réseaux de Bertrand Basset" checked> Le site et les réseaux de Bertrand Basset</label><label><input type="checkbox" name="usages" value="Des expositions" checked> Des expositions</label><label><input type="checkbox" name="usages" value="Des publications (livre, catalogue, presse)" checked> Des publications (livre, catalogue, presse)</label></div></div>
+    <div class="juridique"><p>Je soussigné autorise Bertrand Basset, photographe-auteur à Carantec, à utiliser les portraits réalisés de moi au studio de Carantec en octobre 2026 pour la série Shōzō, pour les usages cochés ci-dessus, à titre gratuit, en tout pays, pour une durée de dix ans. Les images ne seront ni vendues à des tiers ni utilisées dans un contexte qui porterait atteinte à ma dignité ou à ma vie privée. Je peux retirer cette autorisation à tout moment pour les usages à venir, par simple e-mail. Je garde le droit d&#x27;utiliser mes photos pour moi, comme je veux.</p></div>
+    <div class="q deux">
+      <div><label for="nom">Nom et prénom</label><input type="text" id="nom" name="nom" required autocomplete="name"></div>
+      <div><label for="ville">Fait à</label><input type="text" id="ville" name="ville" placeholder="Carantec"></div>
+    </div>
+    <div class="q"><label for="email-a">Ton e-mail, pour recevoir ta copie signée</label><input type="email" id="email-a" name="email" required autocomplete="email"></div>
+    <div class="q">
+      <div class="lab">Signature</div>
+      <canvas class="signature" id="signature" width="520" height="170"></canvas>
+      <div class="signature-ligne"><span>Avec le doigt ou la souris.</span><button type="button" id="effacer">Effacer</button><span id="date-signature"></span></div>
+      <input type="hidden" name="signature" id="signature-data">
+    </div>
+    <div class="envoyer"><button class="btn plein" type="submit">Je signe</button><div class="note f-note"></div></div>
+    <div class="merci">Merci. Une copie de ton autorisation t&#x27;est envoyée par mail.</div>
+  </form>
+</section>
+
+<section id="tirages">
+  <div class="section"><span class="num">6</span></div>
+  <h2>D&#x27;autres tirages ?</h2>
+  <p>Si tu veux un tirage en plus, ou un format plus grand, voici les prix, pour un tirage d&#x27;art sur papier épais, signé.</p>
+  <table>
+    <thead><tr><th>Format</th><th class="prix">Tirage seul</th><th class="prix">Encadré</th></tr></thead>
+    <tbody>
+      <tr><td>18 × 24 cm</td><td class="prix">25 €</td><td class="prix">55 €</td></tr>
+      <tr><td>24 × 30 cm</td><td class="prix">45 €</td><td class="prix">80 €</td></tr>
+      <tr><td>30 × 40 cm</td><td class="prix">80 €</td><td class="prix">125 €</td></tr>
+      <tr><td>40 × 50 cm</td><td class="prix">120 €</td><td class="prix">180 €</td></tr>
+    </tbody>
+  </table>
+  <p class="note">Tirage pigmentaire sur papier d&#x27;art, mat ou brillant au choix, signé. Encadré : Nielsen alu noir mat, avec ou sans passe-partout, même prix. À retirer au studio ou au vernissage ; envoi possible, port en plus. TVA non applicable (art. 293 B du CGI).</p>
+  <form class="f" data-type="commande" id="commande">
+    <div id="lignes">
+      <div class="ligne">
+        <div class="q"><label>Photo</label><select name="photo"><option value="1">n° 1</option><option value="2">n° 2</option><option value="3">n° 3</option><option value="4">n° 4</option><option value="6" selected>n° 6 · ta favorite</option><option value="7">n° 7</option></select></div>
+        <div class="q"><label>Format</label><select name="format"><option value="18 × 24">18 × 24 cm</option><option value="24 × 30">24 × 30 cm</option><option value="30 × 40">30 × 40 cm</option><option value="40 × 50">40 × 50 cm</option></select></div>
+        <div class="q"><label>Papier</label><select name="papier"><option value="mat">Mat</option><option value="brillant">Brillant</option></select></div>
+        <div class="q"><label>Cadre</label><select name="cadre"><option value="non">Sans cadre</option><option value="alu">Alu noir</option><option value="alu-pp">Alu noir + passe-partout</option></select></div>
+        <div class="q"><label>Quantité</label><select name="quantite"><option>1</option><option>2</option><option>3</option></select></div>
+        <button type="button" class="retirer" title="Retirer cette ligne" aria-label="Retirer cette ligne">×</button>
+      </div>
+    </div>
+    <div class="actions" style="margin-top:12px"><button type="button" class="btn" id="ajouter">+ Ajouter un autre tirage</button></div>
+    <input type="hidden" name="email">
+    <div class="total">Total : <b id="c-total">—</b> <span class="note" style="display:inline;margin:0">· je te confirme par mail, tu règles ensuite par carte ou virement</span></div>
+    <div class="envoyer"><button class="btn plein" type="submit">Commander</button><div class="note f-note"></div></div>
+    <div class="merci">C&#x27;est noté : je te réponds par mail avec le détail et le règlement.</div>
+  </form>
+</section>
+
+<section id="participer">
+  <div class="section"><span class="num">7</span></div>
+  <div class="libre">
+    <div class="etiquette">Si tu veux</div>
+    <h2>Participer, librement</h2>
+    <p>Si tu veux participer librement, pour me soutenir dans mon travail, tu peux. Aucune obligation.</p>
+    <a class="btn plein" href="https://suecslynruuputmujudg.supabase.co/functions/v1/portrait-libre?g=axel-762a0072">Participer</a>
+    <div class="note">Paiement par carte, sécurisé par Stripe. Une facture te sera envoyée par mail.</div>
+  </div>
+</section>
+
+<footer><span>Bertrand Basset · Shōzō · Carantec</span><span><a href="mailto:bertrandbassetstudio@gmail.com">bertrandbassetstudio@gmail.com</a> &nbsp; <a href="https://bertrandbasset.com">bertrandbasset.com</a></span></footer>
+</div>
+
+<script>
+window.LIVRAISON = {"slug": "axel-762a0072", "prenom": "Axel", "email": "axel.plantec@lilo.org", "url": "https://suecslynruuputmujudg.supabase.co/functions/v1/shozo-formulaires", "grille": {"18 × 24": [25, 55], "24 × 30": [45, 80], "30 × 40": [80, 125], "40 × 50": [120, 180]}, "juridique": "Je soussigné autorise Bertrand Basset, photographe-auteur à Carantec, à utiliser les portraits réalisés de moi au studio de Carantec en octobre 2026 pour la série Shōzō, pour les usages cochés ci-dessus, à titre gratuit, en tout pays, pour une durée de dix ans. Les images ne seront ni vendues à des tiers ni utilisées dans un contexte qui porterait atteinte à ma dignité ou à ma vie privée. Je peux retirer cette autorisation à tout moment pour les usages à venir, par simple e-mail. Je garde le droit d'utiliser mes photos pour moi, comme je veux.", "hd": [{"nom": "BertrandBasset_Axel_01.jpg", "url": "https://bertrandbasset.com/galerie/axel-762a0072/hd/BertrandBasset_Axel_01.jpg"}, {"nom": "BertrandBasset_Axel_02.jpg", "url": "https://bertrandbasset.com/galerie/axel-762a0072/hd/BertrandBasset_Axel_02.jpg"}, {"nom": "BertrandBasset_Axel_03.jpg", "url": "https://bertrandbasset.com/galerie/axel-762a0072/hd/BertrandBasset_Axel_03.jpg"}, {"nom": "BertrandBasset_Axel_04.jpg", "url": "https://bertrandbasset.com/galerie/axel-762a0072/hd/BertrandBasset_Axel_04.jpg"}, {"nom": "BertrandBasset_Axel_06.jpg", "url": "https://bertrandbasset.com/galerie/axel-762a0072/hd/BertrandBasset_Axel_06.jpg"}, {"nom": "BertrandBasset_Axel_07.jpg", "url": "https://bertrandbasset.com/galerie/axel-762a0072/hd/BertrandBasset_Axel_07.jpg"}], "zip": "axel-portraits.zip"};
+(function () {
+  var D = window.LIVRAISON, url = D.url, KEY = 'shozo:' + D.slug + ':';
+
+  /* mémoire locale de chaque formulaire, et envoi */
+  function libelle(f, k) { var el = f.elements[k]; var n = el && el.length !== undefined && !el.tagName ? el[0] : el; var q = n && n.closest ? n.closest('.q') : null; var l = q ? q.querySelector('label[for], .lab, label') : null; return l ? l.textContent.trim() : k; }
+  function lire(f) { var o = {}, lib = {}; new FormData(f).forEach(function (v, k) { if (k === 'signature') return; o[k] = o[k] ? o[k] + ' ; ' + v : v; lib[k] = libelle(f, k); }); o.libelles = lib; return o; }
+  if (D.email) Array.prototype.forEach.call(document.querySelectorAll('input[name=email]'), function (i) { if (!i.value) i.value = D.email; });
+  Array.prototype.forEach.call(document.querySelectorAll('form.f'), function (f) {
+    var type = f.dataset.type, note = f.querySelector('.f-note');
+    try { var s = JSON.parse(localStorage.getItem(KEY + type) || 'null'); if (s && s._envoye) f.classList.add('envoye'); } catch (e) {}
+    f.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var o = lire(f); o.galerie = D.slug; o.prenom = D.prenom; o.type = type; o.date = new Date().toISOString();
+      if (type === 'autorisation') {
+        if (!o.nom) { note.textContent = 'Il manque ton nom.'; return; }
+        if (!signee) { note.textContent = 'Il manque ta signature.'; return; }
+        o.signature_png = canvas.toDataURL('image/png'); o.texte = D.juridique; o.page = location.href;
+      }
+      if (type === 'commande') { o = { galerie: o.galerie, prenom: o.prenom, type: type, date: o.date, email: o.email, tirages: detail(), total: total() + ' €', libelles: { email: 'E-mail', tirages: 'Tirages', total: 'Total' } }; }
+      var fini = function () { f.classList.add('envoye'); note.textContent = ''; try { localStorage.setItem(KEY + type, JSON.stringify({ _envoye: true, quand: o.date })); } catch (e) {} };
+      if (!url) { fini(); return; }   /* maquette : rien ne part */
+      note.textContent = 'Envoi…';
+      fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(o) })
+        .then(function (r) { if (!r.ok) throw new Error(); fini(); })
+        .catch(function () { note.textContent = 'Ça n’est pas parti. Réessaie dans un instant.'; });
+    });
+  });
+
+  /* la signature */
+  var canvas = document.getElementById('signature'), ctx = canvas.getContext('2d'), signee = false, trace = false, last = null;
+  function taille() { var r = canvas.getBoundingClientRect(), k = window.devicePixelRatio || 1; var img = signee ? canvas.toDataURL() : null; canvas.width = r.width * k; canvas.height = r.height * k; ctx.setTransform(k, 0, 0, k, 0, 0); ctx.lineWidth = 2; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.strokeStyle = '#111'; if (img) { var i = new Image(); i.onload = function () { ctx.drawImage(i, 0, 0, r.width, r.height); }; i.src = img; } }
+  function pos(e) { var r = canvas.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; }
+  canvas.addEventListener('pointerdown', function (e) { trace = true; last = pos(e); canvas.setPointerCapture(e.pointerId); e.preventDefault(); });
+  canvas.addEventListener('pointermove', function (e) { if (!trace) return; var p = pos(e); ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(p.x, p.y); ctx.stroke(); last = p; signee = true; e.preventDefault(); });
+  function fin() { trace = false; }
+  canvas.addEventListener('pointerup', fin); canvas.addEventListener('pointercancel', fin); canvas.addEventListener('pointerleave', fin);
+  document.getElementById('effacer').addEventListener('click', function () { signee = false; taille(); ctx.clearRect(0, 0, canvas.width, canvas.height); });
+  window.addEventListener('resize', taille); taille();
+  document.getElementById('date-signature').textContent = 'Le ' + new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+
+  /* « Tout télécharger » : le zip est fabriqué dans le navigateur à partir des JPEG HD (pas de gros fichier sur le site) */
+  (function () {
+    var zb = document.getElementById('zip-tout'), zn = document.getElementById('zip-note');
+    if (!zb || !D.hd || !D.hd.length) return;
+    var T = []; for (var n = 0; n < 256; n++) { var c = n; for (var k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; T[n] = c >>> 0; }
+    function crc32(u) { var c = 0xFFFFFFFF; for (var i = 0; i < u.length; i++) c = T[(c ^ u[i]) & 255] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; }
+    function zip(fs) {
+      var parts = [], cd = [], off = 0, d = new Date(), enc = new TextEncoder();
+      var dt = (d.getHours() << 11) | (d.getMinutes() << 5) | (d.getSeconds() >> 1), dd = ((d.getFullYear() - 1980) << 9) | ((d.getMonth() + 1) << 5) | d.getDate();
+      fs.forEach(function (f) {
+        var nom = enc.encode(f.nom), crc = crc32(f.data), n = f.data.length;
+        var h = new DataView(new ArrayBuffer(30)); h.setUint32(0, 0x04034b50, true); h.setUint16(4, 20, true); h.setUint16(6, 0x0800, true); h.setUint16(8, 0, true); h.setUint16(10, dt, true); h.setUint16(12, dd, true); h.setUint32(14, crc, true); h.setUint32(18, n, true); h.setUint32(22, n, true); h.setUint16(26, nom.length, true); h.setUint16(28, 0, true);
+        parts.push(h.buffer, nom, f.data);
+        var c = new DataView(new ArrayBuffer(46)); c.setUint32(0, 0x02014b50, true); c.setUint16(4, 20, true); c.setUint16(6, 20, true); c.setUint16(8, 0x0800, true); c.setUint16(10, 0, true); c.setUint16(12, dt, true); c.setUint16(14, dd, true); c.setUint32(16, crc, true); c.setUint32(20, n, true); c.setUint32(24, n, true); c.setUint16(28, nom.length, true); c.setUint32(42, off, true);
+        cd.push(c.buffer, nom); off += 30 + nom.length + n;
+      });
+      var cdl = 0; cd.forEach(function (b) { cdl += b.byteLength; });
+      var e = new DataView(new ArrayBuffer(22)); e.setUint32(0, 0x06054b50, true); e.setUint16(8, fs.length, true); e.setUint16(10, fs.length, true); e.setUint32(12, cdl, true); e.setUint32(16, off, true);
+      return new Blob(parts.concat(cd, [e.buffer]), { type: 'application/zip' });
+    }
+    var texte = zn.textContent, encours = false;
+    zb.addEventListener('click', function (e) {
+      e.preventDefault(); if (encours) return; encours = true; var faits = 0;
+      Promise.all(D.hd.map(function (f) { return fetch(f.url).then(function (r) { if (!r.ok) throw new Error(f.nom); return r.arrayBuffer(); }).then(function (b) { faits++; zn.textContent = 'Préparation… ' + faits + ' / ' + D.hd.length; return { nom: f.nom, data: new Uint8Array(b) }; }); }))
+        .then(function (fs) { var u = URL.createObjectURL(zip(fs)), a = document.createElement('a'); a.href = u; a.download = D.zip; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function () { URL.revokeObjectURL(u); }, 60000); zn.textContent = texte; encours = false; })
+        .catch(function () { zn.textContent = 'Ça n’a pas marché. Télécharge les photos une par une, juste au-dessus.'; encours = false; });
+    });
+  })();
+
+  /* la commande de tirages : plusieurs lignes */
+  var lignes = document.getElementById('lignes'), ct = document.getElementById('c-total'), modeleLigne = lignes.firstElementChild.cloneNode(true);
+  function prixLigne(l) { var g = D.grille[l.querySelector('[name=format]').value]; if (!g) return 0; return (l.querySelector('[name=cadre]').value === 'non' ? g[0] : g[1]) * parseInt(l.querySelector('[name=quantite]').value, 10); }
+  function total() { var t = 0; Array.prototype.forEach.call(lignes.children, function (l) { t += prixLigne(l); }); return t; }
+  function texteSel(l, n) { var s = l.querySelector('[name=' + n + ']'); return s.options[s.selectedIndex].textContent.trim(); }
+  function detail() { return Array.prototype.map.call(lignes.children, function (l) { return texteSel(l, 'photo') + ' · ' + texteSel(l, 'format') + ' · ' + texteSel(l, 'papier').toLowerCase() + ' · ' + texteSel(l, 'cadre').toLowerCase() + ' · × ' + texteSel(l, 'quantite') + ' = ' + prixLigne(l) + ' €'; }).join('\n'); }
+  function majTotal() { ct.textContent = total() + ' €'; }
+  function brancher(l) { Array.prototype.forEach.call(l.querySelectorAll('select'), function (el) { el.addEventListener('change', majTotal); }); l.querySelector('.retirer').addEventListener('click', function () { if (lignes.children.length > 1) { l.remove(); majTotal(); } }); }
+  brancher(lignes.firstElementChild);
+  document.getElementById('ajouter').addEventListener('click', function () { var l = modeleLigne.cloneNode(true); lignes.appendChild(l); brancher(l); majTotal(); l.querySelector('select').focus(); });
+  majTotal();
+})();
+</script>
+</body>
+</html>
