@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Passages sur le site · Bertrand Basset</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@200;300;400;500&display=swap">
+<link rel="stylesheet" href="style.css?v=1795260613"></head><body>
+<main class="wrap">
+<h1>Passages</h1><p class="chapo" id="etat">Lecture du compteur…</p>
+<div id="resultat"></div>
+</main>
+<script>
+/* Page privée de Bertrand : la clé est dans l'adresse (visites.html#clé), gardée ensuite sur cet appareil. Sans clé, rien ne s'affiche. */
+(function(){
+  try { localStorage.setItem('bb-moi','1'); } catch(e){}
+  var cle = location.hash.slice(1) || ''; try { if (cle) localStorage.setItem('bb-cle', cle); else cle = localStorage.getItem('bb-cle') || ''; } catch(e){}
+  var etat = document.getElementById('etat'), res = document.getElementById('resultat');
+  if (!cle) { etat.textContent = 'Il manque la clé dans l\u2019adresse.'; return; }
+  function ech(t){ return String(t).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+  function bloc(titre, lignes, nom){ if (!lignes.length) return ''; return '<div class="section">' + titre + '</div>' + lignes.map(function(l){ return '<div class="row"><span class="t">' + ech(nom(l)) + '</span><span class="m">' + l.visites + ' page' + (l.visites > 1 ? 's' : '') + ' vue' + (l.visites > 1 ? 's' : '') + '</span></div>'; }).join(''); }
+  fetch('https://suecslynruuputmujudg.supabase.co/functions/v1/visite?cle=' + encodeURIComponent(cle)).then(function(r){ return r.json(); }).then(function(d){
+    if (!d.jours) { etat.textContent = 'Clé inconnue.'; return; }
+    etat.textContent = 'Pages vues : ' + d.aujourdhui + ' aujourd\u2019hui, ' + d.sept_jours + ' sur sept jours, ' + d.trente_jours + ' sur trente jours. Tes propres visites depuis cet appareil ne sont pas comptées.';
+    var jour = function(l){ return new Date(l.jour + 'T12:00:00').toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' }); };
+    res.innerHTML = bloc('Par jour', d.jours, jour) + bloc('Par page', d.pages, function(l){ return l.nom === '/' ? 'Accueil' : l.nom; }) + bloc('D\u2019où viennent les gens', d.origines, function(l){ return l.nom; }) + bloc('Appareil', d.ecrans, function(l){ return l.nom; });
+  }).catch(function(){ etat.textContent = 'Le compteur ne répond pas.'; });
+})();
+</script>
+</body></html>
